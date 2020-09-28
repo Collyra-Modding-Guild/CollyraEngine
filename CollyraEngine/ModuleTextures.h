@@ -2,7 +2,7 @@
 #define __MODULE_TEXTURES_H__
 
 #include "Module.h"
-#include "p2List.h"
+#include <vector>
 
 struct SDL_Texture;
 struct SDL_Surface;
@@ -17,7 +17,7 @@ public:
 	virtual ~ModuleTextures();
 
 	// Called before render is available
-	bool Awake();
+	bool Init();
 
 	// Called before the first frame
 	bool Start();
@@ -33,7 +33,7 @@ public:
 
 public:
 
-	p2List<SDL_Texture*>	textures;
+	std::vector<SDL_Texture*>	textures;
 };
 
 

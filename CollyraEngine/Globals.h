@@ -51,4 +51,4 @@ enum ContactType
 #define WIN_BORDERLESS false
 #define WIN_FULLSCREEN_DESKTOP false
 #define VSYNC true
-#define TITLE "Loading game . . . "
+#define TITLE "Collyra Engine"

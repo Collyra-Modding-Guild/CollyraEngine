@@ -14,8 +14,6 @@ ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(ap
 	Position = vec3(0.0f, 0.0f, 5.0f);
 	Reference = vec3(0.0f, 0.0f, 0.0f);
 
-	camViewPort = { 0,0,0,0 };
-
 }
 
 ModuleCamera3D::~ModuleCamera3D()
@@ -175,10 +173,3 @@ vec3 ModuleCamera3D::GetCameraPosition()
 {
 	return Position;
 }
-
-// -----------------------------------------------------------------
-SDL_Rect ModuleCamera3D::getViewPort()
-{
-	return camViewPort;
-}
-

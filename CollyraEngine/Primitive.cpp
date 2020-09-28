@@ -283,7 +283,6 @@ void Plane::InnerRender() const
 }
 
 
-
 // ---------------------------------------------------------
 void Primitive::SetInvisible(bool isInvisible)
 {

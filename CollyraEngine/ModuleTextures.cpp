@@ -2,7 +2,6 @@
 #include "Application.h"
 #include "ModuleRenderer3D.h"
 #include "ModuleTextures.h"
-#include "p2List.h"
 
 #include "SDL_image/include/SDL_image.h"
 #pragma comment( lib, "SDL_image/libx86/SDL2_image.lib" )
@@ -16,7 +15,7 @@ ModuleTextures::~ModuleTextures()
 {}
 
 // Called before render is available
-bool ModuleTextures::Awake()
+bool ModuleTextures::Init()
 {
 	LOG("Init Image library");
 	bool ret = true;
@@ -45,12 +44,13 @@ bool ModuleTextures::Start()
 bool ModuleTextures::CleanUp()
 {
 	LOG("Freeing textures and Image library");
-	p2List_item<SDL_Texture*>* item;
 
-	for (item = textures.start; item != NULL; item = item->next)
+
+	for (int i = 0; i < textures.size(); i++)
 	{
-		SDL_DestroyTexture(item->data);
+		SDL_DestroyTexture(textures[i]);
 	}
+
 
 	textures.clear();
 	IMG_Quit();
@@ -79,14 +79,16 @@ SDL_Texture* const ModuleTextures::Load(const char* path)
 // Unload texture
 bool ModuleTextures::UnLoad(SDL_Texture* texture)
 {
-	p2List_item<SDL_Texture*>* item;
+	int numTextures = textures.size();
 
-	for (item = textures.start; item != NULL; item = item->next)
+	for (int i = 0; i < numTextures; i++)
 	{
-		if (texture == item->data)
+		if (texture == textures[i])
 		{
-			SDL_DestroyTexture(item->data);
-			textures.del(item);
+			SDL_DestroyTexture(textures[i]);
+
+			RELEASE(textures[i]);
+			textures[i] = nullptr;
 			return true;
 		}
 	}
@@ -106,7 +108,7 @@ SDL_Texture* const ModuleTextures::LoadSurface(SDL_Surface* surface)
 	}
 	else
 	{
-		textures.add(texture);
+		textures.push_back(texture);
 	}
 
 	return texture;

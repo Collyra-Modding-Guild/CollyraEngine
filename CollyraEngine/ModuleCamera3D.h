@@ -23,7 +23,6 @@ public:
 	void Move(const vec3 &Movement);
 	float* GetViewMatrix();
 	vec3 GetCameraPosition();
-	SDL_Rect getViewPort();
 
 
 private:
@@ -36,11 +35,7 @@ public:
 	mat3x3 rotation;
 
 	bool cameraDebug = false;
-	bool lookAtBall = false;
 	float multiplier = 1.0f;
-
-	int cameraNum = 0;
-	SDL_Rect camViewPort;
 
 
 private:

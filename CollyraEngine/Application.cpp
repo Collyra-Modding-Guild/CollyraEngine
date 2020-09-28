@@ -6,10 +6,8 @@ Application::Application()
 	input = new ModuleInput(this);
 	audio = new ModuleAudio(this, true);
 	tex = new ModuleTextures(this);
-	fonts = new ModuleFonts(this);
 	renderer3D = new ModuleRenderer3D(this);
 	camera = new ModuleCamera3D(this, true);
-
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -19,9 +17,8 @@ Application::Application()
 	AddModule(window);
 	AddModule(input);
 	AddModule(audio);
-	AddModule(fonts);
 	AddModule(tex);
-	
+
 	// Scenes
 	AddModule(camera);
 
@@ -31,13 +28,7 @@ Application::Application()
 
 Application::~Application()
 {
-	p2List_item<Module*>* item = list_modules.getLast();
-
-	while(item != NULL)
-	{
-		delete item->data;
-		item = item->prev;
-	}
+	list_modules.clear();
 }
 
 bool Application::Init()
@@ -45,26 +36,25 @@ bool Application::Init()
 	bool ret = true;
 
 	// Call Init() in all modules
-	p2List_item<Module*>* item = list_modules.getFirst();
+	int numModules = list_modules.size();
 
-	int i = 0;
-	while(item != NULL && ret == true)
+	for (int i = 0; i < numModules; i++)
 	{
-		ret = item->data->Init();
-		item = item->next;
-		i++;
+		ret = list_modules[i]->Init();
+
 	}
 
 	// After all Init calls we call Start() in all modules
 	LOG("Application Start --------------");
-	item = list_modules.getFirst();
 
-	while(item != NULL && ret == true)
+	for (int i = 0; i < numModules; i++)
 	{
-		ret = item->data->Start();
-		item = item->next;
+		if (list_modules[i]->IsEnabled())
+		{
+			ret = list_modules[i]->Start();
+		}
 	}
-	
+
 	ms_timer.Start();
 	return ret;
 }
@@ -86,29 +76,25 @@ update_status Application::Update()
 {
 	update_status ret = UPDATE_CONTINUE;
 	PrepareUpdate();
-	
-	p2List_item<Module*>* item = list_modules.getFirst();
-	
-	while(item != NULL && ret == UPDATE_CONTINUE)
+
+	//PreUpdate
+	int numModules = list_modules.size();
+
+	for (int i = 0; i < numModules && ret == UPDATE_CONTINUE; i++)
 	{
-		ret = item->data->PreUpdate(dt);
-		item = item->next;
+		ret = list_modules[i]->PreUpdate(dt);
 	}
 
-	item = list_modules.getFirst();
-
-	while(item != NULL && ret == UPDATE_CONTINUE)
+	//Update
+	for (int i = 0; i < numModules && ret == UPDATE_CONTINUE; i++)
 	{
-		ret = item->data->Update(dt);
-		item = item->next;
+		ret = list_modules[i]->Update(dt);
 	}
 
-	item = list_modules.getFirst();
-
-	while(item != NULL && ret == UPDATE_CONTINUE)
+	//PostUpdate
+	for (int i = 0; i < numModules && ret == UPDATE_CONTINUE; i++)
 	{
-		ret = item->data->PostUpdate(dt);
-		item = item->next;
+		ret = list_modules[i]->PostUpdate(dt);
 	}
 
 	FinishUpdate();
@@ -118,12 +104,11 @@ update_status Application::Update()
 bool Application::CleanUp()
 {
 	bool ret = true;
-	p2List_item<Module*>* item = list_modules.getLast();
+	int numModules = list_modules.size();
 
-	while(item != NULL && ret == true)
+	for (int i = numModules - 1; i >= 0 && ret == true; i--)
 	{
-		ret = item->data->CleanUp();
-		item = item->prev;
+		ret = list_modules[i]->CleanUp();
 	}
 	return ret;
 }
@@ -131,13 +116,11 @@ bool Application::CleanUp()
 bool Application::Draw()
 {
 	bool ret = true;
+	int numModules = list_modules.size();
 
-	p2List_item<Module*>* item = list_modules.getFirst();
-
-	while (item != NULL && ret == true)
+	for (int i = 0; i < numModules && ret == true; i++)
 	{
-		ret = item->data->Draw();
-		item = item->next;
+		ret = list_modules[i]->Draw();
 	}
 	return ret;
 }
@@ -145,18 +128,18 @@ bool Application::Draw()
 bool Application::Reset()
 {
 	bool ret = true;
+	int numModules = list_modules.size();
 
-	p2List_item<Module*>* item = list_modules.getFirst();
 
-	while (item != NULL && ret == true)
+	for (int i = 0; i < numModules && ret == true; i++)
 	{
-		ret = item->data->Reset();
-		item = item->next;
+		ret = list_modules[i]->Reset();
 	}
+
 	return ret;
 }
 
 void Application::AddModule(Module* mod)
 {
-	list_modules.add(mod);
+	list_modules.push_back(mod);
 }

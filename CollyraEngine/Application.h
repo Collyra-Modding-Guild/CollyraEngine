@@ -1,7 +1,8 @@
 #pragma once
 
-#include "p2List.h"
+#include <vector>
 #include "Globals.h"
+#include "p2Defs.h"
 #include "Timer.h"
 #include "Module.h"
 #include "ModuleWindow.h"
@@ -11,7 +12,6 @@
 #include "ModuleCamera3D.h"
 
 #include "ModuleTextures.h"
-#include "ModuleFonts.h"
 
 class Application
 {
@@ -20,7 +20,6 @@ public:
 	ModuleInput* input;
 	ModuleAudio* audio;
 	ModuleTextures* tex;
-	ModuleFonts* fonts;
 	ModuleRenderer3D* renderer3D;
 	ModuleCamera3D* camera;
 
@@ -28,7 +27,7 @@ private:
 
 	Timer	ms_timer;
 	float	dt;
-	p2List<Module*> list_modules;
+	std::vector<Module*> list_modules;
 
 public:
 
