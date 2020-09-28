@@ -2,19 +2,16 @@
 #include "Module.h"
 #include "Globals.h"
 #include "glmath.h"
-#include "PhysVehicle3D.h"
 
-#include "Bullet/include/LinearMath/btVector3.h"
 #include "SDL/include/SDL_rect.h"
 
 #define LERP_VALUE 0.25
 
-class ModulePlayer;
 
 class ModuleCamera3D : public Module
 {
 public:
-	ModuleCamera3D(Application* app, bool start_enabled = true, uint cameraNum = 0u);
+	ModuleCamera3D(Application* app, bool start_enabled = true);
 	~ModuleCamera3D();
 
 	bool Start();
@@ -27,7 +24,6 @@ public:
 	float* GetViewMatrix();
 	vec3 GetCameraPosition();
 	SDL_Rect getViewPort();
-	void ReSizeViewPorts();
 
 
 private:
@@ -45,8 +41,7 @@ public:
 
 	int cameraNum = 0;
 	SDL_Rect camViewPort;
-	PhysVehicle3D* target_vehicle = nullptr;
-	ModulePlayer* target_player = nullptr;
+
 
 private:
 

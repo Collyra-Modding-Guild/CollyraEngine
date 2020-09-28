@@ -7,13 +7,9 @@ Application::Application()
 	audio = new ModuleAudio(this, true);
 	tex = new ModuleTextures(this);
 	fonts = new ModuleFonts(this);
-	scene_intro = new ModuleSceneIntro(this, true, 5u);
 	renderer3D = new ModuleRenderer3D(this);
-	camera = new ModuleCamera3D(this, true, 1);
-	camera_2 = new ModuleCamera3D(this, true, 2);
-	physics = new ModulePhysics3D(this);
-	player = new ModulePlayer(this, true, 1);
-	player_2 = new ModulePlayer(this, true, 2);
+	camera = new ModuleCamera3D(this, true);
+
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -25,14 +21,9 @@ Application::Application()
 	AddModule(audio);
 	AddModule(fonts);
 	AddModule(tex);
-	AddModule(physics);
 	
 	// Scenes
-	AddModule(scene_intro);
-	AddModule(player);
-	AddModule(player_2);
 	AddModule(camera);
-	AddModule(camera_2);
 
 	// Renderer last!
 	AddModule(renderer3D);
@@ -56,10 +47,12 @@ bool Application::Init()
 	// Call Init() in all modules
 	p2List_item<Module*>* item = list_modules.getFirst();
 
+	int i = 0;
 	while(item != NULL && ret == true)
 	{
 		ret = item->data->Init();
 		item = item->next;
+		i++;
 	}
 
 	// After all Init calls we call Start() in all modules

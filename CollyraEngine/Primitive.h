@@ -2,7 +2,6 @@
 #pragma once
 #include "glmath.h"
 #include "Color.h"
-#include "PhysBody3D.h"
 
 
 enum PrimitiveTypes
@@ -37,7 +36,7 @@ public:
 	Color color;
 	mat4x4 transform;
 	bool axis,wire;
-	PhysBody3D* body = nullptr;
+	//PhysBody3D* body = nullptr;
 	bool isInvisible;
 
 protected:

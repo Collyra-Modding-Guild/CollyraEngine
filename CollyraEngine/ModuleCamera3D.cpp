@@ -1,15 +1,10 @@
 #include "Globals.h"
 #include "Application.h"
-#include "PhysBody3D.h"
 #include "ModuleCamera3D.h"
-#include "ModulePlayer.h"
-#include "PhysVehicle3D.h"
 #include "ModuleWindow.h"
 
-ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled, uint camNum) : Module(app, start_enabled), cameraNum(camNum)
+ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	App->cam_list.add(this);
-
 	CalculateViewMatrix();
 
 	X = vec3(1.0f, 0.0f, 0.0f);
@@ -21,22 +16,6 @@ ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled, uint camNum
 
 	camViewPort = { 0,0,0,0 };
 
-	//We calculate the "amount" of screen the window will ocupate
-	switch (this->cameraNum) {
-
-	case 1:
-		camViewPort.x = 0;
-		camViewPort.y = 0;
-		camViewPort.w = App->window->SCREEN_WIDTH * 0.5f;
-		camViewPort.h = App->window->SCREEN_HEIGHT;
-		break;
-	case 2:
-		camViewPort.x = App->window->SCREEN_WIDTH * 0.5f;
-		camViewPort.y = 0;
-		camViewPort.w = App->window->SCREEN_WIDTH * 0.5f;
-		camViewPort.h = App->window->SCREEN_HEIGHT;
-		break;
-	}
 }
 
 ModuleCamera3D::~ModuleCamera3D()
@@ -47,18 +26,6 @@ bool ModuleCamera3D::Start()
 {
 	LOG("Setting up the camera");
 	bool ret = true;
-
-	switch (this->cameraNum) {
-
-	case 1:
-		target_vehicle = App->player->vehicle;
-		target_player = App->player;
-		break;
-	case 2:
-		target_vehicle = App->player_2->vehicle;
-		target_player = App->player_2;
-		break;
-	}
 
 	return ret;
 }
@@ -141,70 +108,6 @@ update_status ModuleCamera3D::Update(float dt)
 		}
 		
 	}
-	else
-		//REGULAR CAMERA
-	{
-		vec3 vehiclePos = target_vehicle->GetPos();
-		camDistanceFromCar = { 0,3.5,-7.5f };
-
-		if (lookAtBall)
-		{
-			//LOOKING AT THE BALL
-
-			//The direction of the ball to the car
-			vec3 dir = vehiclePos -App->scene_intro->matchBall->body->GetPos();
-
-			//Check if the cam is too close to the ball
-			if (length(dir) < 10)
-			{
-				if(multiplier < 1.5f)
-				multiplier += 0.0125f;
-			}
-			else
-			{
-				if(multiplier > 1.0f)
-				multiplier -= 0.025f;
-			}
-
-			////Normalize the vector & get only the x and z components
-			dir = normalize(dir);
-			dir.Set(dir.x,0.f,dir.z);
-
-			//We calculate the new position: vehiclePos + the normalized direction augmented  +y offset
-			newpos = vehiclePos + (dir * -camDistanceFromCar.z * multiplier) + vec3(0, camDistanceFromCar.y, 0);
-
-			//Interpolate the new distance to have a smooth transition
-			btVector3 interpolVec = lerp({ Position.x, Position.y, Position.z }, { newpos.x, newpos.y, newpos.z }, LERP_VALUE);
-			Position = { interpolVec.x() , interpolVec.y() , interpolVec.z() };
-
-			LookAt(App->scene_intro->matchBall->body->GetPos());
-		}
-		else
-		{
-			//We calculate the rotation & distance where the camera has to be set
-			if (target_player->fieldContact)
-			{
-				mat4x4 transform;
-				target_vehicle->GetTransform(&transform);
-				mat3x3 rotationLocal(transform);
-
-				newpos = vehiclePos + rotationLocal * camDistanceFromCar;
-
-				rotation = rotationLocal;
-			}
-				//In case the player is not touching the ground, we only calculate the position
-			else
-			{
-				newpos = vehiclePos + rotation * camDistanceFromCar;
-			}
-
-			//Change the camera position with lerp
-			btVector3 interpolVec = lerp({Position.x, Position.y, Position.z}, { newpos.x, newpos.y, newpos.z }, LERP_VALUE);
-			Position = { interpolVec.x() , interpolVec.y() , interpolVec.z() };
-
-			LookAt(vehiclePos + vec3(0, camDistanceFromCar.y, 0));
-		}
-	}
 
 
 	// Recalculate matrix -------------
@@ -279,26 +182,3 @@ SDL_Rect ModuleCamera3D::getViewPort()
 	return camViewPort;
 }
 
-// -----------------------------------------------------------------
-//Change the camera viewport when the window size is alterated
-void ModuleCamera3D::ReSizeViewPorts()
-{
-	switch (this->cameraNum) {
-
-	case 1:
-		camViewPort.x = 0;
-		camViewPort.y = 0;
-		camViewPort.w = App->window->SCREEN_WIDTH * 0.5f;
-		camViewPort.h = App->window->SCREEN_HEIGHT;
-		break;
-	case 2:
-		camViewPort.x = App->window->SCREEN_WIDTH * 0.5f;
-		camViewPort.y = 0;
-		camViewPort.w = App->window->SCREEN_WIDTH * 0.5f;
-		camViewPort.h = App->window->SCREEN_HEIGHT;
-
-		break;
-	}
-
-
-}

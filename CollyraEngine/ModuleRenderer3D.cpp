@@ -116,8 +116,6 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
-
-
 	return UPDATE_CONTINUE;
 }
 
@@ -125,33 +123,9 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
 	//We iterate through all the windows we have & Render for every single one
-	p2List_item<ModuleCamera3D*>* item = App->cam_list.getFirst();
 
-	int lightNum = 0;
-	while (item != NULL)
-	{
-		glMatrixMode(GL_MODELVIEW);
-		glLoadMatrixf(item->data->GetViewMatrix());
-
-		SDL_Rect viewport = item->data->getViewPort();
-		glViewport(viewport.x, viewport.y, viewport.w, viewport.h);
-
-		App->Draw();
-
-		// lights on cam pos
-		lights[lightNum].SetPos(item->data->Position.x, item->data->Position.y, item->data->Position.z);
-
-		for (uint i = 0; i < MAX_LIGHTS; ++i)
-			lights[i].Render();
-
-		lightNum++;
-
-		item = item->next;
-	}
-
+	App->Draw();
 	SDL_GL_SwapWindow(App->window->window);
-
-//	App->renderer3D->Blit(App->scene_intro->fontTexture, 10, 10, nullptr, 1.0f);
 
 	return UPDATE_CONTINUE;
 }
@@ -171,15 +145,6 @@ void ModuleRenderer3D::OnResize()
 {
 	//We set the new screen height & width
 	SDL_GetWindowSize(App->window->window, &App->window->SCREEN_WIDTH, &App->window->SCREEN_HEIGHT);
-
-	//Change all the viewprtss
-	p2List_item<ModuleCamera3D*>* item = App->cam_list.getFirst();
-	while (item != NULL)
-	{
-		item->data->ReSizeViewPorts();
-
-		item = item->next;
-	}
 
 	//Calculate OpenGl stuff-----------------
 	float width = (float)App->window->SCREEN_WIDTH;
