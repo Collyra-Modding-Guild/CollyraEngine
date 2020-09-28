@@ -1,4 +1,4 @@
-# CollyraEngine
+# Collyra Engine
 Collyra Engine is an open source student Game Engine made for the Game Engines class of the Citm's Bachelor's degree in Video Game Design and Development, made by Junior Students.
 ## Credits
 - Aarón Guerrero Cruz
