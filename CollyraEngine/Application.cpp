@@ -8,6 +8,7 @@ Application::Application()
 	tex = new ModuleTextures(this);
 	renderer3D = new ModuleRenderer3D(this);
 	camera = new ModuleCamera3D(this, true);
+	uiManager = new ModuleUIManager(this, true);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -15,6 +16,7 @@ Application::Application()
 
 	// Main Modules
 	AddModule(window);
+	AddModule(uiManager);
 	AddModule(input);
 	AddModule(audio);
 	AddModule(tex);

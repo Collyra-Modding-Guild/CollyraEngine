@@ -10,6 +10,7 @@
 #include "ModuleAudio.h"
 #include "ModuleRenderer3D.h"
 #include "ModuleCamera3D.h"
+#include "ModuleUIManager.h"
 
 #include "ModuleTextures.h"
 
@@ -22,6 +23,7 @@ public:
 	ModuleTextures* tex;
 	ModuleRenderer3D* renderer3D;
 	ModuleCamera3D* camera;
+	ModuleUIManager* uiManager;
 
 private:
 

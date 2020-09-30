@@ -66,6 +66,9 @@
     <ClInclude Include="ModuleTextures.h">
       <Filter>Sources\Modules</Filter>
     </ClInclude>
+    <ClInclude Include="ModuleUIManager.h">
+      <Filter>Sources\Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleAudio.cpp">
@@ -112,6 +115,9 @@
     </ClCompile>
     <ClCompile Include="p2Defs.h">
       <Filter>Sources\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleUIManager.cpp">
+      <Filter>Sources\Modules</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
