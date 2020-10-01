@@ -3,13 +3,11 @@
 
 Application::Application()
 {
-	window = new ModuleWindow(this);
-	input = new ModuleInput(this);
-	audio = new ModuleAudio(this, true);
-	tex = new ModuleTextures(this);
-	renderer3D = new ModuleRenderer3D(this);
-	camera = new ModuleCamera3D(this, true);
-	uiManager = new ModuleUIManager(this, true);
+	window = new M_Window(this);
+	input = new M_Input(this);
+	renderer3D = new M_Renderer3D(this);
+	camera = new M_Camera3D(this, true);
+	uiManager = new M_UIManager(this, true);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -19,8 +17,6 @@ Application::Application()
 	AddModule(window);
 	AddModule(uiManager);
 	AddModule(input);
-	AddModule(audio);
-	AddModule(tex);
 
 	// Scenes
 	AddModule(camera);

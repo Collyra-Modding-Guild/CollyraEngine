@@ -1,6 +1,6 @@
 #include "Globals.h"
 #include "Application.h"
-#include "ModuleRenderer3D.h"
+#include "M_Renderer3D.h"
 
 #include "Glew/include/glew.h"
 #pragma comment (lib, "Glew/libx86/glew32.lib")
@@ -12,21 +12,22 @@
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
-ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled), renderer(nullptr)
+M_Renderer3D::M_Renderer3D(Application* app, bool start_enabled) : Module(app, start_enabled), renderer(nullptr)
 {}
 
 // Destructor
-ModuleRenderer3D::~ModuleRenderer3D()
+M_Renderer3D::~M_Renderer3D()
 {}
 
 // Called before render is available
-bool ModuleRenderer3D::Init()
+bool M_Renderer3D::Init()
 {
 	LOG("Creating 3D Renderer context");
 	bool ret = true;
 	
 	//Create context
 	context = SDL_GL_CreateContext(App->window->window);
+
 	if(context == NULL)
 	{
 		LOG("OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -115,7 +116,7 @@ bool ModuleRenderer3D::Init()
 }
 
 // PreUpdate: clear buffer
-update_status ModuleRenderer3D::PreUpdate(float dt)
+update_status M_Renderer3D::PreUpdate(float dt)
 {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -125,7 +126,7 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 }
 
 // PostUpdate present buffer to screen
-update_status ModuleRenderer3D::PostUpdate(float dt)
+update_status M_Renderer3D::PostUpdate(float dt)
 {
 	//We iterate through all the windows we have & Render for every single one
 
@@ -138,7 +139,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 }
 
 // Called before quitting
-bool ModuleRenderer3D::CleanUp()
+bool M_Renderer3D::CleanUp()
 {
 	LOG("Destroying 3D Renderer");
 
@@ -148,7 +149,7 @@ bool ModuleRenderer3D::CleanUp()
 }
 
 //Called when a window is alterated
-void ModuleRenderer3D::OnResize()
+void M_Renderer3D::OnResize()
 {
 	//We set the new screen height & width
 	SDL_GetWindowSize(App->window->window, &App->window->SCREEN_WIDTH, &App->window->SCREEN_HEIGHT);
@@ -167,7 +168,7 @@ void ModuleRenderer3D::OnResize()
 }
 
 // Blit to screen
-bool ModuleRenderer3D::Blit(SDL_Texture* texture, int x, int y, const SDL_Rect* section, float speed_x, float speed_y, SDL_RendererFlip flip, double angle, int pivot_x, int pivot_y) const
+bool M_Renderer3D::Blit(SDL_Texture* texture, int x, int y, const SDL_Rect* section, float speed_x, float speed_y, SDL_RendererFlip flip, double angle, int pivot_x, int pivot_y) const
 {
 	bool ret = true;
 

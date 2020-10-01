@@ -6,14 +6,14 @@
 
 class Application;
 
-class ModuleWindow : public Module
+class M_Window : public Module
 {
 public:
 
-	ModuleWindow(Application* app, bool start_enabled = true);
+	M_Window(Application* app, bool start_enabled = true);
 
 	// Destructor
-	virtual ~ModuleWindow();
+	virtual ~M_Window();
 
 	bool Init();
 	bool CleanUp();
