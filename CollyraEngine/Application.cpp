@@ -116,18 +116,6 @@ bool Application::CleanUp()
 	return ret;
 }
 
-bool Application::Draw()
-{
-	bool ret = true;
-	int numModules = list_modules.size();
-
-	for (int i = 0; i < numModules && ret == true; i++)
-	{
-		ret = list_modules[i]->Draw();
-	}
-	return ret;
-}
-
 bool Application::Reset()
 {
 	bool ret = true;

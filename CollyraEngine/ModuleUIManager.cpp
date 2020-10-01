@@ -94,7 +94,6 @@ update_status ModuleUIManager::PostUpdate(float dt)
         SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
     }
    
-    SDL_GL_SwapWindow(App->window->window);
 
 	return UPDATE_CONTINUE;
 }
