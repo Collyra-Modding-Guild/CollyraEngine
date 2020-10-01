@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleInput.h"
 
+
 #define MAX_KEYS 300
 
 ModuleInput::ModuleInput(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -88,6 +89,7 @@ update_status ModuleInput::PreUpdate(float dt)
 	SDL_Event e;
 	while(SDL_PollEvent(&e))
 	{
+		
 		switch(e.type)
 		{
 			case SDL_MOUSEWHEEL:
@@ -110,6 +112,7 @@ update_status ModuleInput::PreUpdate(float dt)
 			{
 				if(e.window.event == SDL_WINDOWEVENT_RESIZED)
 					App->renderer3D->OnResize();
+
 			}
 		}
 	}
