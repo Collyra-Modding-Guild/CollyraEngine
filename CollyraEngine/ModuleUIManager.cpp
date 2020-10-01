@@ -1,19 +1,18 @@
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_sdl.h"
-#include "imgui/imgui_impl_opengl3.h"
-#include "SDL/include/SDL.h"
-
-#include "Glew/include/glew.h"
-#include "SDL/include/SDL_opengl.h"
-#include <gl/GL.h>
-#include <gl/GLU.h>
-
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleUIManager.h"
 #include "ModuleRenderer3D.h"
 #include "ModuleWindow.h"
 
+#include "Glew/include/glew.h"
+#include "SDL/include/SDL_opengl.h"
+#include <gl/GL.h>
+#include <gl/GLU.h>
+
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_sdl.h"
+#include "imgui/imgui_impl_opengl3.h"
+#include "SDL/include/SDL.h"
 
 #pragma comment (lib, "Glew/libx86/glew32.lib")
 
@@ -54,17 +53,14 @@ bool ModuleUIManager::Start()
 }
 
 update_status ModuleUIManager::PreUpdate(float dt)
-{
-    /*
+{  
 	ImGui_ImplOpenGL3_NewFrame();
     
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	ImGui::NewFrame();
 
 	ImGui::ShowDemoWindow(&showDemoWindow);
-    */
     
-
 	return UPDATE_CONTINUE;
 }
 
