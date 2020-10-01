@@ -44,7 +44,8 @@ bool ModuleRenderer3D::Init()
 		glLoadIdentity();
 
 		//Check for error
-		GLenum error = glGetError();
+		GLenum error = glewInit();
+
 		if(error != GL_NO_ERROR)
 		{
 			LOG("Error initializing OpenGL! %s\n", gluErrorString(error));
@@ -129,7 +130,9 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	//We iterate through all the windows we have & Render for every single one
 
 	App->Draw();
-	SDL_GL_SwapWindow(App->window->window);
+
+
+
 
 	return UPDATE_CONTINUE;
 }
