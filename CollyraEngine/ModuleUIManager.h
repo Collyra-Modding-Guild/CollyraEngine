@@ -3,6 +3,9 @@
 
 #include "Module.h"
 
+#include <string>
+#include <vector>
+
 
 class ModuleUIManager : public Module
 {
