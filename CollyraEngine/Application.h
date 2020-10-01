@@ -5,26 +5,23 @@
 #include "p2Defs.h"
 #include "Timer.h"
 #include "Module.h"
-#include "ModuleWindow.h"
-#include "ModuleInput.h"
-#include "ModuleAudio.h"
-#include "ModuleRenderer3D.h"
-#include "ModuleCamera3D.h"
-#include "ModuleUIManager.h"
-#include "ModuleTextures.h"
+#include "M_Window.h"
+#include "M_Input.h"
+#include "M_Renderer3D.h"
+#include "M_Camera3D.h"
+#include "M_UIManager.h"
+
 
 
 
 class Application
 {
 public:
-	ModuleWindow* window;
-	ModuleInput* input;
-	ModuleAudio* audio;
-	ModuleTextures* tex;
-	ModuleRenderer3D* renderer3D;
-	ModuleCamera3D* camera;
-	ModuleUIManager* uiManager;
+	M_Window* window;
+	M_Renderer3D* renderer3D;
+	M_Input* input;
+	M_Camera3D* camera;
+	M_UIManager* uiManager;
 
 private:
 

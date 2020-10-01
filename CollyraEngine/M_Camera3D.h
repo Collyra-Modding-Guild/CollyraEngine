@@ -8,11 +8,11 @@
 #define LERP_VALUE 0.25
 
 
-class ModuleCamera3D : public Module
+class M_Camera3D : public Module
 {
 public:
-	ModuleCamera3D(Application* app, bool start_enabled = true);
-	~ModuleCamera3D();
+	M_Camera3D(Application* app, bool start_enabled = true);
+	~M_Camera3D();
 
 	bool Start();
 	update_status Update(float dt);

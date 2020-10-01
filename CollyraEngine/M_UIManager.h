@@ -7,12 +7,12 @@
 #include <vector>
 
 
-class ModuleUIManager : public Module
+class M_UIManager : public Module
 {
 public:
 
-	ModuleUIManager(Application* app, bool start_enabled = true);
-	~ModuleUIManager();
+	M_UIManager(Application* app, bool start_enabled = true);
+	~M_UIManager();
 
 	bool Init();
 	bool Start();

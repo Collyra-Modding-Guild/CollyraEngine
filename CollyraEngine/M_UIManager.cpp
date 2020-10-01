@@ -1,8 +1,8 @@
 #include "Globals.h"
 #include "Application.h"
-#include "ModuleUIManager.h"
-#include "ModuleRenderer3D.h"
-#include "ModuleWindow.h"
+#include "M_UIManager.h"
+#include "M_Renderer3D.h"
+#include "M_Window.h"
 
 #include "Glew/include/glew.h"
 #include "SDL/include/SDL_opengl.h"
@@ -16,15 +16,15 @@
 
 #pragma comment (lib, "Glew/libx86/glew32.lib")
 
-ModuleUIManager::ModuleUIManager(Application* app, bool start_enabled) : Module(app, start_enabled), showDemoWindow(false), showDemoWindow2(false)
+M_UIManager::M_UIManager(Application* app, bool start_enabled) : Module(app, start_enabled), showDemoWindow(false), showDemoWindow2(false)
 {}
 
 // Destructor
-ModuleUIManager::~ModuleUIManager()
+M_UIManager::~M_UIManager()
 {}
 
 // Called before render is available
-bool ModuleUIManager::Init()
+bool M_UIManager::Init()
 {
 	showDemoWindow = true;
 	showDemoWindow2 = true;
@@ -32,7 +32,7 @@ bool ModuleUIManager::Init()
 	return true;
 }
 
-bool ModuleUIManager::Start()
+bool M_UIManager::Start()
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -64,7 +64,7 @@ bool ModuleUIManager::Start()
     return true;
 }
 
-update_status ModuleUIManager::PreUpdate(float dt)
+update_status M_UIManager::PreUpdate(float dt)
 {  
     // Start the Dear ImGui frame
     ImGui_ImplOpenGL3_NewFrame();
@@ -78,7 +78,7 @@ update_status ModuleUIManager::PreUpdate(float dt)
 	return UPDATE_CONTINUE;
 }
 
-update_status ModuleUIManager::PostUpdate(float dt)
+update_status M_UIManager::PostUpdate(float dt)
 {
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -99,7 +99,7 @@ update_status ModuleUIManager::PostUpdate(float dt)
 }
 
 // Called before quitting
-bool ModuleUIManager::CleanUp()
+bool M_UIManager::CleanUp()
 {
 
     ImGui_ImplOpenGL3_Shutdown();
