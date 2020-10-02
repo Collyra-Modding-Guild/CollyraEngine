@@ -24,7 +24,6 @@ public:
 
 protected:
 	bool showDemoWindow;
-	bool showDemoWindow2;
 
 };
 

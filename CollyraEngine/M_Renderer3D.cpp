@@ -128,9 +128,7 @@ update_status M_Renderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 update_status M_Renderer3D::PostUpdate(float dt)
 {
-
 	SDL_GL_SwapWindow(App->window->window);
-
 
 	return UPDATE_CONTINUE;
 }
