@@ -22,6 +22,9 @@ public:
 
 	bool CleanUp();
 
+private:
+	update_status stopAppButton();
+
 protected:
 	bool showDemoWindow;
 

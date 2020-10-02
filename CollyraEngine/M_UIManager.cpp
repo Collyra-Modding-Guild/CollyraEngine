@@ -10,6 +10,7 @@
 #include <gl/GLU.h>
 
 #include "imgui/imgui.h"
+#include "imgui/imgui_internal.h"
 #include "imgui/imgui_impl_sdl.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include "SDL/include/SDL.h"
@@ -72,8 +73,9 @@ update_status M_UIManager::PreUpdate(float dt)
     // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
     if (showDemoWindow)
         ImGui::ShowDemoWindow(&showDemoWindow);
-    
-	return UPDATE_CONTINUE;
+
+
+	return stopAppButton();
 }
 
 update_status M_UIManager::PostUpdate(float dt)
@@ -106,6 +108,22 @@ bool M_UIManager::CleanUp()
     
 
 	return true;
+}
+
+update_status M_UIManager::stopAppButton()
+{
+	update_status ret;
+
+	ImGui::Begin("Admin Menu");
+
+	if (ImGui::Button("Close APP"))
+		ret = UPDATE_STOP;
+	else
+		ret = UPDATE_CONTINUE;
+
+	ImGui::End();
+
+	return ret;
 }
 
 
