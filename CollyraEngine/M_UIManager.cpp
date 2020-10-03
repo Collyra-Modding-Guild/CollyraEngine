@@ -115,6 +115,9 @@ updateStatus M_UIManager::PreUpdate(float dt)
 		ImGui::Text("Limit FPS: %i", int(App->capTime));
 
 		// - - - - - - - - Framerate Stuff Graphs - - - - - - - - - -
+
+		CalculateHistogramLogs();
+
 		sprintf_s(string, 26, "Framerate %.1f: ", fps_log[fps_log.size() - 1]);
 		ImGui::PlotHistogram("##framerate", &fps_log[0], 100, 0, string, 0.0f, 100.0f, ImVec2(310, 100));
 
@@ -179,7 +182,6 @@ updateStatus M_UIManager::PreUpdate(float dt)
 		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%i", App->input->GetMouseZ());
 
 		// - - - - - - - - General Input Reading - - - - - - - - -
-
 
 	}
 
@@ -475,6 +477,22 @@ void M_UIManager::ShowMainMenuBar()
 	}
 }
 
+void M_UIManager::CalculateHistogramLogs() 
+{
+	static int logSize = 0;
+
+	if (logSize == 100)
+		for (int i = 0; i < 100 - 1; ++i) {
+			ms_log[i] = ms_log[i + 1];
+			fps_log[i] = fps_log[i + 1];		
+		}
+	else
+		logSize++;
+
+	ms_log[logSize - 1] = App->last_frame_ms;
+	fps_log[logSize - 1] = App->frames_on_last_update;
+	
+}
 
 updateStatus M_UIManager::stopAppButton()
 {

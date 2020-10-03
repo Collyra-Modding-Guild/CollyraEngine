@@ -33,6 +33,8 @@ private:
 	bool 			ShowMenuAABBCollisions();
 	void			ShowMainMenuBar();
 
+	void			CalculateHistogramLogs();
+
 protected:
 	//Bool controllers for the editor menus-----------
 	bool showDemoWindow;
