@@ -5,6 +5,7 @@
 
 #include <string>
 #include <vector>
+#include "MathGeoLib/include/MathGeoLib.h"
 
 
 class M_UIManager : public Module
@@ -18,15 +19,28 @@ public:
 	bool Start();
 
 	updateStatus PreUpdate(float dt);
+	updateStatus Update(float dt);
+
 	updateStatus PostUpdate(float dt);
 
 	bool CleanUp();
 
 private:
-	updateStatus stopAppButton();
+	//Functions for the editor menus-----------
+	updateStatus	stopAppButton();
+	bool 			ShowMenuRandomTest();
+	void			ShowMainMenuBar();
 
 protected:
+	//Bool controllers for the editor menus-----------
 	bool showDemoWindow;
+
+	bool menuMathRandomTest;
+		bool	generateRandomNumbers;
+		int		generatedInt;
+		float	generatedFloat;
+
+	LCG randomSeed;
 
 };
 
