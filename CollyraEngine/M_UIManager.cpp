@@ -113,6 +113,7 @@ updateStatus M_UIManager::PreUpdate(float dt)
 		ImGui::SliderFloat("Limit Framerate", &App->capTime, 0, 125);
 		ImGui::Text("Limit FPS: %i", int(App->capTime));
 
+		// - - - - - - - - Framerate Stuff Graphs - - - - - - - - - -
 		sprintf_s(string, 26, "Framerate %.1f: ", fps_log[fps_log.size() - 1]);
 		ImGui::PlotHistogram("##framerate", &fps_log[0], 100, 0, string, 0.0f, 100.0f, ImVec2(310, 100));
 
@@ -123,7 +124,12 @@ updateStatus M_UIManager::PreUpdate(float dt)
 
 	if (ImGui::CollapsingHeader("Window"))
 	{
-		ImGui::SliderFloat("Brightness", &f, 0.0f, 1.0f);
+		ImGui::SliderFloat("Brightness", &App->window->brightness, 0.0f, 1.0f); 
+		{
+			SDL_SetWindowBrightness(App->window->window, App->window->brightness);
+		}
+
+
 		ImGui::SliderFloat("Width", &f, 0, 1280);
 		ImGui::SliderFloat("Height", &f, 0, 1024);
 	}
