@@ -27,7 +27,7 @@ M_UIManager::~M_UIManager()
 // Called before render is available
 bool M_UIManager::Awake()
 {
-	showDemoWindow = true;
+	showDemoWindow = false;
 
 	return true;
 }
@@ -71,6 +71,41 @@ updateStatus M_UIManager::PreUpdate(float dt)
     // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
     if (showDemoWindow)
         ImGui::ShowDemoWindow(&showDemoWindow);
+
+
+    if (ImGui::BeginMainMenuBar())
+    {
+        if (ImGui::BeginMenu("Menu"))
+        {
+            //ShowExampleMenuFile();
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("Examples"))
+        {
+            ImGui::MenuItem("Main menu bar", NULL, true);
+            ImGui::MenuItem("Console", NULL, true);
+            ImGui::MenuItem("Log", NULL, true);
+            ImGui::MenuItem("Simple layout", NULL, true);
+            ImGui::MenuItem("Property editor", NULL, true);
+            ImGui::MenuItem("Long text display", NULL, true);
+            ImGui::MenuItem("Auto-resizing window", NULL, true);
+            ImGui::MenuItem("Constrained-resizing window", NULL, true);
+            ImGui::MenuItem("Simple overlay", NULL, true);
+            ImGui::MenuItem("Manipulating window titles", NULL, true);
+            ImGui::MenuItem("Custom rendering", NULL, true);
+            ImGui::MenuItem("Dockspace", NULL, true);
+            ImGui::MenuItem("Documents", NULL, true);
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("Tools"))
+        {
+            ImGui::MenuItem("Metrics", NULL, true);
+            ImGui::MenuItem("Style Editor", NULL, true);
+            ImGui::MenuItem("About Dear ImGui", NULL, true);
+            ImGui::EndMenu();
+        }
+        ImGui::EndMainMenuBar();
+    }
 
 
 	return stopAppButton();
