@@ -66,4 +66,7 @@ private:
 	iMPoint mouse;
 	iMPoint mouseMotion;
 	int mouse_z;
+
+public:
+
 };

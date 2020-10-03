@@ -20,6 +20,11 @@ public:
 
 	void SetTitle(const char* title);
 
+	void SetFullscreen(bool enabled);
+	void SetFullscreenDesktop(bool enabled);
+	void SetBorderless(bool enabled);
+	void SetResizable(bool enabled);
+
 public:
 	//The window we'll be rendering to
 	SDL_Window* window;
@@ -27,8 +32,15 @@ public:
 	int SCREEN_WIDTH = 1280;
 	int SCREEN_HEIGHT = 1024;
 
+	float brightness = 0.0f;
+
 	char* winTitle;
 	char* orgTitle;
+
+	bool fullscreen = false;
+	bool resizable = true;
+	bool borderless = false;
+	bool fullscreen_desktop = false;
 
 	//The surface contained by the window
 	SDL_Surface* screen_surface;

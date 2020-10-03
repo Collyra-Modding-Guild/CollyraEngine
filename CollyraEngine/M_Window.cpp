@@ -1,5 +1,6 @@
 #include "Globals.h"
 #include "Application.h"
+#include "M_UIManager.h"
 #include "M_Window.h"
 
 M_Window::M_Window(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -97,4 +98,34 @@ bool M_Window::CleanUp()
 void M_Window::SetTitle(const char* title)
 {
 	SDL_SetWindowTitle(window, title);
+}
+
+
+void M_Window::SetFullscreen(bool enabled) 
+{
+	if (enabled) 
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+	else 
+		SDL_SetWindowFullscreen(window, 0);
+}
+
+void M_Window::SetFullscreenDesktop(bool enabled)
+{
+	if (enabled)
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	else
+		SDL_SetWindowFullscreen(window, 0);
+}
+
+void M_Window::SetResizable(bool enabled)
+{
+	if (enabled)
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_RESIZABLE);
+	else
+		SDL_SetWindowFullscreen(window, 0);
+}
+
+void M_Window::SetBorderless(bool enabled)
+{
+	SDL_SetWindowBordered(window, (SDL_bool)!enabled);
 }

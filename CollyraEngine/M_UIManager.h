@@ -48,6 +48,9 @@ protected:
 		int		randomStartThreshold;
 		int		randomEndThreshold;
 
+		std::vector<float> fps_log;
+		std::vector<float> ms_log;
+
 		bool	sphereCollisionTest;
 		math::Sphere sph1;
 		math::Sphere sph2;

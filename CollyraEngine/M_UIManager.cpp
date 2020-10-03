@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "M_UIManager.h"
 #include "M_Renderer3D.h"
+#include "M_Input.h"
 #include "M_Window.h"
 
 #include "Glew/include/glew.h"
@@ -18,8 +19,8 @@
 #pragma comment (lib, "Glew/libx86/glew32.lib")
 
 
-M_UIManager::M_UIManager(Application* app, bool start_enabled) : Module(app, start_enabled), showDemoWindow(false), menuMathRandomTest(false), generateRandomNumbers(false), generatedInt(0), generatedFloat(0.0f),
-sphereCollisionTest(false), AABBCollisionTest(false), OBBCollisionTest(false), randomStartThreshold(0.f), randomEndThreshold(0.f), planeCollisionTest(false),
+M_UIManager::M_UIManager(Application* app, bool start_enabled) : Module(app, start_enabled), showDemoWindow(false), menuMathRandomTest(false), generateRandomNumbers(false), generatedInt(0), generatedFloat(0.0f), 
+fps_log(100), ms_log(100), sphereCollisionTest(false), sphereCollisionTest(false), AABBCollisionTest(false), OBBCollisionTest(false), randomStartThreshold(0.f), randomEndThreshold(0.f), planeCollisionTest(false),
 rayCollisionTest(false), triangleCollisionTest(false)
 {}
 
@@ -121,29 +122,122 @@ updateStatus M_UIManager::PreUpdate(float dt)
 		// - - - - - - - Organization - - - - - - - - -
 		strcpy_s(string, 26, App->window->orgTitle);
 		ImGui::InputText("Organization", string, 26);
-		
-	}
+
+		ImGui::Separator(); // - - - - - - - - - - - - -
+
+		// - - - - - - - - FPS Cap - - - - - - - - - -
+		ImGui::SliderFloat("Limit Framerate", &App->capTime, 0, 125);
+		ImGui::Text("Limit FPS: %i", int(App->capTime));
+
+		// - - - - - - - - Framerate Stuff Graphs - - - - - - - - - -
+		sprintf_s(string, 26, "Framerate %.1f: ", fps_log[fps_log.size() - 1]);
+		ImGui::PlotHistogram("##framerate", &fps_log[0], 100, 0, string, 0.0f, 100.0f, ImVec2(310, 100));
+
+		sprintf_s(string, 26, "Miliseconds %0.1f: ", ms_log[ms_log.size() - 1]);
+		ImGui::PlotHistogram("##miliseconds", &ms_log[0], 100, 0, string, 0.0f, 40.0f, ImVec2(310, 100));
+
+	}	
 
 	if (ImGui::CollapsingHeader("Window"))
 	{
-		ImGui::SliderFloat("Brightness", &f, 0.0f, 1.0f);
-		ImGui::SliderFloat("Width", &f, 0, 1280);
-		ImGui::SliderFloat("Height", &f, 0, 1024);
+		// - - - - - - - - Window Brightness - - - - - - - - - -
+		if (ImGui::SliderFloat("Brightness", &App->window->brightness, 0.0f, 1.0f))
+			SDL_SetWindowBrightness(App->window->window, App->window->brightness);
+		
+		// - - - - - - - - Screen Surface - - - - - - - - - -
+		if (ImGui::SliderInt("Width", &App->window->SCREEN_WIDTH, 0, 1920))
+			SDL_SetWindowSize(App->window->window, App->window->SCREEN_WIDTH, App->window->SCREEN_HEIGHT);
+
+		if (ImGui::SliderInt("Height", &App->window->SCREEN_HEIGHT, 0, 1080))
+			SDL_SetWindowSize(App->window->window, App->window->SCREEN_WIDTH, App->window->SCREEN_HEIGHT);
+		
+		// - - - - - - - - Display Modes - - - - - - - - - -
+		if (ImGui::Checkbox("Fullscreen", &App->window->fullscreen))
+			App->window->SetFullscreen(App->window->fullscreen);
+
+		ImGui::SameLine();
+
+		if (ImGui::Checkbox("Resizable", &App->window->resizable))
+			App->window->SetResizable(App->window->resizable);
+
+		if (ImGui::Checkbox("Borderless", &App->window->borderless))
+			App->window->SetBorderless(App->window->borderless);
+
+		ImGui::SameLine();
+
+		if (ImGui::Checkbox("Full Desktop", &App->window->fullscreen_desktop))
+			App->window->SetFullscreenDesktop(App->window->fullscreen_desktop);
+
+
+	
 	}
 
 	if (ImGui::CollapsingHeader("File System"))
 	{
-
+		ImGui::Text("In work process . . .");
 	}
 
 	if (ImGui::CollapsingHeader("Input"))
 	{
+
+		// - - - - - - - - Mouse Reading - - - - - - - - -
+		ImGui::Text("Mouse Position:");
+		ImGui::SameLine();
+		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%i, %i", App->input->GetMouseX(), App->input->GetMouseY());
+
+		ImGui::Text("Mouse Motion:");
+		ImGui::SameLine();
+		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%i, %i", App->input->GetMouseXMotion(), App->input->GetMouseYMotion());
+
+		ImGui::Text("Mouse Wheel:");
+		ImGui::SameLine();
+		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%i", App->input->GetMouseZ());
+
+		// - - - - - - - - General Input Reading - - - - - - - - -
+
 
 	}
 
 	if (ImGui::CollapsingHeader("Hardware"))
 	{
 
+		// - - - - - - - - Hardware/Software Specs - - - - - - - - -
+		SDL_version ver;
+		SDL_GetVersion(&ver);
+
+		ImGui::Text("SDL Version:");
+		ImGui::SameLine();
+		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%d.%d.%d", ver.major, ver.minor, ver.patch);
+
+		ImGui::Separator();
+
+		ImGui::Text("CPUs:"); 
+		ImGui::SameLine(); 
+		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%i Cores", SDL_GetCPUCount()); 
+		ImGui::SameLine(); 
+		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "(Cache: %ikb)", SDL_GetCPUCacheLineSize());
+
+		ImGui::Text("System RAM:"); 
+		ImGui::SameLine();
+		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%.1fGb", (SDL_GetSystemRAM() / 1024.f));
+
+		ImGui::Text("Caps:"); ImGui::SameLine(); 
+		if (SDL_HasRDTSC()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "RDTSC,"); ImGui::SameLine(); 
+		if (SDL_HasMMX()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "MMX,");  ImGui::SameLine();
+		if (SDL_Has3DNow()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "3D,"); ImGui::SameLine();
+		if (SDL_HasSSE()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "SSE,"); ImGui::SameLine();
+		if (SDL_HasSSE2()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "SSE2,"); 
+
+		if (SDL_HasSSE3()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "SSE3,"); ImGui::SameLine();
+		if (SDL_HasSSE41()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "SSE41,"); ImGui::SameLine();
+		if (SDL_HasSSE42()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "SSE42"); ImGui::SameLine();
+		if (SDL_HasAltiVec()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "AltiVec,"); ImGui::SameLine();  	
+		if (SDL_HasAVX()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "AVX,"); ImGui::SameLine();
+		if (SDL_HasAVX2()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "AVX2."); 
+
+		ImGui::Separator();
+
+		// We will need to get the GPU info as a bonus work.
 	}
 	
 
