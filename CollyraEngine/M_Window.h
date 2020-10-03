@@ -27,6 +27,9 @@ public:
 	int SCREEN_WIDTH = 1280;
 	int SCREEN_HEIGHT = 1024;
 
+	char* winTitle;
+	char* orgTitle;
+
 	//The surface contained by the window
 	SDL_Surface* screen_surface;
 };

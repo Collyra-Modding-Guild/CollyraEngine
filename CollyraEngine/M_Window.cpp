@@ -4,8 +4,11 @@
 
 M_Window::M_Window(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	window = NULL;
+	window = NULL;	
 	screen_surface = NULL;
+
+	winTitle = nullptr;
+	orgTitle = "Collyra Guild";
 }
 
 // Destructor
@@ -29,6 +32,9 @@ bool M_Window::Awake()
 		//Create window
 		int width = SCREEN_WIDTH * SCREEN_SIZE;
 		int height = SCREEN_HEIGHT * SCREEN_SIZE;
+
+		winTitle = TITLE;
+
 		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 
 		//Use OpenGL 3.0
@@ -55,7 +61,7 @@ bool M_Window::Awake()
 			flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 		}
 
-		window = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
+		window = SDL_CreateWindow(winTitle, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
 
 		if(window == NULL)
 		{
