@@ -39,6 +39,9 @@ protected:
 		bool	generateRandomNumbers;
 		int		generatedInt;
 		float	generatedFloat;
+		int		randomStartThreshold;
+		int		randomEndThreshold;
+
 
 	LCG randomSeed;
 

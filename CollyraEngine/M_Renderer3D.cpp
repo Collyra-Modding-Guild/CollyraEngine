@@ -80,7 +80,7 @@ bool M_Renderer3D::Awake()
 		}
 		
 		//Lights Example
-		/*
+		
 		GLfloat LightModelAmbient[] = {0.0f, 0.0f, 0.0f, 1.0f};
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LightModelAmbient);
 		
@@ -94,7 +94,7 @@ bool M_Renderer3D::Awake()
 		lights[1].ambient.Set(0.25f, 0.25f, 0.25f, 1.0f);
 		lights[1].diffuse.Set(0.75f, 0.75f, 0.75f, 1.0f);
 		lights[1].Awake();
-		*/
+		
 		
 		GLfloat MaterialAmbient[] = {1.0f, 1.0f, 1.0f, 1.0f};
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, MaterialAmbient);
@@ -105,10 +105,10 @@ bool M_Renderer3D::Awake()
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 
-		/*
+		
 		lights[0].Active(true);
 		lights[1].Active(true);
-		*/
+		
 
 		glEnable(GL_LIGHTING);
 		glEnable(GL_COLOR_MATERIAL);
@@ -126,6 +126,15 @@ updateStatus M_Renderer3D::PreUpdate(float dt)
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixf(App->camera->GetViewMatrix());
+
+	// light 0 on cam pos
+	lights[0].SetPos(App->camera->Position.x, App->camera->Position.y, App->camera->Position.z);
+
+	for (uint i = 0; i < MAX_LIGHTS; ++i)
+		lights[i].Render();
 
 	return UPDATE_CONTINUE;
 }

@@ -31,6 +31,8 @@ bool M_UIManager::Awake()
 	showDemoWindow = false;
 
 	randomSeed = LCG::LCG();
+	randomStartThreshold = 0;
+	randomEndThreshold = 1000;
 
 	return true;
 }
@@ -123,7 +125,6 @@ updateStatus M_UIManager::PreUpdate(float dt)
 
 updateStatus M_UIManager::Update(float dt)
 {
-
 	ShowMainMenuBar();
 
 	if (showDemoWindow)
@@ -180,7 +181,14 @@ bool M_UIManager::ShowMenuRandomTest()
 		return false;
 	}
 
-
+	ImGui::Text("Generate Numbers between:");
+	ImGui::SameLine();
+	ImGui::PushItemWidth(120);
+	ImGui::InputInt(" ", &randomStartThreshold);
+	ImGui::SameLine();
+	ImGui::Text("And");
+	ImGui::SameLine();
+	ImGui::InputInt("  ", &randomEndThreshold);
 
 
 	if (ImGui::Button("Generate Numbers"))
@@ -190,15 +198,15 @@ bool M_UIManager::ShowMenuRandomTest()
 
 	if (generateRandomNumbers)
 	{
-		generatedInt = randomSeed.Int();
-		generatedFloat = randomSeed.Float();
+		generatedInt = randomSeed.Int(randomStartThreshold, randomEndThreshold);
+		generatedFloat = randomSeed.Float(randomStartThreshold, randomEndThreshold);
 	}
 
 	ImGui::SameLine();
 	if (ImGui::Button("Generate 1 Number"))
 	{
-		generatedInt = randomSeed.Int();
-		generatedFloat = randomSeed.Float();
+		generatedInt = randomSeed.Int(randomStartThreshold, randomEndThreshold);
+		generatedFloat = randomSeed.Float(randomStartThreshold, randomEndThreshold);
 
 		generateRandomNumbers = false;
 	}
