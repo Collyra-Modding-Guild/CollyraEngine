@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "M_UIManager.h"
 #include "M_Renderer3D.h"
+#include "M_Input.h"
 #include "M_Window.h"
 
 #include "Glew/include/glew.h"
@@ -158,17 +159,70 @@ updateStatus M_UIManager::PreUpdate(float dt)
 
 	if (ImGui::CollapsingHeader("File System"))
 	{
-
+		ImGui::Text("In work process . . .");
 	}
 
 	if (ImGui::CollapsingHeader("Input"))
 	{
+
+		// - - - - - - - - Mouse Reading - - - - - - - - -
+		ImGui::Text("Mouse Position:");
+		ImGui::SameLine();
+		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%i, %i", App->input->GetMouseX(), App->input->GetMouseY());
+
+		ImGui::Text("Mouse Motion:");
+		ImGui::SameLine();
+		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%i, %i", App->input->GetMouseXMotion(), App->input->GetMouseYMotion());
+
+		ImGui::Text("Mouse Wheel:");
+		ImGui::SameLine();
+		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%i", App->input->GetMouseZ());
+
+		// - - - - - - - - General Input Reading - - - - - - - - -
+
 
 	}
 
 	if (ImGui::CollapsingHeader("Hardware"))
 	{
 
+		// - - - - - - - - Hardware/Software Specs - - - - - - - - -
+		SDL_version ver;
+		SDL_GetVersion(&ver);
+
+		ImGui::Text("SDL Version:");
+		ImGui::SameLine();
+		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%d.%d.%d", ver.major, ver.minor, ver.patch);
+
+		ImGui::Separator();
+
+		ImGui::Text("CPUs:"); 
+		ImGui::SameLine(); 
+		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%i Cores", SDL_GetCPUCount()); 
+		ImGui::SameLine(); 
+		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "(Cache: %ikb)", SDL_GetCPUCacheLineSize());
+
+		ImGui::Text("System RAM:"); 
+		ImGui::SameLine();
+		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%.1fGb", (SDL_GetSystemRAM() / 1024.f));
+
+		ImGui::Text("Caps:"); ImGui::SameLine(); 
+		if (SDL_HasRDTSC()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "RDTSC,"); ImGui::SameLine(); 
+		if (SDL_HasMMX()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "MMX,");  ImGui::SameLine();
+		if (SDL_Has3DNow()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "3D,"); ImGui::SameLine();
+		if (SDL_HasSSE()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "SSE,"); ImGui::SameLine();
+		if (SDL_HasSSE2()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "SSE2,"); 
+
+		if (SDL_HasSSE3()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "SSE3,"); ImGui::SameLine();
+		if (SDL_HasSSE41()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "SSE41,"); ImGui::SameLine();
+		if (SDL_HasSSE42()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "SSE42"); ImGui::SameLine();
+		if (SDL_HasAltiVec()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "AltiVec,"); ImGui::SameLine();  	
+		if (SDL_HasAVX()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "AVX,"); ImGui::SameLine();
+		if (SDL_HasAVX2()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "AVX2."); 
+
+		ImGui::Separator();
+
+		// We will need to get the GPU info as a bonus work.
 	}
 	
 
