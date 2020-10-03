@@ -75,7 +75,13 @@ float3 Line::ClosestPointLineLine(float3 start0, float3 end0, float3 start1, flo
 	float d0232 = Dmnop(v,0,2,3,2);
 	float d3210 = Dmnop(v,3,2,1,0);
 	float d3232 = Dmnop(v,3,2,3,2);
-	float mu = (d0232 * d3210 - Dmnop(v,0,2,1,0)*d3232) / (Dmnop(v,1,0,1,0)*Dmnop(v,3,2,3,2) - Dmnop(v,3,2,1,0)*Dmnop(v,3,2,1,0));
+
+	float division = (Dmnop(v, 1, 0, 1, 0) * Dmnop(v, 3, 2, 3, 2) - Dmnop(v, 3, 2, 1, 0) * Dmnop(v, 3, 2, 1, 0));
+
+	if (division == 0)
+		return { 0,0,0 };
+
+	float mu = (d0232 * d3210 - Dmnop(v,0,2,1,0)*d3232) / division;
 	if (d)
 		*d = mu;
 

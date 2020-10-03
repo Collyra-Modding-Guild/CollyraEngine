@@ -31,6 +31,10 @@ private:
 	bool 			ShowMenuRandomTest();
 	bool 			ShowMenuSphereCollisionTest();
 	bool 			ShowMenuAABBCollisions();
+	bool 			ShowMenuOBBCollisions();
+	bool 			ShowMenuPlaneCollisions();
+	bool 			ShowMenuRayCollisions();
+	bool 			ShowMenuTriangleCollisions();
 	void			ShowMainMenuBar();
 
 	void			CalculateHistogramLogs();
@@ -54,10 +58,24 @@ protected:
 		math::Sphere sph2;
 
 		bool	AABBCollisionTest;
-		math::AABB boundingBox1;
-		math::AABB boundingBox2;
+		math::AABB AABB1;
+		math::AABB AABB2;
 
+		bool	OBBCollisionTest;
+		math::OBB OBB1;
+		math::OBB OBB2;
 
+		bool	planeCollisionTest;
+		math::Plane plane1;
+		math::Plane plane2;
+
+		bool	rayCollisionTest;
+		math::Ray ray1;
+		math::Ray ray2;
+
+		bool	triangleCollisionTest;
+		math::Triangle tri1;
+		math::Triangle tri2;
 
 	LCG randomSeed;
 
