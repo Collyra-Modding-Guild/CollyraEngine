@@ -20,7 +20,7 @@
 
 
 M_UIManager::M_UIManager(Application* app, bool start_enabled) : Module(app, start_enabled), showDemoWindow(false), menuMathRandomTest(false), generateRandomNumbers(false), generatedInt(0), generatedFloat(0.0f), 
-fps_log(100), ms_log(100), sphereCollisionTest(false), sphereCollisionTest(false), AABBCollisionTest(false), OBBCollisionTest(false), randomStartThreshold(0.f), randomEndThreshold(0.f), planeCollisionTest(false),
+fps_log(100), ms_log(100), sphereCollisionTest(false), AABBCollisionTest(false), OBBCollisionTest(false), randomStartThreshold(0.f), randomEndThreshold(0.f), planeCollisionTest(false),
 rayCollisionTest(false), triangleCollisionTest(false)
 {}
 
