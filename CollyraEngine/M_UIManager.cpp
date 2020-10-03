@@ -72,7 +72,51 @@ updateStatus M_UIManager::PreUpdate(float dt)
 	ImGui::NewFrame();
 
 
+	// Our state
+	bool show_demo_window = true;
+	bool show_another_window = false;
 
+	static float f = 0.0f;
+	static int counter = 0;
+
+	ImGui::Begin("Configuration");
+
+	if (ImGui::CollapsingHeader("Application"))
+	{
+		static char* winTitle;
+		winTitle = TITLE;
+
+		if (ImGui::InputText(" App Name", winTitle, 40))
+		{
+			App->window->SetTitle(winTitle);
+		}
+	}
+
+	if (ImGui::CollapsingHeader("Window"))
+	{
+		ImGui::SliderFloat("Brightness", &f, 0.0f, 1.0f);
+		ImGui::SliderFloat("Width", &f, 0, 1280);
+		ImGui::SliderFloat("Height", &f, 0, 1024);
+	}
+
+	if (ImGui::CollapsingHeader("File System"))
+	{
+
+	}
+
+	if (ImGui::CollapsingHeader("Input"))
+	{
+
+	}
+
+	if (ImGui::CollapsingHeader("Hardware"))
+	{
+
+	}
+	
+
+	ImGui::End();
+	
 
 	return stopAppButton();
 }
