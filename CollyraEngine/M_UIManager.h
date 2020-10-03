@@ -29,6 +29,8 @@ private:
 	//Functions for the editor menus-----------
 	updateStatus	stopAppButton();
 	bool 			ShowMenuRandomTest();
+	bool 			ShowMenuSphereCollisionTest();
+	bool 			ShowMenuAABBCollisions();
 	void			ShowMainMenuBar();
 
 protected:
@@ -41,6 +43,17 @@ protected:
 		float	generatedFloat;
 		int		randomStartThreshold;
 		int		randomEndThreshold;
+
+		bool	sphereCollisionTest;
+		math::Sphere sph1;
+		math::Sphere sph2;
+
+		bool	AABBCollisionTest;
+		math::AABB boundingBox1;
+		math::AABB boundingBox2;
+
+
+
 
 
 	LCG randomSeed;

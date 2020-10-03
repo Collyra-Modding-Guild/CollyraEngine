@@ -18,7 +18,8 @@
 #pragma comment (lib, "Glew/libx86/glew32.lib")
 
 
-M_UIManager::M_UIManager(Application* app, bool start_enabled) : Module(app, start_enabled), showDemoWindow(false), menuMathRandomTest(false), generateRandomNumbers(false), generatedInt(0), generatedFloat(0.0f)
+M_UIManager::M_UIManager(Application* app, bool start_enabled) : Module(app, start_enabled), showDemoWindow(false), menuMathRandomTest(false), generateRandomNumbers(false), generatedInt(0), generatedFloat(0.0f),
+sphereCollisionTest(false)
 {}
 
 // Destructor
@@ -28,11 +29,20 @@ M_UIManager::~M_UIManager()
 // Called before render is available
 bool M_UIManager::Awake()
 {
+
+	//Demo-------------------
 	showDemoWindow = false;
 
 	randomSeed = LCG::LCG();
 	randomStartThreshold = 0;
 	randomEndThreshold = 1000;
+
+	sph1 = Sphere({ 0.f,0.f,0.f }, 10);
+	sph2 = Sphere({ 0.f,5.f,0.f }, 10);
+
+	boundingBox1 = AABB({ 0.f, 0.f, 0.f }, { 10.f, 10.f, 10.f });
+	boundingBox1 = AABB({ 0.f, 0.f, 0.f }, { 5.f, 5.f, 5.f });
+
 
 	return true;
 }
@@ -129,21 +139,25 @@ updateStatus M_UIManager::PreUpdate(float dt)
 
 updateStatus M_UIManager::Update(float dt)
 {
-	ShowMainMenuBar();
 
 	if (showDemoWindow)
 		ImGui::ShowDemoWindow(&showDemoWindow);
 
+	//-------------------------
+
+	ShowMainMenuBar();
+
 	if (menuMathRandomTest)
-	{
 		ShowMenuRandomTest();
-	}
+
+	if (sphereCollisionTest)
+		ShowMenuSphereCollisionTest();
+
+	if (AABBCollisionTest)
+		ShowMenuAABBCollisions();
 
 	return UPDATE_CONTINUE;
 }
-
-
-
 
 updateStatus M_UIManager::PostUpdate(float dt)
 {
@@ -223,6 +237,91 @@ bool M_UIManager::ShowMenuRandomTest()
 	ImGui::End();
 }
 
+bool M_UIManager::ShowMenuSphereCollisionTest()
+{
+	if (!ImGui::Begin("Sphere Collision Menu", &sphereCollisionTest))
+	{
+		ImGui::End();
+		return false;
+	}
+
+
+	if (ImGui::Button("Generate New Spheres"))
+	{
+		sph1.pos = { randomSeed.Float(0,10), randomSeed.Float(0,10), randomSeed.Float(0,10) };
+		sph2.pos = { randomSeed.Float(0,10), randomSeed.Float(0,10), randomSeed.Float(0,10) };
+		sph1.r = randomSeed.Float(1, 5);
+		sph2.r = randomSeed.Float(1, 5);
+	}
+
+	ImGui::Text("Sphere 1 \n Position: %.2f, %f, %.2f Radius: %.2f", sph1.pos.x, sph1.pos.y, sph1.pos.z, sph1.r);
+
+	ImGui::Text("Sphere 2 \n Position: %f, %.2f, %f Radius: %.2f", sph2.pos.x, sph2.pos.y, sph2.pos.z, sph2.r);
+
+	ImGui::NewLine();
+
+	if (sph1.Intersects(sph2))
+	{
+		ImGui::Text("Intersection Detected!");
+	}
+	else
+	{
+		ImGui::Text("No Intersection Detected :(");
+	}
+
+	ImGui::End();
+}
+
+bool M_UIManager::ShowMenuAABBCollisions()
+{
+	if (!ImGui::Begin("Random Menu", &menuMathRandomTest))
+	{
+		ImGui::End();
+		return false;
+	}
+
+
+	if (ImGui::Button("Generate New AABB"))
+	{
+		boundingBox1.minPoint.x = randomSeed.Float(0, 5);
+		boundingBox1.minPoint.y = randomSeed.Float(0, 5);
+		boundingBox1.minPoint.z = randomSeed.Float(0, 5);
+
+		boundingBox1.maxPoint.x = randomSeed.Float(5, 10);
+		boundingBox1.maxPoint.y = randomSeed.Float(5, 10);
+		boundingBox1.maxPoint.z = randomSeed.Float(5, 10);
+
+		boundingBox2.minPoint.x = randomSeed.Float(5, 10);
+		boundingBox2.minPoint.y = randomSeed.Float(5, 10);
+		boundingBox2.minPoint.z = randomSeed.Float(5, 10);
+
+		boundingBox2.maxPoint.x = randomSeed.Float(10, 15);
+		boundingBox2.maxPoint.y = randomSeed.Float(10, 15);
+		boundingBox2.maxPoint.z = randomSeed.Float(10, 15);
+
+	}
+
+	ImGui::Text("AABB 1 \n MinSize: %.2f, %f, %.2f \n MaxSize: %.2f, %f, %.2f", boundingBox1.minPoint.x, boundingBox1.minPoint.y, boundingBox1.minPoint.z,
+		boundingBox1.maxPoint.x, boundingBox1.maxPoint.y, boundingBox1.maxPoint.z);
+
+	ImGui::Text("AABB 2 \n MinSize: %.2f, %f, %.2f \n MaxSize: %.2f, %f, %.2f", boundingBox2.minPoint.x, boundingBox2.minPoint.y, boundingBox2.minPoint.z,
+		boundingBox2.maxPoint.x, boundingBox2.maxPoint.y, boundingBox2.maxPoint.z);
+
+	ImGui::NewLine();
+
+	if (boundingBox1.Intersection(boundingBox2).Volume() > 0)
+	{
+		ImGui::Text("Intersection Detected!");
+	}
+	else
+	{
+		ImGui::Text("No Intersection Detected :(");
+	}
+
+	ImGui::End();
+}
+
+
 void M_UIManager::ShowMainMenuBar()
 {
 	if (ImGui::BeginMainMenuBar())
@@ -262,6 +361,16 @@ void M_UIManager::ShowMainMenuBar()
 			if (ImGui::MenuItem("Random", NULL))
 			{
 				menuMathRandomTest = true;
+			}
+
+			if (ImGui::MenuItem("Sphere", NULL))
+			{
+				sphereCollisionTest = true;
+			}
+
+			if (ImGui::MenuItem("AABB", NULL))
+			{
+				AABBCollisionTest = true;
 			}
 
 			ImGui::EndMenu();
