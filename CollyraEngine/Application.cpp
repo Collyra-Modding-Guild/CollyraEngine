@@ -8,6 +8,9 @@ Application::Application()
 	renderer3D = new M_Renderer3D(this);
 	camera = new M_Camera3D(this, true);
 	uiManager = new M_UIManager(this, true);
+	engineTimer = new Timer();
+	gamePerfTimer = new PerfTimer();
+	lastSecFrames = new Timer();
 
 	// The order of calls is very important!
 	// Modules will Awake() Start() and Update in this order
@@ -61,13 +64,45 @@ bool Application::Awake()
 // ---------------------------------------------
 void Application::PrepareUpdate()
 {
-	dt = (float)ms_timer.Read() / 1000.0f;
-	ms_timer.Start();
+	frame_count++;
+	last_second_frame_count++;
+
+	//Controls pause of the game
+	if (!pause)
+		dt = lastFrameTimer.ReadSec();
+	else
+		dt = 0.0f;
+
+	lastFrameTimer.Start();
 }
 
 // ---------------------------------------------
 void Application::FinishUpdate()
 {
+
+	
+	/*float seconds_since_startup = gameTimer->ReadSec();
+
+	avg_fps = float(frame_count) / seconds_since_startup; */
+
+	// Amount of ms took the last update
+	last_frame_ms = lastFrameTimer.Read();
+
+	// Amount of frames during the last second
+	if (lastSecFrames->Read() >= 1000)
+	{
+		frames_on_last_update = last_second_frame_count;
+		last_second_frame_count = 0;
+		lastSecFrames->Start();
+	}
+
+	//Waits a certain amount of time if necessary
+	if (frameCap && capTime > 0)
+		if (last_frame_ms < 1000 / (uint)capTime)
+		{
+			SDL_Delay((1000 / (uint)capTime) - last_frame_ms);
+		}
+
 }
 
 // Call PreUpdate, Update and PostUpdate on all modules

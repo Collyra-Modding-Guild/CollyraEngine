@@ -3,6 +3,7 @@
 #include <vector>
 #include "Globals.h"
 #include "p2Defs.h"
+#include "PerfTimer.h"
 #include "Timer.h"
 #include "Module.h"
 #include "M_Window.h"
@@ -20,11 +21,46 @@ public:
 	M_Camera3D* camera;
 	M_UIManager* uiManager;
 
+	float capTime = 0;
+
+	//The amount of frames calculated in the last second
+	uint64 frames_on_last_update = 0u;
+
 private:
 
 	Timer	ms_timer;
 	float	dt;
 	std::vector<Module*> moduleList;
+
+	//Timers of the game
+	Timer* engineTimer = nullptr;
+	PerfTimer* gamePerfTimer = nullptr;
+
+	//Calculates the amount of frames rendered in the last second
+	Timer* lastSecFrames = nullptr;
+
+	//The amount of time spended in the calculation of the last frame
+	Timer lastFrameTimer;
+
+	//The amount of frames rendered since the game started
+	uint64 frame_count = 0u;
+
+	//The amount of frames rendered last second
+	uint last_second_frame_count = 0u;
+
+	//The amount of time spended calculating the last frame
+	uint64 last_frame_ms = 0u;
+
+
+
+	float avg_fps = 0.0f;
+
+	//Controls if the frame cap is activated or not
+	bool frameCap = true;
+
+	//-----FRAME CONTROL------//
+	bool windowTitleControl = false; //Changes the title of the window
+	bool pause = false; //Bool that controls the pause of the game
 
 public:
 
@@ -36,6 +72,11 @@ public:
 	bool CleanUp();
 	bool Reset();
 
+	
+	float GetDeltaTime() const;
+
+	//Used to change the frame cap
+	void UpdateFrameCap(uint newCap);
 
 
 

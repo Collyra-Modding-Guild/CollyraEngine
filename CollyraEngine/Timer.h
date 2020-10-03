@@ -12,10 +12,12 @@ public:
 	Timer();
 
 	void Start();
+	void StartFrom(uint time);
 	void Stop();
 	void ReStart();
 
 	Uint32 Read();
+	float ReadSec() const;
 
 	bool	running;
 

@@ -18,7 +18,7 @@
 #pragma comment (lib, "Glew/libx86/glew32.lib")
 
 
-M_UIManager::M_UIManager(Application* app, bool start_enabled) : Module(app, start_enabled), showDemoWindow(false), menuMathRandomTest(false), generateRandomNumbers(false), generatedInt(0), generatedFloat(0.0f)
+M_UIManager::M_UIManager(Application* app, bool start_enabled) : Module(app, start_enabled), showDemoWindow(false), menuMathRandomTest(false), generateRandomNumbers(false), generatedInt(0), generatedFloat(0.0f), fps_log(100), ms_log(100)
 {}
 
 // Destructor
@@ -95,8 +95,20 @@ updateStatus M_UIManager::PreUpdate(float dt)
 		// - - - - - - - Organization - - - - - - - - -
 		strcpy_s(string, 26, App->window->orgTitle);
 		ImGui::InputText("Organization", string, 26);
-		
-	}
+
+		ImGui::Separator(); // - - - - - - - - - - - - -
+
+		// - - - - - - - - FPS Cap - - - - - - - - - -
+		ImGui::SliderFloat("Limit Framerate", &App->capTime, 0, 125);
+		ImGui::Text("Limit FPS: %i", int(App->capTime));
+
+		sprintf_s(string, 26, "Framerate %.1f: ", fps_log[fps_log.size() - 1]);
+		ImGui::PlotHistogram("##framerate", &fps_log[0], 100, 0, string, 0.0f, 100.0f, ImVec2(310, 100));
+
+		sprintf_s(string, 26, "Miliseconds %0.1f: ", ms_log[ms_log.size() - 1]);
+		ImGui::PlotHistogram("##miliseconds", &ms_log[0], 100, 0, string, 0.0f, 40.0f, ImVec2(310, 100));
+
+	}	
 
 	if (ImGui::CollapsingHeader("Window"))
 	{

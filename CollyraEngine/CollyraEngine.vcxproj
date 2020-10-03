@@ -155,6 +155,7 @@
     <ClInclude Include="M_Input.h" />
     <ClInclude Include="M_Window.h" />
     <ClInclude Include="p2Point.h" />
+    <ClInclude Include="PerfTimer.h" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
@@ -209,6 +210,7 @@
     <ClCompile Include="M_UIManager.cpp" />
     <ClCompile Include="M_Window.cpp" />
     <ClCompile Include="p2Defs.h" />
+    <ClCompile Include="PerfTimer.cpp" />
     <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
