@@ -124,14 +124,36 @@ updateStatus M_UIManager::PreUpdate(float dt)
 
 	if (ImGui::CollapsingHeader("Window"))
 	{
-		ImGui::SliderFloat("Brightness", &App->window->brightness, 0.0f, 1.0f); 
-		{
+		// - - - - - - - - Window Brightness - - - - - - - - - -
+		if (ImGui::SliderFloat("Brightness", &App->window->brightness, 0.0f, 1.0f))
 			SDL_SetWindowBrightness(App->window->window, App->window->brightness);
-		}
+		
+		// - - - - - - - - Screen Surface - - - - - - - - - -
+		if (ImGui::SliderInt("Width", &App->window->SCREEN_WIDTH, 0, 1920))
+			SDL_SetWindowSize(App->window->window, App->window->SCREEN_WIDTH, App->window->SCREEN_HEIGHT);
+
+		if (ImGui::SliderInt("Height", &App->window->SCREEN_HEIGHT, 0, 1080))
+			SDL_SetWindowSize(App->window->window, App->window->SCREEN_WIDTH, App->window->SCREEN_HEIGHT);
+		
+		// - - - - - - - - Display Modes - - - - - - - - - -
+		if (ImGui::Checkbox("Fullscreen", &App->window->fullscreen))
+			App->window->SetFullscreen(App->window->fullscreen);
+
+		ImGui::SameLine();
+
+		if (ImGui::Checkbox("Resizable", &App->window->resizable))
+			App->window->SetResizable(App->window->resizable);
+
+		if (ImGui::Checkbox("Borderless", &App->window->borderless))
+			App->window->SetBorderless(App->window->borderless);
+
+		ImGui::SameLine();
+
+		if (ImGui::Checkbox("Full Desktop", &App->window->fullscreen_desktop))
+			App->window->SetFullscreenDesktop(App->window->fullscreen_desktop);
 
 
-		ImGui::SliderFloat("Width", &f, 0, 1280);
-		ImGui::SliderFloat("Height", &f, 0, 1024);
+	
 	}
 
 	if (ImGui::CollapsingHeader("File System"))
