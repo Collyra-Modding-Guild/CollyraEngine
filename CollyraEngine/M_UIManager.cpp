@@ -76,6 +76,7 @@ updateStatus M_UIManager::PreUpdate(float dt)
 	bool show_demo_window = true;
 	bool show_another_window = false;
 
+	static char string[26];
 	static float f = 0.0f;
 	static int counter = 0;
 
@@ -83,13 +84,16 @@ updateStatus M_UIManager::PreUpdate(float dt)
 
 	if (ImGui::CollapsingHeader("Application"))
 	{
-		static char* winTitle;
-		winTitle = TITLE;
 
-		if (ImGui::InputText(" App Name", winTitle, 40))
-		{
-			App->window->SetTitle(winTitle);
-		}
+		// - - - - - - - App Title - - - - - - - - -
+		strcpy_s(string, 26, App->window->winTitle);
+		if (ImGui::InputText("App Name", string, 26))
+			App->window->SetTitle(string);
+
+		// - - - - - - - Organization - - - - - - - - -
+		strcpy_s(string, 26, App->window->orgTitle);
+		ImGui::InputText("Organization", string, 26);
+		
 	}
 
 	if (ImGui::CollapsingHeader("Window"))
