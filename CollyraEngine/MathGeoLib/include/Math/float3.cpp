@@ -132,7 +132,7 @@ float float3::LengthSq() const
 
 float float3::Length() const
 {
-	return Sqrt(LengthSq());
+	return std::sqrt(LengthSq());
 }
 
 float float3::Normalize()
