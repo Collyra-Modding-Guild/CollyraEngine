@@ -20,7 +20,7 @@ M_Renderer3D::~M_Renderer3D()
 {}
 
 // Called before render is available
-bool M_Renderer3D::Init()
+bool M_Renderer3D::Awake()
 {
 	LOG("Creating 3D Renderer context");
 	bool ret = true;
@@ -79,19 +79,22 @@ bool M_Renderer3D::Init()
 			ret = false;
 		}
 		
+		//Lights Example
+		/*
 		GLfloat LightModelAmbient[] = {0.0f, 0.0f, 0.0f, 1.0f};
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LightModelAmbient);
 		
 		lights[0].ref = GL_LIGHT0;
 		lights[0].ambient.Set(0.25f, 0.25f, 0.25f, 1.0f);
 		lights[0].diffuse.Set(0.75f, 0.75f, 0.75f, 1.0f);
-		lights[0].Init();
+		lights[0].Awake();
 
 
 		lights[1].ref = GL_LIGHT0;
 		lights[1].ambient.Set(0.25f, 0.25f, 0.25f, 1.0f);
 		lights[1].diffuse.Set(0.75f, 0.75f, 0.75f, 1.0f);
-		lights[1].Init();
+		lights[1].Awake();
+		*/
 		
 		GLfloat MaterialAmbient[] = {1.0f, 1.0f, 1.0f, 1.0f};
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, MaterialAmbient);
@@ -102,8 +105,10 @@ bool M_Renderer3D::Init()
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 
+		/*
 		lights[0].Active(true);
 		lights[1].Active(true);
+		*/
 
 		glEnable(GL_LIGHTING);
 		glEnable(GL_COLOR_MATERIAL);
@@ -116,7 +121,7 @@ bool M_Renderer3D::Init()
 }
 
 // PreUpdate: clear buffer
-update_status M_Renderer3D::PreUpdate(float dt)
+updateStatus M_Renderer3D::PreUpdate(float dt)
 {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -126,7 +131,7 @@ update_status M_Renderer3D::PreUpdate(float dt)
 }
 
 // PostUpdate present buffer to screen
-update_status M_Renderer3D::PostUpdate(float dt)
+updateStatus M_Renderer3D::PostUpdate(float dt)
 {
 	SDL_GL_SwapWindow(App->window->window);
 

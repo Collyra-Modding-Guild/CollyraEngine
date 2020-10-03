@@ -15,7 +15,7 @@ public:
 	// Destructor
 	virtual ~M_Window();
 
-	bool Init();
+	bool Awake();
 	bool CleanUp();
 
 	void SetTitle(const char* title);

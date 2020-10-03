@@ -3,7 +3,7 @@
 #include "M_Camera3D.h"
 #include "M_Window.h"
 
-M_Camera3D::M_Camera3D(Application* app, bool start_enabled) : Module(app, start_enabled)
+M_Camera3D::M_Camera3D(Application* app, bool start_enabled) : Module(app, start_enabled), spdMultiplier(2.0f), cameraDebugMode(false)
 {
 	CalculateViewMatrix();
 
@@ -37,16 +37,16 @@ bool M_Camera3D::CleanUp()
 }
 
 // -----------------------------------------------------------------
-update_status M_Camera3D::Update(float dt)
+updateStatus M_Camera3D::Update(float dt)
 {
 	// Implement a debug camera with keys and mouse
 	// Now we can make this movememnt frame rate independant!
 
 	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
-		cameraDebug = !cameraDebug;
+		cameraDebugMode = !cameraDebugMode;
 
 	
-	if (cameraDebug)
+	if (cameraDebugMode)
 	{
 		//Debug Cam
 		

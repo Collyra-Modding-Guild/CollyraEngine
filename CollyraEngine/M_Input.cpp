@@ -9,7 +9,7 @@ M_Input::M_Input(Application* app, bool start_enabled) : Module(app, start_enabl
 {
 	keyboard = new KEY_STATE[MAX_KEYS];
 	memset(keyboard, KEY_IDLE, sizeof(KEY_STATE) * MAX_KEYS);
-	memset(mouse_buttons, KEY_IDLE, sizeof(KEY_STATE) * MAX_MOUSE_BUTTONS);
+	memset(mouseButton, KEY_IDLE, sizeof(KEY_STATE) * MAX_MOUSE_BUTTONS);
 }
 
 // Destructor
@@ -19,7 +19,7 @@ M_Input::~M_Input()
 }
 
 // Called before render is available
-bool M_Input::Init()
+bool M_Input::Awake()
 {
 	LOG("Init SDL input event system");
 	bool ret = true;
@@ -35,7 +35,7 @@ bool M_Input::Init()
 }
 
 // Called every draw update
-update_status M_Input::PreUpdate(float dt)
+updateStatus M_Input::PreUpdate(float dt)
 {
 	SDL_PumpEvents();
 
@@ -59,31 +59,31 @@ update_status M_Input::PreUpdate(float dt)
 		}
 	}
 
-	Uint32 buttons = SDL_GetMouseState(&mouse_x, &mouse_y);
+	Uint32 buttons = SDL_GetMouseState(&mouse.x, &mouse.y);
 
-	mouse_x /= SCREEN_SIZE;
-	mouse_y /= SCREEN_SIZE;
+	mouse.x /= SCREEN_SIZE;
+	mouse.y /= SCREEN_SIZE;
 	mouse_z = 0;
 
 	for(int i = 0; i < 5; ++i)
 	{
 		if(buttons & SDL_BUTTON(i))
 		{
-			if(mouse_buttons[i] == KEY_IDLE)
-				mouse_buttons[i] = KEY_DOWN;
+			if(mouseButton[i] == KEY_IDLE)
+				mouseButton[i] = KEY_DOWN;
 			else
-				mouse_buttons[i] = KEY_REPEAT;
+				mouseButton[i] = KEY_REPEAT;
 		}
 		else
 		{
-			if(mouse_buttons[i] == KEY_REPEAT || mouse_buttons[i] == KEY_DOWN)
-				mouse_buttons[i] = KEY_UP;
+			if(mouseButton[i] == KEY_REPEAT || mouseButton[i] == KEY_DOWN)
+				mouseButton[i] = KEY_UP;
 			else
-				mouse_buttons[i] = KEY_IDLE;
+				mouseButton[i] = KEY_IDLE;
 		}
 	}
 
-	mouse_x_motion = mouse_y_motion = 0;
+	mouseMotion.x = mouseMotion.y = 0;
 
 	bool quit = false;
 	SDL_Event e;
@@ -97,11 +97,11 @@ update_status M_Input::PreUpdate(float dt)
 			break;
 
 			case SDL_MOUSEMOTION:
-			mouse_x = e.motion.x / SCREEN_SIZE;
-			mouse_y = e.motion.y / SCREEN_SIZE;
+			mouse.x = e.motion.x / SCREEN_SIZE;
+			mouse.y = e.motion.y / SCREEN_SIZE;
 
-			mouse_x_motion = e.motion.xrel / SCREEN_SIZE;
-			mouse_y_motion = e.motion.yrel / SCREEN_SIZE;
+			mouseMotion.x = e.motion.xrel / SCREEN_SIZE;
+			mouseMotion.y = e.motion.yrel / SCREEN_SIZE;
 			break;
 
 			case SDL_QUIT:

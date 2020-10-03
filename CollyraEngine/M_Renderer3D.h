@@ -13,9 +13,9 @@ public:
 	M_Renderer3D(Application* app, bool start_enabled = true);
 	~M_Renderer3D();
 
-	bool Init();
-	update_status PreUpdate(float dt);
-	update_status PostUpdate(float dt);
+	bool Awake();
+	updateStatus PreUpdate(float dt);
+	updateStatus PostUpdate(float dt);
 	bool CleanUp();
 
 	void OnResize();

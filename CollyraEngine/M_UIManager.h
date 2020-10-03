@@ -14,16 +14,16 @@ public:
 	M_UIManager(Application* app, bool start_enabled = true);
 	~M_UIManager();
 
-	bool Init();
+	bool Awake();
 	bool Start();
 
-	update_status PreUpdate(float dt);
-	update_status PostUpdate(float dt);
+	updateStatus PreUpdate(float dt);
+	updateStatus PostUpdate(float dt);
 
 	bool CleanUp();
 
 private:
-	update_status stopAppButton();
+	updateStatus stopAppButton();
 
 protected:
 	bool showDemoWindow;

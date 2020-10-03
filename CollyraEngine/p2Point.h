@@ -2,43 +2,49 @@
 // Point class    -----------
 // ----------------------------------------------------
 
+/*
+MIT License
+
+Copyright (c) [2019] [X-Mat Studios] (https://x-mat-studio.github.io/HeartsOfGreed/)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+*/
+
 #ifndef __P2POINT_H__
 #define __P2POINT_H__
 
 #include <math.h>
 
 template<class TYPE>
-class p2Point
+class MAT_Point
 {
 public:
 
 	TYPE x, y;
 
-	p2Point() : x(0), y(0)
+	MAT_Point() : x(0), y(0)
 	{}
 
-	p2Point()
+	~MAT_Point()
 	{}
 
-	p2Point(const p2Point& p)
-	{
-		x = p.x;
-		y = p.y;
-	}
-
-	p2Point(const p2Point<TYPE>& v)
+	MAT_Point(const MAT_Point<TYPE>& v)
 	{
 		this->x = v.x;
 		this->y = v.y;
 	}
 
-	p2Point(const TYPE& x, const TYPE& y)
+	MAT_Point(const TYPE& x, const TYPE& y)
 	{
 		this->x = x;
 		this->y = y;
 	}
 
-	p2Point& create(const TYPE& x, const TYPE& y)
+	MAT_Point& create(const TYPE& x, const TYPE& y)
 	{
 		this->x = x;
 		this->y = y;
@@ -46,15 +52,16 @@ public:
 		return(*this);
 	}
 
-	operator p2Point<float>() const
+	operator MAT_Point<float>() const
 	{
 		return { (float)x, (float)y };
 	}
 
+
 	// Math ------------------------------------------------
-	p2Point operator -(const p2Point& v) const
+	MAT_Point operator -(const MAT_Point& v) const
 	{
-		p2Point r;
+		MAT_Point r;
 
 		r.x = x - v.x;
 		r.y = y - v.y;
@@ -62,9 +69,9 @@ public:
 		return(r);
 	}
 
-	p2Point operator + (const p2Point& v) const
+	MAT_Point operator + (const MAT_Point& v) const
 	{
-		p2Point r;
+		MAT_Point r;
 
 		r.x = x + v.x;
 		r.y = y + v.y;
@@ -72,7 +79,7 @@ public:
 		return(r);
 	}
 
-	const p2Point& operator -=(const p2Point& v)
+	const MAT_Point& operator -=(const MAT_Point& v)
 	{
 		x -= v.x;
 		y -= v.y;
@@ -80,7 +87,7 @@ public:
 		return(*this);
 	}
 
-	const p2Point& operator +=(const p2Point& v)
+	const MAT_Point& operator +=(const MAT_Point& v)
 	{
 		x += v.x;
 		y += v.y;
@@ -88,21 +95,21 @@ public:
 		return(*this);
 	}
 
-	bool operator ==(const p2Point& v) const
+	bool operator ==(const MAT_Point& v) const
 	{
 		return (x == v.x && y == v.y);
 	}
 
-	bool operator !=(const p2Point& v) const
+	bool operator !=(const MAT_Point& v) const
 	{
 		return (x != v.x || y != v.y);
 	}
 
 	//Operators w/ Template -----------
 
-	p2Point operator - (const TYPE& v) const
+	MAT_Point operator - (const TYPE& v) const
 	{
-		p2Point r;
+		MAT_Point r;
 
 		r.x = x - v;
 		r.y = y - v;
@@ -110,9 +117,9 @@ public:
 		return(r);
 	}
 
-	p2Point operator + (const TYPE& v) const
+	MAT_Point operator + (const TYPE& v) const
 	{
-		p2Point r;
+		MAT_Point r;
 
 		r.x = x + v;
 		r.y = y + v;
@@ -121,9 +128,9 @@ public:
 	}
 
 
-	p2Point operator * (const TYPE& v) const
+	MAT_Point operator * (const TYPE& v) const
 	{
-		p2Point r;
+		MAT_Point r;
 
 		r.x = x * v;
 		r.y = y * v;
@@ -131,9 +138,9 @@ public:
 		return(r);
 	}
 
-	p2Point operator / (const TYPE& v) const
+	MAT_Point operator / (const TYPE& v) const
 	{
-		p2Point r;
+		MAT_Point r;
 
 		r.x = x / v;
 		r.y = y / v;
@@ -142,7 +149,7 @@ public:
 	}
 
 
-	const p2Point& operator +=(const TYPE& v)
+	const MAT_Point& operator +=(const TYPE& v)
 	{
 		x += v;
 		y += v;
@@ -150,7 +157,7 @@ public:
 		return(*this);
 	}
 
-	const p2Point& operator -=(const TYPE& v)
+	const MAT_Point& operator -=(const TYPE& v)
 	{
 		x -= v;
 		y -= v;
@@ -158,7 +165,7 @@ public:
 		return(*this);
 	}
 
-	const p2Point& operator *=(const TYPE& v)
+	const MAT_Point& operator *=(const TYPE& v)
 	{
 		x *= v;
 		y *= v;
@@ -166,7 +173,7 @@ public:
 		return(*this);
 	}
 
-	const p2Point& operator /=(const TYPE& v)
+	const MAT_Point& operator /=(const TYPE& v)
 	{
 		x /= v;
 		y /= v;
@@ -179,21 +186,16 @@ public:
 	// Utils ------------------------------------------------
 	bool IsZero() const
 	{
-		return (x == 0 && y == 0);
+		return ((x <= 0.01f && x >= -0.01f) && (y <= 0.01f && y >= -0.01f));
 	}
 
-	bool IsZeroAccurate() const
-	{
-		return ((x <= 0.001f && x >= -0.001f) && (y <= 0.001f && y >= -0.001f));
-	}
-
-	p2Point& SetToZero()
+	MAT_Point& SetToZero()
 	{
 		x = y = 0;
 		return(*this);
 	}
 
-	p2Point& Negate()
+	MAT_Point& Negate()
 	{
 		x = -x;
 		y = -y;
@@ -201,7 +203,7 @@ public:
 		return(*this);
 	}
 
-	p2Point& Abs()
+	MAT_Point& Abs()
 	{
 		x = abs(x);
 		y = abs(y);
@@ -209,16 +211,16 @@ public:
 		return(*this);
 	}
 
-	p2Point GetInverse()
+	MAT_Point GetInverse()
 	{
-		p2Point r;
+		MAT_Point r;
 		r.x = -x;
 		r.y = -y;
 
 		return(r);
 	}
 
-	double Dot(p2Point& v)
+	double Dot(MAT_Point& v)
 	{
 		return((x * v.x) + (y * v.y));
 	}
@@ -248,21 +250,22 @@ public:
 	}
 
 
-	p2Point LerpPoint(p2Point& p1, float t)
+	MAT_Point LerpPoint(MAT_Point& p1, float t)
 	{
 		return  { lerp(x, p1.x, t), lerp(y, p1.y, t) };
 	}
 
+
 	// Distances ---------------------------------------------
-	TYPE DistanceTo(const p2Point& v) const
+	TYPE DistanceTo(const MAT_Point& v) const
 	{
 		TYPE fx = x - v.x;
 		TYPE fy = y - v.y;
 
-		return (TYPE) sqrt((float) (fx*fx) + (fy*fy));
+		return sqrtf((fx * fx) + (fy * fy));
 	}
 
-	float OctileDistance(const p2Point& v) const
+	float OctileDistance(const MAT_Point& v) const
 	{
 		int dx = abs(v.x - x);
 		int dy = abs(v.y - y);
@@ -270,7 +273,7 @@ public:
 		return  max(dx, dy) + (0.41f) * min(dx, dy);
 	}
 
-	TYPE DistanceNoSqrt(const p2Point& v) const
+	TYPE DistanceNoSqrt(const MAT_Point& v) const
 	{
 		TYPE fx = x - v.x;
 		TYPE fy = y - v.y;
@@ -278,17 +281,37 @@ public:
 		return (fx * fx) + (fy * fy);
 	}
 
-	TYPE DistanceManhattan(const p2Point& v) const
+	TYPE DistanceManhattan(const MAT_Point& v) const
 	{
 		return abs(v.x - x) + abs(v.y - y);
 	}
 
-	float DiagonalDistance(const p2Point& v) const
+	float DiagonalDistance(const MAT_Point& v) const
 	{
 		float dx = v.x - x, dy = v.y - y;
 		return (MAX(abs(dx), abs(dy)));
 	}
 
+	bool PointInRect(const SDL_Rect* r)
+	{
+		return ((x >= r->x) && (x < (r->x + r->w)) &&
+			(y >= r->y) && (y < (r->y + r->h))) ? true : false;
+	}
+
+	bool InsideCircle(MAT_Point tile, float radius)
+	{
+		float distance_squared = this->DistanceNoSqrt(tile);
+
+		float maxDist = (radius + 0.5f) * (radius + 0.5f);
+		return distance_squared < maxDist;
+	}
 };
+
+typedef MAT_Point<int> iMPoint;
+typedef MAT_Point<float> fMPoint;
+typedef MAT_Point<double> dMPoint;
+
+
+
 
 #endif // __P2POINT_H__

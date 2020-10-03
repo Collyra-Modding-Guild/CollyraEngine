@@ -6,7 +6,7 @@
 Light::Light() : ref(-1), on(false), position(0.0f, 0.0f, 0.0f)
 {}
 
-void Light::Init()
+void Light::Awake()
 {
 	glLightfv(ref, GL_AMBIENT, &ambient);
 	glLightfv(ref, GL_DIFFUSE, &diffuse);

@@ -10,7 +10,7 @@ Application::Application()
 	uiManager = new M_UIManager(this, true);
 
 	// The order of calls is very important!
-	// Modules will Init() Start() and Update in this order
+	// Modules will Awake() Start() and Update in this order
 	// They will CleanUp() in reverse order
 
 	// Main Modules
@@ -27,19 +27,19 @@ Application::Application()
 
 Application::~Application()
 {
-	list_modules.clear();
+	moduleList.clear();
 }
 
-bool Application::Init()
+bool Application::Awake()
 {
 	bool ret = true;
 
-	// Call Init() in all modules
-	int numModules = list_modules.size();
+	// Call Awake() in all modules
+	int numModules = moduleList.size();
 
 	for (int i = 0; i < numModules; i++)
 	{
-		ret = list_modules[i]->Init();
+		ret = moduleList[i]->Awake();
 
 	}
 
@@ -48,9 +48,9 @@ bool Application::Init()
 
 	for (int i = 0; i < numModules; i++)
 	{
-		if (list_modules[i]->IsEnabled())
+		if (moduleList[i]->IsEnabled())
 		{
-			ret = list_modules[i]->Start();
+			ret = moduleList[i]->Start();
 		}
 	}
 
@@ -71,29 +71,29 @@ void Application::FinishUpdate()
 }
 
 // Call PreUpdate, Update and PostUpdate on all modules
-update_status Application::Update()
+updateStatus Application::Update()
 {
-	update_status ret = UPDATE_CONTINUE;
+	updateStatus ret = UPDATE_CONTINUE;
 	PrepareUpdate();
 
 	//PreUpdate
-	int numModules = list_modules.size();
+	int numModules = moduleList.size();
 
 	for (int i = 0; i < numModules && ret == UPDATE_CONTINUE; i++)
 	{
-		ret = list_modules[i]->PreUpdate(dt);
+		ret = moduleList[i]->PreUpdate(dt);
 	}
 
 	//Update
 	for (int i = 0; i < numModules && ret == UPDATE_CONTINUE; i++)
 	{
-		ret = list_modules[i]->Update(dt);
+		ret = moduleList[i]->Update(dt);
 	}
 
 	//PostUpdate
 	for (int i = 0; i < numModules && ret == UPDATE_CONTINUE; i++)
 	{
-		ret = list_modules[i]->PostUpdate(dt);
+		ret = moduleList[i]->PostUpdate(dt);
 	}
 
 	FinishUpdate();
@@ -103,11 +103,11 @@ update_status Application::Update()
 bool Application::CleanUp()
 {
 	bool ret = true;
-	int numModules = list_modules.size();
+	int numModules = moduleList.size();
 
 	for (int i = numModules - 1; i >= 0 && ret == true; i--)
 	{
-		ret = list_modules[i]->CleanUp();
+		ret = moduleList[i]->CleanUp();
 	}
 	return ret;
 }
@@ -115,12 +115,12 @@ bool Application::CleanUp()
 bool Application::Reset()
 {
 	bool ret = true;
-	int numModules = list_modules.size();
+	int numModules = moduleList.size();
 
 
 	for (int i = 0; i < numModules && ret == true; i++)
 	{
-		ret = list_modules[i]->Reset();
+		ret = moduleList[i]->Reset();
 	}
 
 	return ret;
@@ -128,5 +128,5 @@ bool Application::Reset()
 
 void Application::AddModule(Module* mod)
 {
-	list_modules.push_back(mod);
+	moduleList.push_back(mod);
 }

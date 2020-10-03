@@ -1,6 +1,7 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include "p2Point.h"
 
 #define MAX_MOUSE_BUTTONS 5
 
@@ -19,8 +20,8 @@ public:
 	M_Input(Application* app, bool start_enabled = true);
 	~M_Input();
 
-	bool Init();
-	update_status PreUpdate(float dt);
+	bool Awake();
+	updateStatus PreUpdate(float dt);
 	bool CleanUp();
 
 	KEY_STATE GetKey(int id) const
@@ -30,17 +31,17 @@ public:
 
 	KEY_STATE GetMouseButton(int id) const
 	{
-		return mouse_buttons[id];
+		return mouseButton[id];
 	}
 
 	int GetMouseX() const
 	{
-		return mouse_x;
+		return mouse.x;
 	}
 
 	int GetMouseY() const
 	{
-		return mouse_y;
+		return mouse.y;
 	}
 
 	int GetMouseZ() const
@@ -50,21 +51,19 @@ public:
 
 	int GetMouseXMotion() const
 	{
-		return mouse_x_motion;
+		return mouseMotion.x;
 	}
 
 	int GetMouseYMotion() const
 	{
-		return mouse_y_motion;
+		return mouseMotion.y;
 	}
 
 private:
 	KEY_STATE* keyboard;
-	KEY_STATE mouse_buttons[MAX_MOUSE_BUTTONS];
-	int mouse_x;
-	int mouse_y;
+	KEY_STATE mouseButton[MAX_MOUSE_BUTTONS];
+
+	iMPoint mouse;
+	iMPoint mouseMotion;
 	int mouse_z;
-	int mouse_x_motion;
-	int mouse_y_motion;
-	//int mouse_z_motion;
 };

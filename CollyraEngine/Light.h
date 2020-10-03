@@ -7,7 +7,7 @@ struct Light
 {
 	Light();
 
-	void Init();
+	void Awake();
 	void SetPos(float x, float y, float z);
 	void Active(bool active);
 	void Render();

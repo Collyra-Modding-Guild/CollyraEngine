@@ -25,7 +25,7 @@ M_UIManager::~M_UIManager()
 {}
 
 // Called before render is available
-bool M_UIManager::Init()
+bool M_UIManager::Awake()
 {
 	showDemoWindow = true;
 
@@ -41,12 +41,10 @@ bool M_UIManager::Start()
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
-    //io.ConfigViewportsNoAutoMerge = true;
-    //io.ConfigViewportsNoTaskBarIcon = true;
+
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
-    //ImGui::StyleColorsClassic();
 
     // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
     ImGuiStyle& style = ImGui::GetStyle();
@@ -63,7 +61,7 @@ bool M_UIManager::Start()
     return true;
 }
 
-update_status M_UIManager::PreUpdate(float dt)
+updateStatus M_UIManager::PreUpdate(float dt)
 {  
     // Start the Dear ImGui frame
     ImGui_ImplOpenGL3_NewFrame();
@@ -78,7 +76,7 @@ update_status M_UIManager::PreUpdate(float dt)
 	return stopAppButton();
 }
 
-update_status M_UIManager::PostUpdate(float dt)
+updateStatus M_UIManager::PostUpdate(float dt)
 {
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -110,9 +108,9 @@ bool M_UIManager::CleanUp()
 	return true;
 }
 
-update_status M_UIManager::stopAppButton()
+updateStatus M_UIManager::stopAppButton()
 {
-	update_status ret;
+	updateStatus ret;
 
 	ImGui::Begin("Admin Menu");
 

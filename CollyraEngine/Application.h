@@ -11,9 +11,6 @@
 #include "M_Camera3D.h"
 #include "M_UIManager.h"
 
-
-
-
 class Application
 {
 public:
@@ -27,15 +24,15 @@ private:
 
 	Timer	ms_timer;
 	float	dt;
-	std::vector<Module*> list_modules;
+	std::vector<Module*> moduleList;
 
 public:
 
 	Application();
 	~Application();
 
-	bool Init();
-	update_status Update();
+	bool Awake();
+	updateStatus Update();
 	bool CleanUp();
 	bool Reset();
 

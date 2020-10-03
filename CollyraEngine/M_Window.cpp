@@ -14,7 +14,7 @@ M_Window::~M_Window()
 }
 
 // Called before render is available
-bool M_Window::Init()
+bool M_Window::Awake()
 {
 	LOG("Init SDL window & surface");
 	bool ret = true;

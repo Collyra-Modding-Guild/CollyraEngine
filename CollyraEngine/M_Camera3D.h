@@ -5,7 +5,6 @@
 
 #include "SDL/include/SDL_rect.h"
 
-#define LERP_VALUE 0.25
 
 
 class M_Camera3D : public Module
@@ -15,7 +14,7 @@ public:
 	~M_Camera3D();
 
 	bool Start();
-	update_status Update(float dt);
+	updateStatus Update(float dt);
 	bool CleanUp();
 
 	void Look(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference = false);
@@ -34,8 +33,8 @@ public:
 	vec3 X, Y, Z, Position, Reference, camDistanceFromCar, newpos;
 	mat3x3 rotation;
 
-	bool cameraDebug = false;
-	float multiplier = 1.0f;
+	bool cameraDebugMode;
+	float spdMultiplier;
 
 
 private:
