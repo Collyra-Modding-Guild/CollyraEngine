@@ -10,7 +10,6 @@
 #include <gl/GL.h>
 #include <gl/GLU.h>
 
-#include "imgui/imgui.h"
 #include "imgui/imgui_internal.h"
 #include "imgui/imgui_impl_sdl.h"
 #include "imgui/imgui_impl_opengl3.h"
@@ -19,9 +18,9 @@
 #pragma comment (lib, "Glew/libx86/glew32.lib")
 
 
-M_UIManager::M_UIManager(Application* app, bool start_enabled) : Module(app, start_enabled), showDemoWindow(false), menuMathRandomTest(false), generateRandomNumbers(false), generatedInt(0), generatedFloat(0.0f), 
+M_UIManager::M_UIManager(Application* app, bool start_enabled) : Module(app, start_enabled), showDemoWindow(false), menuMathRandomTest(false), generateRandomNumbers(false), generatedInt(0), generatedFloat(0.0f),
 fps_log(100), ms_log(100), sphereCollisionTest(false), AABBCollisionTest(false), OBBCollisionTest(false), randomStartThreshold(0.f), randomEndThreshold(0.f), planeCollisionTest(false),
-rayCollisionTest(false), triangleCollisionTest(false)
+rayCollisionTest(false), triangleCollisionTest(false), logInputs()
 {}
 
 // Destructor
@@ -44,21 +43,21 @@ bool M_UIManager::Awake()
 
 	AABB1 = AABB({ 0.f, 0.f, 0.f }, { 10.f, 10.f, 10.f });
 	AABB1 = AABB({ 0.f, 0.f, 0.f }, { 5.f, 5.f, 5.f });
-	
+
 
 	OBB1 = OBB();
-	OBB1.SetFrom(AABB1, float3x3().FromEulerXYZ(0,0,0));
+	OBB1.SetFrom(AABB1, float3x3().FromEulerXYZ(0, 0, 0));
 
 	OBB2 = OBB();
 	OBB2.SetFrom(AABB1, float3x3().FromEulerXYZ(90, 0, 0));
 
-	plane1 = Plane({1,1,1}, 1.f);
-	plane2 = Plane({1,1,1}, 0.f);
+	plane1 = Plane({ 1,1,1 }, 1.f);
+	plane2 = Plane({ 1,1,1 }, 0.f);
 
-	ray1 = Ray({ 0.f,0.f,0.f }, {1.f, 0.f, 0.f});
+	ray1 = Ray({ 0.f,0.f,0.f }, { 1.f, 0.f, 0.f });
 	ray2 = Ray({ 20.f,0.f,0.f }, { -1.f, 0.f, 0.f });
 
-	tri1 = Triangle({ 0.f,0.f,0.f } , { 5.f,5.f,5.f } ,{ 10.f,10.f,10.f });
+	tri1 = Triangle({ 0.f,0.f,0.f }, { 5.f,5.f,5.f }, { 10.f,10.f,10.f });
 	tri2 = Triangle({ 10.f,10.f,10.f }, { 5.f,5.f,5.f }, { 0.f,0.f,0.f });
 
 	return true;
@@ -109,6 +108,8 @@ updateStatus M_UIManager::PreUpdate(float dt)
 	static float f = 0.0f;
 	static int counter = 0;
 
+	ImGuiIO& io = ImGui::GetIO();
+
 	ImGui::Begin("Configuration");
 
 	if (ImGui::CollapsingHeader("Application"))
@@ -136,21 +137,21 @@ updateStatus M_UIManager::PreUpdate(float dt)
 		sprintf_s(string, 26, "Miliseconds %0.1f: ", ms_log[ms_log.size() - 1]);
 		ImGui::PlotHistogram("##miliseconds", &ms_log[0], 100, 0, string, 0.0f, 40.0f, ImVec2(310, 100));
 
-	}	
+	}
 
 	if (ImGui::CollapsingHeader("Window"))
 	{
 		// - - - - - - - - Window Brightness - - - - - - - - - -
 		if (ImGui::SliderFloat("Brightness", &App->window->brightness, 0.0f, 1.0f))
 			SDL_SetWindowBrightness(App->window->window, App->window->brightness);
-		
+
 		// - - - - - - - - Screen Surface - - - - - - - - - -
 		if (ImGui::SliderInt("Width", &App->window->SCREEN_WIDTH, 0, 1920))
 			SDL_SetWindowSize(App->window->window, App->window->SCREEN_WIDTH, App->window->SCREEN_HEIGHT);
 
 		if (ImGui::SliderInt("Height", &App->window->SCREEN_HEIGHT, 0, 1080))
 			SDL_SetWindowSize(App->window->window, App->window->SCREEN_WIDTH, App->window->SCREEN_HEIGHT);
-		
+
 		// - - - - - - - - Display Modes - - - - - - - - - -
 		if (ImGui::Checkbox("Fullscreen", &App->window->fullscreen))
 			App->window->SetFullscreen(App->window->fullscreen);
@@ -168,8 +169,6 @@ updateStatus M_UIManager::PreUpdate(float dt)
 		if (ImGui::Checkbox("Full Desktop", &App->window->fullscreen_desktop))
 			App->window->SetFullscreenDesktop(App->window->fullscreen_desktop);
 
-
-	
 	}
 
 	if (ImGui::CollapsingHeader("File System"))
@@ -195,6 +194,29 @@ updateStatus M_UIManager::PreUpdate(float dt)
 
 		// - - - - - - - - General Input Reading - - - - - - - - -
 
+		ImGui::SetScrollHere(1.0f);
+		ImGui::Text("Mouse delta: (%g, %g)", io.MouseDelta.x, io.MouseDelta.y);
+		ImGui::Text("Mouse down:");     for (int i = 0; i < IM_ARRAYSIZE(io.MouseDown); i++) if (io.MouseDownDuration[i] >= 0.0f) { ImGui::SameLine(); ImGui::Text("b%d (%.02f secs)", i, io.MouseDownDuration[i]); }
+		ImGui::Text("Mouse clicked:");  for (int i = 0; i < IM_ARRAYSIZE(io.MouseDown); i++) if (ImGui::IsMouseClicked(i)) { ImGui::SameLine(); ImGui::Text("b%d", i); }
+		ImGui::Text("Mouse dblclick:"); for (int i = 0; i < IM_ARRAYSIZE(io.MouseDown); i++) if (ImGui::IsMouseDoubleClicked(i)) { ImGui::SameLine(); ImGui::Text("b%d", i); }
+		ImGui::Text("Mouse released:"); for (int i = 0; i < IM_ARRAYSIZE(io.MouseDown); i++) if (ImGui::IsMouseReleased(i)) { ImGui::SameLine(); ImGui::Text("b%d", i); }
+
+		ImGui::Text("Keys down:");      for (int i = 0; i < IM_ARRAYSIZE(io.KeysDown); i++) if (io.KeysDownDuration[i] >= 0.0f) { ImGui::SameLine(); ImGui::Text("%d (0x%X) (%.02f secs)", i, i, io.KeysDownDuration[i]); }
+		ImGui::Text("Keys release:");   for (int i = 0; i < IM_ARRAYSIZE(io.KeysDown); i++) if (ImGui::IsKeyReleased(i)) { ImGui::SameLine(); ImGui::Text("%d (0x%X)", i, i); }
+		ImGui::Text("Keys mods: %s%s%s%s", io.KeyCtrl ? "CTRL " : "", io.KeyShift ? "SHIFT " : "", io.KeyAlt ? "ALT " : "", io.KeySuper ? "SUPER " : "");
+		ImGui::SameLine();
+		if (ImGui::Button("Clear Input Log"))
+		{
+			logInputs.clear();
+		}
+
+		ImGui::Separator();
+
+		ImGui::BeginChild("Inputs Log");
+		ImGui::TextUnformatted(logInputs.begin());
+		ImGui::SetScrollHere(1.0f);
+		ImGui::EndChild();
+
 
 	}
 
@@ -211,38 +233,38 @@ updateStatus M_UIManager::PreUpdate(float dt)
 
 		ImGui::Separator();
 
-		ImGui::Text("CPUs:"); 
-		ImGui::SameLine(); 
-		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%i Cores", SDL_GetCPUCount()); 
-		ImGui::SameLine(); 
+		ImGui::Text("CPUs:");
+		ImGui::SameLine();
+		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%i Cores", SDL_GetCPUCount());
+		ImGui::SameLine();
 		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "(Cache: %ikb)", SDL_GetCPUCacheLineSize());
 
-		ImGui::Text("System RAM:"); 
+		ImGui::Text("System RAM:");
 		ImGui::SameLine();
 		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%.1fGb", (SDL_GetSystemRAM() / 1024.f));
 
-		ImGui::Text("Caps:"); ImGui::SameLine(); 
-		if (SDL_HasRDTSC()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "RDTSC,"); ImGui::SameLine(); 
+		ImGui::Text("Caps:"); ImGui::SameLine();
+		if (SDL_HasRDTSC()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "RDTSC,"); ImGui::SameLine();
 		if (SDL_HasMMX()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "MMX,");  ImGui::SameLine();
 		if (SDL_Has3DNow()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "3D,"); ImGui::SameLine();
 		if (SDL_HasSSE()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "SSE,"); ImGui::SameLine();
-		if (SDL_HasSSE2()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "SSE2,"); 
+		if (SDL_HasSSE2()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "SSE2,");
 
 		if (SDL_HasSSE3()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "SSE3,"); ImGui::SameLine();
 		if (SDL_HasSSE41()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "SSE41,"); ImGui::SameLine();
 		if (SDL_HasSSE42()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "SSE42"); ImGui::SameLine();
-		if (SDL_HasAltiVec()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "AltiVec,"); ImGui::SameLine();  	
+		if (SDL_HasAltiVec()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "AltiVec,"); ImGui::SameLine();
 		if (SDL_HasAVX()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "AVX,"); ImGui::SameLine();
-		if (SDL_HasAVX2()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "AVX2."); 
+		if (SDL_HasAVX2()) ImGui::TextColored({ 255 , 255 , 0 , 100 }, "AVX2.");
 
 		ImGui::Separator();
 
 		// We will need to get the GPU info as a bonus work.
 	}
-	
+
 
 	ImGui::End();
-	
+
 
 	return stopAppButton();
 }
@@ -309,6 +331,7 @@ bool M_UIManager::CleanUp()
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
 
+	logInputs.clear();
 
 	return true;
 }
@@ -462,7 +485,7 @@ bool M_UIManager::ShowMenuOBBCollisions()
 		OBB1.r.z = randomSeed.Float(1, 2.5);
 
 		OBB1.Transform(float3x3().FromEulerXYZ(randomSeed.Float(0, 359), randomSeed.Float(0, 359), randomSeed.Float(0, 359)));
-		
+
 		OBB2.pos.x = randomSeed.Float(0, 5);
 		OBB2.pos.y = randomSeed.Float(0, 5);
 		OBB2.pos.z = randomSeed.Float(0, 5);
@@ -475,7 +498,7 @@ bool M_UIManager::ShowMenuOBBCollisions()
 
 	}
 
-	ImGui::Text("OBB 1 \n Center: %.2f, %f, %.2f \n Radius: %.2f, %f, %.2f \n AxisX: %.2f, %.2f, %.2f\n AxisY: %.2f, %.2f, %.2f \n AxisZ: %.2f, %.2f, %.2f", 
+	ImGui::Text("OBB 1 \n Center: %.2f, %f, %.2f \n Radius: %.2f, %f, %.2f \n AxisX: %.2f, %.2f, %.2f\n AxisY: %.2f, %.2f, %.2f \n AxisZ: %.2f, %.2f, %.2f",
 		OBB1.pos.x, OBB1.pos.y, OBB1.pos.z,
 		OBB1.r.x, OBB1.r.y, OBB1.r.z,
 		OBB1.axis[0].x, OBB1.axis[0].y, OBB1.axis[0].z,
@@ -517,7 +540,7 @@ bool M_UIManager::ShowMenuPlaneCollisions()
 	if (ImGui::Button("Generate New Planes"))
 	{
 		plane1.d = randomSeed.Float(0, 10);
-		plane1.normal = float3( randomSeed.Float(0, 10) , randomSeed.Float(0, 10) , randomSeed.Float(0, 10) ).Normalized();
+		plane1.normal = float3(randomSeed.Float(0, 10), randomSeed.Float(0, 10), randomSeed.Float(0, 10)).Normalized();
 
 		plane2.d = randomSeed.Float(0, 10);
 		plane2.normal = float3(randomSeed.Float(0, 10), randomSeed.Float(0, 10), randomSeed.Float(0, 10)).Normalized();
@@ -739,8 +762,38 @@ void M_UIManager::ShowMainMenuBar()
 	}
 }
 
+void M_UIManager::NewInputLog(uint key, uint state, bool isMouse)
+{
+	static const char* currState = nullptr;
+	switch (state)
+	{
+	case(KEY_DOWN):
+	{
+		currState = "DOWN";
+	}
+	break;
+	case(KEY_REPEAT):
+	{
+		currState = "REPEAT";
+	}
+	break;
+	case(KEY_UP):
+	{
+		currState = "UP";
+	}
+	break;
+	}
 
+	if (!isMouse)
+	{
+		logInputs.appendf("Key: %s - %s\n", SDL_GetScancodeName(SDL_Scancode(key)), currState);
+	}
+	else
+	{
+		logInputs.appendf("Mouse: %02u - %s\n", key, currState);
+	}
 
+}
 
 updateStatus M_UIManager::stopAppButton()
 {
@@ -757,5 +810,4 @@ updateStatus M_UIManager::stopAppButton()
 
 	return ret;
 }
-
 

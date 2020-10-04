@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include "MathGeoLib/include/MathGeoLib.h"
+#include "Imgui/imgui.h"
 
 
 class M_UIManager : public Module
@@ -25,6 +26,9 @@ public:
 
 	bool CleanUp();
 
+
+	// Helpers-----
+	void			NewInputLog(uint keyID, uint keyState, bool isMouse = false);
 private:
 	//Functions for the editor menus-----------
 	updateStatus	stopAppButton();
@@ -36,6 +40,9 @@ private:
 	bool 			ShowMenuRayCollisions();
 	bool 			ShowMenuTriangleCollisions();
 	void			ShowMainMenuBar();
+
+
+
 
 protected:
 	//Bool controllers for the editor menus-----------
@@ -50,6 +57,8 @@ protected:
 
 		std::vector<float> fps_log;
 		std::vector<float> ms_log;
+
+		ImGuiTextBuffer logInputs;
 
 		bool	sphereCollisionTest;
 		math::Sphere sph1;

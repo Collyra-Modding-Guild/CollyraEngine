@@ -123,7 +123,6 @@ bool M_Renderer3D::Awake()
 // PreUpdate: clear buffer
 updateStatus M_Renderer3D::PreUpdate(float dt)
 {
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 

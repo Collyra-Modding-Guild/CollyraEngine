@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "M_Input.h"
+#include "M_UIManager.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_internal.h"
@@ -49,15 +50,24 @@ updateStatus M_Input::PreUpdate(float dt)
 	{
 		if(keys[i] == 1)
 		{
-			if(keyboard[i] == KEY_IDLE)
+			if (keyboard[i] == KEY_IDLE)
+			{
 				keyboard[i] = KEY_DOWN;
-			else
+				App->uiManager->NewInputLog(i, KEY_DOWN);
+			}
+			else if (keyboard[i] != KEY_REPEAT)
+			{
 				keyboard[i] = KEY_REPEAT;
+				App->uiManager->NewInputLog(i, KEY_REPEAT);
+			}
 		}
 		else
 		{
-			if(keyboard[i] == KEY_REPEAT || keyboard[i] == KEY_DOWN)
+			if (keyboard[i] == KEY_REPEAT || keyboard[i] == KEY_DOWN)
+			{
 				keyboard[i] = KEY_UP;
+				App->uiManager->NewInputLog(i, KEY_UP);
+			}
 			else
 				keyboard[i] = KEY_IDLE;
 		}
@@ -73,15 +83,24 @@ updateStatus M_Input::PreUpdate(float dt)
 	{
 		if(buttons & SDL_BUTTON(i))
 		{
-			if(mouseButton[i] == KEY_IDLE)
+			if (mouseButton[i] == KEY_IDLE)
+			{
 				mouseButton[i] = KEY_DOWN;
-			else
+				App->uiManager->NewInputLog(i, KEY_DOWN, true);
+			}
+			else if (mouseButton[i] != KEY_REPEAT)
+			{
 				mouseButton[i] = KEY_REPEAT;
+				App->uiManager->NewInputLog(i, KEY_REPEAT, true);
+			}
 		}
 		else
 		{
-			if(mouseButton[i] == KEY_REPEAT || mouseButton[i] == KEY_DOWN)
+			if (mouseButton[i] == KEY_REPEAT || mouseButton[i] == KEY_DOWN)
+			{
 				mouseButton[i] = KEY_UP;
+				App->uiManager->NewInputLog(i, KEY_UP, true);
+			}
 			else
 				mouseButton[i] = KEY_IDLE;
 		}
@@ -93,7 +112,6 @@ updateStatus M_Input::PreUpdate(float dt)
 	SDL_Event e;
 	while(SDL_PollEvent(&e))
 	{
-	
 		ImGui_ImplSDL2_ProcessEvent(&e);
 
 		switch(e.type)

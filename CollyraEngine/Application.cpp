@@ -18,8 +18,8 @@ Application::Application()
 
 	// Main Modules
 	AddModule(window);
-	AddModule(uiManager);
 	AddModule(input);
+	AddModule(uiManager);
 
 	// Scenes
 	AddModule(camera);
