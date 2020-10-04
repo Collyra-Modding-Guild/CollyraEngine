@@ -41,8 +41,7 @@ private:
 	bool 			ShowMenuTriangleCollisions();
 	void			ShowMainMenuBar();
 
-
-
+	void			CalculateHistogramLogs();
 
 protected:
 	//Bool controllers for the editor menus-----------

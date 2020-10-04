@@ -26,6 +26,10 @@ public:
 	//The amount of frames calculated in the last second
 	uint64 frames_on_last_update = 0u;
 
+	//The amount of time spended calculating the last frame
+	uint64 last_frame_ms = 0u;
+
+
 private:
 
 	Timer	ms_timer;
@@ -47,9 +51,6 @@ private:
 
 	//The amount of frames rendered last second
 	uint last_second_frame_count = 0u;
-
-	//The amount of time spended calculating the last frame
-	uint64 last_frame_ms = 0u;
 
 
 

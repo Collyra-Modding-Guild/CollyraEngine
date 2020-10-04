@@ -131,6 +131,9 @@ updateStatus M_UIManager::PreUpdate(float dt)
 		ImGui::Text("Limit FPS: %i", int(App->capTime));
 
 		// - - - - - - - - Framerate Stuff Graphs - - - - - - - - - -
+
+		CalculateHistogramLogs();
+
 		sprintf_s(string, 26, "Framerate %.1f: ", fps_log[fps_log.size() - 1]);
 		ImGui::PlotHistogram("##framerate", &fps_log[0], 100, 0, string, 0.0f, 100.0f, ImVec2(310, 100));
 
@@ -159,7 +162,7 @@ updateStatus M_UIManager::PreUpdate(float dt)
 		ImGui::SameLine();
 
 		if (ImGui::Checkbox("Resizable", &App->window->resizable))
-			App->window->SetResizable(App->window->resizable);
+			SDL_SetWindowResizable(App->window->window, (SDL_bool)App->window->resizable);
 
 		if (ImGui::Checkbox("Borderless", &App->window->borderless))
 			App->window->SetBorderless(App->window->borderless);
@@ -194,7 +197,6 @@ updateStatus M_UIManager::PreUpdate(float dt)
 
 		// - - - - - - - - General Input Reading - - - - - - - - -
 
-		ImGui::SetScrollHere(1.0f);
 		ImGui::Text("Mouse delta: (%g, %g)", io.MouseDelta.x, io.MouseDelta.y);
 		ImGui::Text("Mouse down:");     for (int i = 0; i < IM_ARRAYSIZE(io.MouseDown); i++) if (io.MouseDownDuration[i] >= 0.0f) { ImGui::SameLine(); ImGui::Text("b%d (%.02f secs)", i, io.MouseDownDuration[i]); }
 		ImGui::Text("Mouse clicked:");  for (int i = 0; i < IM_ARRAYSIZE(io.MouseDown); i++) if (ImGui::IsMouseClicked(i)) { ImGui::SameLine(); ImGui::Text("b%d", i); }
@@ -214,9 +216,7 @@ updateStatus M_UIManager::PreUpdate(float dt)
 
 		ImGui::BeginChild("Inputs Log");
 		ImGui::TextUnformatted(logInputs.begin());
-		ImGui::SetScrollHere(1.0f);
 		ImGui::EndChild();
-
 
 	}
 
@@ -762,6 +762,24 @@ void M_UIManager::ShowMainMenuBar()
 	}
 }
 
+void M_UIManager::CalculateHistogramLogs()
+{
+	static int logSize = 0;
+
+	if (logSize == 100)
+		for (int i = 0; i < 100 - 1; ++i) {
+			ms_log[i] = ms_log[i + 1];
+			fps_log[i] = fps_log[i + 1];
+		}
+	else
+		logSize++;
+
+	ms_log[logSize - 1] = App->last_frame_ms;
+	fps_log[logSize - 1] = App->frames_on_last_update;
+
+}
+
+
 void M_UIManager::NewInputLog(uint key, uint state, bool isMouse)
 {
 	static const char* currState = nullptr;
@@ -792,7 +810,6 @@ void M_UIManager::NewInputLog(uint key, uint state, bool isMouse)
 	{
 		logInputs.appendf("Mouse: %02u - %s\n", key, currState);
 	}
-
 }
 
 updateStatus M_UIManager::stopAppButton()
