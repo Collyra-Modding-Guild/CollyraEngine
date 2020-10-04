@@ -244,7 +244,7 @@ bool ImGui_ImplSDL2_InitForOpenGL(SDL_Window* window, void* sdl_gl_context)
 
 bool ImGui_ImplSDL2_InitForVulkan(SDL_Window* window)
 {
-#if !SDL_HAS_VULKAN
+#if !SDL_HAS_VULKAN 
     IM_ASSERT(0 && "Unsupported");
 #endif
     g_UseVulkan = true;
@@ -662,8 +662,8 @@ static void ImGui_ImplSDL2_SwapBuffers(ImGuiViewport* viewport, void*)
 
 // Vulkan support (the Vulkan renderer needs to call a platform-side support function to create the surface)
 // SDL is graceful enough to _not_ need <vulkan/vulkan.h> so we can safely include this.
-#if SDL_HAS_VULKAN
-#include <SDL_vulkan.h>
+#if SDL_HAS_VULKAN && false
+#include <../../SDL/include/SDL_vulkan.h>
 static int ImGui_ImplSDL2_CreateVkSurface(ImGuiViewport* viewport, ImU64 vk_instance, const void* vk_allocator, ImU64* out_vk_surface)
 {
     ImGuiViewportDataSDL2* data = (ImGuiViewportDataSDL2*)viewport->PlatformUserData;
@@ -693,7 +693,7 @@ static void ImGui_ImplSDL2_InitPlatformInterface(SDL_Window* window, void* sdl_g
 #if SDL_HAS_WINDOW_ALPHA
     platform_io.Platform_SetWindowAlpha = ImGui_ImplSDL2_SetWindowAlpha;
 #endif
-#if SDL_HAS_VULKAN
+#if SDL_HAS_VULKAN && false
     platform_io.Platform_CreateVkSurface = ImGui_ImplSDL2_CreateVkSurface;
 #endif
 

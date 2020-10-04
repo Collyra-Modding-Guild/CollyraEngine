@@ -216,6 +216,11 @@ updateStatus M_UIManager::PreUpdate(float dt)
 
 		ImGui::BeginChild("Inputs Log");
 		ImGui::TextUnformatted(logInputs.begin());
+		if (newInput)
+		{
+			ImGui::SetScrollHere(1.0f);
+			newInput = false;
+		}
 		ImGui::EndChild();
 
 	}
@@ -810,6 +815,8 @@ void M_UIManager::NewInputLog(uint key, uint state, bool isMouse)
 	{
 		logInputs.appendf("Mouse: %02u - %s\n", key, currState);
 	}
+
+	newInput = true;
 }
 
 updateStatus M_UIManager::stopAppButton()

@@ -58,6 +58,7 @@ protected:
 		std::vector<float> ms_log;
 
 		ImGuiTextBuffer logInputs;
+		bool			newInput;
 
 		bool	sphereCollisionTest;
 		math::Sphere sph1;
