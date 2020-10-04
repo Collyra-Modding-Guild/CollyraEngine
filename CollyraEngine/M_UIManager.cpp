@@ -7,6 +7,7 @@
 
 #include "WindowGroup.h"
 #include "WG_Config.h"
+#include "WG_Console.h"
 
 //OpenGL
 #include "Glew/include/glew.h"
@@ -26,7 +27,7 @@
 M_UIManager::M_UIManager(Application* app, bool start_enabled) : Module(app, start_enabled), showDemoWindow(false), menuMathRandomTest(false), generateRandomNumbers(false), generatedInt(0.f), generatedFloat(0.f),
 sphereCollisionTest(false), AABBCollisionTest(false), OBBCollisionTest(false), randomStartThreshold(0.f), randomEndThreshold(0.f), planeCollisionTest(false),
 rayCollisionTest(false), triangleCollisionTest(false), showConfigMenu(false),
-configWindow(nullptr)
+configWindow(nullptr), consoleWindow(nullptr)
 {}
 
 // Destructor
@@ -38,9 +39,9 @@ bool M_UIManager::Awake()
 {
 	//Window Groups-------------
 	windowGroups.push_back(configWindow = new WG_Config(true));
+	windowGroups.push_back(consoleWindow = new WG_Console(true));
 
 	//Demo-------------------
-	showDemoWindow = false;
 
 	randomSeed = LCG::LCG();
 	randomStartThreshold = 0;
@@ -172,7 +173,12 @@ bool M_UIManager::CleanUp()
 	for (uint i = 0; i < windowGroups.size(); i++)
 	{
 		windowGroups[i]->CleanUp();
+		windowGroups[i] = nullptr;
+		RELEASE(windowGroups[i]);
 	}
+
+	configWindow = nullptr;
+	consoleWindow = nullptr;
 
 	return true;
 }
@@ -626,8 +632,14 @@ bool M_UIManager::ShowMainMenuBar()
 
 		if (ImGui::BeginMenu("Windows"))
 		{
-			ImGui::MenuItem("Configuration","1", &configWindow->active);
-
+			if (configWindow != nullptr)
+			{
+				ImGui::MenuItem("Configuration", "", &configWindow->active);
+			}
+			if (consoleWindow != nullptr)
+			{
+				ImGui::MenuItem("Console", "", &consoleWindow->active);
+			}
 
 			ImGui::EndMenu();
 		}
@@ -685,4 +697,12 @@ void M_UIManager::NewInputLog(uint key, uint state, bool isMouse)
 		configWindow->NewLogInput(newInputLog);
 	}
 
+}
+
+void M_UIManager::NewConsoleLog(const char* newLog)
+{
+	if (this->consoleWindow != nullptr)
+	{
+		consoleWindow->NewLog(newLog);
+	}
 }

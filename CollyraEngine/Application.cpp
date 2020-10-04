@@ -97,7 +97,7 @@ void Application::FinishUpdate()
 	this->uiManager->NewFpsLog(lastFrameMs, framesOnLastUpdate);
 
 	//Waits a certain amount of time if necessary
-	if (frameCap && capTime > 0)
+	if (frameCap && capTime >= 1.0f)
 		if (lastFrameMs < 1000 / (uint)capTime)
 		{
 			SDL_Delay((1000 / (uint)capTime) - lastFrameMs);
@@ -143,7 +143,11 @@ bool Application::CleanUp()
 	for (int i = numModules - 1; i >= 0 && ret == true; i--)
 	{
 		ret = moduleList[i]->CleanUp();
+
 	}
+
+	moduleList.clear();
+
 	return ret;
 }
 

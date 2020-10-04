@@ -10,6 +10,7 @@
 
 class WindowGroup;
 class WG_Config;
+class WG_Console;
 
 
 class M_UIManager : public Module
@@ -33,6 +34,7 @@ public:
 
 	// Helpers-----
 	void			NewInputLog(uint keyID, uint keyState, bool isMouse = false);
+	void			NewConsoleLog(const char* newLog);
 	void			NewFpsLog(float currMs, float currFps);
 
 
@@ -55,6 +57,7 @@ public:
 	std::vector<WindowGroup*> windowGroups;
 
 	WG_Config* configWindow;
+	WG_Console* consoleWindow;
 
 protected:
 	//Bool controllers for the editor menus-----------

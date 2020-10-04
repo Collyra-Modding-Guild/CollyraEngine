@@ -157,6 +157,7 @@
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="WG_Config.h" />
+    <ClInclude Include="WG_Console.h" />
     <ClInclude Include="WindowGroup.h" />
   </ItemGroup>
   <ItemGroup>
@@ -214,6 +215,7 @@
     <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="WG_Config.cpp" />
+    <ClCompile Include="WG_Console.cpp" />
     <ClCompile Include="WindowGroup.cpp" />
   </ItemGroup>
   <ItemGroup>
