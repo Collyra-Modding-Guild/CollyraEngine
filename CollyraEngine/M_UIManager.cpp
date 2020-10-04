@@ -161,7 +161,7 @@ updateStatus M_UIManager::PreUpdate(float dt)
 		ImGui::SameLine();
 
 		if (ImGui::Checkbox("Resizable", &App->window->resizable))
-			App->window->SetResizable(App->window->resizable);
+			SDL_SetWindowResizable(App->window->window, (SDL_bool)App->window->resizable);
 
 		if (ImGui::Checkbox("Borderless", &App->window->borderless))
 			App->window->SetBorderless(App->window->borderless);

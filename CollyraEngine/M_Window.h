@@ -23,7 +23,7 @@ public:
 	void SetFullscreen(bool enabled);
 	void SetFullscreenDesktop(bool enabled);
 	void SetBorderless(bool enabled);
-	void SetResizable(bool enabled);
+
 
 public:
 	//The window we'll be rendering to

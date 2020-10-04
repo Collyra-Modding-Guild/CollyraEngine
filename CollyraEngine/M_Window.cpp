@@ -3,6 +3,9 @@
 #include "M_UIManager.h"
 #include "M_Window.h"
 
+#include "SDL/include/SDL_video.h"
+
+
 M_Window::M_Window(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	window = NULL;	
@@ -117,13 +120,7 @@ void M_Window::SetFullscreenDesktop(bool enabled)
 		SDL_SetWindowFullscreen(window, 0);
 }
 
-void M_Window::SetResizable(bool enabled)
-{
-	if (enabled)
-		SDL_SetWindowFullscreen(window, SDL_WINDOW_RESIZABLE);
-	else
-		SDL_SetWindowFullscreen(window, 0);
-}
+
 
 void M_Window::SetBorderless(bool enabled)
 {
