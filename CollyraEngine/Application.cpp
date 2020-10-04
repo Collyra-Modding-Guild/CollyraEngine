@@ -1,7 +1,7 @@
 #include "Application.h"
 
 
-Application::Application()
+Application::Application(int argc, char* args[]) : argc(argc), args(args)
 {
 	window = new M_Window(this);
 	input = new M_Input(this);
@@ -26,6 +26,7 @@ Application::Application()
 
 	// Renderer last!
 	AddModule(renderer3D);
+
 }
 
 Application::~Application()
@@ -43,7 +44,6 @@ bool Application::Awake()
 	for (int i = 0; i < numModules; i++)
 	{
 		ret = moduleList[i]->Awake();
-
 	}
 
 	// After all Init calls we call Start() in all modules
@@ -79,28 +79,28 @@ void Application::PrepareUpdate()
 // ---------------------------------------------
 void Application::FinishUpdate()
 {
-
-	
 	/*float seconds_since_startup = gameTimer->ReadSec();
 
 	avg_fps = float(frame_count) / seconds_since_startup; */
 
 	// Amount of ms took the last update
-	last_frame_ms = lastFrameTimer.Read();
+	lastFrameMs = lastFrameTimer.Read();
 
 	// Amount of frames during the last second
 	if (lastSecFrames->Read() >= 1000)
 	{
-		frames_on_last_update = lastSecondFrameCount;
+		framesOnLastUpdate = lastSecondFrameCount;
 		lastSecondFrameCount = 0;
 		lastSecFrames->Start();
 	}
 
+	this->uiManager->NewFpsLog(lastFrameMs, framesOnLastUpdate);
+
 	//Waits a certain amount of time if necessary
 	if (frameCap && capTime > 0)
-		if (last_frame_ms < 1000 / (uint)capTime)
+		if (lastFrameMs < 1000 / (uint)capTime)
 		{
-			SDL_Delay((1000 / (uint)capTime) - last_frame_ms);
+			SDL_Delay((1000 / (uint)capTime) - lastFrameMs);
 		}
 
 }
@@ -156,6 +156,20 @@ bool Application::Reset()
 	for (int i = 0; i < numModules && ret == true; i++)
 	{
 		ret = moduleList[i]->Reset();
+	}
+
+	return ret;
+}
+
+updateStatus Application::Draw2D()
+{
+	updateStatus ret = UPDATE_CONTINUE;
+
+	int numModules = moduleList.size();
+
+	for (int i = 0; i < numModules && ret == UPDATE_CONTINUE; i++)
+	{
+		ret = moduleList[i]->Draw2D(dt);
 	}
 
 	return ret;

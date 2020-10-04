@@ -33,7 +33,7 @@ public:
 	vec3 X, Y, Z, Position, Reference, camDistanceFromCar, newpos;
 	mat3x3 rotation;
 
-	bool cameraDebugMode;
+	bool editorCamera;
 	float spdMultiplier;
 
 

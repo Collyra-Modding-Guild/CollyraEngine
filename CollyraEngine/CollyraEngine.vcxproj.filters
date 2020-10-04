@@ -37,6 +37,9 @@
     <Filter Include="Sources\Helpers\MathGeoLib\Algorithm\Random">
       <UniqueIdentifier>{d877cedd-f725-4456-802f-a5c1586fb0be}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\WindowGroup">
+      <UniqueIdentifier>{5c588917-f828-4fe3-ba1b-3d55ec27d01c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Module.h">
@@ -288,6 +291,12 @@
     <ClInclude Include="PerfTimer.h">
       <Filter>Sources\Tools</Filter>
     </ClInclude>
+    <ClInclude Include="WindowGroup.h">
+      <Filter>Sources\WindowGroup</Filter>
+    </ClInclude>
+    <ClInclude Include="WG_Config.h">
+      <Filter>Sources\WindowGroup</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="log.cpp">
@@ -448,6 +457,12 @@
     </ClCompile>
     <ClCompile Include="PerfTimer.cpp">
       <Filter>Sources\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowGroup.cpp">
+      <Filter>Sources\WindowGroup</Filter>
+    </ClCompile>
+    <ClCompile Include="WG_Config.cpp">
+      <Filter>Sources\WindowGroup</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

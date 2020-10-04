@@ -8,6 +8,9 @@
 #include "MathGeoLib/include/MathGeoLib.h"
 #include "Imgui/imgui.h"
 
+class WindowGroup;
+class WG_Config;
+
 
 class M_UIManager : public Module
 {
@@ -26,12 +29,15 @@ public:
 
 	bool CleanUp();
 
+	updateStatus Draw2D(float dt);
 
 	// Helpers-----
 	void			NewInputLog(uint keyID, uint keyState, bool isMouse = false);
+	void			NewFpsLog(float currMs, float currFps);
+
+
 private:
 	//Functions for the editor menus-----------
-	void			ShowConfigMenu();
 
 
 	bool			ShowMainMenuBar();
@@ -44,7 +50,11 @@ private:
 	bool 			ShowMenuRayCollisions();
 	bool 			ShowMenuTriangleCollisions();
 
-	void			CalculateHistogramLogs();
+
+public:
+	std::vector<WindowGroup*> windowGroups;
+
+	WG_Config* configWindow;
 
 protected:
 	//Bool controllers for the editor menus-----------
@@ -60,11 +70,7 @@ protected:
 		int		randomStartThreshold;
 		int		randomEndThreshold;
 
-		std::vector<float> fps_log;
-		std::vector<float> ms_log;
 
-		ImGuiTextBuffer logInputs;
-		bool			newInput;
 
 		bool	sphereCollisionTest;
 		math::Sphere sph1;
@@ -91,6 +97,7 @@ protected:
 		math::Triangle tri2;
 	
 	LCG randomSeed;
+
 
 };
 

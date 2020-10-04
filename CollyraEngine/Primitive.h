@@ -92,11 +92,11 @@ public:
 };
 
 // ============================================
-class Plane : public Primitive
+class CPlane : public Primitive
 {
 public:
-	Plane();
-	Plane(float x, float y, float z, float d);
+	CPlane();
+	CPlane(float x, float y, float z, float d);
 	void InnerRender() const;
 public:
 	vec3 normal;

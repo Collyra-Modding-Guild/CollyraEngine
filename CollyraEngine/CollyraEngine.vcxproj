@@ -156,6 +156,8 @@
     <ClInclude Include="PerfTimer.h" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="WG_Config.h" />
+    <ClInclude Include="WindowGroup.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -211,6 +213,8 @@
     <ClCompile Include="PerfTimer.cpp" />
     <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="WG_Config.cpp" />
+    <ClCompile Include="WindowGroup.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui\.editorconfig" />

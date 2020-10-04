@@ -3,7 +3,7 @@
 #include "M_Camera3D.h"
 #include "M_Window.h"
 
-M_Camera3D::M_Camera3D(Application* app, bool start_enabled) : Module(app, start_enabled), spdMultiplier(2.0f), cameraDebugMode(false)
+M_Camera3D::M_Camera3D(Application* app, bool start_enabled) : Module(app, start_enabled), spdMultiplier(2.0f), editorCamera(true)
 {
 	CalculateViewMatrix();
 
@@ -43,27 +43,27 @@ updateStatus M_Camera3D::Update(float dt)
 	// Now we can make this movememnt frame rate independant!
 
 	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
-		cameraDebugMode = !cameraDebugMode;
+		editorCamera = !editorCamera;
 
 	
-	if (cameraDebugMode)
+	if (editorCamera)
 	{
 		//Debug Cam
 		
 		vec3 newPos(0,0,0);
 		float speed = 10.0f * dt;
 		if(App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
-			speed = (speed *2) * dt;
+			speed = (speed *2);
 
 		if(App->input->GetKey(SDL_SCANCODE_R) == KEY_REPEAT) newPos.y += speed;
 		if(App->input->GetKey(SDL_SCANCODE_F) == KEY_REPEAT) newPos.y -= speed;
 
-		if(App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT) newPos -= Z * speed;
-		if(App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) newPos += Z * speed;
+		if(App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos -= Z * speed;
+		if(App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos += Z * speed;
 
 
-		if(App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) newPos -= X * speed;
-		if(App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) newPos += X * speed;
+		if(App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= X * speed;
+		if(App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += X * speed;
 
 		Position += newPos;
 		Reference += newPos;

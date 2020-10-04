@@ -77,6 +77,8 @@ public:
 
 	virtual bool Reset() { return true; }
 
+	virtual updateStatus Draw2D(float dt) { return UPDATE_CONTINUE; }
+
 public:
 
 	std::string				name;

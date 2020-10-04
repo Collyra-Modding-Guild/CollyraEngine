@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __APPLICATION_CPP__
+#define __APPLICATION_CPP__
 
 #include <vector>
 #include "Globals.h"
@@ -24,13 +25,16 @@ public:
 	float capTime = 0;
 
 	//The amount of frames calculated in the last second
-	uint64 frames_on_last_update = 0u;
+	uint64 framesOnLastUpdate = 0u;
 
 	//The amount of time spended calculating the last frame
-	uint64 last_frame_ms = 0u;
+	uint64 lastFrameMs = 0u;
 
 
 private:
+
+	int					argc;
+	char** args;
 
 	Timer	ms_timer;
 	float	dt;
@@ -52,8 +56,6 @@ private:
 	//The amount of frames rendered last second
 	uint lastSecondFrameCount = 0u;
 
-
-
 	float avgFps = 0.0f;
 
 	//Controls if the frame cap is activated or not
@@ -65,7 +67,7 @@ private:
 
 public:
 
-	Application();
+	Application(int argc, char* args[]);
 	~Application();
 
 	bool Awake();
@@ -73,13 +75,7 @@ public:
 	bool CleanUp();
 	bool Reset();
 
-	
-	float GetDeltaTime() const;
-
-	//Used to change the frame cap
-	void UpdateFrameCap(uint newCap);
-
-
+	updateStatus Draw2D();
 
 private:
 
@@ -87,3 +83,7 @@ private:
 	void PrepareUpdate();
 	void FinishUpdate();
 };
+
+extern Application* App;
+
+#endif // __APPLICATION_CPP__

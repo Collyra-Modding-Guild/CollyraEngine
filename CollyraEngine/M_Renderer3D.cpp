@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "M_Renderer3D.h"
+#include "Primitive.h"
 
 #include "Glew/include/glew.h"
 #pragma comment (lib, "Glew/libx86/glew32.lib")
@@ -141,6 +142,14 @@ updateStatus M_Renderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 updateStatus M_Renderer3D::PostUpdate(float dt)
 {
+	updateStatus ret = UPDATE_CONTINUE;
+
+	CPlane p(0, 1, 0, 0);
+	p.axis = true;
+	p.Render();
+
+	ret = App->Draw2D();
+
 	SDL_GL_SwapWindow(App->window->window);
 
 	return UPDATE_CONTINUE;
