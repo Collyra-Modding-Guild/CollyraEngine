@@ -22,9 +22,11 @@ typedef unsigned int uint;
 
 enum updateStatus
 {
-	UPDATE_CONTINUE = 1,
+	UPDATE_ERROR = -1,
+
 	UPDATE_STOP,
-	UPDATE_ERROR
+	UPDATE_CONTINUE
+	
 };
 
 // Configuration -----------

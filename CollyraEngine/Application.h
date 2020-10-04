@@ -47,14 +47,14 @@ private:
 	Timer lastFrameTimer;
 
 	//The amount of frames rendered since the game started
-	uint64 frame_count = 0u;
+	uint64 frameCount = 0u;
 
 	//The amount of frames rendered last second
-	uint last_second_frame_count = 0u;
+	uint lastSecondFrameCount = 0u;
 
 
 
-	float avg_fps = 0.0f;
+	float avgFps = 0.0f;
 
 	//Controls if the frame cap is activated or not
 	bool frameCap = true;

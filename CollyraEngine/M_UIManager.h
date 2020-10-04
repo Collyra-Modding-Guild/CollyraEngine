@@ -31,7 +31,11 @@ public:
 	void			NewInputLog(uint keyID, uint keyState, bool isMouse = false);
 private:
 	//Functions for the editor menus-----------
-	updateStatus	stopAppButton();
+	void			ShowConfigMenu();
+
+
+	bool			ShowMainMenuBar();
+
 	bool 			ShowMenuRandomTest();
 	bool 			ShowMenuSphereCollisionTest();
 	bool 			ShowMenuAABBCollisions();
@@ -39,7 +43,6 @@ private:
 	bool 			ShowMenuPlaneCollisions();
 	bool 			ShowMenuRayCollisions();
 	bool 			ShowMenuTriangleCollisions();
-	void			ShowMainMenuBar();
 
 	void			CalculateHistogramLogs();
 
@@ -47,7 +50,10 @@ protected:
 	//Bool controllers for the editor menus-----------
 	bool showDemoWindow;
 
+	bool showConfigMenu;
+
 	bool menuMathRandomTest;
+	
 		bool	generateRandomNumbers;
 		int		generatedInt;
 		float	generatedFloat;
@@ -83,7 +89,7 @@ protected:
 		bool	triangleCollisionTest;
 		math::Triangle tri1;
 		math::Triangle tri2;
-
+	
 	LCG randomSeed;
 
 };

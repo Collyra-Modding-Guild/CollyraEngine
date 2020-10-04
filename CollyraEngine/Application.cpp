@@ -64,8 +64,8 @@ bool Application::Awake()
 // ---------------------------------------------
 void Application::PrepareUpdate()
 {
-	frame_count++;
-	last_second_frame_count++;
+	frameCount++;
+	lastSecondFrameCount++;
 
 	//Controls pause of the game
 	if (!pause)
@@ -91,8 +91,8 @@ void Application::FinishUpdate()
 	// Amount of frames during the last second
 	if (lastSecFrames->Read() >= 1000)
 	{
-		frames_on_last_update = last_second_frame_count;
-		last_second_frame_count = 0;
+		frames_on_last_update = lastSecondFrameCount;
+		lastSecondFrameCount = 0;
 		lastSecFrames->Start();
 	}
 
