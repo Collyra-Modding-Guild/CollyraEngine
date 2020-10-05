@@ -31,6 +31,7 @@ private:
 
 	bool			debugMode;
 
+
 };
 
 #endif // __WG_CONFIG_H__

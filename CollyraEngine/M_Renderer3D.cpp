@@ -13,8 +13,16 @@
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
-M_Renderer3D::M_Renderer3D(Application* app, bool start_enabled) : Module(app, start_enabled), renderer(nullptr)
-{}
+M_Renderer3D::M_Renderer3D(Application* app, bool start_enabled) : Module(app, start_enabled), 
+renderer(nullptr), 
+depthTest(true),
+cullFace(true),
+lighting(true),
+colorMaterial(true),
+texture2D(true)
+{
+
+}
 
 // Destructor
 M_Renderer3D::~M_Renderer3D()
@@ -120,16 +128,8 @@ bool M_Renderer3D::Awake()
 		GLfloat MaterialDiffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialDiffuse);
 
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_CULL_FACE);
-
-
 		lights[0].Active(true);
 		lights[1].Active(true);
-
-
-		glEnable(GL_LIGHTING);
-		glEnable(GL_COLOR_MATERIAL);
 	}
 
 	// Projection matrix for

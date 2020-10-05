@@ -26,6 +26,12 @@ public:
 
 public:
 
+	bool depthTest;
+	bool cullFace;
+	bool lighting;
+	bool colorMaterial;
+	bool texture2D;
+
 	Light lights[MAX_LIGHTS];
 	SDL_GLContext context;
 	mat3x3 NormalMatrix;

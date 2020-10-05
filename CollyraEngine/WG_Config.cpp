@@ -2,8 +2,23 @@
 #include "Application.h"
 #include "M_Window.h"
 #include "Globals.h"
+#include "M_Renderer3D.h"
 
 #include "p2Defs.h"
+
+//OpenGL
+#include "Glew/include/glew.h"
+#include "SDL/include/SDL_opengl.h"
+#include <gl/GL.h>
+#include <gl/GLU.h>
+
+//ImGui
+#include "imgui/imgui_internal.h"
+#include "imgui/imgui_impl_sdl.h"
+#include "imgui/imgui_impl_opengl3.h"
+#include "SDL/include/SDL.h"
+
+#pragma comment (lib, "Glew/libx86/glew32.lib")
 
 WG_Config::WG_Config(bool isActive) : WindowGroup(WG_CONFIG, isActive),
 fpsLog(FRAMERATE_LOG_SIZE), msLog(FRAMERATE_LOG_SIZE), newInput(false), debugMode(true)
@@ -175,6 +190,85 @@ updateStatus WG_Config::Update()
 		// We will need to get the GPU info as a bonus work.
 	}
 
+
+	if (ImGui::CollapsingHeader("Render Options"))
+	{
+		// - - - - - - - - Render Additional Options - - - - - - - - - -
+
+		if (ImGui::Checkbox("Depth Test", &App->renderer3D->depthTest)) 
+		{
+			if (glIsEnabled(GL_DEPTH_TEST)) 
+			{
+				glDisable(GL_DEPTH_TEST);
+				LOG("Depth Test: DISABLED.");	
+			}
+			else
+			{
+				glEnable(GL_DEPTH_TEST);
+				LOG("Depth Test: ENABLED.");
+			}		
+		}		
+	
+		ImGui::SameLine();
+
+		if (ImGui::Checkbox("Cull Face", &App->renderer3D->cullFace)) 
+		{
+			if (glIsEnabled(GL_CULL_FACE))
+			{
+				glDisable(GL_CULL_FACE);
+				LOG("Cull Face: DISABLED.");
+			}
+			else
+			{
+				glEnable(GL_CULL_FACE);
+				LOG("Cull Face: ENABLED.");
+			}
+		}
+	
+		if (ImGui::Checkbox("Lighting", &App->renderer3D->lighting))
+		{
+			if (glIsEnabled(GL_LIGHTING))
+			{
+				glDisable(GL_LIGHTING);
+				LOG("Lighting: DISABLED.");
+			}
+			else
+			{
+				glEnable(GL_LIGHTING);
+				LOG("Lighting: ENABLED.");
+			}
+		}
+			
+		ImGui::SameLine();
+
+		if (ImGui::Checkbox("Color Material", &App->renderer3D->colorMaterial)) 
+		{
+			if (glIsEnabled(GL_COLOR_MATERIAL))
+			{
+				glDisable(GL_COLOR_MATERIAL);
+				LOG("Color Material: DISABLED.");
+			}
+			else
+			{
+				glEnable(GL_COLOR_MATERIAL);
+				LOG("Color Material: ENABLED.");
+			}
+		}
+
+		if (ImGui::Checkbox("Texture 2D", &App->renderer3D->texture2D)) 
+		{
+			if (glIsEnabled(GL_TEXTURE_2D))
+			{
+				glDisable(GL_TEXTURE_2D);
+				LOG("Texture 2D: DISABLED.");
+			}
+			else
+			{
+				glEnable(GL_TEXTURE_2D);
+				LOG("Texture 2D: ENABLED.");
+			}
+		}
+	}
 
 	ImGui::End();
 
