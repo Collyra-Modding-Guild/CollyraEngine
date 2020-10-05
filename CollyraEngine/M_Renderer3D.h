@@ -7,10 +7,13 @@
 
 #define MAX_LIGHTS 8
 
+class M_Camera3D;
+class M_Window;
+
 class M_Renderer3D : public Module
 {
 public:
-	M_Renderer3D(Application* app, bool start_enabled = true);
+	M_Renderer3D(MODULE_TYPE type, bool start_enabled = true);
 	~M_Renderer3D();
 
 	bool Awake();
@@ -38,5 +41,8 @@ public:
 	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 
 	SDL_Renderer* renderer;
+
+	M_Camera3D* cameraModule;
+	M_Window* windowModule;
 
 };

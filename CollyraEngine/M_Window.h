@@ -10,7 +10,7 @@ class M_Window : public Module
 {
 public:
 
-	M_Window(Application* app, bool start_enabled = true);
+	M_Window(MODULE_TYPE type, bool start_enabled = true);
 
 	// Destructor
 	virtual ~M_Window();
@@ -29,8 +29,8 @@ public:
 	//The window we'll be rendering to
 	SDL_Window* window;
 
-	int SCREEN_WIDTH = 1280;
-	int SCREEN_HEIGHT = 1024;
+	int screenWidth = 1280;
+	int screenHeight = 1024;
 
 	float brightness = 0.0f;
 

@@ -13,6 +13,9 @@
 #include "M_Camera3D.h"
 #include "M_UIManager.h"
 
+
+
+
 class Application
 {
 public:
@@ -77,6 +80,11 @@ public:
 
 	updateStatus Draw2D();
 	bool IsDebugModeOn();
+
+	Module* GetModulePointer(MODULE_TYPE type);
+	void NewInputLog(uint key, uint state, bool isMouse = false);
+	void NewConsoleLog(const char* newLog);
+
 
 private:
 

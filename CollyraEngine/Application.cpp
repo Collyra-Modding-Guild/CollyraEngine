@@ -3,11 +3,12 @@
 
 Application::Application(int argc, char* args[]) : argc(argc), args(args)
 {
-	window = new M_Window(this);
-	input = new M_Input(this);
-	renderer3D = new M_Renderer3D(this);
-	camera = new M_Camera3D(this, true);
-	uiManager = new M_UIManager(this, true);
+	window = new M_Window(M_WINDOW, true);
+	input = new M_Input(M_INPUT, true);
+	renderer3D = new M_Renderer3D(M_RENDER3D, true);
+	camera = new M_Camera3D(M_CAMERA3D, true);
+	uiManager = new M_UIManager(M_UIMANAGER, true);
+
 	engineTimer = new Timer();
 	gamePerfTimer = new PerfTimer();
 	lastSecFrames = new Timer();
@@ -181,12 +182,80 @@ updateStatus Application::Draw2D()
 
 bool Application::IsDebugModeOn()
 {
-	if (App->uiManager != nullptr)
+	if (uiManager != nullptr)
 	{
-		return(App->uiManager->IsDebugModeOn());
+		return(uiManager->IsDebugModeOn());
 	}
 
 	return false;
+}
+
+Module* Application::GetModulePointer(MODULE_TYPE type)
+{
+	Module* ret = nullptr;
+
+	switch (type)
+	{
+	case NO_TYPE:
+	{
+		return nullptr;
+	}
+		break;
+	case M_WINDOW:
+	{
+		if (window != nullptr)
+			ret = window;
+	}
+		break;
+	case M_RENDER3D:
+	{
+		if (renderer3D != nullptr)
+			ret = renderer3D;
+	}
+		break;
+	case M_INPUT:
+	{
+		if (input != nullptr)
+			ret = input;
+	}
+		break;
+	case M_CAMERA3D:
+	{
+		if (camera != nullptr)
+			ret = camera;
+	}
+		break;
+	case M_UIMANAGER:
+	{
+		if (uiManager != nullptr)
+			ret = uiManager;
+	}
+		break;
+	default:
+		return nullptr;
+		break;
+	}
+
+	if (ret == nullptr || ret->GetType() != type)
+		return nullptr;
+
+	return ret;
+}
+
+void Application::NewInputLog(uint key, uint state, bool isMouse)
+{
+	if (uiManager != nullptr)
+	{
+		uiManager->NewInputLog(key, state, isMouse);
+	}
+}
+
+void Application::NewConsoleLog(const char* newLog)
+{
+	if (uiManager != nullptr)
+	{
+		uiManager->NewConsoleLog(newLog);
+	}
 }
 
 void Application::AddModule(Module* mod)

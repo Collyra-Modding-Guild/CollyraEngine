@@ -17,7 +17,7 @@ class M_UIManager : public Module
 {
 public:
 
-	M_UIManager(Application* app, bool start_enabled = true);
+	M_UIManager(MODULE_TYPE type, bool start_enabled = true);
 	~M_UIManager();
 
 	bool Awake();
@@ -60,7 +60,11 @@ public:
 	WG_Config* configWindow;
 	WG_Console* consoleWindow;
 
-protected:
+private:
+	//Module Pointers------------
+	M_Window* windowModule;
+
+
 	//Bool controllers for the editor menus-----------
 	bool showDemoWindow;
 

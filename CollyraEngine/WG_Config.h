@@ -6,6 +6,9 @@
 
 #define FRAMERATE_LOG_SIZE 100
 
+class M_Input;
+class M_Window;
+
 class WG_Config : public WindowGroup
 {
 public:
@@ -31,6 +34,8 @@ private:
 
 	bool			debugMode;
 
+	M_Input* inputModule;
+	M_Window* windowModule;
 
 };
 

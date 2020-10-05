@@ -4,7 +4,16 @@ class Application;
 
 #include <string>
 
+enum MODULE_TYPE
+{
+	NO_TYPE = -1,
 
+	M_WINDOW,
+	M_RENDER3D,
+	M_INPUT,
+	M_CAMERA3D,
+	M_UIMANAGER
+};
 
 class Module
 {
@@ -12,9 +21,8 @@ private:
 	bool enabled;
 
 public:
-	Application* App;
 
-	Module(Application* parent, bool start_enabled = true) : App(parent)
+	Module(MODULE_TYPE type, bool start_enabled = true) :type(type)
 	{}
 
 	virtual ~Module()
@@ -79,8 +87,10 @@ public:
 
 	virtual updateStatus Draw2D(float dt) { return UPDATE_CONTINUE; }
 
+	MODULE_TYPE GetType() { return type; }
+
 public:
 
-	std::string				name;
+	MODULE_TYPE type;
 
 };

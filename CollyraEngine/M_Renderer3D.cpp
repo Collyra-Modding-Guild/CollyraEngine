@@ -13,8 +13,8 @@
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
-M_Renderer3D::M_Renderer3D(Application* app, bool start_enabled) : Module(app, start_enabled), 
-renderer(nullptr), 
+M_Renderer3D::M_Renderer3D(MODULE_TYPE type, bool start_enabled) : Module(type, start_enabled),
+renderer(nullptr),
 depthTest(true),
 cullFace(true),
 lighting(true),
@@ -34,8 +34,19 @@ bool M_Renderer3D::Awake()
 	LOG("Creating 3D Renderer context");
 	bool ret = true;
 
+	cameraModule = (M_Camera3D*)App->GetModulePointer(M_CAMERA3D);
+	if (cameraModule == nullptr)
+	{
+		ret = false;
+	}
+	windowModule = (M_Window*)App->GetModulePointer(M_WINDOW);
+	if (windowModule == nullptr)
+	{
+		ret = false;
+	}
+
 	//Create context
-	context = SDL_GL_CreateContext(App->window->window);
+	context = SDL_GL_CreateContext(windowModule->window);
 
 	if (context == NULL)
 	{
@@ -145,10 +156,11 @@ updateStatus M_Renderer3D::PreUpdate(float dt)
 	glLoadIdentity();
 
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(App->camera->GetViewMatrix());
+	glLoadMatrixf(cameraModule->GetViewMatrix());
 
 	// light 0 on cam pos
-	lights[0].SetPos(App->camera->Position.x, App->camera->Position.y, App->camera->Position.z);
+
+	lights[0].SetPos(cameraModule->Position.x, cameraModule->Position.y, cameraModule->Position.z);
 
 	for (uint i = 0; i < MAX_LIGHTS; ++i)
 		lights[i].Render();
@@ -166,7 +178,7 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 	p.axis = true;
 	p.Render();
 
-	CCube c(10,10,10);
+	CCube c(10, 10, 10);
 
 	//Debug Render
 	if (App->IsDebugModeOn() == true)
@@ -181,7 +193,9 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 	//UI Render
 	ret = App->Draw2D();
 
-	SDL_GL_SwapWindow(App->window->window);
+
+
+	SDL_GL_SwapWindow(windowModule->window);
 
 	return UPDATE_CONTINUE;
 }
@@ -200,11 +214,11 @@ bool M_Renderer3D::CleanUp()
 void M_Renderer3D::OnResize()
 {
 	//We set the new screen height & width
-	SDL_GetWindowSize(App->window->window, &App->window->SCREEN_WIDTH, &App->window->SCREEN_HEIGHT);
+	SDL_GetWindowSize(windowModule->window, &windowModule->screenWidth, &windowModule->screenHeight);
 
 	//Calculate OpenGl projection matrix -----------------
-	float width = (float)App->window->SCREEN_WIDTH;
-	float height = (float)App->window->SCREEN_HEIGHT;
+	float width = (float)windowModule->screenWidth;
+	float height = (float)windowModule->screenHeight;
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();

@@ -24,7 +24,7 @@
 #pragma comment (lib, "Glew/libx86/glew32.lib")
 
 
-M_UIManager::M_UIManager(Application* app, bool start_enabled) : Module(app, start_enabled), showDemoWindow(false), menuMathRandomTest(false), generateRandomNumbers(false), generatedInt(0.f), generatedFloat(0.f),
+M_UIManager::M_UIManager(MODULE_TYPE type, bool start_enabled) : Module(type, start_enabled), showDemoWindow(false), menuMathRandomTest(false), generateRandomNumbers(false), generatedInt(0.f), generatedFloat(0.f),
 sphereCollisionTest(false), AABBCollisionTest(false), OBBCollisionTest(false), randomStartThreshold(0.f), randomEndThreshold(0.f), planeCollisionTest(false),
 rayCollisionTest(false), triangleCollisionTest(false), showConfigMenu(false),
 configWindow(nullptr), consoleWindow(nullptr)
@@ -94,8 +94,20 @@ bool M_UIManager::Start()
 		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 	}
 
+	windowModule = (M_Window*)App->GetModulePointer(M_WINDOW);
+	if (windowModule == nullptr)
+	{
+		return false;
+	}
+
+	M_Renderer3D* renderModule = (M_Renderer3D*)App->GetModulePointer(M_RENDER3D);
+	if (renderModule == nullptr)
+	{
+		return false;
+	}
+
 	// Setup Platform/Renderer bindings
-	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer3D->context);
+	ImGui_ImplSDL2_InitForOpenGL(windowModule->window, renderModule->context);
 	ImGui_ImplOpenGL3_Init("#version 130");
 
 	return true;
@@ -107,7 +119,7 @@ updateStatus M_UIManager::PreUpdate(float dt)
 
 	// Start the Dear ImGui frame
 	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplSDL2_NewFrame(App->window->window);
+	ImGui_ImplSDL2_NewFrame(windowModule->window);
 	ImGui::NewFrame();
 
 	return ret;

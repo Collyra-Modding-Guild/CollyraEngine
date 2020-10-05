@@ -22,7 +22,13 @@
 
 WG_Config::WG_Config(bool isActive) : WindowGroup(WG_CONFIG, isActive),
 fpsLog(FRAMERATE_LOG_SIZE), msLog(FRAMERATE_LOG_SIZE), newInput(false), debugMode(true)
-{}
+{
+
+	
+	inputModule = (M_Input*)App->GetModulePointer(M_INPUT);
+
+	windowModule = (M_Window*)App->GetModulePointer(M_WINDOW);
+}
 
 WG_Config::~WG_Config()
 {}
@@ -37,16 +43,23 @@ updateStatus WG_Config::Update()
 
 	static char string[SHORT_STR];
 
+	M_Window* windowModule = (M_Window*)App->GetModulePointer(M_WINDOW);
+
+	if (windowModule == nullptr || windowModule->GetType() != M_WINDOW)
+	{
+		return UPDATE_STOP;
+	}
+
+
 	if (ImGui::CollapsingHeader("Application"))
 	{
-
 		// - - - - - - - App Title - - - - - - - - -
-		strcpy_s(string, SHORT_STR, App->window->winTitle);
+		strcpy_s(string, SHORT_STR, windowModule->winTitle);
 		if (ImGui::InputText("App Name", string, 26))
-			App->window->SetTitle(string);
+			windowModule->SetTitle(string);
 
 		// - - - - - - - Organization - - - - - - - - -
-		strcpy_s(string, SHORT_STR, App->window->orgTitle);
+		strcpy_s(string, SHORT_STR, windowModule->orgTitle);
 		ImGui::InputText("Organization", string, 26);
 
 		ImGui::Separator(); // - - - - - - - - - - - - -
@@ -68,32 +81,32 @@ updateStatus WG_Config::Update()
 	if (ImGui::CollapsingHeader("Window"))
 	{
 		// - - - - - - - - Window Brightness - - - - - - - - - -
-		if (ImGui::SliderFloat("Brightness", &App->window->brightness, 0.0f, 1.0f))
-			SDL_SetWindowBrightness(App->window->window, App->window->brightness);
+		if (ImGui::SliderFloat("Brightness", &windowModule->brightness, 0.0f, 1.0f))
+			SDL_SetWindowBrightness(windowModule->window, windowModule->brightness);
 
 		// - - - - - - - - Screen Surface - - - - - - - - - -
-		if (ImGui::SliderInt("Width", &App->window->SCREEN_WIDTH, 0, 1920))
-			SDL_SetWindowSize(App->window->window, App->window->SCREEN_WIDTH, App->window->SCREEN_HEIGHT);
+		if (ImGui::SliderInt("Width", &windowModule->screenWidth, 0, 1920))
+			SDL_SetWindowSize(windowModule->window, windowModule->screenWidth, windowModule->screenHeight);
 
-		if (ImGui::SliderInt("Height", &App->window->SCREEN_HEIGHT, 0, 1080))
-			SDL_SetWindowSize(App->window->window, App->window->SCREEN_WIDTH, App->window->SCREEN_HEIGHT);
+		if (ImGui::SliderInt("Height", &windowModule->screenHeight, 0, 1080))
+			SDL_SetWindowSize(windowModule->window, windowModule->screenWidth, windowModule->screenHeight);
 
 		// - - - - - - - - Display Modes - - - - - - - - - -
-		if (ImGui::Checkbox("Fullscreen", &App->window->fullscreen))
-			App->window->SetFullscreen(App->window->fullscreen);
+		if (ImGui::Checkbox("Fullscreen", &windowModule->fullscreen))
+			windowModule->SetFullscreen(windowModule->fullscreen);
 
 		ImGui::SameLine();
 
-		if (ImGui::Checkbox("Resizable", &App->window->resizable))
-			SDL_SetWindowResizable(App->window->window, (SDL_bool)App->window->resizable);
+		if (ImGui::Checkbox("Resizable", &windowModule->resizable))
+			SDL_SetWindowResizable(windowModule->window, (SDL_bool)windowModule->resizable);
 
-		if (ImGui::Checkbox("Borderless", &App->window->borderless))
-			App->window->SetBorderless(App->window->borderless);
+		if (ImGui::Checkbox("Borderless", &windowModule->borderless))
+			windowModule->SetBorderless(windowModule->borderless);
 
 		ImGui::SameLine();
 
-		if (ImGui::Checkbox("Full Desktop", &App->window->fullscreen_desktop))
-			App->window->SetFullscreenDesktop(App->window->fullscreen_desktop);
+		if (ImGui::Checkbox("Full Desktop", &windowModule->fullscreen_desktop))
+			windowModule->SetFullscreenDesktop(windowModule->fullscreen_desktop);
 
 	}
 
@@ -108,15 +121,15 @@ updateStatus WG_Config::Update()
 		// - - - - - - - - Mouse Reading - - - - - - - - -
 		ImGui::Text("Mouse Position:");
 		ImGui::SameLine();
-		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%i, %i", App->input->GetMouseX(), App->input->GetMouseY());
+		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%i, %i", inputModule->GetMouseX(), inputModule->GetMouseY());
 
 		ImGui::Text("Mouse Motion:");
 		ImGui::SameLine();
-		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%i, %i", App->input->GetMouseXMotion(), App->input->GetMouseYMotion());
+		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%i, %i", inputModule->GetMouseXMotion(), inputModule->GetMouseYMotion());
 
 		ImGui::Text("Mouse Wheel:");
 		ImGui::SameLine();
-		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%i", App->input->GetMouseZ());
+		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%i", inputModule->GetMouseZ());
 
 		// - - - - - - - - General Input Reading - - - - - - - - -
 
@@ -195,7 +208,9 @@ updateStatus WG_Config::Update()
 	{
 		// - - - - - - - - Render Additional Options - - - - - - - - - -
 
-		if (ImGui::Checkbox("Depth Test", &App->renderer3D->depthTest)) 
+		bool check = glIsEnabled(GL_DEPTH_TEST);
+
+		if (ImGui::Checkbox("Depth Test", &check))
 		{
 			if (glIsEnabled(GL_DEPTH_TEST)) 
 			{
@@ -211,7 +226,9 @@ updateStatus WG_Config::Update()
 	
 		ImGui::SameLine();
 
-		if (ImGui::Checkbox("Cull Face", &App->renderer3D->cullFace)) 
+		check = glIsEnabled(GL_CULL_FACE);
+
+		if (ImGui::Checkbox("Cull Face", &check))
 		{
 			if (glIsEnabled(GL_CULL_FACE))
 			{
@@ -224,8 +241,10 @@ updateStatus WG_Config::Update()
 				LOG("Cull Face: ENABLED.");
 			}
 		}
+
+		check = glIsEnabled(GL_LIGHTING);
 	
-		if (ImGui::Checkbox("Lighting", &App->renderer3D->lighting))
+		if (ImGui::Checkbox("Lighting", &check))
 		{
 			if (glIsEnabled(GL_LIGHTING))
 			{
@@ -240,8 +259,10 @@ updateStatus WG_Config::Update()
 		}
 			
 		ImGui::SameLine();
+		
+		check = glIsEnabled(GL_COLOR_MATERIAL);
 
-		if (ImGui::Checkbox("Color Material", &App->renderer3D->colorMaterial)) 
+		if (ImGui::Checkbox("Color Material", &check))
 		{
 			if (glIsEnabled(GL_COLOR_MATERIAL))
 			{
@@ -255,7 +276,9 @@ updateStatus WG_Config::Update()
 			}
 		}
 
-		if (ImGui::Checkbox("Texture 2D", &App->renderer3D->texture2D)) 
+		check = glIsEnabled(GL_TEXTURE_2D);
+
+		if (ImGui::Checkbox("Texture 2D", &check))
 		{
 			if (glIsEnabled(GL_TEXTURE_2D))
 			{

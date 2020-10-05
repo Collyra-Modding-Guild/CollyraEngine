@@ -6,7 +6,7 @@
 #include "SDL/include/SDL_video.h"
 
 
-M_Window::M_Window(Application* app, bool start_enabled) : Module(app, start_enabled)
+M_Window::M_Window(MODULE_TYPE type, bool start_enabled) : Module(type, start_enabled)
 {
 	window = NULL;	
 	screen_surface = NULL;
@@ -34,8 +34,8 @@ bool M_Window::Awake()
 	else
 	{
 		//Create window
-		int width = SCREEN_WIDTH * SCREEN_SIZE;
-		int height = SCREEN_HEIGHT * SCREEN_SIZE;
+		int width = screenWidth * SCREEN_SIZE;
+		int height = screenHeight * SCREEN_SIZE;
 
 		winTitle = TITLE;
 

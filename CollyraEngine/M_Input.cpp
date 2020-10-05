@@ -10,7 +10,7 @@
 
 #define MAX_KEYS 300
 
-M_Input::M_Input(Application* app, bool start_enabled) : Module(app, start_enabled)
+M_Input::M_Input(MODULE_TYPE type, bool start_enabled) : Module(type, start_enabled)
 {
 	keyboard = new KEY_STATE[MAX_KEYS];
 	memset(keyboard, KEY_IDLE, sizeof(KEY_STATE) * MAX_KEYS);
@@ -53,12 +53,12 @@ updateStatus M_Input::PreUpdate(float dt)
 			if (keyboard[i] == KEY_IDLE)
 			{
 				keyboard[i] = KEY_DOWN;
-				App->uiManager->NewInputLog(i, KEY_DOWN);
+				App->NewInputLog(i, KEY_DOWN);
 			}
 			else if (keyboard[i] != KEY_REPEAT)
 			{
 				keyboard[i] = KEY_REPEAT;
-				App->uiManager->NewInputLog(i, KEY_REPEAT);
+				App->NewInputLog(i, KEY_REPEAT);
 			}
 		}
 		else
@@ -66,7 +66,7 @@ updateStatus M_Input::PreUpdate(float dt)
 			if (keyboard[i] == KEY_REPEAT || keyboard[i] == KEY_DOWN)
 			{
 				keyboard[i] = KEY_UP;
-				App->uiManager->NewInputLog(i, KEY_UP);
+				App->NewInputLog(i, KEY_UP);
 			}
 			else
 				keyboard[i] = KEY_IDLE;
@@ -86,12 +86,12 @@ updateStatus M_Input::PreUpdate(float dt)
 			if (mouseButton[i] == KEY_IDLE)
 			{
 				mouseButton[i] = KEY_DOWN;
-				App->uiManager->NewInputLog(i, KEY_DOWN, true);
+				App->NewInputLog(i, KEY_DOWN, true);
 			}
 			else if (mouseButton[i] != KEY_REPEAT)
 			{
 				mouseButton[i] = KEY_REPEAT;
-				App->uiManager->NewInputLog(i, KEY_REPEAT, true);
+				App->NewInputLog(i, KEY_REPEAT, true);
 			}
 		}
 		else
@@ -99,7 +99,7 @@ updateStatus M_Input::PreUpdate(float dt)
 			if (mouseButton[i] == KEY_REPEAT || mouseButton[i] == KEY_DOWN)
 			{
 				mouseButton[i] = KEY_UP;
-				App->uiManager->NewInputLog(i, KEY_UP, true);
+				App->NewInputLog(i, KEY_UP, true);
 			}
 			else
 				mouseButton[i] = KEY_IDLE;
@@ -134,8 +134,17 @@ updateStatus M_Input::PreUpdate(float dt)
 
 			case SDL_WINDOWEVENT:
 			{
-				if(e.window.event == SDL_WINDOWEVENT_RESIZED)
-					App->renderer3D->OnResize();
+				if (e.window.event == SDL_WINDOWEVENT_RESIZED)
+				{
+					M_Renderer3D* rendererModule = (M_Renderer3D*)App->GetModulePointer(M_RENDER3D);
+
+					if (rendererModule == nullptr || rendererModule->GetType() != M_RENDER3D)
+					{
+						return UPDATE_STOP;
+					}
+					rendererModule->OnResize();
+
+				}
 			}
 		}
 	}
