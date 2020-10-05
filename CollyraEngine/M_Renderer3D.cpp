@@ -166,8 +166,16 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 	p.axis = true;
 	p.Render();
 
+	CCube c(10,10,10);
+
 	//Debug Render
-	
+	if (App->IsDebugModeOn() == true)
+	{
+		BeginDebugMode();
+		//App->DebugDraw();
+		c.Render(true);
+		EndDebugMode();
+	}
 
 
 	//UI Render
@@ -250,4 +258,16 @@ bool M_Renderer3D::Blit(SDL_Texture* texture, int x, int y, const SDL_Rect* sect
 	}
 
 	return ret;
+}
+
+void M_Renderer3D::BeginDebugMode()
+{
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+}
+
+void M_Renderer3D::EndDebugMode()
+{
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
 }

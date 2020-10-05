@@ -179,6 +179,16 @@ updateStatus Application::Draw2D()
 	return ret;
 }
 
+bool Application::IsDebugModeOn()
+{
+	if (App->uiManager != nullptr)
+	{
+		return(App->uiManager->IsDebugModeOn());
+	}
+
+	return false;
+}
+
 void Application::AddModule(Module* mod)
 {
 	moduleList.push_back(mod);

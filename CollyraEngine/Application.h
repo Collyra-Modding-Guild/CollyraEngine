@@ -76,6 +76,7 @@ public:
 	bool Reset();
 
 	updateStatus Draw2D();
+	bool IsDebugModeOn();
 
 private:
 

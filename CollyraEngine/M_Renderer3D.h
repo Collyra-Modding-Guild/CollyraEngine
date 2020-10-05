@@ -21,6 +21,9 @@ public:
 	void OnResize();
 	bool Blit(SDL_Texture* texture, int x, int y, const SDL_Rect* section = NULL, float speed_x = 1.0f, float speed_y = 1.0f, SDL_RendererFlip flip = SDL_FLIP_NONE, double angle = 0, int pivot_x = INT_MAX, int pivot_y = INT_MAX) const;
 
+	void BeginDebugMode();
+	void EndDebugMode();
+
 public:
 
 	Light lights[MAX_LIGHTS];
@@ -29,4 +32,5 @@ public:
 	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 
 	SDL_Renderer* renderer;
+
 };

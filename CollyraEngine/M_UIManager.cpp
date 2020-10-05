@@ -658,6 +658,15 @@ void M_UIManager::NewFpsLog(float currMs, float currFps)
 	}
 }
 
+bool M_UIManager::IsDebugModeOn()
+{
+	if (configWindow != nullptr)
+	{
+		return (configWindow->IsDebugModeOn());
+	}
+	return false;
+}
+
 
 void M_UIManager::NewInputLog(uint key, uint state, bool isMouse)
 {

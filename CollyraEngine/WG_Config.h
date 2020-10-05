@@ -20,12 +20,16 @@ public:
 
 	void NewLogFramerate(float newMs, float newFps);
 
+	bool IsDebugModeOn();
+
 private:
 	std::vector<float> fpsLog;
 	std::vector<float> msLog;
 
 	ImGuiTextBuffer logInputs;
 	bool			newInput;
+
+	bool			debugMode;
 
 };
 

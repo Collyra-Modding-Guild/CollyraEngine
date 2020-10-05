@@ -21,7 +21,7 @@ public:
 
 	Primitive();
 
-	virtual void	Render() const;
+	virtual void	Render(bool wire = false) const;
 	virtual void	InnerRender() const;
 	void			SetPos(float x, float y, float z);
 	void			SetRotation(float angle, const vec3 &u);
@@ -44,11 +44,11 @@ protected:
 };
 
 // ============================================
-class Cube : public Primitive
+class CCube : public Primitive
 {
 public :
-	Cube();
-	Cube(float sizeX, float sizeY, float sizeZ);
+	CCube();
+	CCube(float sizeX, float sizeY, float sizeZ);
 	void InnerRender() const;
 public:
 	vec3 size;

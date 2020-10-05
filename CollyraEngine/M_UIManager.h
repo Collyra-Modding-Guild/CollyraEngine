@@ -36,6 +36,7 @@ public:
 	void			NewInputLog(uint keyID, uint keyState, bool isMouse = false);
 	void			NewConsoleLog(const char* newLog);
 	void			NewFpsLog(float currMs, float currFps);
+	bool			IsDebugModeOn();
 
 
 private:

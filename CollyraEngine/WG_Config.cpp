@@ -6,7 +6,7 @@
 #include "p2Defs.h"
 
 WG_Config::WG_Config(bool isActive) : WindowGroup(WG_CONFIG, isActive),
-fpsLog(FRAMERATE_LOG_SIZE), msLog(FRAMERATE_LOG_SIZE), newInput(false)
+fpsLog(FRAMERATE_LOG_SIZE), msLog(FRAMERATE_LOG_SIZE), newInput(false), debugMode(true)
 {}
 
 WG_Config::~WG_Config()
@@ -216,4 +216,9 @@ void WG_Config::NewLogFramerate(float newMs, float newFps)
 	msLog[logSize - 1] = newMs;
 	fpsLog[logSize - 1] = newFps;
 
+}
+
+bool WG_Config::IsDebugModeOn()
+{
+	return debugMode;
 }
