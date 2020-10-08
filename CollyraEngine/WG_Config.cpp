@@ -21,10 +21,8 @@
 #pragma comment (lib, "Glew/libx86/glew32.lib")
 
 WG_Config::WG_Config(bool isActive) : WindowGroup(WG_CONFIG, isActive),
-fpsLog(FRAMERATE_LOG_SIZE), msLog(FRAMERATE_LOG_SIZE), newInput(false), debugMode(true)
+fpsLog(FRAMERATE_LOG_SIZE), msLog(FRAMERATE_LOG_SIZE), newInput(false), debugMode(false)
 {
-
-	
 	inputModule = (M_Input*)App->GetModulePointer(M_INPUT);
 
 	windowModule = (M_Window*)App->GetModulePointer(M_WINDOW);
@@ -291,6 +289,8 @@ updateStatus WG_Config::Update()
 				LOG("Texture 2D: ENABLED.");
 			}
 		}
+
+		ImGui::Checkbox("Debug Draw Mode", &debugMode);
 	}
 
 	ImGui::End();

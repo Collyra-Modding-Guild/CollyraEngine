@@ -188,12 +188,14 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 		c.Render(true);
 		EndDebugMode();
 	}
+	else
+	{
+		c.Render();
+	}
 
 
 	//UI Render
 	ret = App->Draw2D();
-
-
 
 	SDL_GL_SwapWindow(windowModule->window);
 
@@ -222,7 +224,7 @@ void M_Renderer3D::OnResize()
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	ProjectionMatrix = perspective(60.0f, (width / 2) / height, 0.225f, 512.0f);
+	ProjectionMatrix = perspective(60.0f, width  / height, 0.125f, 512.0f);
 	glLoadMatrixf(&ProjectionMatrix);
 
 
