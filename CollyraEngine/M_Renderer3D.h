@@ -34,6 +34,8 @@ public:
 	bool lighting;
 	bool colorMaterial;
 	bool texture2D;
+	bool wireframe;
+	bool blend;
 
 	Light lights[MAX_LIGHTS];
 	SDL_GLContext context;

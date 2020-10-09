@@ -19,7 +19,9 @@ depthTest(true),
 cullFace(true),
 lighting(true),
 colorMaterial(true),
-texture2D(true)
+texture2D(true),
+wireframe(false),
+blend(true)
 {
 
 }
@@ -107,6 +109,8 @@ bool M_Renderer3D::Awake()
 		glEnable(GL_LIGHTING);
 		glEnable(GL_COLOR_MATERIAL);
 		glEnable(GL_TEXTURE_2D);
+		glEnable(GL_BLEND);
+		
 
 		//Check for error
 		error = glGetError();
@@ -152,6 +156,9 @@ bool M_Renderer3D::Awake()
 // PreUpdate: clear buffer
 updateStatus M_Renderer3D::PreUpdate(float dt)
 {
+
+	
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
@@ -173,25 +180,26 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 {
 	updateStatus ret = UPDATE_CONTINUE;
 
-	//Regular Render
+	
+
+	//Grind + Axis
 	CPlane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
 
-	CCube c(10, 10, 10);
+
+	// Regular Drawing
+	
+
 
 	//Debug Render
 	if (App->IsDebugModeOn() == true)
 	{
 		BeginDebugMode();
 		//App->DebugDraw();
-		c.Render(true);
 		EndDebugMode();
 	}
-	else
-	{
-		c.Render();
-	}
+
 
 
 	//UI Render
