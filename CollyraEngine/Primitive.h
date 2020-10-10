@@ -1,4 +1,3 @@
-
 #pragma once
 #include "glmath.h"
 #include "Color.h"
@@ -15,29 +14,38 @@ enum PrimitiveTypes
 	Primitive_Sensor
 };
 
+typedef float GLfloat;
+
 class Primitive
 {
 public:
 
 	Primitive();
+	Primitive(GLfloat vertices[], uint indices[]);
 
-	virtual void	Render(bool wire = false) const;
+	virtual void	Render(bool globalDebugMode = false) const;
 	virtual void	InnerRender() const;
 	void			SetPos(float x, float y, float z);
 	void			SetRotation(float angle, const vec3 &u);
 	void			Scale(float x, float y, float z);
 	void			SetInvisible(bool inVisible);
 
+	void			GenerateVertexBuffers(GLfloat* vertices, uint* indices);
+
 	PrimitiveTypes	GetType() const;
-	void			Update();
 
 public:
 	
 	Color color;
 	mat4x4 transform;
 	bool axis,wire;
-	//PhysBody3D* body = nullptr;
 	bool isInvisible;
+
+	float* vertices;
+	uint* indices;
+
+	uint verticesID, indicesID;
+	int indicesSize;
 
 protected:
 	PrimitiveTypes type;
@@ -47,13 +55,13 @@ protected:
 class CCube : public Primitive
 {
 public :
-	CCube();
-	CCube(float sizeX, float sizeY, float sizeZ);
-	void InnerRender() const;
+	CCube(float sizeX = 1.0f, float sizeY = 1.0f, float sizeZ = 1.0f);
+
+	void			GenerateCubeVertices(float sizeX = 1.0f, float sizeY = 1.0f, float sizeZ = 1.0f);
+	void			GenerateCubeIndices();
+
 public:
 	vec3 size;
-	bool isActivated;
-	float innerTimer;
 };
 
 // ============================================

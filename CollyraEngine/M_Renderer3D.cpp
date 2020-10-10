@@ -143,6 +143,10 @@ bool M_Renderer3D::Awake()
 		lights[1].Active(true);
 	}
 
+	CCube* c = new CCube(10, 10, 10);
+
+	primitives.push_back(c);
+
 	// Projection matrix for
 	OnResize();
 
@@ -173,26 +177,22 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 {
 	updateStatus ret = UPDATE_CONTINUE;
 
-	//Regular Render
 	CPlane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
-
-	CCube c(10, 10, 10);
+	p.wire = true;
 
 	//Debug Render
 	if (App->IsDebugModeOn() == true)
 	{
 		BeginDebugMode();
-		//App->DebugDraw();
-		c.Render(true);
+		App->DebugDraw();
 		EndDebugMode();
 	}
-	else
+	else //Regular Render
 	{
-		c.Render();
+		App->Draw();
 	}
-
 
 	//UI Render
 	ret = App->Draw2D();
@@ -209,7 +209,38 @@ bool M_Renderer3D::CleanUp()
 
 	SDL_GL_DeleteContext(context);
 
+	int numPrimitives = primitives.size();
+
+	for (int i = numPrimitives - 1; i >= 0; i--)
+	{
+		RELEASE(primitives[i]);
+	}
+
+	primitives.clear();
+
 	return true;
+}
+
+updateStatus M_Renderer3D::Draw(float dt)
+{
+	updateStatus ret = updateStatus::UPDATE_CONTINUE;
+
+	for (uint i = 0; i < primitives.size(); i++)
+	{
+		primitives[i]->Render();
+	}
+	return ret;
+}
+
+updateStatus M_Renderer3D::DebugDraw(float dt)
+{
+	updateStatus ret = updateStatus::UPDATE_CONTINUE;
+
+	for (uint i = 0; i < primitives.size(); i++)
+	{
+		primitives[i]->Render(true);
+	}
+	return ret;
 }
 
 //Called when a window is alterated
@@ -224,7 +255,7 @@ void M_Renderer3D::OnResize()
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	ProjectionMatrix = perspective(60.0f, width  / height, 0.125f, 512.0f);
+	ProjectionMatrix = perspective(60.0f, width / height, 0.125f, 512.0f);
 	glLoadMatrixf(&ProjectionMatrix);
 
 

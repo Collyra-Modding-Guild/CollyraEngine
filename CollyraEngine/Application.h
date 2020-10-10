@@ -79,6 +79,8 @@ public:
 	bool Reset();
 
 	updateStatus Draw2D();
+	updateStatus Draw();
+	updateStatus DebugDraw();
 	bool IsDebugModeOn();
 
 	Module* GetModulePointer(MODULE_TYPE type);

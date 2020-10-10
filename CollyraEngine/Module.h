@@ -22,7 +22,7 @@ private:
 
 public:
 
-	Module(MODULE_TYPE type, bool start_enabled = true) :type(type)
+	Module(MODULE_TYPE type, bool start_enabled = true) :type(type), enabled(start_enabled)
 	{}
 
 	virtual ~Module()
@@ -86,6 +86,8 @@ public:
 	virtual bool Reset() { return true; }
 
 	virtual updateStatus Draw2D(float dt) { return UPDATE_CONTINUE; }
+	virtual updateStatus Draw(float dt) { return UPDATE_CONTINUE; }
+	virtual updateStatus DebugDraw(float dt) { return UPDATE_CONTINUE; }
 
 	MODULE_TYPE GetType() { return type; }
 

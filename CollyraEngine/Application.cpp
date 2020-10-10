@@ -180,6 +180,34 @@ updateStatus Application::Draw2D()
 	return ret;
 }
 
+updateStatus Application::Draw()
+{
+	updateStatus ret = UPDATE_CONTINUE;
+
+	int numModules = moduleList.size();
+
+	for (int i = 0; i < numModules && ret == UPDATE_CONTINUE; i++)
+	{
+		ret = moduleList[i]->Draw(dt);
+	}
+
+	return ret;
+}
+
+updateStatus Application::DebugDraw()
+{
+	updateStatus ret = UPDATE_CONTINUE;
+
+	int numModules = moduleList.size();
+
+	for (int i = 0; i < numModules && ret == UPDATE_CONTINUE; i++)
+	{
+		ret = moduleList[i]->DebugDraw(dt);
+	}
+
+	return ret;
+}
+
 bool Application::IsDebugModeOn()
 {
 	if (uiManager != nullptr)

@@ -1,15 +1,45 @@
-
 #include "Globals.h"
+#include "Primitive.h"
+
+#include "Glew/include/glew.h"
+#pragma comment (lib, "Glew/libx86/glew32.lib")
+
 #include <gl/GL.h>
 #include <gl/GLU.h>
-#include "Primitive.h"
-//#include "glut/glut.h"
 
-//#pragma comment (lib, "glut/glut32.lib")
+#pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
+#pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
+
+uint cubeIndices[] =
+{
+	0, 1, 2,
+	2, 3, 0,
+
+	1, 5, 6,
+	6, 2, 1,
+
+	7, 6, 5,
+	5, 4, 7,
+
+	4, 0, 3,
+	3, 7, 4,
+
+	4, 5, 1,
+	1, 0, 4,
+
+	3, 2, 6,
+	6, 7, 3
+};
+
 
 // ------------------------------------------------------------
-Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point), isInvisible(false)
+Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point), isInvisible(false), verticesID(0), indicesID(0), indicesSize(-1), vertices(nullptr), indices(nullptr)
 {}
+
+Primitive::Primitive(GLfloat vertices[], uint indices[]) : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point), isInvisible(false), verticesID(0), indicesID(0), indicesSize(-1)
+{
+	GenerateVertexBuffers(vertices, indices);
+}
 
 // ------------------------------------------------------------
 PrimitiveTypes Primitive::GetType() const
@@ -18,13 +48,7 @@ PrimitiveTypes Primitive::GetType() const
 }
 
 // ------------------------------------------------------------
-void Primitive::Update()
-{
-	//body->GetTransform(&transform);
-}
-
-// ------------------------------------------------------------
-void Primitive::Render(bool debugWireMode) const
+void Primitive::Render(bool globalDebugMode) const
 {
 	glPushMatrix();
 	glMultMatrixf(transform.M);
@@ -63,15 +87,19 @@ void Primitive::Render(bool debugWireMode) const
 
 	glColor3f(color.r, color.g, color.b);
 
-	if (debugWireMode)
+	if (wire && !globalDebugMode)
+	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	else
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-
-
+		glDisable(GL_CULL_FACE);
+	}
 
 	InnerRender();
+
+	if (wire && !globalDebugMode)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glEnable(GL_CULL_FACE);
+	}
 
 	glPopMatrix();
 }
@@ -79,15 +107,12 @@ void Primitive::Render(bool debugWireMode) const
 // ------------------------------------------------------------
 void Primitive::InnerRender() const
 {
-	glPointSize(5.0f);
-
-	glBegin(GL_POINTS);
-
-	glVertex3f(0.0f, 0.0f, 0.0f);
-
-	glEnd();
-
-	glPointSize(1.0f);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, verticesID);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesID);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+	glDrawElements(GL_TRIANGLES, indicesSize, GL_UNSIGNED_INT, NULL);
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 // ------------------------------------------------------------
@@ -109,62 +134,40 @@ void Primitive::Scale(float x, float y, float z)
 }
 
 // CUBE ============================================
-CCube::CCube() : Primitive(), size(1.0f, 1.0f, 1.0f)
-{
-	type = PrimitiveTypes::Primitive_Cube;
-}
-
 CCube::CCube(float sizeX, float sizeY, float sizeZ) : Primitive(), size(sizeX, sizeY, sizeZ)
 {
 	type = PrimitiveTypes::Primitive_Cube;
+	GenerateCubeVertices(sizeX, sizeY, sizeZ);
+	GenerateCubeIndices();
 }
 
-void CCube::InnerRender() const
+void CCube::GenerateCubeVertices(float sizeX, float sizeY, float sizeZ)
 {
-	float sx = size.x * 0.5f;
-	float sy = size.y * 0.5f;
-	float sz = size.z * 0.5f;
+	GLfloat vertices[] =
+	{
+	-sizeX, -sizeY, sizeZ,
+	sizeX, -sizeY, sizeZ,
+	sizeX, sizeY, sizeZ ,
+	-sizeX, sizeY, sizeZ,
 
-	glBegin(GL_QUADS);
-
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(-sx, -sy, sz);
-	glVertex3f(sx, -sy, sz);
-	glVertex3f(sx, sy, sz);
-	glVertex3f(-sx, sy, sz);
-
-	glNormal3f(0.0f, 0.0f, -1.0f);
-	glVertex3f(sx, -sy, -sz);
-	glVertex3f(-sx, -sy, -sz);
-	glVertex3f(-sx, sy, -sz);
-	glVertex3f(sx, sy, -sz);
-
-	glNormal3f(1.0f, 0.0f, 0.0f);
-	glVertex3f(sx, -sy, sz);
-	glVertex3f(sx, -sy, -sz);
-	glVertex3f(sx, sy, -sz);
-	glVertex3f(sx, sy, sz);
-
-	glNormal3f(-1.0f, 0.0f, 0.0f);
-	glVertex3f(-sx, -sy, -sz);
-	glVertex3f(-sx, -sy, sz);
-	glVertex3f(-sx, sy, sz);
-	glVertex3f(-sx, sy, -sz);
-
-	glNormal3f(0.0f, 1.0f, 0.0f);
-	glVertex3f(-sx, sy, sz);
-	glVertex3f(sx, sy, sz);
-	glVertex3f(sx, sy, -sz);
-	glVertex3f(-sx, sy, -sz);
-
-	glNormal3f(0.0f, -1.0f, 0.0f);
-	glVertex3f(-sx, -sy, -sz);
-	glVertex3f(sx, -sy, -sz);
-	glVertex3f(sx, -sy, sz);
-	glVertex3f(-sx, -sy, sz);
-
-	glEnd();
+	-sizeX, -sizeY, -sizeZ,
+	sizeX, -sizeY, -sizeZ,
+	sizeX, sizeY, -sizeZ,
+	-sizeX, sizeY, -sizeZ
+	};
+	glGenBuffers(1, (GLuint*)&(verticesID));
+	glBindBuffer(GL_ARRAY_BUFFER, verticesID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 }
+
+void CCube::GenerateCubeIndices()
+{
+	glGenBuffers(1, (GLuint*)&(indicesID));
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);
+	indicesSize = sizeof(cubeIndices) / sizeof(uint);
+}
+
 
 // SPHERE ============================================
 Sphere::Sphere() : Primitive(), radius(1.0f)
@@ -293,4 +296,16 @@ void Primitive::SetInvisible(bool isInvisible)
 	{
 		this->isInvisible = isInvisible;
 	}
+}
+
+void Primitive::GenerateVertexBuffers(GLfloat* vertices, uint* indices)
+{
+	glGenBuffers(1, (GLuint*)&(verticesID));
+	glBindBuffer(GL_ARRAY_BUFFER, verticesID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glGenBuffers(1, (GLuint*)&(indicesID));
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(*indices), indices, GL_STATIC_DRAW);
+	indicesSize = sizeof(*indices) / sizeof(uint);
 }

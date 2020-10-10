@@ -9,6 +9,7 @@
 
 class M_Camera3D;
 class M_Window;
+class Primitive;
 
 class M_Renderer3D : public Module
 {
@@ -20,6 +21,10 @@ public:
 	updateStatus PreUpdate(float dt);
 	updateStatus PostUpdate(float dt);
 	bool CleanUp();
+
+	//Temp
+	updateStatus Draw(float dt);
+	updateStatus DebugDraw(float dt);
 
 	void OnResize();
 	bool Blit(SDL_Texture* texture, int x, int y, const SDL_Rect* section = NULL, float speed_x = 1.0f, float speed_y = 1.0f, SDL_RendererFlip flip = SDL_FLIP_NONE, double angle = 0, int pivot_x = INT_MAX, int pivot_y = INT_MAX) const;
@@ -44,5 +49,8 @@ public:
 
 	M_Camera3D* cameraModule;
 	M_Window* windowModule;
+
+	//Temp
+	std::vector<Primitive*> primitives;
 
 };
