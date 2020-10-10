@@ -290,7 +290,43 @@ updateStatus WG_Config::Update()
 			}
 		}
 
+
+		ImGui::SameLine();
+
+		//if (ImGui::Checkbox("Wireframe", &App->renderer3D->wireframe))
+		//{
+		//	if (App->renderer3D->wireframe)
+		//	{
+		//		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//		LOG("Wireframe: ENABLED.");			
+		//	}
+		//	else
+		//	{
+		//		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		//		LOG("Wireframe: DISABLED.");
+		//	}
+		//}
+
 		ImGui::Checkbox("Debug Draw Mode", &debugMode);
+
+		ImGui::SameLine();
+
+		check = glIsEnabled(GL_BLEND);
+
+		if (ImGui::Checkbox("Blend", &check))
+		{
+			if (glIsEnabled(GL_BLEND))
+			{
+				glDisable(GL_BLEND);
+				LOG("Blend: DISABLED.");
+			}
+			else
+			{
+				glEnable(GL_BLEND);
+				LOG("Blend: ENABLED.");
+			}
+		}
+	
 	}
 
 	ImGui::End();

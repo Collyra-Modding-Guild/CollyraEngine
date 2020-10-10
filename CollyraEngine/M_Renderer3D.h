@@ -34,11 +34,8 @@ public:
 
 public:
 
-	bool depthTest;
-	bool cullFace;
-	bool lighting;
-	bool colorMaterial;
-	bool texture2D;
+	bool wireframe;
+
 
 	Light lights[MAX_LIGHTS];
 	SDL_GLContext context;

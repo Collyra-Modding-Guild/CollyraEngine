@@ -15,14 +15,10 @@
 
 M_Renderer3D::M_Renderer3D(MODULE_TYPE type, bool start_enabled) : Module(type, start_enabled),
 renderer(nullptr),
-depthTest(true),
-cullFace(true),
-lighting(true),
-colorMaterial(true),
-texture2D(true)
-{
-
-}
+wireframe(false),
+cameraModule(nullptr),
+windowModule(nullptr)
+{}
 
 // Destructor
 M_Renderer3D::~M_Renderer3D()
@@ -107,6 +103,8 @@ bool M_Renderer3D::Awake()
 		glEnable(GL_LIGHTING);
 		glEnable(GL_COLOR_MATERIAL);
 		glEnable(GL_TEXTURE_2D);
+		glEnable(GL_BLEND);
+		
 
 		//Check for error
 		error = glGetError();
@@ -156,6 +154,9 @@ bool M_Renderer3D::Awake()
 // PreUpdate: clear buffer
 updateStatus M_Renderer3D::PreUpdate(float dt)
 {
+
+	
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
@@ -177,10 +178,11 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 {
 	updateStatus ret = UPDATE_CONTINUE;
 
+	//Grind + Axis
 	CPlane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
-	p.wire = true;
+
 
 	//Debug Render
 	if (App->IsDebugModeOn() == true)
@@ -194,6 +196,7 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 		App->Draw();
 	}
 
+	
 	//UI Render
 	ret = App->Draw2D();
 
