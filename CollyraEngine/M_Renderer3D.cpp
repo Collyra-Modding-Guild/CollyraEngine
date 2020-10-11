@@ -141,9 +141,12 @@ bool M_Renderer3D::Awake()
 		lights[1].Active(true);
 	}
 
-	CCube* c = new CCube(10, 10, 10);
+	//CCube* c = new CCube(10, 10, 10);
 
-	primitives.push_back(c);
+	//SSphere* s = new SSphere(4, 20, 40);
+
+	//primitives.push_back(c);
+	//primitives.push_back(s);
 
 	// Projection matrix for
 	OnResize();

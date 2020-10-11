@@ -1,6 +1,7 @@
 #pragma once
 #include "glmath.h"
 #include "Color.h"
+#include <vector>
 
 
 enum PrimitiveTypes
@@ -65,11 +66,12 @@ public:
 };
 
 // ============================================
-class Sphere : public Primitive
+class SSphere : public Primitive
 {
 public:
-	Sphere();
-	Sphere(float radius);
+	SSphere();
+	SSphere(float radius);
+	SSphere(float radius, unsigned int rings, unsigned int sectors);
 	void InnerRender() const;
 public:
 	float radius;

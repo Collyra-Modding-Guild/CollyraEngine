@@ -170,17 +170,62 @@ void CCube::GenerateCubeIndices()
 
 
 // SPHERE ============================================
-Sphere::Sphere() : Primitive(), radius(1.0f)
+SSphere::SSphere() : Primitive(), radius(1.0f)
 {
 	type = PrimitiveTypes::Primitive_Sphere;
 }
 
-Sphere::Sphere(float radius) : Primitive(), radius(radius)
+SSphere::SSphere(float radius) : Primitive(), radius(radius)
 {
 	type = PrimitiveTypes::Primitive_Sphere;
 }
 
-void Sphere::InnerRender() const
+SSphere::SSphere(float radius, unsigned int rings, unsigned int sectors) : Primitive(), radius(radius)
+{
+	float const R = 1. / (float)(rings - 1);
+	float const S = 1. / (float)(sectors - 1);
+	int r, s;
+
+	std::vector<GLfloat> vertices;
+	std::vector<GLfloat> normals;
+	std::vector<GLfloat> texcoords;
+	std::vector<GLushort> indices;
+
+	vertices.resize(rings * sectors * 3);
+	normals.resize(rings * sectors * 3);
+	texcoords.resize(rings * sectors * 2);
+
+	std::vector<GLfloat>::iterator v = vertices.begin();
+	std::vector<GLfloat>::iterator n = normals.begin();
+	std::vector<GLfloat>::iterator t = texcoords.begin();
+	for (r = 0; r < rings; r++) for (s = 0; s < sectors; s++) {
+		float const y = sin(-M_PI_2 + M_PI * r * R);
+		float const x = cos(2 * M_PI * s * S) * sin(M_PI * r * R);
+		float const z = sin(2 * M_PI * s * S) * sin(M_PI * r * R);
+
+		*t++ = s * S;
+		*t++ = r * R;
+
+		*v++ = x * radius;
+		*v++ = y * radius;
+		*v++ = z * radius;
+
+		*n++ = x;
+		*n++ = y;
+		*n++ = z;
+	}
+
+	indices.resize(rings * sectors * 4);
+	std::vector<GLushort>::iterator i = indices.begin();
+	for (r = 0; r < rings; r++) for (s = 0; s < sectors; s++) {
+		*i++ = r * sectors + s;
+		*i++ = r * sectors + (s + 1);
+		*i++ = (r + 1) * sectors + (s + 1);
+		*i++ = (r + 1) * sectors + s;
+	}
+}
+
+void SSphere::InnerRender() const
 {
 	//glutSolidSphere(radius, 25, 25);
 }
