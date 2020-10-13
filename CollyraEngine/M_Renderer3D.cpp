@@ -181,6 +181,12 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 {
 	updateStatus ret = UPDATE_CONTINUE;
 
+	SSphere s(1.0f, 36, 18);
+
+	s.InnerRender();
+	
+
+
 	//Grind + Axis
 	CPlane p(0, 1, 0, 0);
 	p.axis = true;
