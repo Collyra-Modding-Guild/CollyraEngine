@@ -103,15 +103,34 @@ public:
 };
 
 // ============================================
-class Cylinder : public Primitive
+class CCylinder : public Primitive
 {
 public:
-	Cylinder();
-	Cylinder(float radius, float height);
-	void InnerRender() const;
+	CCylinder();
+	CCylinder(float radius, float height);
+	CCylinder(float radius, int sectors, int height);
+
+	void GenerateCylinderVertices(float radius, int sectors, int height);
+	void GenerateCylinderIndices(int sectors);
+
 public:
-	float radius;
+
+	// memeber vars
 	float height;
+	float radius;
+	int sectors;                        // longitude, # of slices
+	int stackCount;                         // latitude, # of stacks
+	bool smooth;
+
+	int baseCenterIndex;
+	int topCenterIndex;
+
+	std::vector<unsigned int> indices;
+	std::vector<unsigned int> lineIndices;
+
+	// interleaved
+	std::vector<float> interleavedVertices;
+	int interleavedStride;                  // # of bytes to hop to the next vertex (should be 32 bytes)
 };
 
 // ============================================
