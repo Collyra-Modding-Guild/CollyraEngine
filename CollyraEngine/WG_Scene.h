@@ -18,7 +18,7 @@ public:
 
 	void OnResize(ImVec2 newWindowSize);
 
-	void GetWindowSize(int& w, int& h);
+	void GetWindowSize(float& w, float& h);
 
 private:
 	ImVec2 windowSize;

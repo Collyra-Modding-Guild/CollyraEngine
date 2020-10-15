@@ -24,6 +24,7 @@ updateStatus WG_Scene::Update()
 		if (winSize.x != windowSize.x || winSize.y != windowSize.y)
 			OnResize(winSize);
 
+		// We Flip the UVs
 		ImVec2 uv_min = ImVec2(0.0f, 1.0f);                 // Top-left
 		ImVec2 uv_max = ImVec2(1.0f, 0.0f);                 // Lower-right
 
@@ -31,7 +32,6 @@ updateStatus WG_Scene::Update()
 
 		ImGui::EndChild();
 	}
-
 
 	ImGui::End();
 
@@ -49,7 +49,7 @@ void WG_Scene::OnResize(ImVec2 newWindowSize)
 	App->renderer3D->OnResize();
 }
 
-void WG_Scene::GetWindowSize(int& w, int& h)
+void WG_Scene::GetWindowSize(float& w, float& h)
 {
 
 	w = windowSize.x;

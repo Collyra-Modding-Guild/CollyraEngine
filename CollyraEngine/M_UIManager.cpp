@@ -750,7 +750,7 @@ bool M_UIManager::IsDebugModeOn()
 	return false;
 }
 
-void M_UIManager::GetWindowSceneSize(int& w, int& h)
+void M_UIManager::GetWindowSceneSize(float& w, float& h)
 {
 	if (this->sceneWindow != nullptr)
 	{

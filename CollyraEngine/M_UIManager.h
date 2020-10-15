@@ -38,7 +38,7 @@ public:
 	void			NewConsoleLog(const char* newLog);
 	void			NewFpsLog(float currMs, float currFps);
 	bool			IsDebugModeOn();
-	void			GetWindowSceneSize(int& w, int& h);
+	void			GetWindowSceneSize(float& w, float& h);
 
 
 private:

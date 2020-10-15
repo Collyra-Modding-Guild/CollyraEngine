@@ -268,7 +268,7 @@ updateStatus M_Renderer3D::DebugDraw(float dt)
 //Called when a window is alterated
 void M_Renderer3D::OnResize()
 {
-	int width = 0; int height = 0;
+	float width = 0; float height = 0;
 
 	App->uiManager->GetWindowSceneSize(width, height);
 
