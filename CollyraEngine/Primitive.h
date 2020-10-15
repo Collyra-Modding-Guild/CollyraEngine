@@ -1,6 +1,16 @@
 #pragma once
 #include "glmath.h"
 #include "Color.h"
+#include <vector>
+
+
+#include "Glew/include/glew.h"
+#pragma comment (lib, "Glew/libx86/glew32.lib")
+
+#include "SDL\include\SDL_opengl.h"
+#include <gl/GL.h>
+#include <gl/GLU.h>
+
 
 
 enum PrimitiveTypes
@@ -11,7 +21,8 @@ enum PrimitiveTypes
 	Primitive_Cube,
 	Primitive_Sphere,
 	Primitive_Cylinder,
-	Primitive_Sensor
+	Primitive_Sensor,
+	Primitive_Pyramid
 };
 
 typedef float GLfloat;
@@ -65,27 +76,88 @@ public:
 };
 
 // ============================================
-class Sphere : public Primitive
+class SSphere : public Primitive
 {
 public:
-	Sphere();
-	Sphere(float radius);
-	void InnerRender() const;
+	SSphere();
+	SSphere(float radius);
+	SSphere(float radius, int sectors, int stacks);
+
+	void GenerateSphereVertices(float radius, int sectors, int stacks);
+	void GenerateSphereIndices(int sectors, int stacks);
+
 public:
+
+	// memeber vars
 	float radius;
+	int sectorCount;                        // longitude, # of slices
+	int stackCount;                         // latitude, # of stacks
+	bool smooth;
+
+	std::vector<unsigned int> indices;
+	std::vector<unsigned int> lineIndices;
+
+	// interleaved
+	std::vector<float> interleavedVertices;
+	int interleavedStride;                  // # of bytes to hop to the next vertex (should be 32 bytes)
+
 };
 
 // ============================================
-class Cylinder : public Primitive
+class CCylinder : public Primitive
 {
 public:
-	Cylinder();
-	Cylinder(float radius, float height);
-	void InnerRender() const;
+	CCylinder();
+	CCylinder(float radius, float height);
+	CCylinder(float radius, int sectors, int height);
+
+	void GenerateCylinderVertices(float radius, int sectors, int height);
+	void GenerateCylinderIndices(int sectors);
+
 public:
-	float radius;
+
+	// memeber vars
 	float height;
+	float radius;
+	int sectors;                        // longitude, # of slices
+	int stackCount;                         // latitude, # of stacks
+	bool smooth;
+
+	int baseCenterIndex;
+	int topCenterIndex;
+
+	std::vector<unsigned int> indices;
+	std::vector<unsigned int> lineIndices;
+
+	// interleaved
+	std::vector<float> interleavedVertices;
+	int interleavedStride;                  // # of bytes to hop to the next vertex (should be 32 bytes)
 };
+
+// ============================================
+class Pyramid : public Primitive
+{
+public:
+	Pyramid();
+
+	void GeneratePyramidVertices();
+	void GeneratePyramidIndices();
+
+public:
+
+	// memeber vars
+	int sectorCount;                        // longitude, # of slices
+	int stackCount;                         // latitude, # of stacks
+
+	std::vector<unsigned int> indices;
+	std::vector<unsigned int> lineIndices;
+
+	// interleaved
+	std::vector<float> interleavedVertices;
+	int interleavedStride;                  // # of bytes to hop to the next vertex (should be 32 bytes)
+
+};
+
 
 // ============================================
 class Line : public Primitive

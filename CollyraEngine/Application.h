@@ -68,6 +68,8 @@ private:
 	bool windowTitleControl = false; //Changes the title of the window
 	bool pause = false; //Bool that controls the pause of the game
 
+	
+
 public:
 
 	Application(int argc, char* args[]);

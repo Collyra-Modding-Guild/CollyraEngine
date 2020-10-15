@@ -141,8 +141,13 @@ bool M_Renderer3D::Awake()
 		lights[1].Active(true);
 	}
 
-	CCube* c = new CCube(10, 10, 10);
-	primitives.push_back(c);
+
+	//CCube* c = new CCube(10, 10, 10);
+
+	//SSphere* s = new SSphere(4, 20, 40);
+
+	//primitives.push_back(c);
+	//primitives.push_back(s);
 
 	// Projection matrix for
 	OnResize();
@@ -195,6 +200,7 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 	updateStatus ret = UPDATE_CONTINUE;
 
 	BeginDrawMode();
+
 
 	//Debug Render
 	if (App->IsDebugModeOn() == true)
