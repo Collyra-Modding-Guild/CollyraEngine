@@ -55,28 +55,28 @@ updateStatus M_Camera3D::Update(float dt)
 	if (editorCamera)
 	{
 		//Debug Cam
-		
-		vec3 newPos(0,0,0);
+
+		vec3 newPos(0, 0, 0);
 		float speed = 10.0f * dt;
-		if(inputModule->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
-			speed = (speed *2);
+		if (inputModule->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
+			speed = (speed * 2);
 
-		if(inputModule->GetKey(SDL_SCANCODE_R) == KEY_REPEAT) newPos.y += speed;
-		if(inputModule->GetKey(SDL_SCANCODE_F) == KEY_REPEAT) newPos.y -= speed;
+		if (inputModule->GetKey(SDL_SCANCODE_R) == KEY_REPEAT) newPos.y += speed;
+		if (inputModule->GetKey(SDL_SCANCODE_F) == KEY_REPEAT) newPos.y -= speed;
 
-		if(inputModule->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos -= Z * speed;
-		if(inputModule->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos += Z * speed;
+		if (inputModule->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos -= Z * speed;
+		if (inputModule->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos += Z * speed;
 
 
-		if(inputModule->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= X * speed;
-		if(inputModule->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += X * speed;
+		if (inputModule->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)newPos -= X * speed;
+		if (inputModule->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += X * speed;
 
 		Position += newPos;
 		Reference += newPos;
 
 		// Mouse motion ----------------
 
-		if(inputModule->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+		if (inputModule->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 		{
 			int dx = -inputModule->GetMouseXMotion();
 			int dy = -inputModule->GetMouseYMotion();
@@ -85,7 +85,7 @@ updateStatus M_Camera3D::Update(float dt)
 
 			Position -= Reference;
 
-			if(dx != 0)
+			if (dx != 0)
 			{
 				float DeltaX = (float)dx * Sensitivity;
 
@@ -94,14 +94,14 @@ updateStatus M_Camera3D::Update(float dt)
 				Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));
 			}
 
-			if(dy != 0)
+			if (dy != 0)
 			{
 				float DeltaY = (float)dy * Sensitivity;
 
 				Y = rotate(Y, DeltaY, X);
 				Z = rotate(Z, DeltaY, X);
 
-				if(Y.y < 0.0f)
+				if (Y.y < 0.0f)
 				{
 					Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
 					Y = cross(Z, X);
@@ -110,7 +110,7 @@ updateStatus M_Camera3D::Update(float dt)
 
 			Position = Reference + Z * length(Position);
 		}
-		
+
 	}
 
 
@@ -121,7 +121,7 @@ updateStatus M_Camera3D::Update(float dt)
 }
 
 // -----------------------------------------------------------------
-void M_Camera3D::Look(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference)
+void M_Camera3D::Look(const vec3& Position, const vec3& Reference, bool RotateAroundReference)
 {
 	this->Position = Position;
 	this->Reference = Reference;
@@ -130,7 +130,7 @@ void M_Camera3D::Look(const vec3 &Position, const vec3 &Reference, bool RotateAr
 	X = normalize(cross(vec3(0.0f, 1.0f, 0.0f), Z));
 	Y = cross(Z, X);
 
-	if(!RotateAroundReference)
+	if (!RotateAroundReference)
 	{
 		this->Reference = this->Position;
 		this->Position += Z * 0.05f;
@@ -140,7 +140,7 @@ void M_Camera3D::Look(const vec3 &Position, const vec3 &Reference, bool RotateAr
 }
 
 // -----------------------------------------------------------------
-void M_Camera3D::LookAt( const vec3 &Spot)
+void M_Camera3D::LookAt(const vec3& Spot)
 {
 	Reference = Spot;
 
@@ -153,7 +153,7 @@ void M_Camera3D::LookAt( const vec3 &Spot)
 
 
 // -----------------------------------------------------------------
-void M_Camera3D::Move(const vec3 &Movement)
+void M_Camera3D::Move(const vec3& Movement)
 {
 	Position += Movement;
 	Reference += Movement;

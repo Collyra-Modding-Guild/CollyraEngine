@@ -142,7 +142,6 @@ bool M_Renderer3D::Awake()
 	}
 
 	CCube* c = new CCube(10, 10, 10);
-
 	primitives.push_back(c);
 
 	// Projection matrix for
@@ -151,12 +150,29 @@ bool M_Renderer3D::Awake()
 	return ret;
 }
 
+void M_Renderer3D::GenerateFrameBuffers(int width, int height)
+{
+	glGenFramebuffers(1, &frameBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+
+	glGenTextures(1, &texColorBuffer);
+	glBindTexture(GL_TEXTURE_2D, texColorBuffer);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 // PreUpdate: clear buffer
 updateStatus M_Renderer3D::PreUpdate(float dt)
 {
-
-	
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
@@ -178,11 +194,7 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 {
 	updateStatus ret = UPDATE_CONTINUE;
 
-	//Grind + Axis
-	CPlane p(0, 1, 0, 0);
-	p.axis = true;
-	p.Render();
-
+	BeginDrawMode();
 
 	//Debug Render
 	if (App->IsDebugModeOn() == true)
@@ -196,7 +208,8 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 		App->Draw();
 	}
 
-	
+	EndDrawMode();
+
 	//UI Render
 	ret = App->Draw2D();
 
@@ -249,23 +262,25 @@ updateStatus M_Renderer3D::DebugDraw(float dt)
 //Called when a window is alterated
 void M_Renderer3D::OnResize()
 {
-	//We set the new screen height & width
-	SDL_GetWindowSize(windowModule->window, &windowModule->screenWidth, &windowModule->screenHeight);
+	int width = 0; int height = 0;
+
+	App->uiManager->GetWindowSceneSize(width, height);
+
+	if (width == 0 || height == 0)
+		return;
 
 	//Calculate OpenGl projection matrix -----------------
-	float width = (float)windowModule->screenWidth;
-	float height = (float)windowModule->screenHeight;
-
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	ProjectionMatrix = perspective(60.0f, width / height, 0.125f, 512.0f);
 	glLoadMatrixf(&ProjectionMatrix);
 
-
 	glViewport(0, 0, width, height);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
+	GenerateFrameBuffers(width, height);
 }
 
 // Blit to screen
@@ -313,11 +328,26 @@ bool M_Renderer3D::Blit(SDL_Texture* texture, int x, int y, const SDL_Rect* sect
 void M_Renderer3D::BeginDebugMode()
 {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
 }
 
 void M_Renderer3D::EndDebugMode()
 {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
 
+void M_Renderer3D::BeginDrawMode()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	//Grind + Axis
+	CPlane p(0, 1, 0, 0);
+	p.axis = true;
+	p.Render();
+}
+
+void M_Renderer3D::EndDrawMode()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

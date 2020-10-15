@@ -11,6 +11,7 @@
 class WindowGroup;
 class WG_Config;
 class WG_Console;
+class WG_Scene;
 
 
 class M_UIManager : public Module
@@ -37,6 +38,7 @@ public:
 	void			NewConsoleLog(const char* newLog);
 	void			NewFpsLog(float currMs, float currFps);
 	bool			IsDebugModeOn();
+	void			GetWindowSceneSize(int& w, int& h);
 
 
 private:
@@ -44,6 +46,7 @@ private:
 
 
 	bool			ShowMainMenuBar();
+	void			EnableDockSpace();
 
 	bool 			ShowMenuRandomTest();
 	bool 			ShowMenuSphereCollisionTest();
@@ -59,6 +62,7 @@ public:
 
 	WG_Config* configWindow;
 	WG_Console* consoleWindow;
+	WG_Scene* sceneWindow;
 
 private:
 	//Module Pointers------------
