@@ -1,7 +1,6 @@
 #pragma once
 #include "Globals.h"
 #include "Application.h"
-#include "M_UIManager.h"
 
 void log(const char file[], int line, const char* format, ...)
 {
@@ -19,6 +18,5 @@ void log(const char file[], int line, const char* format, ...)
 	{
 		App->NewConsoleLog(tmp_string);
 	}
-
 
 }

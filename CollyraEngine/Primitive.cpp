@@ -166,6 +166,7 @@ void CCube::GenerateCubeVertices(float sizeX, float sizeY, float sizeZ)
 	sizeX, sizeY, -sizeZ,
 	-sizeX, sizeY, -sizeZ
 	};
+
 	glGenBuffers(1, (GLuint*)&(verticesID));
 	glBindBuffer(GL_ARRAY_BUFFER, verticesID);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);

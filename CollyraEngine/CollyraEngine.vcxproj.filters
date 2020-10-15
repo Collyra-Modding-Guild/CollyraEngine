@@ -300,6 +300,9 @@
     <ClInclude Include="WG_Console.h">
       <Filter>Sources\WindowGroup</Filter>
     </ClInclude>
+    <ClInclude Include="WG_Scene.h">
+      <Filter>Sources\WindowGroup</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="log.cpp">
@@ -468,6 +471,9 @@
       <Filter>Sources\WindowGroup</Filter>
     </ClCompile>
     <ClCompile Include="WG_Console.cpp">
+      <Filter>Sources\WindowGroup</Filter>
+    </ClCompile>
+    <ClCompile Include="WG_Scene.cpp">
       <Filter>Sources\WindowGroup</Filter>
     </ClCompile>
   </ItemGroup>

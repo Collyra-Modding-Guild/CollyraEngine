@@ -12,6 +12,7 @@ enum WG_TYPE
 	WG_CONSOLE
 };
 
+class ImVec2;
 
 class WindowGroup
 {
@@ -23,8 +24,9 @@ public:
 	bool GetActive();
 
 	virtual updateStatus Update();
-
 	virtual void CleanUp();
+
+	virtual void GetWindowSize(int& w,int& h);
 
 public:
 	bool active;
