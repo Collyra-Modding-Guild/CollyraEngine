@@ -183,6 +183,11 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 
 	/*SSphere s(1.0f, 36, 18);
 	s.InnerRender();*/
+	
+	Pyramid pyr(1, 1, 1);
+
+	pyr.InnerRender();
+
 
 
 	//Grind + Axis

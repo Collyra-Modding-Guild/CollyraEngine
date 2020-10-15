@@ -139,22 +139,16 @@ class Pyramid : public Primitive
 {
 public:
 	Pyramid();
+	Pyramid(int height);
 
-	void GeneratePyramidVertices();
+	Pyramid(float sizeX = 1.0f, float sizeY = 1.0f, float sizeZ = 1.0f);
+
+	void GeneratePyramidVertices(float sizeX = 1.0f, float sizeY = 1.0f, float sizeZ = 1.0f);
 	void GeneratePyramidIndices();
 
+
 public:
-
-	// memeber vars
-	int sectorCount;                        // longitude, # of slices
-	int stackCount;                         // latitude, # of stacks
-
-	std::vector<unsigned int> indices;
-	std::vector<unsigned int> lineIndices;
-
-	// interleaved
-	std::vector<float> interleavedVertices;
-	int interleavedStride;                  // # of bytes to hop to the next vertex (should be 32 bytes)
+	vec3 size;           // # of bytes to hop to the next vertex (should be 32 bytes)
 
 };
 

@@ -31,6 +31,17 @@ uint cubeIndices[] =
 	6, 7, 3
 };
 
+uint pyramidIndices[] =
+{
+	0, 2, 1,
+	0, 3, 2,
+	0, 4, 3,
+	0, 1, 4,
+
+	4, 1, 2,
+	2, 3, 4
+};
+
 
 // ------------------------------------------------------------
 Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point), isInvisible(false), verticesID(0), indicesID(0), indicesSize(-1), vertices(nullptr), indices(nullptr)
@@ -508,4 +519,37 @@ void Primitive::GenerateVertexBuffers(GLfloat* vertices, uint* indices)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(*indices), indices, GL_STATIC_DRAW);
 	indicesSize = sizeof(*indices) / sizeof(uint);
+}
+
+// PYRAMID ============================================
+Pyramid::Pyramid(float sizeX, float sizeY, float sizeZ) : Primitive(), size(sizeX, sizeY, sizeZ)
+{
+	type = PrimitiveTypes::Primitive_Pyramid;
+	GeneratePyramidVertices(sizeX, sizeY, sizeZ);
+	GeneratePyramidIndices();
+}
+
+void Pyramid::GeneratePyramidVertices(float sizeX, float sizeY, float sizeZ)
+{
+	GLfloat vertices[] =
+	{
+	0.0f, sizeY, 0.0f,
+
+	-sizeX, -sizeY, -sizeZ,
+	sizeX, -sizeY, -sizeZ,
+	sizeX, -sizeY, sizeZ,
+	-sizeX, -sizeY, sizeZ
+	};
+
+	glGenBuffers(1, (GLuint*) & (verticesID));
+	glBindBuffer(GL_ARRAY_BUFFER, verticesID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+}
+
+void Pyramid::GeneratePyramidIndices()
+{
+	glGenBuffers(1, (GLuint*) & (indicesID));
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(pyramidIndices), pyramidIndices, GL_STATIC_DRAW);
+	indicesSize = sizeof(pyramidIndices) / sizeof(uint);
 }
