@@ -194,6 +194,7 @@ SSphere::SSphere(float radius) : Primitive(), radius(radius)
 
 SSphere::SSphere(float radius, int sectors, int stacks) : Primitive(), radius(radius)
 {
+	type = PrimitiveTypes::Primitive_Sphere;
 	GenerateSphereVertices(radius, sectors, stacks);
 	GenerateSphereIndices(sectors, stacks);
 }
@@ -300,6 +301,8 @@ CCylinder::CCylinder(float radius, float height) : Primitive(), radius(radius), 
 
 CCylinder::CCylinder(float radius, int sectors, int height) : Primitive(), radius(radius), height(height)
 {
+	type = PrimitiveTypes::Primitive_Cylinder;
+
 	GenerateCylinderVertices(radius, sectors, height);
 	GenerateCylinderIndices(sectors);
 }
