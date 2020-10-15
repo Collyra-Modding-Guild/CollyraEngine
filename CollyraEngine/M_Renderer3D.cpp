@@ -183,9 +183,6 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 
 	/*SSphere s(1.0f, 36, 18);
 	s.InnerRender();*/
-	
-	CCylinder c(4.0f, 10, 8);
-	c.InnerRender();
 
 
 	//Grind + Axis

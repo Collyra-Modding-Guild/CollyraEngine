@@ -21,7 +21,8 @@ enum PrimitiveTypes
 	Primitive_Cube,
 	Primitive_Sphere,
 	Primitive_Cylinder,
-	Primitive_Sensor
+	Primitive_Sensor,
+	Primitive_Pyramid
 };
 
 typedef float GLfloat;
@@ -132,6 +133,31 @@ public:
 	std::vector<float> interleavedVertices;
 	int interleavedStride;                  // # of bytes to hop to the next vertex (should be 32 bytes)
 };
+
+// ============================================
+class Pyramid : public Primitive
+{
+public:
+	Pyramid();
+
+	void GeneratePyramidVertices();
+	void GeneratePyramidIndices();
+
+public:
+
+	// memeber vars
+	int sectorCount;                        // longitude, # of slices
+	int stackCount;                         // latitude, # of stacks
+
+	std::vector<unsigned int> indices;
+	std::vector<unsigned int> lineIndices;
+
+	// interleaved
+	std::vector<float> interleavedVertices;
+	int interleavedStride;                  // # of bytes to hop to the next vertex (should be 32 bytes)
+
+};
+
 
 // ============================================
 class Line : public Primitive

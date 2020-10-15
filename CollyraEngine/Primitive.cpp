@@ -288,8 +288,6 @@ CCylinder::CCylinder(float radius, float height) : Primitive(), radius(radius), 
 
 CCylinder::CCylinder(float radius, int sectors, int height) : Primitive(), radius(radius), height(height)
 {
-	
-
 	GenerateCylinderVertices(radius, sectors, height);
 	GenerateCylinderIndices(sectors);
 }
