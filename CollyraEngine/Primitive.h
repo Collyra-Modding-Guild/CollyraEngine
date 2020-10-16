@@ -1,17 +1,7 @@
 #pragma once
-#include "glmath.h"
 #include "Color.h"
 #include <vector>
-
-
-#include "Glew/include/glew.h"
-#pragma comment (lib, "Glew/libx86/glew32.lib")
-
-#include "SDL\include\SDL_opengl.h"
-#include <gl/GL.h>
-#include <gl/GLU.h>
-
-
+#include "glmath.h"
 
 enum PrimitiveTypes
 {
@@ -32,6 +22,7 @@ class Primitive
 public:
 
 	Primitive();
+	virtual ~Primitive();
 	Primitive(GLfloat vertices[], uint indices[]);
 
 	virtual void	Render(bool globalDebugMode = false) const;
@@ -51,9 +42,6 @@ public:
 	mat4x4 transform;
 	bool axis,wire;
 	bool isInvisible;
-
-	float* vertices;
-	uint* indices;
 
 	uint verticesID, indicesID;
 	int indicesSize;

@@ -4,17 +4,18 @@
 #include <vector>
 #include "Globals.h"
 #include "p2Defs.h"
+
 #include "PerfTimer.h"
 #include "Timer.h"
-#include "Module.h"
-#include "M_Window.h"
-#include "M_Input.h"
-#include "M_Renderer3D.h"
-#include "M_Camera3D.h"
-#include "M_UIManager.h"
 
+class Module;
+class M_Window;
+class M_Renderer3D;
+class M_Input;
+class M_Camera3D;
+class M_UIManager;
 
-
+enum MODULE_TYPE;
 
 class Application
 {

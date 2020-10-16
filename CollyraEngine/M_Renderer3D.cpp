@@ -1,6 +1,9 @@
 #include "Globals.h"
 #include "Application.h"
 #include "M_Renderer3D.h"
+#include "M_Camera3D.h"
+#include "M_UIManager.h"
+#include "M_Window.h"
 #include "Primitive.h"
 
 #include "Glew/include/glew.h"
@@ -14,10 +17,8 @@
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
 M_Renderer3D::M_Renderer3D(MODULE_TYPE type, bool start_enabled) : Module(type, start_enabled),
-renderer(nullptr),
-wireframe(false),
-cameraModule(nullptr),
-windowModule(nullptr)
+renderer(nullptr), wireframe(false),
+frameBuffer(0), texColorBuffer(0)
 {}
 
 // Destructor
@@ -30,12 +31,8 @@ bool M_Renderer3D::Awake()
 	LOG("Creating 3D Renderer context");
 	bool ret = true;
 
-	cameraModule = (M_Camera3D*)App->GetModulePointer(M_CAMERA3D);
-	if (cameraModule == nullptr)
-	{
-		ret = false;
-	}
-	windowModule = (M_Window*)App->GetModulePointer(M_WINDOW);
+
+	M_Window* windowModule = (M_Window*)App->GetModulePointer(M_WINDOW);
 	if (windowModule == nullptr)
 	{
 		ret = false;
@@ -104,7 +101,7 @@ bool M_Renderer3D::Awake()
 		glEnable(GL_COLOR_MATERIAL);
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_BLEND);
-		
+
 
 		//Check for error
 		error = glGetError();
@@ -141,6 +138,7 @@ bool M_Renderer3D::Awake()
 		lights[1].Active(true);
 	}
 
+
 	// Projection matrix for
 	OnResize();
 
@@ -174,6 +172,13 @@ updateStatus M_Renderer3D::PreUpdate(float dt)
 	glLoadIdentity();
 
 	glMatrixMode(GL_MODELVIEW);
+
+	M_Camera3D* cameraModule = (M_Camera3D*)App->GetModulePointer(M_CAMERA3D);
+	if (cameraModule == nullptr)
+	{
+		return UPDATE_STOP;
+	}
+
 	glLoadMatrixf(cameraModule->GetViewMatrix());
 
 	// light 0 on cam pos
@@ -210,6 +215,13 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 
 	//UI Render
 	ret = App->Draw2D();
+
+
+	M_Window* windowModule = (M_Window*)App->GetModulePointer(M_WINDOW);
+	if (windowModule == nullptr)
+	{
+		return UPDATE_STOP;
+	}
 
 	SDL_GL_SwapWindow(windowModule->window);
 

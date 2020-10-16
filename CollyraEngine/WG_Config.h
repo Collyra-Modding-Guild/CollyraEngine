@@ -34,9 +34,6 @@ private:
 
 	bool			debugMode;
 
-	M_Input* inputModule;
-	M_Window* windowModule;
-
 };
 
 #endif // __WG_CONFIG_H__

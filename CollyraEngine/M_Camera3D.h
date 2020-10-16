@@ -3,10 +3,6 @@
 #include "Globals.h"
 #include "glmath.h"
 
-#include "SDL/include/SDL_rect.h"
-
-
-
 class M_Camera3D : public Module
 {
 public:
@@ -23,19 +19,17 @@ public:
 	float* GetViewMatrix();
 	vec3 GetCameraPosition();
 
-
 private:
 
 	void CalculateViewMatrix();
 
 public:
 	
-	vec3 X, Y, Z, Position, Reference, camDistanceFromCar, newpos;
+	vec3 X, Y, Z, Position, Reference, camDistanceFromCar, newCameraPos;
 	mat3x3 rotation;
 
 	bool editorCamera;
 	float spdMultiplier;
-
 
 private:
 

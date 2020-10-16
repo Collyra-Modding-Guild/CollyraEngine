@@ -3,6 +3,7 @@
 #include "M_Window.h"
 #include "Globals.h"
 #include "M_Renderer3D.h"
+#include "M_Input.h"
 
 #include "p2Defs.h"
 
@@ -22,11 +23,7 @@
 
 WG_Config::WG_Config(bool isActive) : WindowGroup(WG_CONFIG, isActive),
 fpsLog(FRAMERATE_LOG_SIZE), msLog(FRAMERATE_LOG_SIZE), newInput(false), debugMode(false)
-{
-	inputModule = (M_Input*)App->GetModulePointer(M_INPUT);
-
-	windowModule = (M_Window*)App->GetModulePointer(M_WINDOW);
-}
+{}
 
 WG_Config::~WG_Config()
 {}
@@ -103,8 +100,8 @@ updateStatus WG_Config::Update()
 
 		ImGui::SameLine();
 
-		if (ImGui::Checkbox("Full Desktop", &windowModule->fullscreen_desktop))
-			windowModule->SetFullscreenDesktop(windowModule->fullscreen_desktop);
+		if (ImGui::Checkbox("Full Desktop", &windowModule->fullscreenDesktop))
+			windowModule->SetFullscreenDesktop(windowModule->fullscreenDesktop);
 
 	}
 
@@ -115,6 +112,10 @@ updateStatus WG_Config::Update()
 
 	if (ImGui::CollapsingHeader("Input"))
 	{
+		M_Input* inputModule = (M_Input*)App->GetModulePointer(M_INPUT);
+
+		if (inputModule == nullptr)
+			return UPDATE_STOP;
 
 		// - - - - - - - - Mouse Reading - - - - - - - - -
 		ImGui::Text("Mouse Position:");
@@ -210,18 +211,18 @@ updateStatus WG_Config::Update()
 
 		if (ImGui::Checkbox("Depth Test", &check))
 		{
-			if (glIsEnabled(GL_DEPTH_TEST)) 
+			if (glIsEnabled(GL_DEPTH_TEST))
 			{
 				glDisable(GL_DEPTH_TEST);
-				LOG("Depth Test: DISABLED.");	
+				LOG("Depth Test: DISABLED.");
 			}
 			else
 			{
 				glEnable(GL_DEPTH_TEST);
 				LOG("Depth Test: ENABLED.");
-			}		
-		}		
-	
+			}
+		}
+
 		ImGui::SameLine();
 
 		check = glIsEnabled(GL_CULL_FACE);
@@ -241,7 +242,7 @@ updateStatus WG_Config::Update()
 		}
 
 		check = glIsEnabled(GL_LIGHTING);
-	
+
 		if (ImGui::Checkbox("Lighting", &check))
 		{
 			if (glIsEnabled(GL_LIGHTING))
@@ -255,9 +256,9 @@ updateStatus WG_Config::Update()
 				LOG("Lighting: ENABLED.");
 			}
 		}
-			
+
 		ImGui::SameLine();
-		
+
 		check = glIsEnabled(GL_COLOR_MATERIAL);
 
 		if (ImGui::Checkbox("Color Material", &check))
@@ -326,7 +327,7 @@ updateStatus WG_Config::Update()
 				LOG("Blend: ENABLED.");
 			}
 		}
-	
+
 	}
 
 	ImGui::End();

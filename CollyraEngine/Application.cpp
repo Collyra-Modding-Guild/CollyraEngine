@@ -1,5 +1,13 @@
 #include "Application.h"
 
+#include "Module.h"
+#include "M_Window.h"
+#include "M_Input.h"
+#include "M_Renderer3D.h"
+#include "M_Camera3D.h"
+#include "M_UIManager.h"
+
+
 
 Application::Application(int argc, char* args[]) : argc(argc), args(args)
 {

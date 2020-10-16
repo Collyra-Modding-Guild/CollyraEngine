@@ -2,11 +2,12 @@
 #include "Application.h"
 #include "M_Input.h"
 #include "M_UIManager.h"
+#include "M_Renderer3D.h"
 
 #include "imgui/imgui.h"
-#include "imgui/imgui_internal.h"
 #include "imgui/imgui_impl_sdl.h"
-#include "imgui/imgui_impl_opengl3.h"
+
+#include "SDL/include/SDL.h"
 
 #define MAX_KEYS 300
 
@@ -73,10 +74,10 @@ updateStatus M_Input::PreUpdate(float dt)
 		}
 	}
 
-	Uint32 buttons = SDL_GetMouseState(&mouse.x, &mouse.y);
+	Uint32 buttons = SDL_GetMouseState(&mouseX, &mouseY);
 
-	mouse.x /= SCREEN_SIZE;
-	mouse.y /= SCREEN_SIZE;
+	mouseX /= SCREEN_SIZE;
+	mouseY /= SCREEN_SIZE;
 	mouse_z = 0;
 
 	for(int i = 0; i < 5; ++i)
@@ -106,7 +107,7 @@ updateStatus M_Input::PreUpdate(float dt)
 		}
 	}
 
-	mouseMotion.x = mouseMotion.y = 0;
+	mouseMotionX = mouseMotionY = 0;
 
 	bool quit = false;
 	SDL_Event e;
@@ -121,11 +122,11 @@ updateStatus M_Input::PreUpdate(float dt)
 			break;
 
 			case SDL_MOUSEMOTION:
-			mouse.x = e.motion.x / SCREEN_SIZE;
-			mouse.y = e.motion.y / SCREEN_SIZE;
+			mouseX = e.motion.x / SCREEN_SIZE;
+			mouseY = e.motion.y / SCREEN_SIZE;
 
-			mouseMotion.x = e.motion.xrel / SCREEN_SIZE;
-			mouseMotion.y = e.motion.yrel / SCREEN_SIZE;
+			mouseMotionX = e.motion.xrel / SCREEN_SIZE;
+			mouseMotionY = e.motion.yrel / SCREEN_SIZE;
 			break;
 
 			case SDL_QUIT:

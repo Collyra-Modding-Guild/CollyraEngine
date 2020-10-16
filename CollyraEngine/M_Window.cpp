@@ -6,7 +6,8 @@
 #include "SDL/include/SDL_video.h"
 
 
-M_Window::M_Window(MODULE_TYPE type, bool start_enabled) : Module(type, start_enabled)
+M_Window::M_Window(MODULE_TYPE type, bool start_enabled) : Module(type, start_enabled), brightness(0.0f), screenWidth(1280), screenHeight(1024),
+fullscreen(false), resizable(true), borderless(false), fullscreenDesktop(false)
 {
 	window = NULL;	
 	screen_surface = NULL;

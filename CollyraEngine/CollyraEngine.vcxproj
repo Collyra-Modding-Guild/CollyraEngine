@@ -152,9 +152,9 @@
     <ClInclude Include="Module.h" />
     <ClInclude Include="M_Input.h" />
     <ClInclude Include="M_Window.h" />
-    <ClInclude Include="p2Point.h" />
     <ClInclude Include="PerfTimer.h" />
     <ClInclude Include="Primitive.h" />
+    <ClInclude Include="PrimitivesIndices.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="WG_Config.h" />
     <ClInclude Include="WG_Console.h" />

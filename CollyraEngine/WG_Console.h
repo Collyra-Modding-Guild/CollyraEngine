@@ -6,11 +6,6 @@
 
 #define FRAMERATE_LOG_SIZE 100
 
-struct AppConsole
-{
-
-};
-
 class WG_Console : public WindowGroup
 {
 public:
@@ -45,9 +40,6 @@ private:
 
 
 private:
-
-	AppConsole console;
-
 	//Console Vars---
 	char                  InputBuf[256];
 	std::vector<char*>       Items;

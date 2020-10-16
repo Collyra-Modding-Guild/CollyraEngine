@@ -5,8 +5,6 @@
 
 #include <string>
 #include <vector>
-#include "MathGeoLib/include/MathGeoLib.h"
-#include "Imgui/imgui.h"
 
 class WindowGroup;
 class WG_Config;
@@ -48,15 +46,6 @@ private:
 	bool			ShowMainMenuBar();
 	void			EnableDockSpace();
 
-	bool 			ShowMenuRandomTest();
-	bool 			ShowMenuSphereCollisionTest();
-	bool 			ShowMenuAABBCollisions();
-	bool 			ShowMenuOBBCollisions();
-	bool 			ShowMenuPlaneCollisions();
-	bool 			ShowMenuRayCollisions();
-	bool 			ShowMenuTriangleCollisions();
-
-
 public:
 	std::vector<WindowGroup*> windowGroups;
 
@@ -65,50 +54,10 @@ public:
 	WG_Scene* sceneWindow;
 
 private:
-	//Module Pointers------------
-	M_Window* windowModule;
-
-
 	//Bool controllers for the editor menus-----------
 	bool showDemoWindow;
 
 	bool showConfigMenu;
-
-	bool menuMathRandomTest;
-	
-		bool	generateRandomNumbers;
-		int		generatedInt;
-		float	generatedFloat;
-		int		randomStartThreshold;
-		int		randomEndThreshold;
-
-
-
-		bool	sphereCollisionTest;
-		math::Sphere sph1;
-		math::Sphere sph2;
-
-		bool	AABBCollisionTest;
-		math::AABB AABB1;
-		math::AABB AABB2;
-
-		bool	OBBCollisionTest;
-		math::OBB OBB1;
-		math::OBB OBB2;
-
-		bool	planeCollisionTest;
-		math::Plane plane1;
-		math::Plane plane2;
-
-		bool	rayCollisionTest;
-		math::Ray ray1;
-		math::Ray ray2;
-
-		bool	triangleCollisionTest;
-		math::Triangle tri1;
-		math::Triangle tri2;
-	
-	LCG randomSeed;
 
 
 };

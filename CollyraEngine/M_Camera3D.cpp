@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "M_Camera3D.h"
 #include "M_Window.h"
+#include "M_Input.h"
 
 M_Camera3D::M_Camera3D(MODULE_TYPE type, bool start_enabled) : Module(type, start_enabled), spdMultiplier(2.0f), editorCamera(true)
 {

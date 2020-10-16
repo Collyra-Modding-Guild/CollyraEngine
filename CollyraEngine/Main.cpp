@@ -13,7 +13,6 @@
 #pragma comment (lib, "MathGeoLib/libx86/Release/MathGeoLib.lib")
 #endif
 
-
 enum main_states
 {
 	MAIN_CREATION,

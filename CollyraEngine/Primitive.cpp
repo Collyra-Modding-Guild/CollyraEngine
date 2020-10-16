@@ -1,5 +1,6 @@
 #include "Globals.h"
 #include "Primitive.h"
+#include "PrimitivesIndices.h"
 
 #include "Glew/include/glew.h"
 #pragma comment (lib, "Glew/libx86/glew32.lib")
@@ -10,42 +11,16 @@
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
-uint cubeIndices[] =
-{
-	0, 1, 2,
-	2, 3, 0,
-
-	1, 5, 6,
-	6, 2, 1,
-
-	7, 6, 5,
-	5, 4, 7,
-
-	4, 0, 3,
-	3, 7, 4,
-
-	4, 5, 1,
-	1, 0, 4,
-
-	3, 2, 6,
-	6, 7, 3
-};
-
-uint pyramidIndices[] =
-{
-	0, 2, 1,
-	0, 3, 2,
-	0, 4, 3,
-	0, 1, 4,
-
-	4, 1, 2,
-	2, 3, 4
-};
-
 
 // ------------------------------------------------------------
-Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point), isInvisible(false), verticesID(0), indicesID(0), indicesSize(-1), vertices(nullptr), indices(nullptr)
+Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point), isInvisible(false), verticesID(0), indicesID(0), indicesSize(-1)
 {}
+
+Primitive::~Primitive()
+{
+	glDeleteBuffers(1, &verticesID);
+	glDeleteBuffers(1, &indicesID);
+}
 
 Primitive::Primitive(GLfloat vertices[], uint indices[]) : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point), isInvisible(false), verticesID(0), indicesID(0), indicesSize(-1)
 {

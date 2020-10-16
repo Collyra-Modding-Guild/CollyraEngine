@@ -33,9 +33,6 @@ public:
 
 protected:
 	WG_TYPE id;
-
-
-
 };
 
 #endif // __WINDOWGROUP_H__

@@ -3,7 +3,6 @@
 #include "Globals.h"
 #include "glmath.h"
 #include "Light.h"
-#include "SDL/include/SDL_rect.h"
 
 #define MAX_LIGHTS 8
 
@@ -49,9 +48,6 @@ public:
 	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 
 	SDL_Renderer* renderer;
-
-	M_Camera3D* cameraModule;
-	M_Window* windowModule;
 
 	//Temp
 	std::vector<Primitive*> primitives;

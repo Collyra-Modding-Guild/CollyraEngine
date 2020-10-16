@@ -1,4 +1,3 @@
-
 #pragma once
 #include "Color.h"
 #include "glmath.h"

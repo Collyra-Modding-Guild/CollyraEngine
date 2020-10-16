@@ -1,7 +1,6 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
-#include "p2Point.h"
 
 #define MAX_MOUSE_BUTTONS 5
 
@@ -13,10 +12,12 @@ enum KEY_STATE
 	KEY_UP
 };
 
+class Vec2;
+
 class M_Input : public Module
 {
 public:
-	
+
 	M_Input(MODULE_TYPE type, bool start_enabled = true);
 	~M_Input();
 
@@ -36,12 +37,12 @@ public:
 
 	int GetMouseX() const
 	{
-		return mouse.x;
+		return mouseX;
 	}
 
 	int GetMouseY() const
 	{
-		return mouse.y;
+		return mouseY;
 	}
 
 	int GetMouseZ() const
@@ -51,22 +52,20 @@ public:
 
 	int GetMouseXMotion() const
 	{
-		return mouseMotion.x;
+		return mouseMotionX;
 	}
 
 	int GetMouseYMotion() const
 	{
-		return mouseMotion.y;
+		return mouseMotionY;
 	}
 
 private:
 	KEY_STATE* keyboard;
 	KEY_STATE mouseButton[MAX_MOUSE_BUTTONS];
 
-	iMPoint mouse;
-	iMPoint mouseMotion;
+	int mouseX, mouseY;
+	int mouseMotionX, mouseMotionY;
 	int mouse_z;
-
-public:
 
 };
