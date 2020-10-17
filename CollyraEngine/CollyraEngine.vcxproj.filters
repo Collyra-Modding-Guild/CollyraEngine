@@ -303,6 +303,12 @@
     <ClInclude Include="PrimitivesIndices.h">
       <Filter>Sources\Helpers</Filter>
     </ClInclude>
+    <ClInclude Include="MeshLoader.h">
+      <Filter>Sources\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Sources\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="log.cpp">
@@ -475,6 +481,12 @@
     </ClCompile>
     <ClCompile Include="WG_Scene.cpp">
       <Filter>Sources\WindowGroup</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshLoader.cpp">
+      <Filter>Sources\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Sources\Containers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -154,14 +154,6 @@ public:
 		{
 			float x, y, z;
 		};
-		struct
-		{
-			float s, t, p;
-		};
-		struct
-		{
-			float r, g, b;
-		};
 	};
 	vec3() : x(0.0f), y(0.0f), z(0.0f)
 	{}

@@ -9,7 +9,7 @@
 class M_Camera3D;
 class M_Window;
 class Primitive;
-
+class Mesh;
 
 class M_Renderer3D : public Module
 {
@@ -51,6 +51,7 @@ public:
 
 	//Temp
 	std::vector<Primitive*> primitives;
+	std::vector<Mesh> meshes;
 
 	uint frameBuffer;
 	uint texColorBuffer;

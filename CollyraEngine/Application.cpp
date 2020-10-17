@@ -7,6 +7,8 @@
 #include "M_Camera3D.h"
 #include "M_UIManager.h"
 
+#include "MeshLoader.h"
+
 
 
 Application::Application(int argc, char* args[]) : argc(argc), args(args)

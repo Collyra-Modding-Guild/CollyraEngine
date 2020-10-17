@@ -13,7 +13,7 @@
 
 
 // ------------------------------------------------------------
-Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point), isInvisible(false), verticesID(0), indicesID(0), indicesSize(-1)
+Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point), verticesID(0), indicesID(0), indicesSize(-1)
 {}
 
 Primitive::~Primitive()
@@ -22,7 +22,7 @@ Primitive::~Primitive()
 	glDeleteBuffers(1, &indicesID);
 }
 
-Primitive::Primitive(GLfloat vertices[], uint indices[]) : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point), isInvisible(false), verticesID(0), indicesID(0), indicesSize(-1)
+Primitive::Primitive(GLfloat vertices[], uint indices[]) : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point), verticesID(0), indicesID(0), indicesSize(-1)
 {
 	GenerateVertexBuffers(vertices, indices);
 }
@@ -217,7 +217,7 @@ void SSphere::GenerateSphereVertices(float radius, int sectors, int stacks)
 		}
 	}
 
-	glGenBuffers(1, (GLuint*) & (verticesID));
+	glGenBuffers(1, (GLuint*)&(verticesID));
 	glBindBuffer(GL_ARRAY_BUFFER, verticesID);
 	int verticeSize = vertices.size() * sizeof(float);
 	glBufferData(GL_ARRAY_BUFFER, verticeSize, &vertices[0], GL_STATIC_DRAW);
@@ -254,7 +254,7 @@ void SSphere::GenerateSphereIndices(int sectors, int stacks)
 		}
 	}
 
-	glGenBuffers(1, (GLuint*) & (indicesID));
+	glGenBuffers(1, (GLuint*)&(indicesID));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesID);
 	int indi = indices.size() * sizeof(float);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indi, &indices[0], GL_STATIC_DRAW);
@@ -351,7 +351,7 @@ void CCylinder::GenerateCylinderVertices(float radius, int sectors, int height)
 		}
 	}
 
-	glGenBuffers(1, (GLuint*) & (verticesID));
+	glGenBuffers(1, (GLuint*)&(verticesID));
 	glBindBuffer(GL_ARRAY_BUFFER, verticesID);
 	int verticeSize = vertices.size() * sizeof(float);
 	glBufferData(GL_ARRAY_BUFFER, verticeSize, &vertices[0], GL_STATIC_DRAW);
@@ -416,7 +416,7 @@ void CCylinder::GenerateCylinderIndices(int sectors)
 		}
 	}
 
-	glGenBuffers(1, (GLuint*) & (indicesID));
+	glGenBuffers(1, (GLuint*)&(indicesID));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesID);
 	int indi = indices.size() * sizeof(float);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indi, &indices[0], GL_STATIC_DRAW);
@@ -480,14 +480,6 @@ void CPlane::InnerRender() const
 
 
 // ---------------------------------------------------------
-void Primitive::SetInvisible(bool isInvisible)
-{
-	if (this->isInvisible != isInvisible)
-	{
-		this->isInvisible = isInvisible;
-	}
-}
-
 void Primitive::GenerateVertexBuffers(GLfloat* vertices, uint* indices)
 {
 	glGenBuffers(1, (GLuint*)&(verticesID));
@@ -520,14 +512,14 @@ void Pyramid::GeneratePyramidVertices(float sizeX, float sizeY, float sizeZ)
 	-sizeX, -sizeY, sizeZ
 	};
 
-	glGenBuffers(1, (GLuint*) & (verticesID));
+	glGenBuffers(1, (GLuint*)&(verticesID));
 	glBindBuffer(GL_ARRAY_BUFFER, verticesID);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 }
 
 void Pyramid::GeneratePyramidIndices()
 {
-	glGenBuffers(1, (GLuint*) & (indicesID));
+	glGenBuffers(1, (GLuint*)&(indicesID));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(pyramidIndices), pyramidIndices, GL_STATIC_DRAW);
 	indicesSize = sizeof(pyramidIndices) / sizeof(uint);

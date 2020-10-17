@@ -1,4 +1,3 @@
-
 #pragma once
 
 struct Color
@@ -24,6 +23,8 @@ struct Color
 		return (float*)this;
 	}
 };
+
+
 
 extern Color Red;
 extern Color Green;

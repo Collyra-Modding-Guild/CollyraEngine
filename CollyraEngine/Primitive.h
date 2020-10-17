@@ -30,7 +30,6 @@ public:
 	void			SetPos(float x, float y, float z);
 	void			SetRotation(float angle, const vec3 &u);
 	void			Scale(float x, float y, float z);
-	void			SetInvisible(bool inVisible);
 
 	void			GenerateVertexBuffers(GLfloat* vertices, uint* indices);
 
@@ -41,7 +40,6 @@ public:
 	Color color;
 	mat4x4 transform;
 	bool axis,wire;
-	bool isInvisible;
 
 	uint verticesID, indicesID;
 	int indicesSize;

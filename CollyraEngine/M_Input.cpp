@@ -146,6 +146,7 @@ updateStatus M_Input::PreUpdate(float dt)
 					rendererModule->OnResize();
 
 				}
+				break;
 			}
 		}
 	}

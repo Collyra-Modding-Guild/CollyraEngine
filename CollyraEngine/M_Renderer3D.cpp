@@ -1,10 +1,14 @@
 #include "Globals.h"
+#include "MeshLoader.h"
 #include "Application.h"
 #include "M_Renderer3D.h"
 #include "M_Camera3D.h"
 #include "M_UIManager.h"
 #include "M_Window.h"
+
+
 #include "Primitive.h"
+#include "Mesh.h"
 
 #include "Glew/include/glew.h"
 #pragma comment (lib, "Glew/libx86/glew32.lib")
@@ -92,9 +96,9 @@ bool M_Renderer3D::Awake()
 
 		//Initialize clear color
 		glClearColor(0.f, 0.f, 0.f, 1.f);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		//OpenGl Additional Enables----------
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_LIGHTING);
@@ -127,7 +131,6 @@ bool M_Renderer3D::Awake()
 		lights[1].diffuse.Set(0.75f, 0.75f, 0.75f, 1.0f);
 		lights[1].Awake();
 
-
 		GLfloat MaterialAmbient[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, MaterialAmbient);
 
@@ -138,9 +141,12 @@ bool M_Renderer3D::Awake()
 		lights[1].Active(true);
 	}
 
-
 	// Projection matrix for
 	OnResize();
+
+	std::vector<Mesh> warriorScene = MeshLoader::Load("warrior/warrior.FBX");
+	meshes.insert(meshes.end(), warriorScene.begin(), warriorScene.end());
+
 
 	return ret;
 }
@@ -195,8 +201,7 @@ updateStatus M_Renderer3D::PreUpdate(float dt)
 updateStatus M_Renderer3D::PostUpdate(float dt)
 {
 	updateStatus ret = UPDATE_CONTINUE;
-
-
+	
 	BeginDrawMode();
 
 	//Debug Render
@@ -243,6 +248,7 @@ bool M_Renderer3D::CleanUp()
 	}
 
 	primitives.clear();
+	meshes.clear();
 
 	return true;
 }
@@ -255,6 +261,14 @@ updateStatus M_Renderer3D::Draw(float dt)
 	{
 		primitives[i]->Render();
 	}
+
+
+
+	for (uint i = 0; i < meshes.size(); i++)
+	{
+		meshes[i].Render();
+	}
+
 	return ret;
 }
 
@@ -265,6 +279,11 @@ updateStatus M_Renderer3D::DebugDraw(float dt)
 	for (uint i = 0; i < primitives.size(); i++)
 	{
 		primitives[i]->Render(true);
+	}
+
+	for (uint i = 0; i < meshes.size(); i++)
+	{
+		meshes[i].Render(true);
 	}
 	return ret;
 }
