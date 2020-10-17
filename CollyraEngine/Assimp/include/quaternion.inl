@@ -3,9 +3,7 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2020, assimp team
-
-
+Copyright (c) 2006-2016, assimp team
 
 All rights reserved.
 
@@ -44,16 +42,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** @file  quaternion.inl
  *  @brief Inline implementation of aiQuaterniont<TReal> operators
  */
-#pragma once
 #ifndef AI_QUATERNION_INL_INC
 #define AI_QUATERNION_INL_INC
 
-#ifdef __GNUC__
-#   pragma GCC system_header
-#endif
-
 #ifdef __cplusplus
-#include <assimp/quaternion.h>
+#include "quaternion.h"
 
 #include <cmath>
 
@@ -161,6 +154,62 @@ inline aiMatrix3x3t<TReal> aiQuaterniont<TReal>::GetMatrix() const
     resMatrix.c3 = static_cast<TReal>(1.0) - static_cast<TReal>(2.0) * (x * x + y * y);
 
     return resMatrix;
+}
+
+template<typename TReal>
+inline aiVector3t<TReal> aiQuaterniont<TReal>::GetEuler() const
+{
+	/*
+	heading = yaw
+	attitude = pitch
+	bank = roll
+	heading = atan2(2*qy*qw-2*qx*qz , 1 - 2*qy2 - 2*qz2)
+	attitude = asin(2*qx*qy + 2*qz*qw) 
+	bank = atan2(2*qx*qw-2*qy*qz , 1 - 2*qx2 - 2*qz2)
+
+	except when qx*qy + qz*qw = 0.5 (north pole)
+	which gives:
+	heading = 2 * atan2(x,w)
+	bank = 0
+	and when qx*qy + qz*qw = -0.5 (south pole)
+	which gives:
+	heading = -2 * atan2(x,w)
+	bank = 0
+	*/
+	aiVector3t<TReal> euler;
+
+	TReal test = w*y + z*y;
+	//TReal test = x*y + z*w;
+
+	if (test > 0.499)
+	{
+		//euler.y = 2 * std::atan2(x, w);
+		euler.y = 2 * std::atan2(x, w);
+		euler.x = PI / 2;
+		euler.z = 0;
+	}
+	else if (test < -0.499)
+	{
+		//euler.y = -(2 * std::atan2(x, w));
+		euler.y = -(2 * std::atan2(x, w));
+		euler.x = -(PI / 2);
+		euler.z = 0;
+	}
+	else
+	{
+		// roll
+		euler.z = std::atan2(2 * (w * x + y * z), 1 - 2 * (x * x + y * y));
+		//euler.z = std::atan2(2 * (x * w + z * y), 1 - 2 * (z * z + x * x));
+
+		// pitch
+		euler.x = std::asin(2 * (w * y - z * y));
+		//euler.x = std::asin(2 * (x * y - z * w));
+
+		// yaw
+		euler.y = std::atan2(2 * (w * z + x * y), 1 - 2 * (y * y + z * z));
+		//euler.y = std::atan2(2 * (y * w + x * z), 1 - 2 * (y * y + z * z));
+	}
+	return euler;
 }
 
 // ---------------------------------------------------------------------------
@@ -277,7 +326,7 @@ inline aiQuaterniont<TReal>& aiQuaterniont<TReal>::Conjugate ()
 
 // ---------------------------------------------------------------------------
 template<typename TReal>
-inline aiVector3t<TReal> aiQuaterniont<TReal>::Rotate (const aiVector3t<TReal>& v) const
+inline aiVector3t<TReal> aiQuaterniont<TReal>::Rotate (const aiVector3t<TReal>& v)
 {
     aiQuaterniont q2(0.f,v.x,v.y,v.z), q = *this, qinv = q;
     qinv.Conjugate();
@@ -287,4 +336,4 @@ inline aiVector3t<TReal> aiQuaterniont<TReal>::Rotate (const aiVector3t<TReal>& 
 }
 
 #endif
-#endif // AI_QUATERNION_INL_INC
+#endif

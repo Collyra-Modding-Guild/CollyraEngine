@@ -2,9 +2,7 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2020, assimp team
-
-
+Copyright (c) 2006-2016, assimp team
 All rights reserved.
 
 Redistribution and use of this software in source and binary forms,
@@ -43,17 +41,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** @file quaternion.h
  *  @brief Quaternion structure, including operators when compiling in C++
  */
-#pragma once
 #ifndef AI_QUATERNION_H_INC
 #define AI_QUATERNION_H_INC
 
 #ifdef __cplusplus
-
-#ifdef __GNUC__
-#   pragma GCC system_header
-#endif
-
-#include <assimp/defs.h>
 
 template <typename TReal> class aiVector3t;
 template <typename TReal> class aiMatrix3x3t;
@@ -64,7 +55,7 @@ template <typename TReal>
 class aiQuaterniont
 {
 public:
-    aiQuaterniont() AI_NO_EXCEPT : w(1.0), x(), y(), z() {}
+    aiQuaterniont() : w(1.0), x(), y(), z() {}
     aiQuaterniont(TReal pw, TReal px, TReal py, TReal pz)
         : w(pw), x(px), y(py), z(pz) {}
 
@@ -83,6 +74,9 @@ public:
     /** Returns a matrix representation of the quaternion */
     aiMatrix3x3t<TReal> GetMatrix() const;
 
+    /** Returns XYZ euler angles from the quaternion */
+    aiVector3t<TReal> GetEuler() const;
+
 public:
 
     bool operator== (const aiQuaterniont& o) const;
@@ -99,7 +93,7 @@ public:
     aiQuaterniont& Conjugate ();
 
     /** Rotate a point by this quaternion */
-    aiVector3t<TReal> Rotate (const aiVector3t<TReal>& in) const;
+    aiVector3t<TReal> Rotate (const aiVector3t<TReal>& in);
 
     /** Multiply two quaternions */
     aiQuaterniont operator* (const aiQuaterniont& two) const;
@@ -121,14 +115,15 @@ public:
     TReal w, x, y, z;
 } ;
 
-typedef aiQuaterniont<ai_real> aiQuaternion;
+typedef aiQuaterniont<float> aiQuaternion;
 
 #else
 
 struct aiQuaternion {
-    ai_real w, x, y, z;
+    float w, x, y, z;
 };
 
 #endif
+
 
 #endif // AI_QUATERNION_H_INC
