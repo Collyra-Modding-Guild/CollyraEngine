@@ -55,5 +55,6 @@ public:
 
 	uint frameBuffer;
 	uint texColorBuffer;
+	uint depthBuffer;
 
 };

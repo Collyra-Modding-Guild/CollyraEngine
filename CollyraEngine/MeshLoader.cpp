@@ -43,7 +43,7 @@ std::vector<Mesh> MeshLoader::Load(const char* path)
 
 			aiMesh* mesh = scene->mMeshes[i];
 
-			for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+			for (uint i = 0; i < mesh->mNumVertices; i++)
 			{
 				Vertex vertex;
 				// process vertex positions, normals and texture coordinates
@@ -57,7 +57,7 @@ std::vector<Mesh> MeshLoader::Load(const char* path)
 				{
 					vector.x = mesh->mNormals[i].x;
 					vector.y = mesh->mNormals[i].y;
-					vector.z = -1 * mesh->mNormals[i].z;
+					vector.z = mesh->mNormals[i].z;
 					vertex.Normal = vector;
 				}
 
@@ -73,6 +73,8 @@ std::vector<Mesh> MeshLoader::Load(const char* path)
 
 				vertices.push_back(vertex);
 			}
+			LOG("New mesh with %i vertices", vertices.size());
+
 
 			for (uint i = 0; i < mesh->mNumFaces; i++)
 			{
@@ -82,10 +84,11 @@ std::vector<Mesh> MeshLoader::Load(const char* path)
 				for (uint j = 0; j < face.mNumIndices; j++)
 					indices.push_back(face.mIndices[j]);
 			}
+			LOG("New mesh with %i indices", indices.size());
 
 			loadedMeshes.push_back(Mesh(vertices, indices));
 		}
-		LOG("Loaded %i meshes!", loadedMeshes.size())
+		LOG("Loaded %i mesh(es)!", loadedMeshes.size())
 			aiReleaseImport(scene);
 	}
 	else

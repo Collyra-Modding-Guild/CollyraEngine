@@ -63,7 +63,6 @@ bool M_Renderer3D::Awake()
 
 		//Check for error
 		GLenum error = glewInit();
-
 		if (error != GL_NO_ERROR)
 		{
 			LOG("Error initializing OpenGL! %s\n", gluErrorString(error));
@@ -126,11 +125,6 @@ bool M_Renderer3D::Awake()
 		lights[0].Awake();
 
 
-		lights[1].ref = GL_LIGHT0;
-		lights[1].ambient.Set(0.25f, 0.25f, 0.25f, 1.0f);
-		lights[1].diffuse.Set(0.75f, 0.75f, 0.75f, 1.0f);
-		lights[1].Awake();
-
 		GLfloat MaterialAmbient[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, MaterialAmbient);
 
@@ -138,11 +132,11 @@ bool M_Renderer3D::Awake()
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialDiffuse);
 
 		lights[0].Active(true);
-		lights[1].Active(true);
 	}
 
 	// Projection matrix for
 	OnResize();
+
 
 	std::vector<Mesh> warriorScene = MeshLoader::Load("warrior/warrior.FBX");
 	meshes.insert(meshes.end(), warriorScene.begin(), warriorScene.end());
@@ -163,6 +157,15 @@ void M_Renderer3D::GenerateFrameBuffers(int width, int height)
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	//Generate the depth buffer
+	glGenRenderbuffers(1, &depthBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0);
 
@@ -307,7 +310,7 @@ void M_Renderer3D::OnResize()
 	glViewport(0, 0, width, height);
 
 	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	glLoadMatrixf(App->camera->GetViewMatrix());
 
 	GenerateFrameBuffers(width, height);
 }
