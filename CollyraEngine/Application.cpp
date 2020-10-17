@@ -6,6 +6,7 @@
 #include "M_Renderer3D.h"
 #include "M_Camera3D.h"
 #include "M_UIManager.h"
+#include "M_FileManager.h"
 
 #include "MeshLoader.h"
 
@@ -18,6 +19,7 @@ Application::Application(int argc, char* args[]) : argc(argc), args(args)
 	renderer3D = new M_Renderer3D(M_RENDER3D, true);
 	camera = new M_Camera3D(M_CAMERA3D, true);
 	uiManager = new M_UIManager(M_UIMANAGER, true);
+	physFS = new M_FileManager(M_FILEMANAGER, true);
 
 	engineTimer = new Timer();
 	gamePerfTimer = new PerfTimer();
@@ -31,6 +33,7 @@ Application::Application(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(window);
 	AddModule(input);
 	AddModule(uiManager);
+	AddModule(physFS);
 
 	// Scenes
 	AddModule(camera);
