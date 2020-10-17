@@ -14,6 +14,7 @@ class M_Renderer3D;
 class M_Input;
 class M_Camera3D;
 class M_UIManager;
+class M_FileManager;
 
 enum MODULE_TYPE;
 
@@ -25,6 +26,7 @@ public:
 	M_Input* input;
 	M_Camera3D* camera;
 	M_UIManager* uiManager;
+	M_FileManager* physFS;
 
 	float capTime = 0;
 
