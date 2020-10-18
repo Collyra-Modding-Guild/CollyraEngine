@@ -382,9 +382,9 @@ unsigned int M_FileManager::Load(const char* path, const char* file, char** buff
 	return Load(full_path.c_str(), buffer);
 }
 
-/* 
+
 // Read a whole file and put it in a new buffer
-uint M_FileManager::Load(const char* file, char** buffer) const
+/*uint M_FileManager::Load(const char* file, char** buffer) const  (MEMORY LEAK)
 {
 	uint ret = 0;
 
