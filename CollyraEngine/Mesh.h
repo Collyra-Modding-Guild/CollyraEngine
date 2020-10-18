@@ -26,6 +26,8 @@ public:
 	void Render(bool globalWireMode = false) const;
 	void InnerRender() const;
 
+	void DrawNormals() const;
+
 public:
 	uint idVertex; // unique vertex in VRAM
 	std::vector<Vertex>       vertices;
@@ -36,7 +38,7 @@ public:
 	uint VAO;
 
 private:
-	Color color;
+	Color color, wireColor;
 	bool wire, noFace;
 
 };

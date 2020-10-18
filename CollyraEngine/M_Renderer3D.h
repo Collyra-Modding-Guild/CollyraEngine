@@ -49,6 +49,8 @@ public:
 
 	SDL_Renderer* renderer;
 
+	bool drawFaces;
+
 private:
 	//Meshes----
 	std::vector<Primitive*> primitives;

@@ -20,7 +20,7 @@
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
 M_Renderer3D::M_Renderer3D(MODULE_TYPE type, bool start_enabled) : Module(type, start_enabled),
-renderer(nullptr), frameBuffer(-1), textureBuffer(-1), depthBuffer(-1)
+renderer(nullptr), frameBuffer(-1), textureBuffer(-1), depthBuffer(-1), drawFaces(true)
 {}
 
 // Destructor
@@ -130,7 +130,7 @@ bool M_Renderer3D::Awake()
 
 		lights[0].Active(true);
 	}
-	
+
 	AddMeshes(MeshLoader::Load("warrior/warrior.FBX"));
 
 	return ret;
@@ -210,10 +210,10 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 		App->DebugDraw();
 		EndDebugMode();
 	}
-	else //Regular Render
-	{
-		App->Draw();
-	}
+
+	if(drawFaces == true)
+	App->Draw();
+
 
 	EndDrawMode();
 

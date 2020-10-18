@@ -294,21 +294,9 @@ updateStatus WG_Config::Update()
 
 		ImGui::SameLine();
 
-		//if (ImGui::Checkbox("Wireframe", &App->renderer3D->wireframe))
-		//{
-		//	if (App->renderer3D->wireframe)
-		//	{
-		//		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		//		LOG("Wireframe: ENABLED.");			
-		//	}
-		//	else
-		//	{
-		//		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		//		LOG("Wireframe: DISABLED.");
-		//	}
-		//}
+		ImGui::Checkbox("Debug Draw Mode (Wire + Normals)", &debugMode);
 
-		ImGui::Checkbox("Debug Draw Mode", &debugMode);
+		ImGui::Checkbox("Draw Faces", &App->renderer3D->drawFaces);
 
 		ImGui::SameLine();
 
