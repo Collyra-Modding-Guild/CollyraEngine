@@ -141,7 +141,7 @@ bool M_Renderer3D::Awake()
 	std::vector<Mesh> warriorScene = MeshLoader::Load("warrior/warrior.FBX");
 	meshes.insert(meshes.end(), warriorScene.begin(), warriorScene.end());
 
-
+	
 	return ret;
 }
 
@@ -204,7 +204,7 @@ updateStatus M_Renderer3D::PreUpdate(float dt)
 updateStatus M_Renderer3D::PostUpdate(float dt)
 {
 	updateStatus ret = UPDATE_CONTINUE;
-	
+
 	BeginDrawMode();
 
 	//Debug Render

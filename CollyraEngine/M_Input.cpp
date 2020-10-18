@@ -4,6 +4,9 @@
 #include "M_UIManager.h"
 #include "M_Renderer3D.h"
 
+#include "MeshLoader.h"
+#include "Mesh.h"
+
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_sdl.h"
 
@@ -146,6 +149,18 @@ updateStatus M_Input::PreUpdate(float dt)
 					rendererModule->OnResize();
 
 				}
+				break;
+			}
+
+			case (SDL_DROPFILE): 
+			{     
+				char* droppedFilePath = e.drop.file;
+
+				std::vector <Mesh> loadedMeshes = MeshLoader::Load(droppedFilePath);
+
+				App->renderer3D->meshes.insert(App->renderer3D->meshes.end(), loadedMeshes.begin(), loadedMeshes.end());
+				
+				SDL_free(droppedFilePath);
 				break;
 			}
 		}
