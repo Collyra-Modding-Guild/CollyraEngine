@@ -140,3 +140,68 @@ int M_FileManager::CheckPath(const char* path)
 	pathVector.push_back(string);
 	return -1;
 }
+
+void M_FileManager::SplitFilePath(const char* full_path, std::string* path, std::string* file, std::string* extension) const
+{
+	if (full_path != nullptr)
+	{
+		std::string full(full_path);
+		size_t pos_separator = full.find_last_of("\\/");
+		size_t pos_dot = full.find_last_of(".");
+
+		if (path != nullptr)
+		{
+			if (pos_separator < full.length())
+				* path = full.substr(0, pos_separator + 1);
+			else
+				path->clear();
+		}
+
+		if (file != nullptr)
+		{
+			if (pos_separator < full.length())
+				* file = full.substr(pos_separator + 1, pos_dot - pos_separator - 1);
+			else
+				*file = full.substr(0, pos_dot);
+		}
+
+		if (extension != nullptr)
+		{
+			if (pos_dot < full.length())
+				* extension = full.substr(pos_dot + 1);
+			else
+				extension->clear();
+		}
+	}
+
+
+}
+
+bool M_FileManager::HasExtension(const char* path) const
+{
+	std::string ext = "";
+	SplitFilePath(path, nullptr, nullptr, &ext);
+	return ext != "";
+}
+
+bool M_FileManager::HasExtension(const char* path, std::string extension) const
+{
+	std::string ext = "";
+	SplitFilePath(path, nullptr, nullptr, &ext);
+	return ext == extension;
+}
+
+bool M_FileManager::HasExtension(const char* path, std::vector<std::string> extensions) const
+{
+	std::string ext = "";
+	SplitFilePath(path, nullptr, nullptr, &ext);
+	if (ext == "")
+		return true;
+	for (uint i = 0; i < extensions.size(); i++)
+	{
+		if (extensions[i] == ext)
+			return true;
+	}
+	return false;
+}
+

@@ -30,6 +30,12 @@ public:
 	// Allows you to use pointers to memory instead of files or things such as images or samples
 	SDL_RWops* Load(const char* path);
 
+	bool M_FileManager::HasExtension(const char* path) const;
+	bool M_FileManager::HasExtension(const char* path, std::string extension) const;
+	bool M_FileManager::HasExtension(const char* path, std::vector<std::string> extensions) const;
+
+	void M_FileManager::SplitFilePath(const char* full_path, std::string* path, std::string* file, std::string* extension) const;
+
 private:
 	int CheckPath(const char*);
 
