@@ -176,13 +176,11 @@ SSphere::SSphere(float radius, int sectors, int stacks) : Primitive(), radius(ra
 
 void SSphere::GenerateSphereVertices(float radius, int sectors, int stacks)
 {
-
 	std::vector<float> vertices;
 	std::vector<float> normals;
-	std::vector<float> texCoords;
 
-	float x, y, z, xy;                              // vertex position
-	float nx, ny, nz, lengthInv = 1.0f / radius;    // vertex normal
+	float x, y, z, xy;                              
+	float nx, ny, nz, lengthInv = 1.0f / radius;    
 
 	float sectorStep = 2 * PI / sectors;
 	float stackStep = PI / stacks;
@@ -190,24 +188,22 @@ void SSphere::GenerateSphereVertices(float radius, int sectors, int stacks)
 
 	for (int i = 0; i <= stacks; ++i)
 	{
-		stackAngle = PI / 2 - i * stackStep;        // starting from pi/2 to -pi/2
-		xy = radius * cosf(stackAngle);             // r * cos(u)
-		z = radius * sinf(stackAngle);              // r * sin(u)
+		stackAngle = PI / 2 - i * stackStep;        
+		xy = radius * cosf(stackAngle);            
+		z = radius * sinf(stackAngle);              
 
-		// add (sectorCount+1) vertices per stack
-		// the first and last vertices have same position and normal, but different tex coords
+
 		for (int j = 0; j <= sectors; ++j)
 		{
-			sectorAngle = j * sectorStep;           // starting from 0 to 2pi
+			sectorAngle = j * sectorStep;         
 
-			// vertex position (x, y, z)
-			x = xy * cosf(sectorAngle);             // r * cos(u) * cos(v)
-			y = xy * sinf(sectorAngle);             // r * cos(u) * sin(v)
+			x = xy * cosf(sectorAngle);            
+			y = xy * sinf(sectorAngle);           
 			vertices.push_back(x);
 			vertices.push_back(y);
 			vertices.push_back(z);
 
-			// normalized vertex normal (nx, ny, nz)
+
 			nx = x * lengthInv;
 			ny = y * lengthInv;
 			nz = z * lengthInv;
@@ -225,18 +221,16 @@ void SSphere::GenerateSphereVertices(float radius, int sectors, int stacks)
 
 void SSphere::GenerateSphereIndices(int sectors, int stacks)
 {
-	// generate CCW index list of sphere triangles
 	std::vector<int> indices;
 	int k1, k2;
 	for (int i = 0; i < sectors; ++i)
 	{
-		k1 = i * (sectors + 1);     // beginning of current stack
-		k2 = k1 + sectors + 1;      // beginning of next stack
+		k1 = i * (sectors + 1);   
+		k2 = k1 + sectors + 1;     
 
 		for (int j = 0; j < sectors; ++j, ++k1, ++k2)
 		{
-			// 2 triangles per sector excluding first and last stacks
-			// k1 => k2 => k1+1
+
 			if (i != 0)
 			{
 				indices.push_back(k1);
@@ -244,7 +238,6 @@ void SSphere::GenerateSphereIndices(int sectors, int stacks)
 				indices.push_back(k1 + 1);
 			}
 
-			// k1+1 => k2 => k2+1
 			if (i != (stacks - 1))
 			{
 				indices.push_back(k1 + 1);
@@ -284,9 +277,8 @@ CCylinder::CCylinder(float radius, int sectors, int height) : Primitive(), radiu
 
 void CCylinder::GenerateCylinderVertices(float radius, int sectors, int height)
 {
-
 	float sectorStep = 2 * PI / sectors;
-	float sectorAngle;  // radian
+	float sectorAngle;
 
 	std::vector<float> unitVertices;
 	for (int i = 0; i <= sectors; ++i)
@@ -302,87 +294,78 @@ void CCylinder::GenerateCylinderVertices(float radius, int sectors, int height)
 
 	for (int i = 0; i < 2; ++i)
 	{
-		float h = -height / 2.0f + i * height;           // z value; -h/2 to h/2
-		float t = 1.0f - i;                              // vertical tex coord; 1 to 0
+		float h = -height / 2.0f + i * height;
 
 		for (int j = 0, k = 0; j <= sectors; ++j, k += 3)
 		{
 			float ux = unitVertices[k];
 			float uy = unitVertices[k + 1];
 			float uz = unitVertices[k + 2];
+
 			// position vector
-			vertices.push_back(ux * radius);             // vx
-			vertices.push_back(uy * radius);             // vy
-			vertices.push_back(h);                       // vz
+			vertices.push_back(ux * radius);
+			vertices.push_back(uy * radius);
+			vertices.push_back(h);
+
 			// normal vector
-			normals.push_back(ux);                       // nx
-			normals.push_back(uy);                       // ny
-			normals.push_back(uz);                       // nz
+			normals.push_back(ux);
+			normals.push_back(uy);
+			normals.push_back(uz);
 		}
-	}
 
-	// the starting index for the base/top surface
-	//NOTE: it is used for generating indices later
-	baseCenterIndex = (int)vertices.size() / 3;
-	topCenterIndex = baseCenterIndex + sectors + 1; // include center vertex
 
-	 // put base and top vertices to arrays
-	for (int i = 0; i < 2; ++i)
-	{
-		float h = -height / 2.0f + i * height;           // z value; -h/2 to h/2
-		float nz = -1 + i * 2;                           // z value of normal; -1 to 1
+		baseCenterIndex = (int)vertices.size() / 3;
+		topCenterIndex = baseCenterIndex + sectors + 1;
 
-		// center point
-		vertices.push_back(0);     vertices.push_back(0);     vertices.push_back(h);
-		normals.push_back(0);      normals.push_back(0);      normals.push_back(nz);
-
-		for (int j = 0, k = 0; j < sectors; ++j, k += 3)
+		for (int i = 0; i < 2; ++i)
 		{
-			float ux = unitVertices[k];
-			float uy = unitVertices[k + 1];
-			// position vector
-			vertices.push_back(ux * radius);             // vx
-			vertices.push_back(uy * radius);             // vy
-			vertices.push_back(h);                       // vz
-			// normal vector
-			normals.push_back(0);                        // nx
-			normals.push_back(0);                        // ny
-			normals.push_back(nz);                       // nz
-		}
-	}
+			float h = -height / 2.0f + i * height;
+			float nz = -1 + i * 2;
 
-	glGenBuffers(1, (GLuint*)&(verticesID));
-	glBindBuffer(GL_ARRAY_BUFFER, verticesID);
-	int verticeSize = vertices.size() * sizeof(float);
-	glBufferData(GL_ARRAY_BUFFER, verticeSize, &vertices[0], GL_STATIC_DRAW);
+			vertices.push_back(0);     vertices.push_back(0);     vertices.push_back(h);
+			normals.push_back(0);      normals.push_back(0);      normals.push_back(nz);
+
+			for (int j = 0, k = 0; j < sectors; ++j, k += 3)
+			{
+				float ux = unitVertices[k];
+				float uy = unitVertices[k + 1];
+
+				// position vector
+				vertices.push_back(ux * radius);
+				vertices.push_back(uy * radius);
+				vertices.push_back(h);
+
+				// normal vector
+				normals.push_back(0);
+				normals.push_back(0);
+				normals.push_back(nz);
+			}
+		}
+
+		glGenBuffers(1, (GLuint*) & (verticesID));
+		glBindBuffer(GL_ARRAY_BUFFER, verticesID);
+		int verticeSize = vertices.size() * sizeof(float);
+		glBufferData(GL_ARRAY_BUFFER, verticeSize, &vertices[0], GL_STATIC_DRAW);
+	}
 }
 
 void CCylinder::GenerateCylinderIndices(int sectors)
 {
-
-	// generate CCW index list of cylinder triangles
 	std::vector<int> indices;
-	int k1 = 0;                         // 1st vertex index at base
-	int k2 = sectors + 1;           // 1st vertex index at top
+	int k1 = 0;                   
+	int k2 = sectors + 1;    
 
-	// indices for the side surface
 	for (int i = 0; i < sectors; ++i, ++k1, ++k2)
 	{
-		// 2 triangles per sector
-		// k1 => k1+1 => k2
 		indices.push_back(k1);
 		indices.push_back(k1 + 1);
 		indices.push_back(k2);
 
-		// k2 => k1+1 => k2+1
 		indices.push_back(k2);
 		indices.push_back(k1 + 1);
 		indices.push_back(k2 + 1);
 	}
 
-	// indices for the base surface
-	//NOTE: baseCenterIndex and topCenterIndices are pre-computed during vertex generation
-	//      please see the previous code snippet
 	for (int i = 0, k = baseCenterIndex + 1; i < sectors; ++i, ++k)
 	{
 		if (i < sectors - 1)
@@ -391,7 +374,7 @@ void CCylinder::GenerateCylinderIndices(int sectors)
 			indices.push_back(k + 1);
 			indices.push_back(k);
 		}
-		else // last triangle
+		else 
 		{
 			indices.push_back(baseCenterIndex);
 			indices.push_back(baseCenterIndex + 1);
@@ -399,7 +382,6 @@ void CCylinder::GenerateCylinderIndices(int sectors)
 		}
 	}
 
-	// indices for the top surface
 	for (int i = 0, k = topCenterIndex + 1; i < sectors; ++i, ++k)
 	{
 		if (i < sectors - 1)
@@ -408,7 +390,7 @@ void CCylinder::GenerateCylinderIndices(int sectors)
 			indices.push_back(k);
 			indices.push_back(k + 1);
 		}
-		else // last triangle
+		else 
 		{
 			indices.push_back(topCenterIndex);
 			indices.push_back(k);
@@ -422,6 +404,7 @@ void CCylinder::GenerateCylinderIndices(int sectors)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indi, &indices[0], GL_STATIC_DRAW);
 	indicesSize = indices.size();
 }
+
 
 // LINE ==================================================
 Line::Line() : Primitive(), origin(0, 0, 0), destination(1, 1, 1)
@@ -478,7 +461,6 @@ void CPlane::InnerRender() const
 	glEnd();
 }
 
-
 // ---------------------------------------------------------
 void Primitive::GenerateVertexBuffers(GLfloat* vertices, uint* indices)
 {
@@ -504,7 +486,7 @@ void Pyramid::GeneratePyramidVertices(float sizeX, float sizeY, float sizeZ)
 {
 	GLfloat vertices[] =
 	{
-	0.0f, sizeY, 0.0f,
+	0.0f, sizeY, 0.0f, 
 
 	-sizeX, -sizeY, -sizeZ,
 	sizeX, -sizeY, -sizeZ,
