@@ -25,8 +25,6 @@ public:
 	updateStatus PreUpdate(float dt);
 	updateStatus Update(float dt);
 
-	updateStatus PostUpdate(float dt);
-
 	bool CleanUp();
 
 	updateStatus Draw2D(float dt);

@@ -129,12 +129,6 @@ updateStatus M_UIManager::Update(float dt)
 	return ret;
 }
 
-updateStatus M_UIManager::PostUpdate(float dt)
-{
-
-	return UPDATE_CONTINUE;
-}
-
 // Called before quitting
 bool M_UIManager::CleanUp()
 {
