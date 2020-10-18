@@ -25,10 +25,10 @@ updateStatus WG_Scene::Update()
 			OnResize(winSize);
 
 		// We Flip the UVs
-		ImVec2 uv_min = ImVec2(0.0f, 1.0f);                 // Top-left
-		ImVec2 uv_max = ImVec2(1.0f, 0.0f);                 // Lower-right
+		ImVec2 uvMin = ImVec2(0.0f, 1.0f);                 // Top-left
+		ImVec2 uvMax = ImVec2(1.0f, 0.0f);                 // Lower-right
 
-		ImGui::Image((ImTextureID)App->renderer3D->texColorBuffer, winSize, uv_min, uv_max);
+		ImGui::Image((ImTextureID)App->renderer3D->GetTextureBuffer(), winSize, uvMin, uvMax);
 
 		ImGui::EndChild();
 	}

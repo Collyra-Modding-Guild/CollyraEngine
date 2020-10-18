@@ -6,7 +6,6 @@
 #include "M_UIManager.h"
 #include "M_Window.h"
 
-
 #include "Primitive.h"
 #include "Mesh.h"
 
@@ -21,8 +20,7 @@
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
 M_Renderer3D::M_Renderer3D(MODULE_TYPE type, bool start_enabled) : Module(type, start_enabled),
-renderer(nullptr), wireframe(false),
-frameBuffer(0), texColorBuffer(0)
+renderer(nullptr), frameBuffer(-1), textureBuffer(-1), depthBuffer(-1)
 {}
 
 // Destructor
@@ -115,7 +113,6 @@ bool M_Renderer3D::Awake()
 		}
 
 		//Lights Example
-
 		GLfloat LightModelAmbient[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LightModelAmbient);
 
@@ -133,11 +130,9 @@ bool M_Renderer3D::Awake()
 
 		lights[0].Active(true);
 	}
-
-	std::vector<Mesh> warriorScene = MeshLoader::Load("warrior/warrior.FBX");
-	meshes.insert(meshes.end(), warriorScene.begin(), warriorScene.end());
-
 	
+	AddMeshes(MeshLoader::Load("warrior/warrior.FBX"));
+
 	return ret;
 }
 
@@ -146,8 +141,8 @@ void M_Renderer3D::GenerateFrameBuffers(int width, int height)
 	glGenFramebuffers(1, &frameBuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
 
-	glGenTextures(1, &texColorBuffer);
-	glBindTexture(GL_TEXTURE_2D, texColorBuffer);
+	glGenTextures(1, &textureBuffer);
+	glBindTexture(GL_TEXTURE_2D, textureBuffer);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 
@@ -163,11 +158,16 @@ void M_Renderer3D::GenerateFrameBuffers(int width, int height)
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+uint M_Renderer3D::GetTextureBuffer()
+{
+	return textureBuffer;
 }
 
 // PreUpdate: clear buffer
@@ -374,4 +374,12 @@ void M_Renderer3D::BeginDrawMode()
 void M_Renderer3D::EndDrawMode()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void M_Renderer3D::AddMeshes(std::vector<Mesh>& newMeshes)
+{
+	if (newMeshes.size() > 0)
+	{
+		meshes.insert(meshes.end(), newMeshes.begin(), newMeshes.end());
+	}
 }

@@ -145,9 +145,7 @@ updateStatus M_Input::PreUpdate(float dt)
 			{     
 				char* droppedFilePath = e.drop.file;
 
-				std::vector <Mesh> loadedMeshes = MeshLoader::Load(droppedFilePath);
-
-				App->renderer3D->meshes.insert(App->renderer3D->meshes.end(), loadedMeshes.begin(), loadedMeshes.end());
+				App->renderer3D->AddMeshes(MeshLoader::Load(droppedFilePath));
 				
 				SDL_free(droppedFilePath);
 				break;

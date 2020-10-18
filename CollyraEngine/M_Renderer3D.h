@@ -30,6 +30,7 @@ public:
 	bool Blit(SDL_Texture* texture, int x, int y, const SDL_Rect* section = NULL, float speed_x = 1.0f, float speed_y = 1.0f, SDL_RendererFlip flip = SDL_FLIP_NONE, double angle = 0, int pivot_x = INT_MAX, int pivot_y = INT_MAX) const;
 
 	void GenerateFrameBuffers(int width, int height);
+	uint GetTextureBuffer();
 
 	void BeginDebugMode();
 	void EndDebugMode();
@@ -37,10 +38,9 @@ public:
 	void BeginDrawMode();
 	void EndDrawMode();
 
+	void AddMeshes(std::vector<Mesh>& newMeshes);
+
 public:
-
-	bool wireframe;
-
 
 	Light lights[MAX_LIGHTS];
 	SDL_GLContext context;
@@ -49,12 +49,14 @@ public:
 
 	SDL_Renderer* renderer;
 
-	//Temp
+private:
+	//Meshes----
 	std::vector<Primitive*> primitives;
 	std::vector<Mesh> meshes;
 
+	//Buffers----
 	uint frameBuffer;
-	uint texColorBuffer;
+	uint textureBuffer;
 	uint depthBuffer;
 
 };

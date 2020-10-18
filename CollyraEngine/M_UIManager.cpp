@@ -26,7 +26,7 @@
 
 
 M_UIManager::M_UIManager(MODULE_TYPE type, bool start_enabled) : Module(type, start_enabled), showDemoWindow(false), showConfigMenu(false),
-configWindow(nullptr), consoleWindow(nullptr)
+configWindow(nullptr), consoleWindow(nullptr), sceneWindow()
 {}
 
 // Destructor
