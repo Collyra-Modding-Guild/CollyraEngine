@@ -134,10 +134,6 @@ bool M_Renderer3D::Awake()
 		lights[0].Active(true);
 	}
 
-	// Projection matrix for
-	OnResize();
-
-
 	std::vector<Mesh> warriorScene = MeshLoader::Load("warrior/warrior.FBX");
 	meshes.insert(meshes.end(), warriorScene.begin(), warriorScene.end());
 
@@ -292,12 +288,8 @@ updateStatus M_Renderer3D::DebugDraw(float dt)
 }
 
 //Called when a window is alterated
-void M_Renderer3D::OnResize()
+void M_Renderer3D::OnResize(float width, float height)
 {
-	float width = 0; float height = 0;
-
-	App->uiManager->GetWindowSceneSize(width, height);
-
 	if (width == 0 || height == 0)
 		return;
 

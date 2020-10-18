@@ -138,17 +138,6 @@ updateStatus M_Input::PreUpdate(float dt)
 
 			case SDL_WINDOWEVENT:
 			{
-				if (e.window.event == SDL_WINDOWEVENT_RESIZED)
-				{
-					M_Renderer3D* rendererModule = (M_Renderer3D*)App->GetModulePointer(M_RENDER3D);
-
-					if (rendererModule == nullptr || rendererModule->GetType() != M_RENDER3D)
-					{
-						return UPDATE_STOP;
-					}
-					rendererModule->OnResize();
-
-				}
 				break;
 			}
 

@@ -42,7 +42,6 @@ void Mesh::GenerateBuffers()
 		glGenBuffers(1, (GLuint*)&(idIndex));
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndex);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint), &indices[0], GL_STATIC_DRAW);
-
 	}
 }
 

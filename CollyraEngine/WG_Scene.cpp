@@ -46,12 +46,11 @@ void WG_Scene::OnResize(ImVec2 newWindowSize)
 	windowSize.x = newWindowSize.x;
 	windowSize.y = newWindowSize.y;
 
-	App->renderer3D->OnResize();
+	App->renderer3D->OnResize(newWindowSize.x, newWindowSize.y);
 }
 
 void WG_Scene::GetWindowSize(float& w, float& h)
 {
-
 	w = windowSize.x;
 	h = windowSize.y;
 }
