@@ -1,5 +1,8 @@
+#include "Application.h"
 #include "MeshLoader.h"
 #include "Mesh.h"
+#include "M_FileManager.h"
+
 
 #include "p2Defs.h"
 #include "MathGeoLib/include/Math/float3.h"
@@ -8,6 +11,7 @@
 #include "Assimp/include/cimport.h"
 #include "Assimp/include/scene.h"
 #include "Assimp/include/postprocess.h"
+
 
 #include "Assimp/include/mesh.h"
 
@@ -32,7 +36,11 @@ void MeshLoader::CleanUp()
 
 std::vector<Mesh> MeshLoader::Load(const char* path)
 {
-	const aiScene* scene = aiImportFile(path, aiProcessPreset_TargetRealtime_MaxQuality);
+	char* buffer;
+	
+	uint bytesFile = App->physFS->Load(path, &buffer);
+	const aiScene* scene = aiImportFileFromMemory(buffer, bytesFile, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
+
 
 	std::vector<Mesh> loadedMeshes;
 	bool ret = true;
