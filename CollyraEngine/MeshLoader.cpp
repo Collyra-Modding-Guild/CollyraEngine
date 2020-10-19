@@ -65,11 +65,17 @@ bool MeshLoader::LoadSceneMeshes(const aiScene* scene, std::vector<Mesh>& loaded
 	{
 		aiMesh* mesh = scene->mMeshes[i];
 
-		std::vector<Vertex> vertices;
+		std::vector<float3> vertices;
+		std::vector<float3> normals;
+		std::vector<float2> textureCoords;
 		std::vector<uint> indices;
 
 		vertices.reserve(mesh->mNumVertices);
-		LoadVertices(mesh, vertices);
+		if (mesh->HasNormals())
+			normals.reserve(mesh->mNumVertices);
+		textureCoords.reserve(mesh->mNumVertices);
+
+		LoadVertices(mesh, vertices, normals, textureCoords);
 		if (vertices.size() == 0)
 		{
 			LOG("Error loading vertices in scene")
@@ -89,43 +95,43 @@ bool MeshLoader::LoadSceneMeshes(const aiScene* scene, std::vector<Mesh>& loaded
 			LOG("New mesh with %i indices", indices.size());
 
 
-		loadedMeshes.push_back(Mesh(vertices, indices));
+		loadedMeshes.push_back(Mesh(vertices, indices, normals, textureCoords));
 	}
 
 	return true;
 }
 
-void MeshLoader::LoadVertices(aiMesh* mesh, std::vector<Vertex>& vertices)
+void MeshLoader::LoadVertices(aiMesh* mesh, std::vector<float3>& vertices, std::vector<float3>& normals, std::vector<float2>& textureCoords)
 {
 	for (uint i = 0; i < mesh->mNumVertices; i++)
 	{
-		Vertex vertex;
 		// process vertex positions, normals and texture coordinates
 		float3 vector;
 		vector.x = mesh->mVertices[i].x;
 		vector.y = mesh->mVertices[i].y;
 		vector.z = mesh->mVertices[i].z;
-		vertex.Position = vector;
+
+		vertices.push_back(vector);
 
 		if (mesh->HasNormals())
 		{
-			vector.x = mesh->mNormals[i].x;
-			vector.y = mesh->mNormals[i].y;
-			vector.z = mesh->mNormals[i].z;
-			vertex.Normal = vector;
+			float3 normal;
+			normal.x = mesh->mNormals[i].x;
+			normal.y = mesh->mNormals[i].y;
+			normal.z = mesh->mNormals[i].z;
+			normals.push_back(normal);
 		}
 
-		if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
+		float2 textCoord;
+		if (mesh->mTextureCoords[0])
 		{
-			float2 vec;
-			vec.x = mesh->mTextureCoords[0][i].x;
-			vec.y = mesh->mTextureCoords[0][i].y;
-			vertex.TexCoords = vec;
+			textCoord.x = mesh->mTextureCoords[0][i].x;
+			textCoord.y = mesh->mTextureCoords[0][i].y;
 		}
 		else
-			vertex.TexCoords = float2(0.0f, 0.0f);
+			textCoord = float2(0.0f, 0.0f);
 
-		vertices.push_back(vertex);
+		textureCoords.push_back(textCoord);
 	}
 }
 
