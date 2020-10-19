@@ -20,7 +20,7 @@
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
 M_Renderer3D::M_Renderer3D(MODULE_TYPE type, bool start_enabled) : Module(type, start_enabled),
-renderer(nullptr), frameBuffer(-1), textureBuffer(-1), depthBuffer(-1), drawFaces(true)
+renderer(nullptr), frameBuffer(-1), textureBuffer(-1), depthBuffer(-1), drawingFaces(true), drawingDebugNormals(false)
 {}
 
 // Destructor
@@ -203,6 +203,11 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 
 	BeginDrawMode();
 
+	if (drawingDebugNormals == true)
+	{
+		DrawNormals();
+	}
+
 	//Debug Render
 	if (App->IsDebugModeOn() == true)
 	{
@@ -211,9 +216,10 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 		EndDebugMode();
 	}
 
-	if(drawFaces == true)
-	App->Draw();
-
+	if (drawingFaces == true)
+	{
+		App->Draw();
+	}
 
 	EndDrawMode();
 
@@ -261,14 +267,20 @@ updateStatus M_Renderer3D::Draw(float dt)
 		primitives[i]->Render();
 	}
 
-
-
 	for (uint i = 0; i < meshes.size(); i++)
 	{
 		meshes[i].Render();
 	}
 
 	return ret;
+}
+
+void M_Renderer3D::DrawNormals()
+{
+	for (uint i = 0; i < meshes.size(); i++)
+	{
+		meshes[i].DrawNormals();
+	}
 }
 
 updateStatus M_Renderer3D::DebugDraw(float dt)

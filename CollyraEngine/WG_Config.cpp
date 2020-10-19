@@ -294,9 +294,11 @@ updateStatus WG_Config::Update()
 
 		ImGui::SameLine();
 
-		ImGui::Checkbox("Debug Draw Mode (Wire + Normals)", &debugMode);
+		ImGui::Checkbox("Wire Draw)", &debugMode);
 
-		ImGui::Checkbox("Draw Faces", &App->renderer3D->drawFaces);
+		ImGui::Checkbox("Draw Faces", &App->renderer3D->drawingFaces);
+
+		ImGui::Checkbox("Draw Debug Normals", &App->renderer3D->drawingDebugNormals);
 
 		ImGui::SameLine();
 

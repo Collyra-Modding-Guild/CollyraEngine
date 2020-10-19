@@ -40,7 +40,7 @@ void Mesh::GenerateBuffers()
 	{
 		glGenBuffers(1, (GLuint*)&(idVertex));
 		glBindBuffer(GL_ARRAY_BUFFER, idVertex);
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float) * 3, &vertices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float3), &vertices[0], GL_STATIC_DRAW);
 
 		glGenBuffers(1, (GLuint*)&(idIndex));
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndex);
@@ -50,14 +50,14 @@ void Mesh::GenerateBuffers()
 		{
 			glGenBuffers(1, (GLuint*)&(idNormals));
 			glBindBuffer(GL_ARRAY_BUFFER, idNormals);
-			glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(float) *3, &normals[0], GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(float3), &normals[0], GL_STATIC_DRAW);
 		}
 
 		if (textureCoords.size() > 0)
 		{
 			glGenBuffers(1, (GLuint*)&(idTextureCoords));
 			glBindBuffer(GL_TEXTURE_COORD_ARRAY, idTextureCoords);
-			glBufferData(GL_TEXTURE_COORD_ARRAY, textureCoords.size() * sizeof(float) * 2, &textureCoords[0], GL_STATIC_DRAW);
+			glBufferData(GL_TEXTURE_COORD_ARRAY, textureCoords.size() * sizeof(float2), &textureCoords[0], GL_STATIC_DRAW);
 		}
 
 	}
@@ -75,8 +75,7 @@ void Mesh::Render(bool globalWireMode) const
 
 	InnerRender();
 
-	if (globalWireMode)
-		DrawNormals();
+	DrawNormals();
 
 	glPopMatrix();
 }
@@ -122,44 +121,46 @@ void Mesh::DrawNormals() const
 
 	glBegin(GL_LINES);
 
+	uint lineLength = 5;
 
-	for (uint i = 0, j = 0; i < vertices.size(); i++)
-	{
-		//Draw Vertex Normals-----------------------
-		glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-
-		float3 vector = vertices[i];
-		float3 normals = vector + vertices[i] * 2;
-
-		glVertex3f(vector.x, vector.y, vector.z); glVertex3f(normals.x, normals.y, normals.z);
-
-		glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-		j++;
-
-		//Draw Faces normals-------------------
-		if (j == 3)
+	if (vertices.size() == normals.size())
+		for (uint i = 0, j = 0; i < vertices.size(); i++)
 		{
-			float3 P0 = vertices[i - 2];
-			float3 P1 = vertices[i - 1];
-			float3 P2 = vertices[i];
+			//Draw Vertex Normals-----------------------
+			glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
 
-			float3 V0 = P0 - P1;
-			float3 V1 = P2 - P1;
+			float3 vector = vertices[i];
+			float3 normal = vector + normals[i] * lineLength;
 
-			//Normal of the face
-			float3 N = V1.Cross(V0);
-			N.Normalize();
+			glVertex3f(vector.x, vector.y, vector.z); glVertex3f(normal.x, normal.y, normal.z);
 
-			// Center of the triangle
-			float3 P = (P0 + P1 + P2) / 3.0;
+			glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+			j++;
 
-			float3 normal = P + N * 2;
+			//Draw Faces normals-------------------
+			if (j == 3)
+			{
+				float3 P0 = vertices[i - 2];
+				float3 P1 = vertices[i - 1];
+				float3 P2 = vertices[i];
 
-			glVertex3f(P.x, P.y, P.z); glVertex3f(normal.x, normal.y, normal.z);
+				float3 V0 = P0 - P1;
+				float3 V1 = P2 - P1;
 
-			j = 0;
+				//Normal of the face
+				float3 N = V1.Cross(V0);
+				N.Normalize();
+
+				// Center of the triangle
+				float3 P = (P0 + P1 + P2) / 3.0;
+
+				float3 normal = P + N * lineLength;
+
+				glVertex3f(P.x, P.y, P.z); glVertex3f(normal.x, normal.y, normal.z);
+
+				j = 0;
+			}
 		}
-	}
 
 	glEnd();
 
