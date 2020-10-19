@@ -32,6 +32,13 @@ Mesh::~Mesh()
 {
 	vertices.clear();
 	indices.clear();
+	normals.clear();
+	textureCoords.clear();
+
+	glDeleteBuffers(1, &idVertex);
+	glDeleteBuffers(1, &idIndex);
+	glDeleteBuffers(1, &idNormals);
+	glDeleteBuffers(1, &idTextureCoords);
 }
 
 void Mesh::GenerateBuffers()
