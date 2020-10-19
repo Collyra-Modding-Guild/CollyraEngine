@@ -39,8 +39,10 @@ std::vector<Mesh> MeshLoader::Load(const char* path)
 	char* buffer;
 	
 	uint bytesFile = App->physFS->Load(path, &buffer);
+
 	const aiScene* scene = aiImportFileFromMemory(buffer, bytesFile, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
 
+	RELEASE_ARRAY(buffer);
 
 	std::vector<Mesh> loadedMeshes;
 	bool ret = true;
@@ -63,6 +65,7 @@ std::vector<Mesh> MeshLoader::Load(const char* path)
 		LOG("Error loading scene %s", path);
 	}
 
+	
 
 	return loadedMeshes;
 }
