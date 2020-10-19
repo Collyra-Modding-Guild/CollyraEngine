@@ -24,6 +24,7 @@ public:
 
 	//Temp
 	updateStatus Draw(float dt);
+	void DrawNormals();
 	updateStatus DebugDraw(float dt);
 
 	void OnResize(float width, float height);
@@ -49,7 +50,8 @@ public:
 
 	SDL_Renderer* renderer;
 
-	bool drawFaces;
+	bool drawingFaces;
+	bool drawingDebugNormals;
 
 private:
 	//Meshes----

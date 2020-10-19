@@ -4,21 +4,24 @@
 #include "Glew/include/glew.h"
 #pragma comment (lib, "Glew/libx86/glew32.lib")
 
+
 #include <gl/GL.h>
 #include <gl/GLU.h>
 
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
-Mesh::Mesh() : idIndex(-1), idVertex(-1), wire(false), VAO(-1), noFace(false)
+Mesh::Mesh() : idIndex(-1), idVertex(-1), wire(false), noFace(false), idNormals(-1), idTextureCoords(-1)
 {
 	color = Color((float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f);
 }
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint> indices)
+Mesh::Mesh(std::vector<float3> vertices, std::vector<uint> indices, std::vector<float3> normals, std::vector<float2> textureCoords)
 {
 	this->vertices = vertices;
 	this->indices = indices;
+	this->normals = normals;
+	this->textureCoords = textureCoords;
 
 	GenerateBuffers();
 	color = Color((float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f);
@@ -37,11 +40,26 @@ void Mesh::GenerateBuffers()
 	{
 		glGenBuffers(1, (GLuint*)&(idVertex));
 		glBindBuffer(GL_ARRAY_BUFFER, idVertex);
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float3), &vertices[0], GL_STATIC_DRAW);
 
 		glGenBuffers(1, (GLuint*)&(idIndex));
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndex);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint), &indices[0], GL_STATIC_DRAW);
+
+		if (normals.size() > 0)
+		{
+			glGenBuffers(1, (GLuint*)&(idNormals));
+			glBindBuffer(GL_ARRAY_BUFFER, idNormals);
+			glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(float3), &normals[0], GL_STATIC_DRAW);
+		}
+
+		if (textureCoords.size() > 0)
+		{
+			glGenBuffers(1, (GLuint*)&(idTextureCoords));
+			glBindBuffer(GL_TEXTURE_COORD_ARRAY, idTextureCoords);
+			glBufferData(GL_TEXTURE_COORD_ARRAY, textureCoords.size() * sizeof(float2), &textureCoords[0], GL_STATIC_DRAW);
+		}
+
 	}
 }
 
@@ -57,8 +75,7 @@ void Mesh::Render(bool globalWireMode) const
 
 	InnerRender();
 
-	if (globalWireMode)
-		DrawNormals();
+	DrawNormals();
 
 	glPopMatrix();
 }
@@ -66,25 +83,35 @@ void Mesh::Render(bool globalWireMode) const
 // ------------------------------------------------------------
 void Mesh::InnerRender() const
 {
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	if (idNormals != -1)
+		glEnableClientState(GL_NORMAL_ARRAY);
+
+	if (idTextureCoords != -1)
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glBindBuffer(GL_ARRAY_BUFFER, idVertex);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
-	// vertex positions
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-	// vertex normals
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
-	// vertex texture coords
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+
+	if (idNormals != -1)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, idNormals);
+		glNormalPointer(GL_FLOAT, 0, NULL);
+	}
+
+	if (idTextureCoords != -1)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, idTextureCoords);
+		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+	}
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndex);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, NULL);
 
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(2);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 }
 
@@ -94,44 +121,46 @@ void Mesh::DrawNormals() const
 
 	glBegin(GL_LINES);
 
+	uint lineLength = 5;
 
-	for (uint i = 0, j = 0; i < vertices.size(); i++)
-	{
-		//Draw Vertex Normals-----------------------
-		glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-
-		float3 vector = vertices[i].Position;
-		float3 normals = vector + vertices[i].Normal * 2;
-
-		glVertex3f(vector.x, vector.y, vector.z); glVertex3f(normals.x, normals.y, normals.z);
-
-		glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-		j++;
-
-		//Draw Faces normals-------------------
-		if (j == 3)
+	if (vertices.size() == normals.size())
+		for (uint i = 0, j = 0; i < vertices.size(); i++)
 		{
-			float3 P0 = vertices[i - 2].Position;
-			float3 P1 = vertices[i - 1].Position;
-			float3 P2 = vertices[i].Position;
+			//Draw Vertex Normals-----------------------
+			glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
 
-			float3 V0 = P0 - P1;
-			float3 V1 = P2 - P1;
+			float3 vector = vertices[i];
+			float3 normal = vector + normals[i] * lineLength;
 
-			//Normal of the face
-			float3 N = V1.Cross(V0);
-			N.Normalize();
+			glVertex3f(vector.x, vector.y, vector.z); glVertex3f(normal.x, normal.y, normal.z);
 
-			// Center of the triangle
-			float3 P = (P0 + P1 + P2) / 3.0;
+			glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+			j++;
 
-			float3 normal = P + N * 2;
+			//Draw Faces normals-------------------
+			if (j == 3)
+			{
+				float3 P0 = vertices[i - 2];
+				float3 P1 = vertices[i - 1];
+				float3 P2 = vertices[i];
 
-			glVertex3f(P.x, P.y, P.z); glVertex3f(normal.x, normal.y, normal.z);
+				float3 V0 = P0 - P1;
+				float3 V1 = P2 - P1;
 
-			j = 0;
+				//Normal of the face
+				float3 N = V1.Cross(V0);
+				N.Normalize();
+
+				// Center of the triangle
+				float3 P = (P0 + P1 + P2) / 3.0;
+
+				float3 normal = P + N * lineLength;
+
+				glVertex3f(P.x, P.y, P.z); glVertex3f(normal.x, normal.y, normal.z);
+
+				j = 0;
+			}
 		}
-	}
 
 	glEnd();
 

@@ -3,22 +3,14 @@
 
 #include "Globals.h"
 #include "Color.h"
-#include "MathGeoLib/include/Math/float3.h"
-#include "MathGeoLib/include/Math/float2.h"
 #include <vector>
-
-struct Vertex 
-{
-	float3 Position;
-	float3 Normal;
-	float2 TexCoords;
-};
+#include "MathGeoLib/include/MathGeoLib.h"
 
 class Mesh
 {
 public:
 	Mesh();
-	Mesh(std::vector<Vertex> vertices, std::vector<uint> indices);
+	Mesh(std::vector<float3> vertices, std::vector<uint> indices, std::vector<float3> normals, std::vector<float2> textureCoords );
 	~Mesh();
 
 	void GenerateBuffers();
@@ -30,12 +22,16 @@ public:
 
 public:
 	uint idVertex; // unique vertex in VRAM
-	std::vector<Vertex>       vertices;
+	std::vector<float3> vertices;
 
 	uint idIndex; // index in VRAM
 	std::vector<uint> indices;
 
-	uint VAO;
+	uint idNormals;
+	std::vector<float3> normals;
+
+	uint idTextureCoords;
+	std::vector<float2> textureCoords;
 
 private:
 	Color color, wireColor;
