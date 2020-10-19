@@ -36,7 +36,7 @@ void MeshLoader::CleanUp()
 
 std::vector<Mesh> MeshLoader::Load(const char* path)
 {
-	char* buffer;
+	char* buffer = nullptr; 
 	
 	uint bytesFile = App->physFS->Load(path, &buffer);
 
