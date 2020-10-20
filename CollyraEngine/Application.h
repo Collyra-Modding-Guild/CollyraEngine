@@ -27,6 +27,7 @@ public:
 	M_Camera3D* camera;
 	M_UIManager* uiManager;
 	M_FileManager* physFS;
+	
 
 	float capTime = 0;
 
@@ -40,10 +41,10 @@ public:
 private:
 
 	int					argc;
-	char** args;
+	char**				args;
 
-	Timer	ms_timer;
-	float	dt;
+	Timer				ms_timer;
+	float				dt;
 	std::vector<Module*> moduleList;
 
 	//Timers of the game
@@ -98,6 +99,9 @@ private:
 	void AddModule(Module* mod);
 	void PrepareUpdate();
 	void FinishUpdate();
+
+	void InitLoaders();
+	void CleanUpLoaders();
 };
 
 extern Application* App;

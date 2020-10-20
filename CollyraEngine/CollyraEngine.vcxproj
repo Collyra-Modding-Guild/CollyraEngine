@@ -159,6 +159,7 @@
     <ClInclude Include="PerfTimer.h" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="PrimitivesIndices.h" />
+    <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="WG_Config.h" />
     <ClInclude Include="WG_Console.h" />
@@ -221,6 +222,7 @@
     <ClCompile Include="p2Defs.h" />
     <ClCompile Include="PerfTimer.cpp" />
     <ClCompile Include="Primitive.cpp" />
+    <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="WG_Config.cpp" />
     <ClCompile Include="WG_Console.cpp" />

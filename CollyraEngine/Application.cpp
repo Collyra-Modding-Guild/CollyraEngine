@@ -9,6 +9,7 @@
 #include "M_FileManager.h"
 
 #include "MeshLoader.h"
+#include "TextureLoader.h"
 
 
 
@@ -59,6 +60,8 @@ bool Application::Awake()
 	{
 		ret = moduleList[i]->Awake();
 	}
+
+	InitLoaders();
 
 	// After all Init calls we call Start() in all modules
 	LOG("Application Start --------------");
@@ -159,6 +162,8 @@ bool Application::CleanUp()
 		ret = moduleList[i]->CleanUp();
 
 	}
+
+	CleanUpLoaders();
 
 	moduleList.clear();
 
@@ -302,4 +307,16 @@ void Application::NewConsoleLog(const char* newLog)
 void Application::AddModule(Module* mod)
 {
 	moduleList.push_back(mod);
+}
+
+void  Application::InitLoaders() 
+{
+	TextureLoader::Init();
+	MeshLoader::Init();
+}
+
+void  Application::CleanUpLoaders()
+{
+	TextureLoader::CleanUp();
+	MeshLoader::CleanUp();
 }

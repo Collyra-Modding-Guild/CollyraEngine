@@ -11,7 +11,7 @@
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
-Mesh::Mesh() : idIndex(-1), idVertex(-1), wire(false), noFace(false), idNormals(-1), idTextureCoords(-1)
+Mesh::Mesh() : idIndex(-1), idVertex(-1), wire(false), noFace(false), idNormals(-1), idTextureCoords(-1), idTextureImage(-1)
 {
 	color = Color((float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f);
 }
@@ -26,6 +26,7 @@ Mesh::Mesh(std::vector<float3> vertices, std::vector<uint> indices, std::vector<
 	GenerateBuffers();
 	color = Color((float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f);
 	wireColor = Color((float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f);
+	
 }
 
 Mesh::~Mesh()
@@ -35,10 +36,10 @@ Mesh::~Mesh()
 	normals.clear();
 	textureCoords.clear();
 
-	glDeleteBuffers(1, &idVertex);
+	/*glDeleteBuffers(1, &idVertex);
 	glDeleteBuffers(1, &idIndex);
 	glDeleteBuffers(1, &idNormals);
-	glDeleteBuffers(1, &idTextureCoords);
+	glDeleteBuffers(1, &idTextureCoords);*/
 }
 
 void Mesh::GenerateBuffers()
@@ -67,6 +68,7 @@ void Mesh::GenerateBuffers()
 			glBufferData(GL_TEXTURE_COORD_ARRAY, textureCoords.size() * sizeof(float2), &textureCoords[0], GL_STATIC_DRAW);
 		}
 
+		
 	}
 }
 
@@ -113,7 +115,14 @@ void Mesh::InnerRender() const
 		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 	}
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndex);
+	if (idTextureImage != -1) 
+	{
+		glBindTexture(GL_TEXTURE_2D, idTextureImage);
+	}
+
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndex);	
+
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, NULL);
 
 	glDisableClientState(GL_VERTEX_ARRAY);

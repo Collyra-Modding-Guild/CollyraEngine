@@ -12,7 +12,6 @@
 #include "Assimp/include/scene.h"
 #include "Assimp/include/postprocess.h"
 
-
 #include "Assimp/include/mesh.h"
 
 #pragma comment (lib, "Assimp/libx86/assimp.lib")
@@ -143,6 +142,7 @@ void MeshLoader::LoadVertices(aiMesh* mesh, std::vector<float3>& vertices, std::
 			textCoord = float2(0.0f, 0.0f);
 
 		textureCoords.push_back(textCoord);
+
 	}
 }
 

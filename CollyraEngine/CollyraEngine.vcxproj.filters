@@ -315,6 +315,9 @@
     <ClInclude Include="PathNode.h">
       <Filter>Sources\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="TextureLoader.h">
+      <Filter>Sources\Helpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="log.cpp">
@@ -496,6 +499,9 @@
     </ClCompile>
     <ClCompile Include="M_FileManager.cpp">
       <Filter>Sources\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureLoader.cpp">
+      <Filter>Sources\Helpers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

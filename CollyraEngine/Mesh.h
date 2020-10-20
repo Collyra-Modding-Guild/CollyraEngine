@@ -33,6 +33,9 @@ public:
 	uint idTextureCoords;
 	std::vector<float2> textureCoords;
 
+	uint idTextureImage;
+
+
 private:
 	Color color, wireColor;
 	bool wire, noFace;
