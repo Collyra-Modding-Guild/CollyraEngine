@@ -178,9 +178,11 @@ void SSphere::GenerateSphereVertices(float radius, int sectors, int stacks)
 {
 	std::vector<float> vertices;
 	std::vector<float> normals;
+	std::vector<float> texCoords;
 
 	float x, y, z, xy;                              
 	float nx, ny, nz, lengthInv = 1.0f / radius;    
+	float s, t;
 
 	float sectorStep = 2 * PI / sectors;
 	float stackStep = PI / stacks;
@@ -210,6 +212,12 @@ void SSphere::GenerateSphereVertices(float radius, int sectors, int stacks)
 			normals.push_back(nx);
 			normals.push_back(ny);
 			normals.push_back(nz);
+
+
+			s = (float)j / sectorCount;
+			t = (float)i / stackCount;
+			texCoords.push_back(s);
+			texCoords.push_back(t);
 		}
 	}
 
@@ -291,10 +299,12 @@ void CCylinder::GenerateCylinderVertices(float radius, int sectors, int height)
 
 	std::vector<float> vertices;
 	std::vector<float> normals;
+	std::vector<float> texCoords;
 
 	for (int i = 0; i < 2; ++i)
 	{
 		float h = -height / 2.0f + i * height;
+		float t = 1.0f - i;
 
 		for (int j = 0, k = 0; j <= sectors; ++j, k += 3)
 		{
@@ -302,15 +312,17 @@ void CCylinder::GenerateCylinderVertices(float radius, int sectors, int height)
 			float uy = unitVertices[k + 1];
 			float uz = unitVertices[k + 2];
 
-			// position vector
+
 			vertices.push_back(ux * radius);
 			vertices.push_back(uy * radius);
 			vertices.push_back(h);
 
-			// normal vector
 			normals.push_back(ux);
 			normals.push_back(uy);
 			normals.push_back(uz);
+
+			texCoords.push_back((float)j / sectors);
+			texCoords.push_back(t);                      
 		}
 
 
