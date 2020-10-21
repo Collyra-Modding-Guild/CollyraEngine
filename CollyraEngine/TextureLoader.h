@@ -5,7 +5,6 @@
 #include "Globals.h"
 #include "MathGeoLib/include/MathGeoLib.h"
 
-
 class Texture;
 
 namespace TextureLoader
@@ -13,7 +12,7 @@ namespace TextureLoader
 	void Init();
 	void CleanUp();
 
-	uint GetTextureID();
+	uint LoadDefaultTexture();
 }
 
 

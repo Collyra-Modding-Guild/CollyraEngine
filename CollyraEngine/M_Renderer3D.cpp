@@ -8,6 +8,7 @@
 
 #include "Primitive.h"
 #include "Mesh.h"
+#include "TextureLoader.h"
 
 #include "Glew/include/glew.h"
 #pragma comment (lib, "Glew/libx86/glew32.lib")
@@ -131,7 +132,7 @@ bool M_Renderer3D::Awake()
 		lights[0].Active(true);
 	}
 
-	AddMeshes(MeshLoader::Load("warrior/warrior.FBX"));
+	AddMeshes(MeshLoader::Load("warrior/warrior.fbx"));
 
 	return ret;
 }
@@ -148,8 +149,6 @@ void M_Renderer3D::GenerateFrameBuffers(int width, int height)
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
 
 	//Generate the depth buffer
 	glGenRenderbuffers(1, &depthBuffer);
@@ -393,5 +392,7 @@ void M_Renderer3D::AddMeshes(std::vector<Mesh>& newMeshes)
 	if (newMeshes.size() > 0)
 	{
 		meshes.insert(meshes.end(), newMeshes.begin(), newMeshes.end());
+		meshes[0].idTextureImage = TextureLoader::LoadDefaultTexture();
 	}
+
 }

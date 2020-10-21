@@ -11,12 +11,14 @@ class Mesh
 public:
 	Mesh();
 	Mesh(std::vector<float3> vertices, std::vector<uint> indices, std::vector<float3> normals, std::vector<float2> textureCoords );
+	Mesh(const Mesh& copy);
 	~Mesh();
 
 	void GenerateBuffers();
+	void GenerateColors();
 
-	void Render(bool globalWireMode = false) const;
-	void InnerRender() const;
+	void Render(bool globalWireMode = false, bool drawTexture = true) const;
+	void InnerRender(bool drawTexture) const;
 
 	void DrawNormals() const;
 
@@ -34,7 +36,6 @@ public:
 	std::vector<float2> textureCoords;
 
 	uint idTextureImage;
-
 
 private:
 	Color color, wireColor;

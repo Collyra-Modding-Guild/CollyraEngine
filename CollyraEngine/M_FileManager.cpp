@@ -30,10 +30,10 @@ M_FileManager::~M_FileManager()
 bool M_FileManager::Awake()
 {
 	// Determine if the PhysicsFS library is initialized, we can check it for avoid errors.
-	if (PHYSFS_isInit()) 
+	if (PHYSFS_isInit())
 	{
 		LOG("Asset Manager is succefully loaded");
-	}		
+	}
 	else
 		LOG("Failed loading Asset Manager");
 
@@ -57,7 +57,7 @@ bool M_FileManager::CleanUp()
 	return false;
 }
 
-SDL_RWops* M_FileManager::Load(const char* path) 
+SDL_RWops* M_FileManager::Load(const char* path)
 {
 	char* buffer;
 	SDL_RWops* ret;
@@ -86,6 +86,8 @@ SDL_RWops* M_FileManager::Load(const char* path)
 uint M_FileManager::Load(const char* path, char** buffer) const
 {
 	uint ret = 0;
+
+	std::string normalizedPath = NormalizePath(path);
 
 
 	// The reading offset is set to the first byte of the file.
@@ -352,7 +354,7 @@ void M_FileManager::SplitFilePath(const char* full_path, std::string* path, std:
 		if (path != nullptr)
 		{
 			if (pos_separator < full.length())
-				* path = full.substr(0, pos_separator + 1);
+				*path = full.substr(0, pos_separator + 1);
 			else
 				path->clear();
 		}
@@ -360,7 +362,7 @@ void M_FileManager::SplitFilePath(const char* full_path, std::string* path, std:
 		if (file != nullptr)
 		{
 			if (pos_separator < full.length())
-				* file = full.substr(pos_separator + 1, pos_dot - pos_separator - 1);
+				*file = full.substr(pos_separator + 1, pos_dot - pos_separator - 1);
 			else
 				*file = full.substr(0, pos_dot);
 		}
@@ -368,7 +370,7 @@ void M_FileManager::SplitFilePath(const char* full_path, std::string* path, std:
 		if (extension != nullptr)
 		{
 			if (pos_dot < full.length())
-				* extension = full.substr(pos_dot + 1);
+				*extension = full.substr(pos_dot + 1);
 			else
 				extension->clear();
 		}
@@ -482,14 +484,14 @@ uint M_FileManager::Save(const char* file, const void* buffer, unsigned int size
 		}
 		else
 		{
-			if (append == true) 
+			if (append == true)
 			{
 				LOG("Added %u data to [%s%s]", size, GetWriteDir(), file);
-			}		
-			else if (overwrite == true) 
+			}
+			else if (overwrite == true)
 			{
 				LOG("File [%s%s] overwritten with %u bytes", GetWriteDir(), file, size);
-			}		
+			}
 			else
 				LOG("New file created [%s%s] of %u bytes", GetWriteDir(), file, size);
 

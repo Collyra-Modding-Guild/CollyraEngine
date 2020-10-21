@@ -3,7 +3,6 @@
 #include "Mesh.h"
 #include "M_FileManager.h"
 
-
 #include "p2Defs.h"
 #include "MathGeoLib/include/Math/float3.h"
 #include "MathGeoLib/include/Math/float2.h"

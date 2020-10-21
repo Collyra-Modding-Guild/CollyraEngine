@@ -52,6 +52,7 @@ public:
 
 	bool drawingFaces;
 	bool drawingDebugNormals;
+	bool drawingTextures;
 
 private:
 	//Meshes----

@@ -18,11 +18,22 @@
 void TextureLoader::Init()
 {
 
+}
+
+void TextureLoader::CleanUp()
+{
+
+}
+
+uint TextureLoader::LoadDefaultTexture()
+{
+	uint textID = 1;
+
 	GLubyte checkerImage[20][20][4];
 
-	for (int i = 0; i < 20; i++) 
+	for (int i = 0; i < 20; i++)
 	{
-		for (int j = 0; j < 20; j++) 
+		for (int j = 0; j < 20; j++)
 		{
 			int c = ((((i & 0x8) == 0) ^ (((j & 0x8)) == 0))) * 255;
 			checkerImage[i][j][0] = (GLubyte)c;
@@ -31,8 +42,6 @@ void TextureLoader::Init()
 			checkerImage[i][j][3] = (GLubyte)255;
 		}
 	}
-
-	uint textID = 1;
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &textID);
@@ -43,11 +52,7 @@ void TextureLoader::Init()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 20, 20, 0, GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);
 
-}
-
-void TextureLoader::CleanUp()
-{
-
+	return textID;
 }
 
 

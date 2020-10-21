@@ -4,7 +4,6 @@
 #include "Glew/include/glew.h"
 #pragma comment (lib, "Glew/libx86/glew32.lib")
 
-
 #include <gl/GL.h>
 #include <gl/GLU.h>
 
@@ -24,10 +23,18 @@ Mesh::Mesh(std::vector<float3> vertices, std::vector<uint> indices, std::vector<
 	this->textureCoords = textureCoords;
 
 	GenerateBuffers();
-	color = Color((float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f);
-	wireColor = Color((float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f);
-	
+	GenerateColors();
 }
+
+Mesh::Mesh(const Mesh& copy) :
+	idVertex(-1), idIndex(-1), idNormals(-1), idTextureCoords(-1), idTextureImage(-1),
+
+	vertices(copy.vertices), indices(copy.indices), normals(copy.normals), textureCoords(copy.textureCoords)
+{
+	GenerateBuffers();
+	GenerateColors();
+}
+
 
 Mesh::~Mesh()
 {
@@ -36,10 +43,10 @@ Mesh::~Mesh()
 	normals.clear();
 	textureCoords.clear();
 
-	/*glDeleteBuffers(1, &idVertex);
+	glDeleteBuffers(1, &idVertex);
 	glDeleteBuffers(1, &idIndex);
 	glDeleteBuffers(1, &idNormals);
-	glDeleteBuffers(1, &idTextureCoords);*/
+	glDeleteBuffers(1, &idTextureCoords);
 }
 
 void Mesh::GenerateBuffers()
@@ -54,26 +61,30 @@ void Mesh::GenerateBuffers()
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndex);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint), &indices[0], GL_STATIC_DRAW);
 
-		if (normals.size() > 0)
+		if (!normals.empty())
 		{
 			glGenBuffers(1, (GLuint*)&(idNormals));
 			glBindBuffer(GL_ARRAY_BUFFER, idNormals);
 			glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(float3), &normals[0], GL_STATIC_DRAW);
 		}
 
-		if (textureCoords.size() > 0)
+		if (!textureCoords.empty())
 		{
 			glGenBuffers(1, (GLuint*)&(idTextureCoords));
 			glBindBuffer(GL_TEXTURE_COORD_ARRAY, idTextureCoords);
 			glBufferData(GL_TEXTURE_COORD_ARRAY, textureCoords.size() * sizeof(float2), &textureCoords[0], GL_STATIC_DRAW);
 		}
-
-		
 	}
 }
 
+void Mesh::GenerateColors()
+{
+	color = Color((float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f);
+	wireColor = Color((float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f);
+}
+
 // ------------------------------------------------------------
-void Mesh::Render(bool globalWireMode) const
+void Mesh::Render(bool globalWireMode, bool drawTexture) const
 {
 	glPushMatrix();
 
@@ -82,15 +93,13 @@ void Mesh::Render(bool globalWireMode) const
 	else
 		glColor3f(color.r, color.g, color.b);
 
-	InnerRender();
-
-	DrawNormals();
+	InnerRender(drawTexture);
 
 	glPopMatrix();
 }
 
 // ------------------------------------------------------------
-void Mesh::InnerRender() const
+void Mesh::InnerRender(bool drawTexture) const
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
 
@@ -99,6 +108,11 @@ void Mesh::InnerRender() const
 
 	if (idTextureCoords != -1)
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	if (idTextureImage != -1 && drawTexture)
+	{
+		glEnableClientState(GL_TEXTURE_2D);
+	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, idVertex);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
@@ -111,23 +125,25 @@ void Mesh::InnerRender() const
 
 	if (idTextureCoords != -1)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, idTextureCoords);
+		glBindBuffer(GL_TEXTURE_COORD_ARRAY, idTextureCoords);
 		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 	}
 
-	if (idTextureImage != -1) 
+	if (idTextureImage != -1 && drawTexture)
 	{
 		glBindTexture(GL_TEXTURE_2D, idTextureImage);
 	}
 
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndex);	
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndex);
 
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, NULL);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glDisableClientState(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 }
 
