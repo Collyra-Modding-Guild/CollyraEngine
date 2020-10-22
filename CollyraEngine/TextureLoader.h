@@ -14,7 +14,8 @@ namespace TextureLoader
 	void CleanUp();
 
 	uint LoadDefaultTexture();
-	bool Load(std::string path);
+	uint Load(const char* file_name);
+
 }
 
 

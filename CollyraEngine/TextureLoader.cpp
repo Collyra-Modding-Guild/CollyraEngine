@@ -15,6 +15,7 @@
 #pragma comment (lib, "opengl32.lib") 
 #pragma comment (lib, "Glew/libx86/glew32.lib")
 
+
 #pragma comment( lib, "Devil/libx86/DevIL.lib" )
 #pragma comment( lib, "Devil/libx86/ILU.lib" )
 #pragma comment( lib, "Devil/libx86/ILUT.lib" )
@@ -24,7 +25,10 @@ bool TextureLoader::Init()
 {
 	//Initialize DevIL
 	ilInit();
-	ilClearColour(255, 255, 255, 000);
+	iluInit();
+	ilutInit();
+	ilutRenderer(ILUT_OPENGL);
+	// ilClearColour(255, 255, 255, 000);
 
 	//Check for error
 	ILenum ilError = ilGetError();
@@ -72,45 +76,20 @@ uint TextureLoader::LoadDefaultTexture()
 	return textID;
 }
 
-bool TextureLoader::Load(std::string path)
+uint TextureLoader::Load(const char* path)
 {
-	
-	//Texture loading success
-	bool textureLoaded = false;
+	uint image_ID;
 
-	//Generate and set current image ID
-	ILuint imgID = 0;
-	ilGenImages(1, &imgID);
-	ilBindImage(imgID);
+	image_ID = ilutGLLoadImage((char*)path);
 
-	//Load image
-	ILboolean success = ilLoadImage(path.c_str());
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glGenTextures(1, &image_ID);
+	glBindTexture(GL_TEXTURE_2D, image_ID);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-	//Image loaded successfully
-	if (success == IL_TRUE)
-	{
-		//Convert image to RGBA
-		success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
-
-		if (success == IL_TRUE)
-		{
-			//Create texture from file pixels
-			// textureLoaded = LoadTextureFromPixels32((GLuint*)ilGetData(), (GLuint)ilGetInteger(IL_IMAGE_WIDTH), (GLuint)ilGetInteger(IL_IMAGE_HEIGHT));
-		}
-	
-
-		//Delete file from memory
-		ilDeleteImages(1, &imgID);
-	}
-
-	//Report error
-	if (!textureLoaded)
-	{
-		printf("Unable to load %s\n", path.c_str());
-	}
-
-	return textureLoaded;
-
+	return image_ID;
 }
-
 

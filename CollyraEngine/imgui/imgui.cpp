@@ -126,7 +126,10 @@ CODE
    - You can apply arithmetic operators +,*,/ on numerical values. Use +- to subtract (because - would set a negative value!)
    - Controls are automatically adjusted for OSX to match standard OSX text editing operations.
  - General Keyboard controls: enable with ImGuiConfigFlags_NavEnableKeyboard.
- - General Gamepad controls: enable with ImGuiConfigFlags_NavEnableGamepad. See suggested mappings in imgui.h ImGuiNavInput_ + download PNG/PSD at http://goo.gl/9LgVZW
+ - General Gamepad controls: enable with ImGuiConfigFlags_NavEnableGamepad. See suggested mappings in imgui.h ImGuiNavInput_ + down
+
+
+ PNG/PSD at http://goo.gl/9LgVZW
 
 
  PROGRAMMER GUIDE
