@@ -12,13 +12,15 @@
 #include <string>
 
 struct SDL_RWops;
-int close_sdl_rwops(SDL_RWops* rw);
 
 struct aiFileIO;
 
-//struct BASS_FILEPROCS;
 class Config;
 struct PathNode;
+
+#define ASSETS_FOLDER "/Assets"
+#define MESHES_PATH "/Assets/Meshes"
+#define TEXTYRES_PATH "/Assets/Textures"
 
 class M_FileManager : public Module
 {
@@ -33,7 +35,7 @@ public:
 	// Called before quitting
 	bool CleanUp() override;
 
-	void CreateLibraryDirectories();
+	void CreateFolderDirs();
 
 	// Return the bytes of a PhysFS filehandle
 	//uint Load(const char* path, char** buffer) const;
@@ -58,14 +60,17 @@ public:
 	bool HasExtension(const char* path, std::vector<std::string> extensions) const;
 
 	std::string NormalizePath(const char* path) const;
+	std::string LowerCaseString(const char* path) const;
 	void SplitFilePath(const char* full_path, std::string* path, std::string* file = nullptr, std::string* extension = nullptr) const;
 
 	// Open for Read/Write
 	unsigned int Load(const char* path, const char* file, char** buffer) const;
 	unsigned int Load(const char* file, char** buffer) const;
 
-	bool DuplicateFile(const char* file, const char* dstFolder, std::string& relativePath);
+	bool ImportFile(const char* file, std::string& relativePath);
 	bool DuplicateFile(const char* srcFile, const char* dstFile);
+
+	std::string GetExtensionFolder(const char* fileExtension);
 
 	unsigned int Save(const char* file, const void* buffer, unsigned int size, bool append = false) const;
 	bool Remove(const char* file);

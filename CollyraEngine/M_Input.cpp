@@ -145,7 +145,7 @@ updateStatus M_Input::PreUpdate(float dt)
 			{     
 				char* droppedFilePath = e.drop.file;
 
-				App->resources->CreateMeshes(droppedFilePath);
+				App->resources->CreateMeshesExternal(droppedFilePath);
 				
 				SDL_free(droppedFilePath);
 				break;

@@ -14,10 +14,13 @@ public:
 	~M_Resources();
 
 	bool Awake();
+	bool Start();
 
 	bool CleanUp();
 
-	void CreateMeshes(const char* path);
+	void CreateMeshesExternal(const char* path);
+
+	void CreateMeshesInternal(const char* path);
 
 	std::vector<Mesh>* GetMeshes();
 

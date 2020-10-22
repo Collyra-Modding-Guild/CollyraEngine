@@ -15,12 +15,15 @@ Mesh::Mesh() : idIndex(-1), idVertex(-1), wire(false), noFace(false), idNormals(
 	color = Color((float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f);
 }
 
-Mesh::Mesh(std::vector<float3> vertices, std::vector<uint> indices, std::vector<float3> normals, std::vector<float2> textureCoords)
+Mesh::Mesh(std::vector<float3> vertices, std::vector<uint> indices, std::vector<float3> normals, std::vector<float2> textureCoords) :
+	idVertex(-1), idIndex(-1), idNormals(-1), idTextureCoords(-1), idTextureImage(-1)
 {
 	this->vertices = vertices;
 	this->indices = indices;
 	this->normals = normals;
 	this->textureCoords = textureCoords;
+
+	idVertex = 0;
 
 	GenerateBuffers();
 	GenerateColors();
@@ -74,6 +77,11 @@ void Mesh::GenerateBuffers()
 			glBindBuffer(GL_TEXTURE_COORD_ARRAY, idTextureCoords);
 			glBufferData(GL_TEXTURE_COORD_ARRAY, textureCoords.size() * sizeof(float2), &textureCoords[0], GL_STATIC_DRAW);
 		}
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_TEXTURE_COORD_ARRAY, 0);
+
 	}
 }
 
@@ -149,6 +157,10 @@ void Mesh::InnerRender() const
 
 	glDisableClientState(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_TEXTURE_COORD_ARRAY, 0);
 
 }
 

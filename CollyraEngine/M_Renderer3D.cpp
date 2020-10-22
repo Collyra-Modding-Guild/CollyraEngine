@@ -21,7 +21,8 @@
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
 M_Renderer3D::M_Renderer3D(MODULE_TYPE type, bool start_enabled) : Module(type, start_enabled),
-renderer(nullptr), frameBuffer(-1), textureBuffer(-1), depthBuffer(-1), drawingFaces(true), drawingDebugNormals(false)
+renderer(nullptr), frameBuffer(-1), textureBuffer(-1), depthBuffer(-1),
+drawingFaces(true), drawingDebugNormals(false), drawingTextures(true)
 {}
 
 // Destructor
@@ -132,7 +133,6 @@ bool M_Renderer3D::Awake()
 		lights[0].Active(true);
 	}
 
-	App->resources->CreateMeshes("warrior/warrior.fbx");
 
 	return ret;
 }

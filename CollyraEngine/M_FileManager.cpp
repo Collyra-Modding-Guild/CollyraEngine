@@ -16,6 +16,15 @@ M_FileManager::M_FileManager(MODULE_TYPE type, bool start_enabled) : Module(type
 
 	// We only need this when compiling in debug. In Release we don't need it.
 	PHYSFS_mount(".", nullptr, 1);
+
+	// Enable PhysFS writting
+	if (PHYSFS_setWriteDir(".") == 0)
+	{
+		LOG("PhysFS error while initializing writting dir: %s\n", PHYSFS_getLastError());
+	}
+
+	CreateFolderDirs();
+
 }
 
 
@@ -57,6 +66,17 @@ bool M_FileManager::CleanUp()
 	return false;
 }
 
+void M_FileManager::CreateFolderDirs()
+{
+	// If the standard folders do not exist, create them
+	std::vector<const char*> dirs = { ASSETS_FOLDER, MESHES_PATH, TEXTYRES_PATH };
+
+	for (uint i = 0; i < dirs.size(); ++i)
+	{
+		CreateDir(dirs[i]);
+	}
+}
+
 SDL_RWops* M_FileManager::Load(const char* path)
 {
 	char* buffer;
@@ -86,9 +106,6 @@ SDL_RWops* M_FileManager::Load(const char* path)
 uint M_FileManager::Load(const char* path, char** buffer) const
 {
 	uint ret = 0;
-
-	std::string normalizedPath = NormalizePath(path);
-
 
 	// The reading offset is set to the first byte of the file.
 	// Returns a filehandle on success that we will need for the PHYSFS_fileLength
@@ -146,21 +163,6 @@ int M_FileManager::CheckPath(const char* path)
 	return -1;
 }
 
-
-void M_FileManager::CreateLibraryDirectories()
-{
-
-	/*CreateDir(LIBRARY_PATH);
-	CreateDir(FOLDERS_PATH);
-	CreateDir(MESHES_PATH);
-	CreateDir(TEXTURES_PATH);
-	CreateDir(MATERIALS_PATH);
-	CreateDir(MODELS_PATH);
-	CreateDir(ANIMATIONS_PATH);
-	CreateDir(PARTICLES_PATH);
-	CreateDir(SHADERS_PATH);
-	CreateDir(SCENES_PATH);*/
-}
 
 // Add a new zip file or folder
 bool M_FileManager::AddPath(const char* path_or_zip)
@@ -343,6 +345,16 @@ std::string M_FileManager::NormalizePath(const char* full_path) const
 	return newPath;
 }
 
+std::string M_FileManager::LowerCaseString(const char* path) const
+{
+	std::string newPath(path);
+	for (int i = 0; i < newPath.size(); ++i)
+	{
+		newPath[i] = std::tolower(newPath[i]);
+	}
+	return newPath;
+}
+
 void M_FileManager::SplitFilePath(const char* full_path, std::string* path, std::string* file, std::string* extension) const
 {
 	if (full_path != nullptr)
@@ -422,49 +434,59 @@ unsigned int M_FileManager::Load(const char* path, const char* file, char** buff
 	return ret;
 }*/
 
-bool M_FileManager::DuplicateFile(const char* file, const char* dstFolder, std::string& relativePath)
+bool M_FileManager::ImportFile(const char* file, std::string& relativePath)
 {
 	std::string fileStr, extensionStr;
 	SplitFilePath(file, nullptr, &fileStr, &extensionStr);
+	std::string extensionFolder = GetExtensionFolder(extensionStr.c_str()) + ("/");
 
-	relativePath = relativePath.append(dstFolder).append("/") + fileStr.append(".") + extensionStr;
-	std::string finalPath = std::string(*PHYSFS_getSearchPath()).append("/") + relativePath;
+	relativePath = relativePath.append(extensionFolder + fileStr.append(".") + extensionStr);
 
-	return DuplicateFile(file, finalPath.c_str());
-
+	return DuplicateFile(file, relativePath.c_str());
 }
 
 bool M_FileManager::DuplicateFile(const char* srcFile, const char* dstFile)
 {
-	//TODO: Compare performance to calling Load(srcFile) and then Save(dstFile)
-	std::ifstream src;
-	src.open(srcFile, std::ios::binary);
-	bool srcOpen = src.is_open();
-	std::ofstream  dst(dstFile, std::ios::binary);
-	bool dstOpen = dst.is_open();
+	bool ret = false;
 
-	dst << src.rdbuf();
+	char buf[HUGE_STR];
+	uint size;
 
-	src.close();
-	dst.close();
+	FILE* source = nullptr;
+	fopen_s(&source, srcFile, "rb");
+	PHYSFS_file* dest = PHYSFS_openWrite(dstFile);
 
-	if (srcOpen && dstOpen)
+	if (source && dest)
 	{
-		LOG("[success] File Duplicated Correctly");
-		return true;
+		while (size = fread_s(buf, HUGE_STR, 1, HUGE_STR, source))
+			PHYSFS_write(dest, buf, 1, size);
+
+		fclose(source);
+		PHYSFS_close(dest);
+		ret = true;
+
+		LOG("File System copied file [%s] to [%s]", srcFile, dstFile);
 	}
 	else
-	{
-		LOG("[error] File could not be duplicated");
-		return false;
-	}
+		LOG("File System error while copy from [%s] to [%s]", srcFile, dstFile);
+
+	return ret;
 }
 
-int close_sdl_rwops(SDL_RWops* rw)
+std::string M_FileManager::GetExtensionFolder(const char* fileExtension)
 {
-	RELEASE_ARRAY(rw->hidden.mem.base);
-	SDL_FreeRW(rw);
-	return 0;
+	std::string extension = LowerCaseString(fileExtension);;
+
+	if (extension == "fbx")
+	{
+		return MESHES_PATH;
+	}
+	else if (extension == "png")
+	{
+		return TEXTYRES_PATH;
+	}
+
+	return std::string("unknown");
 }
 
 // Save a whole buffer to disk

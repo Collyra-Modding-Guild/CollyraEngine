@@ -1,4 +1,6 @@
 #include "M_Resources.h"
+#include "Application.h"
+#include "M_FileManager.h"
 
 #include "MeshLoader.h"
 #include "Mesh.h"
@@ -19,9 +21,17 @@ bool M_Resources::Awake()
 	return true;
 }
 
+bool M_Resources::Start()
+{
+	//Demo---
+	//CreateMeshesInternal("Assets/Meshes/warrior.fbx");
+
+	return true;
+}
+
 bool M_Resources::CleanUp()
 {
-	//Loaders CleanUp---------------------
+	//Loaders CleanUp----------------------------
 	MeshLoader::CleanUp();
 	TextureLoader::CleanUp();
 
@@ -30,14 +40,22 @@ bool M_Resources::CleanUp()
 	return true;
 }
 
-void M_Resources::CreateMeshes(const char* path)
+void M_Resources::CreateMeshesExternal(const char* path)
 {
-	AddMeshes(MeshLoader::Load(path));
+	std::string normalizedPath = App->physFS->NormalizePath(path);
+
+	std::string finalPath;
+
+	//TODO: Check if the current file is already loaded
+	if (App->physFS->ImportFile(normalizedPath.c_str(), finalPath))
+	{
+		CreateMeshesInternal(finalPath.c_str());
+	}
 }
 
-std::vector<Mesh>* M_Resources::GetMeshes()
+void M_Resources::CreateMeshesInternal(const char* path)
 {
-	return &meshes;
+	AddMeshes(MeshLoader::Load(path));
 }
 
 void M_Resources::AddMeshes(std::vector<Mesh>& newMeshes)
@@ -52,4 +70,9 @@ void M_Resources::AddMeshes(std::vector<Mesh>& newMeshes)
 			meshes[meshesEnd].SetTextureId(TextureLoader::LoadDefaultTexture());
 		}
 	}
+}
+
+std::vector<Mesh>* M_Resources::GetMeshes()
+{
+	return &meshes;
 }
