@@ -38,8 +38,6 @@ public:
 	void BeginDrawMode();
 	void EndDrawMode();
 
-	void AddMeshes(std::vector<Mesh>& newMeshes);
-
 public:
 
 	Light lights[MAX_LIGHTS];
@@ -54,9 +52,7 @@ public:
 	bool drawingTextures;
 
 private:
-	//Meshes----
-	std::vector<Primitive*> primitives;
-	std::vector<Mesh> meshes;
+
 
 	//Buffers----
 	uint frameBuffer;
