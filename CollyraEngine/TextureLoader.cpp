@@ -80,7 +80,11 @@ uint TextureLoader::Load(const char* path)
 {
 	uint image_ID;
 
-	image_ID = ilutGLLoadImage((char*)path);
+	image_ID = ilLoadImage((char*)path);
+
+	ilGenImages(1, &image_ID);
+	ilBindImage(image_ID);
+	
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &image_ID);
@@ -89,6 +93,9 @@ uint TextureLoader::Load(const char* path)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 40, 40, 0, GL_RGBA, GL_UNSIGNED_BYTE, ilGetData());
+
+	ilDeleteImages(1, &image_ID);
 
 	return image_ID;
 }
