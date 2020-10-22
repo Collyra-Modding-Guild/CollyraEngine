@@ -24,7 +24,7 @@ bool M_Resources::Awake()
 bool M_Resources::Start()
 {
 	//Demo---
-	//CreateMeshesInternal("Assets/Meshes/warrior.fbx");
+	CreateMeshesInternal("Assets/Meshes/warrior.fbx");
 
 	return true;
 }

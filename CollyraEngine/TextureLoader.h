@@ -14,7 +14,7 @@ namespace TextureLoader
 	void CleanUp();
 
 	uint LoadDefaultTexture();
-	uint Load(const char* file_name);
+	uint Load(const char* path);
 
 }
 
