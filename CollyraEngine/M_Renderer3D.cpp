@@ -4,6 +4,7 @@
 #include "M_Camera3D.h"
 #include "M_UIManager.h"
 #include "M_Window.h"
+#include "M_Resources.h"
 
 #include "Primitive.h"
 #include "Mesh.h"
@@ -131,7 +132,7 @@ bool M_Renderer3D::Awake()
 		lights[0].Active(true);
 	}
 
-	AddMeshes(MeshLoader::Load("warrior/warrior.fbx"));
+	App->resources->CreateMeshes("warrior/warrior.fbx");
 
 	return ret;
 }
@@ -224,7 +225,6 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 	//UI Render
 	ret = App->Draw2D();
 
-
 	M_Window* windowModule = (M_Window*)App->GetModulePointer(M_WINDOW);
 	if (windowModule == nullptr)
 	{
@@ -243,16 +243,6 @@ bool M_Renderer3D::CleanUp()
 
 	SDL_GL_DeleteContext(context);
 
-	int numPrimitives = primitives.size();
-
-	for (int i = numPrimitives - 1; i >= 0; i--)
-	{
-		RELEASE(primitives[i]);
-	}
-
-	primitives.clear();
-	meshes.clear();
-
 	return true;
 }
 
@@ -260,14 +250,14 @@ updateStatus M_Renderer3D::Draw(float dt)
 {
 	updateStatus ret = updateStatus::UPDATE_CONTINUE;
 
-	for (uint i = 0; i < primitives.size(); i++)
-	{
-		primitives[i]->Render();
-	}
+	std::vector<Mesh>* meshes = App->resources->GetMeshes();
 
-	for (uint i = 0; i < meshes.size(); i++)
+	if (meshes != nullptr)
 	{
-		meshes[i].Render();
+		for (uint i = 0; i < meshes->size(); i++)
+		{
+			meshes->at(i).Render();
+		}
 	}
 
 	return ret;
@@ -275,24 +265,30 @@ updateStatus M_Renderer3D::Draw(float dt)
 
 void M_Renderer3D::DrawNormals()
 {
-	for (uint i = 0; i < meshes.size(); i++)
+	std::vector<Mesh>* meshes = App->resources->GetMeshes();
+
+	if (meshes != nullptr)
 	{
-		meshes[i].DrawNormals();
+		for (uint i = 0; i < meshes->size(); i++)
+		{
+			meshes->at(i).DrawNormals();
+		}
 	}
+
 }
 
 updateStatus M_Renderer3D::DebugDraw(float dt)
 {
 	updateStatus ret = updateStatus::UPDATE_CONTINUE;
 
-	for (uint i = 0; i < primitives.size(); i++)
-	{
-		primitives[i]->Render(true);
-	}
+	std::vector<Mesh>* meshes = App->resources->GetMeshes();
 
-	for (uint i = 0; i < meshes.size(); i++)
+	if (meshes != nullptr)
 	{
-		meshes[i].Render(true);
+		for (uint i = 0; i < meshes->size(); i++)
+		{
+			meshes->at(i).Render(true);
+		}
 	}
 	return ret;
 }
@@ -384,19 +380,4 @@ void M_Renderer3D::BeginDrawMode()
 void M_Renderer3D::EndDrawMode()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void M_Renderer3D::AddMeshes(std::vector<Mesh>& newMeshes)
-{
-	if (newMeshes.size() > 0)
-	{
-		int meshesEnd = meshes.size();
-		meshes.insert(meshes.end(), newMeshes.begin(), newMeshes.end());
-
-		for (meshesEnd; meshesEnd < meshes.size(); meshesEnd++)
-		{
-			meshes[meshesEnd].SetTextureId(TextureLoader::LoadDefaultTexture());
-		}
-	}
-
 }

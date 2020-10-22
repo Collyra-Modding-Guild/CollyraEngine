@@ -2,6 +2,7 @@
 #include "M_Input.h"
 #include "M_UIManager.h"
 #include "M_Renderer3D.h"
+#include "M_Resources.h"
 
 #include "MeshLoader.h"
 #include "Mesh.h"
@@ -144,7 +145,7 @@ updateStatus M_Input::PreUpdate(float dt)
 			{     
 				char* droppedFilePath = e.drop.file;
 
-				App->renderer3D->AddMeshes(MeshLoader::Load(droppedFilePath));
+				App->resources->CreateMeshes(droppedFilePath);
 				
 				SDL_free(droppedFilePath);
 				break;
