@@ -67,7 +67,7 @@ void M_Resources::AddMeshes(std::vector<Mesh>& newMeshes)
 
 		for (meshesEnd; meshesEnd < meshes.size(); meshesEnd++)
 		{
-			meshes[meshesEnd].SetTextureId(TextureLoader::Load("Assets/default.png"));
+			meshes[meshesEnd].SetTextureId(TextureLoader::Load("Assets/house.png"));
 		}
 	}
 }
