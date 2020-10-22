@@ -3,16 +3,18 @@
 
 #include <vector>
 #include "Globals.h"
+
 #include "MathGeoLib/include/MathGeoLib.h"
 
 class Texture;
 
 namespace TextureLoader
 {
-	void Init();
+	bool Init();
 	void CleanUp();
 
 	uint LoadDefaultTexture();
+	bool Load(std::string path);
 }
 
 
