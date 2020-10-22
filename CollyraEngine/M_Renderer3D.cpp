@@ -1,4 +1,3 @@
-#include "Globals.h"
 #include "MeshLoader.h"
 #include "Application.h"
 #include "M_Renderer3D.h"
@@ -391,8 +390,13 @@ void M_Renderer3D::AddMeshes(std::vector<Mesh>& newMeshes)
 {
 	if (newMeshes.size() > 0)
 	{
+		int meshesEnd = meshes.size();
 		meshes.insert(meshes.end(), newMeshes.begin(), newMeshes.end());
-		meshes[0].idTextureImage = TextureLoader::LoadDefaultTexture();
+
+		for (meshesEnd; meshesEnd < meshes.size(); meshesEnd++)
+		{
+			meshes[meshesEnd].SetTextureId(TextureLoader::LoadDefaultTexture());
+		}
 	}
 
 }

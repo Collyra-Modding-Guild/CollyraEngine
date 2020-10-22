@@ -1,4 +1,3 @@
-#include "Globals.h"
 #include "Application.h"
 #include "M_Input.h"
 #include "M_UIManager.h"

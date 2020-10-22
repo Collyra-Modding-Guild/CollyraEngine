@@ -2,7 +2,7 @@
 
 class Application;
 
-#include <string>
+#include "Globals.h"
 
 enum MODULE_TYPE
 {
@@ -13,8 +13,10 @@ enum MODULE_TYPE
 	M_INPUT,
 	M_CAMERA3D,
 	M_UIMANAGER,
-	M_FILEMANAGER
+	M_FILEMANAGER,
+	M_RESOURCES
 };
+
 
 class Module
 {

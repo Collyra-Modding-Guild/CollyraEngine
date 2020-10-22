@@ -1,7 +1,6 @@
 #include "WG_Config.h"
 #include "Application.h"
 #include "M_Window.h"
-#include "Globals.h"
 #include "M_Renderer3D.h"
 #include "M_Input.h"
 

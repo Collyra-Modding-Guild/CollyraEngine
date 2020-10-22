@@ -7,10 +7,7 @@
 #include "M_Camera3D.h"
 #include "M_UIManager.h"
 #include "M_FileManager.h"
-
-#include "MeshLoader.h"
-#include "TextureLoader.h"
-
+#include "M_Resources.h"
 
 
 Application::Application(int argc, char* args[]) : argc(argc), args(args)
@@ -21,6 +18,7 @@ Application::Application(int argc, char* args[]) : argc(argc), args(args)
 	camera = new M_Camera3D(M_CAMERA3D, true);
 	uiManager = new M_UIManager(M_UIMANAGER, true);
 	physFS = new M_FileManager(M_FILEMANAGER, true);
+	resources = new M_Resources(M_RESOURCES,true);
 
 	engineTimer = new Timer();
 	gamePerfTimer = new PerfTimer();
@@ -35,6 +33,7 @@ Application::Application(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(input);
 	AddModule(uiManager);
 	AddModule(physFS);
+	AddModule(resources);
 
 	// Scenes
 	AddModule(camera);
@@ -60,8 +59,6 @@ bool Application::Awake()
 	{
 		ret = moduleList[i]->Awake();
 	}
-
-	InitLoaders();
 
 	// After all Init calls we call Start() in all modules
 	LOG("Application Start --------------");
@@ -162,8 +159,6 @@ bool Application::CleanUp()
 		ret = moduleList[i]->CleanUp();
 
 	}
-
-	CleanUpLoaders();
 
 	moduleList.clear();
 
@@ -307,16 +302,4 @@ void Application::NewConsoleLog(const char* newLog)
 void Application::AddModule(Module* mod)
 {
 	moduleList.push_back(mod);
-}
-
-void  Application::InitLoaders() 
-{
-	TextureLoader::Init();
-	MeshLoader::Init();
-}
-
-void  Application::CleanUpLoaders()
-{
-	TextureLoader::CleanUp();
-	MeshLoader::CleanUp();
 }

@@ -17,7 +17,6 @@ void log(const char file[], int line, const char* format, ...);
 #define RADTODEG 57.295779513082320876f
 #define PI 3.14159
 
-
 typedef unsigned int uint;
 
 enum updateStatus
@@ -26,7 +25,6 @@ enum updateStatus
 
 	UPDATE_STOP,
 	UPDATE_CONTINUE
-	
 };
 
 // Configuration -----------

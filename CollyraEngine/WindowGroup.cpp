@@ -1,5 +1,4 @@
 #include "WindowGroup.h"
-#include "Globals.h"
 
 #include "imgui/imgui.h"
 

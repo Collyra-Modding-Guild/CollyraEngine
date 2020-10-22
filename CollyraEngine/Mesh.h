@@ -17,8 +17,10 @@ public:
 	void GenerateBuffers();
 	void GenerateColors();
 
-	void Render(bool globalWireMode = false, bool drawTexture = true) const;
-	void InnerRender(bool drawTexture) const;
+	void SetTextureId(uint newId);
+
+	void Render(bool globalWireMode = false) const;
+	void InnerRender() const;
 
 	void DrawNormals() const;
 

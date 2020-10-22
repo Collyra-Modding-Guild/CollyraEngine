@@ -151,6 +151,7 @@
     <ClInclude Include="M_Camera3D.h" />
     <ClInclude Include="M_FileManager.h" />
     <ClInclude Include="M_Renderer3D.h" />
+    <ClInclude Include="M_Resources.h" />
     <ClInclude Include="M_UIManager.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="M_Input.h" />
@@ -217,6 +218,7 @@
     <ClCompile Include="M_FileManager.cpp" />
     <ClCompile Include="M_Input.cpp" />
     <ClCompile Include="M_Renderer3D.cpp" />
+    <ClCompile Include="M_Resources.cpp" />
     <ClCompile Include="M_UIManager.cpp" />
     <ClCompile Include="M_Window.cpp" />
     <ClCompile Include="p2Defs.h" />

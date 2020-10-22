@@ -1,7 +1,6 @@
 #include "WG_Scene.h"
 #include "Application.h"
 #include "M_Window.h"
-#include "Globals.h"
 #include "M_Renderer3D.h"
 
 WG_Scene::WG_Scene(bool isActive) : WindowGroup(WG_CONFIG, isActive)

@@ -15,6 +15,7 @@ class M_Input;
 class M_Camera3D;
 class M_UIManager;
 class M_FileManager;
+class M_Resources;
 
 enum MODULE_TYPE;
 
@@ -27,8 +28,8 @@ public:
 	M_Camera3D* camera;
 	M_UIManager* uiManager;
 	M_FileManager* physFS;
+	M_Resources* resources;
 	
-
 	float capTime = 0;
 
 	//The amount of frames calculated in the last second
@@ -36,7 +37,6 @@ public:
 
 	//The amount of time spended calculating the last frame
 	uint64 lastFrameMs = 0u;
-
 
 private:
 
@@ -72,8 +72,6 @@ private:
 	bool windowTitleControl = false; //Changes the title of the window
 	bool pause = false; //Bool that controls the pause of the game
 
-	
-
 public:
 
 	Application(int argc, char* args[]);
@@ -100,8 +98,6 @@ private:
 	void PrepareUpdate();
 	void FinishUpdate();
 
-	void InitLoaders();
-	void CleanUpLoaders();
 };
 
 extern Application* App;

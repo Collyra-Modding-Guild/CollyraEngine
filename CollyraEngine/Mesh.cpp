@@ -83,8 +83,13 @@ void Mesh::GenerateColors()
 	wireColor = Color((float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f);
 }
 
+void Mesh::SetTextureId(uint newId)
+{
+	idTextureImage = newId;
+}
+
 // ------------------------------------------------------------
-void Mesh::Render(bool globalWireMode, bool drawTexture) const
+void Mesh::Render(bool globalWireMode) const
 {
 	glPushMatrix();
 
@@ -93,13 +98,13 @@ void Mesh::Render(bool globalWireMode, bool drawTexture) const
 	else
 		glColor3f(color.r, color.g, color.b);
 
-	InnerRender(drawTexture);
+	InnerRender();
 
 	glPopMatrix();
 }
 
 // ------------------------------------------------------------
-void Mesh::InnerRender(bool drawTexture) const
+void Mesh::InnerRender() const
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
 
@@ -109,7 +114,7 @@ void Mesh::InnerRender(bool drawTexture) const
 	if (idTextureCoords != -1)
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	if (idTextureImage != -1 && drawTexture)
+	if (idTextureImage != -1)
 	{
 		glEnableClientState(GL_TEXTURE_2D);
 	}
@@ -129,7 +134,7 @@ void Mesh::InnerRender(bool drawTexture) const
 		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 	}
 
-	if (idTextureImage != -1 && drawTexture)
+	if (idTextureImage != -1)
 	{
 		glBindTexture(GL_TEXTURE_2D, idTextureImage);
 	}
