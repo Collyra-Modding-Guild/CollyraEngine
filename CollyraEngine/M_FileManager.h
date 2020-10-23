@@ -26,7 +26,7 @@ class M_FileManager : public Module
 {
 public:
 
-	M_FileManager(MODULE_TYPE type, bool start_enabled = true);
+	M_FileManager(MODULE_TYPE type, bool startEnabled = true);
 	~M_FileManager();
 
 	// Called before render is available

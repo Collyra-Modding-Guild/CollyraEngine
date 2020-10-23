@@ -6,7 +6,7 @@
 #include "Mesh.h"
 #include "TextureLoader.h"
 
-M_Resources::M_Resources(MODULE_TYPE type, bool start_enabled) : Module(type, start_enabled)
+M_Resources::M_Resources(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled)
 {}
 
 M_Resources::~M_Resources()

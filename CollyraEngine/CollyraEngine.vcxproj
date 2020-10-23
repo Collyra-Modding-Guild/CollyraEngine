@@ -75,6 +75,8 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="glmath.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="imgui\imconfig.h" />
@@ -152,6 +154,7 @@
     <ClInclude Include="M_FileManager.h" />
     <ClInclude Include="M_Renderer3D.h" />
     <ClInclude Include="M_Resources.h" />
+    <ClInclude Include="M_Scene.h" />
     <ClInclude Include="M_UIManager.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="M_Input.h" />
@@ -170,6 +173,8 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Color.cpp" />
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="glmath.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
@@ -219,6 +224,7 @@
     <ClCompile Include="M_Input.cpp" />
     <ClCompile Include="M_Renderer3D.cpp" />
     <ClCompile Include="M_Resources.cpp" />
+    <ClCompile Include="M_Scene.cpp" />
     <ClCompile Include="M_UIManager.cpp" />
     <ClCompile Include="M_Window.cpp" />
     <ClCompile Include="p2Defs.h" />

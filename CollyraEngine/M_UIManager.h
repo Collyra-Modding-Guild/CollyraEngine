@@ -16,7 +16,7 @@ class M_UIManager : public Module
 {
 public:
 
-	M_UIManager(MODULE_TYPE type, bool start_enabled = true);
+	M_UIManager(MODULE_TYPE type, bool startEnabled = true);
 	~M_UIManager();
 
 	bool Awake();

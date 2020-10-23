@@ -16,6 +16,7 @@ class M_Camera3D;
 class M_UIManager;
 class M_FileManager;
 class M_Resources;
+class M_Scene;
 
 enum MODULE_TYPE;
 
@@ -29,6 +30,7 @@ public:
 	M_UIManager* uiManager;
 	M_FileManager* physFS;
 	M_Resources* resources;
+	M_Scene* scene;
 	
 	float capTime = 0;
 

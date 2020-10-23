@@ -14,7 +14,8 @@ enum MODULE_TYPE
 	M_CAMERA3D,
 	M_UIMANAGER,
 	M_FILEMANAGER,
-	M_RESOURCES
+	M_RESOURCES,
+	M_SCENE
 };
 
 
@@ -25,7 +26,7 @@ private:
 
 public:
 
-	Module(MODULE_TYPE type, bool start_enabled = true) :type(type), enabled(start_enabled)
+	Module(MODULE_TYPE type, bool startEnabled = true) :type(type), enabled(startEnabled)
 	{}
 
 	virtual ~Module()

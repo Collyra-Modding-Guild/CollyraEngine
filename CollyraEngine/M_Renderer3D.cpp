@@ -20,7 +20,7 @@
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
-M_Renderer3D::M_Renderer3D(MODULE_TYPE type, bool start_enabled) : Module(type, start_enabled),
+M_Renderer3D::M_Renderer3D(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled),
 renderer(nullptr), frameBuffer(-1), textureBuffer(-1), depthBuffer(-1),
 drawingFaces(true), drawingDebugNormals(false), drawingTextures(true)
 {}

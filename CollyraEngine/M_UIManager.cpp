@@ -24,7 +24,7 @@
 #pragma comment (lib, "Glew/libx86/glew32.lib")
 
 
-M_UIManager::M_UIManager(MODULE_TYPE type, bool start_enabled) : Module(type, start_enabled), showDemoWindow(false), showConfigMenu(false),
+M_UIManager::M_UIManager(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), showDemoWindow(false), showConfigMenu(false),
 configWindow(nullptr), consoleWindow(nullptr), sceneWindow()
 {}
 

@@ -3,7 +3,7 @@
 #include "M_Window.h"
 #include "M_Input.h"
 
-M_Camera3D::M_Camera3D(MODULE_TYPE type, bool start_enabled) : Module(type, start_enabled), spdMultiplier(2.0f), editorCamera(true)
+M_Camera3D::M_Camera3D(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), spdMultiplier(2.0f), editorCamera(true)
 {
 	CalculateViewMatrix();
 
