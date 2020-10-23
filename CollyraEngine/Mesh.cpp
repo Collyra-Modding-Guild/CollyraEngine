@@ -74,13 +74,13 @@ void Mesh::GenerateBuffers()
 		if (!textureCoords.empty())
 		{
 			glGenBuffers(1, (GLuint*)&(idTextureCoords));
-			glBindBuffer(GL_TEXTURE_COORD_ARRAY, idTextureCoords);
-			glBufferData(GL_TEXTURE_COORD_ARRAY, textureCoords.size() * sizeof(float2), &textureCoords[0], GL_STATIC_DRAW);
+			glBindBuffer(GL_ARRAY_BUFFER, idTextureCoords);
+			glBufferData(GL_ARRAY_BUFFER, textureCoords.size() * sizeof(float2), &textureCoords[0], GL_STATIC_DRAW);
 		}
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_TEXTURE_COORD_ARRAY, 0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	}
 }
@@ -138,7 +138,7 @@ void Mesh::InnerRender() const
 
 	if (idTextureCoords != -1)
 	{
-		glBindBuffer(GL_TEXTURE_COORD_ARRAY, idTextureCoords);
+		glBindBuffer(GL_ARRAY_BUFFER, idTextureCoords);
 		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 	}
 
