@@ -339,10 +339,10 @@
     <ClInclude Include="C_Mesh.h">
       <Filter>Sources\Components</Filter>
     </ClInclude>
-    <ClInclude Include="C_Texture.h">
+    <ClInclude Include="C_Transform.h">
       <Filter>Sources\Components</Filter>
     </ClInclude>
-    <ClInclude Include="C_Transform.h">
+    <ClInclude Include="C_Material.h">
       <Filter>Sources\Components</Filter>
     </ClInclude>
   </ItemGroup>
@@ -545,10 +545,10 @@
     <ClCompile Include="C_Mesh.cpp">
       <Filter>Sources\Components</Filter>
     </ClCompile>
-    <ClCompile Include="C_Texture.cpp">
+    <ClCompile Include="C_Transform.cpp">
       <Filter>Sources\Components</Filter>
     </ClCompile>
-    <ClCompile Include="C_Transform.cpp">
+    <ClCompile Include="C_Material.cpp">
       <Filter>Sources\Components</Filter>
     </ClCompile>
   </ItemGroup>

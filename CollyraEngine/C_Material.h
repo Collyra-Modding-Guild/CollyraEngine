@@ -2,12 +2,12 @@
 
 #include "Component.h"
 
-class C_Texture : public Component
+class C_Material : public Component
 {
 public:
 
-	C_Texture();
-	~C_Texture();
+	C_Material();
+	~C_Material();
 
 	void Update() override;
 
