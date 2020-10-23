@@ -336,6 +336,15 @@
     <ClInclude Include="Component.h">
       <Filter>Sources\Components</Filter>
     </ClInclude>
+    <ClInclude Include="C_Mesh.h">
+      <Filter>Sources\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="C_Texture.h">
+      <Filter>Sources\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="C_Transform.h">
+      <Filter>Sources\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="log.cpp">
@@ -531,6 +540,15 @@
       <Filter>Sources\Game Objects</Filter>
     </ClCompile>
     <ClCompile Include="Component.cpp">
+      <Filter>Sources\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="C_Mesh.cpp">
+      <Filter>Sources\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="C_Texture.cpp">
+      <Filter>Sources\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="C_Transform.cpp">
       <Filter>Sources\Components</Filter>
     </ClCompile>
   </ItemGroup>

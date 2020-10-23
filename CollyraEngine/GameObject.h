@@ -19,7 +19,7 @@ class GameObject
 public:
 
 	GameObject();
-	~GameObject();
+	virtual ~GameObject();
 
 	void Update();
 
