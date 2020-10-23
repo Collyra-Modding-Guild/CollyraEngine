@@ -40,6 +40,12 @@
     <Filter Include="Sources\WindowGroup">
       <UniqueIdentifier>{5c588917-f828-4fe3-ba1b-3d55ec27d01c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Game Objects">
+      <UniqueIdentifier>{d40c67e7-390e-4057-a43c-5350649f4f62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Components">
+      <UniqueIdentifier>{78f32b22-dc58-4989-b9e9-79ec54affa24}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Module.h">
@@ -321,6 +327,24 @@
     <ClInclude Include="M_Resources.h">
       <Filter>Sources\Modules</Filter>
     </ClInclude>
+    <ClInclude Include="M_Scene.h">
+      <Filter>Sources\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Sources\Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>Sources\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="C_Mesh.h">
+      <Filter>Sources\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="C_Texture.h">
+      <Filter>Sources\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="C_Transform.h">
+      <Filter>Sources\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="log.cpp">
@@ -508,6 +532,24 @@
     </ClCompile>
     <ClCompile Include="M_Resources.cpp">
       <Filter>Sources\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="M_Scene.cpp">
+      <Filter>Sources\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Sources\Game Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>Sources\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="C_Mesh.cpp">
+      <Filter>Sources\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="C_Texture.cpp">
+      <Filter>Sources\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="C_Transform.cpp">
+      <Filter>Sources\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

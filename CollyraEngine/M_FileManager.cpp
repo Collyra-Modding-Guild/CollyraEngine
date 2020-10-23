@@ -5,7 +5,7 @@
 #include <fstream>
 #include <filesystem>
 
-M_FileManager::M_FileManager(MODULE_TYPE type, bool start_enabled) : Module(type, start_enabled)
+M_FileManager::M_FileManager(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled)
 {
 	//name = ("assetManager");
 

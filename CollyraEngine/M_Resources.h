@@ -10,7 +10,7 @@ class M_Resources : public Module
 {
 public:
 
-	M_Resources(MODULE_TYPE type, bool start_enabled = true);
+	M_Resources(MODULE_TYPE type, bool startEnabled = true);
 	~M_Resources();
 
 	bool Awake();

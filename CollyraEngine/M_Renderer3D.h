@@ -13,7 +13,7 @@ class Mesh;
 class M_Renderer3D : public Module
 {
 public:
-	M_Renderer3D(MODULE_TYPE type, bool start_enabled = true);
+	M_Renderer3D(MODULE_TYPE type, bool startEnabled = true);
 	~M_Renderer3D();
 
 	bool Awake();

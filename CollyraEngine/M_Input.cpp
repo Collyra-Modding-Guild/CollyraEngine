@@ -14,7 +14,7 @@
 
 #define MAX_KEYS 300
 
-M_Input::M_Input(MODULE_TYPE type, bool start_enabled) : Module(type, start_enabled)
+M_Input::M_Input(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled)
 {
 	keyboard = new KEY_STATE[MAX_KEYS];
 	memset(keyboard, KEY_IDLE, sizeof(KEY_STATE) * MAX_KEYS);

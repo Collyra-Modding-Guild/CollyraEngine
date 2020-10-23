@@ -17,7 +17,7 @@ class M_Input : public Module
 {
 public:
 
-	M_Input(MODULE_TYPE type, bool start_enabled = true);
+	M_Input(MODULE_TYPE type, bool startEnabled = true);
 	~M_Input();
 
 	bool Awake();

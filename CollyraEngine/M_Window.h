@@ -10,7 +10,7 @@ class M_Window : public Module
 {
 public:
 
-	M_Window(MODULE_TYPE type, bool start_enabled = true);
+	M_Window(MODULE_TYPE type, bool startEnabled = true);
 
 	// Destructor
 	virtual ~M_Window();

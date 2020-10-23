@@ -8,6 +8,7 @@
 #include "M_UIManager.h"
 #include "M_FileManager.h"
 #include "M_Resources.h"
+#include "M_Scene.h"
 
 
 Application::Application(int argc, char* args[]) : argc(argc), args(args)
@@ -19,6 +20,7 @@ Application::Application(int argc, char* args[]) : argc(argc), args(args)
 	uiManager = new M_UIManager(M_UIMANAGER, true);
 	physFS = new M_FileManager(M_FILEMANAGER, true);
 	resources = new M_Resources(M_RESOURCES,true);
+	scene = new M_Scene(M_SCENE,true);
 
 	engineTimer = new Timer();
 	gamePerfTimer = new PerfTimer();
@@ -34,6 +36,7 @@ Application::Application(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(uiManager);
 	AddModule(physFS);
 	AddModule(resources);
+	AddModule(scene);
 
 	// Scenes
 	AddModule(camera);

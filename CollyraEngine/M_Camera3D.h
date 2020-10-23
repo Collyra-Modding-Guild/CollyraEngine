@@ -5,7 +5,7 @@
 class M_Camera3D : public Module
 {
 public:
-	M_Camera3D(MODULE_TYPE type, bool start_enabled = true);
+	M_Camera3D(MODULE_TYPE type, bool startEnabled = true);
 	~M_Camera3D();
 
 	bool Start();
