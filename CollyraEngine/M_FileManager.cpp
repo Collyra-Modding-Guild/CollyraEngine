@@ -7,11 +7,8 @@
 
 M_FileManager::M_FileManager(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled)
 {
-	//name = ("assetManager");
 
 	// Initialize the PhysicsFS library
-	// This must be called before any other PhysicsFS function
-	// This should be called prior to any attempts to change your process's current working directory
 	PHYSFS_init(nullptr);
 
 	// We only need this when compiling in debug. In Release we don't need it.
@@ -30,9 +27,6 @@ M_FileManager::M_FileManager(MODULE_TYPE type, bool startEnabled) : Module(type,
 
 M_FileManager::~M_FileManager()
 {
-	// Deinitialize the PhysicsFS library.
-	// This closes any files opened via PhysicsFS, blanks the search/write paths, frees memory, and invalidates all of your file handles.
-	// NOTE: This call can FAIL if there's a file open for writing that refuses to close
 	PHYSFS_deinit();
 }
 
@@ -47,10 +41,6 @@ bool M_FileManager::Awake()
 		LOG("Failed loading Asset Manager");
 
 
-	// Add an archive or directory to the search path.
-	// If this is a duplicate, the entry is not added again, even though the function succeeds.
-	// When you mount an archive, it is added to a virtual file system...
-	// all files in all of the archives are interpolated into a single hierachical file tree.
 	// PHYSFS_mount("ZIP NAME", nullptr, 1); 
 
 	return true;

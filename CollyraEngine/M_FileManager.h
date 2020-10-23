@@ -48,12 +48,9 @@ public:
 	bool Exists(const char* file) const;
 	bool CreateDir(const char* dir);
 	bool IsDirectory(const char* file) const;
-	const char* GetWriteDir() const;
+
 	void DiscoverFiles(const char* directory, std::vector<std::string>& file_list, std::vector<std::string>& dir_list) const;
-	void GetAllFilesWithExtension(const char* directory, const char* extension, std::vector<std::string>& file_list) const;
-	PathNode GetAllFiles(const char* directory, std::vector<std::string>* filter_ext = nullptr, std::vector<std::string>* ignore_ext = nullptr) const;
-	void GetRealDir(const char* path, std::string& output) const;
-	std::string GetPathRelativeToAssets(const char* originalPath) const;
+	
 
 	bool HasExtension(const char* path) const;
 	bool HasExtension(const char* path, std::string extension) const;
@@ -70,21 +67,27 @@ public:
 	bool ImportFile(const char* file, std::string& relativePath);
 	bool DuplicateFile(const char* srcFile, const char* dstFile);
 
-	std::string GetExtensionFolder(const char* fileExtension);
-
 	unsigned int Save(const char* file, const void* buffer, unsigned int size, bool append = false) const;
 	bool Remove(const char* file);
 
-	uint64 GetLastModTime(const char* filename);
-	std::string GetUniqueName(const char* path, const char* name) const;
+
+	// GET - - -
+	void			GetRealDir(const char* path, std::string& output) const;
+	void			GetAllFilesWithExtension(const char* directory, const char* extension, std::vector<std::string>& file_list) const;
+	const char*		GetWriteDir() const;
+	uint64			GetLastModTime(const char* filename);
+	std::string		GetUniqueName(const char* path, const char* name) const;
+	std::string		GetExtensionFolder(const char* fileExtension);
+	std::string		GetPathRelativeToAssets(const char* originalPath) const;
+	PathNode		GetAllFiles(const char* directory, std::vector<std::string>* filter_ext = nullptr, std::vector<std::string>* ignore_ext = nullptr) const;
 
 private:
 	int CheckPath(const char*);
 
 private:
-	std::vector<std::string> pathVector;
-	std::vector<char*> bufferVector;
-	std::vector<uint> bytesVector;
+	std::vector<std::string>	pathVector;
+	std::vector<char*>			bufferVector;
+	std::vector<uint>			bytesVector;
 };
 
 #endif // __ModuleFileManager_H__

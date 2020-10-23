@@ -84,18 +84,10 @@ uint TextureLoader::Load(const char* path)
 	//-------------
 	ilLoadImage(path);
 
-/*	ILinfo ImageInfo;
-	ImageInfo.Id = Image;
-	iluGetImageInfo(&ImageInfo);
-	if (ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
-	{
-		iluFlipImage();
-	}*/
-
 	uint ret = ilutGLBindTexImage();
 	ilDeleteImages(1, &Image);
 
-	//-----------------------
+	//----------------------- 
 	//char* buffer = nullptr;
 
 	//uint bytesFile = App->physFS->Load(path, &buffer);

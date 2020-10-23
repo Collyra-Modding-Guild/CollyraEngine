@@ -11,11 +11,8 @@ class aiScene;
 
 namespace MeshLoader
 {
-
 	void Init();
-
 	void CleanUp();
-
 
 	std::vector<Mesh> Load(const char* path);
 
