@@ -63,9 +63,19 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 		break;
 	}
 
+	//We add the component to the GameObject
+	// If the GameObject has it already (or a number of them), we don't add the component & we delete the created one
+	// Only affects Transform for now :)
 	if (newComponent != nullptr)
 	{
-		AddComponent(newComponent);
+		Component* ret = AddComponent(newComponent);
+
+		if (ret != newComponent)
+		{
+			delete newComponent;
+			newComponent = nullptr;
+			return ret;
+		}
 	}
 
 	return newComponent;
@@ -81,8 +91,34 @@ void GameObject::SetId(unsigned int newId)
 	this->id = newId;
 }
 
-void GameObject::AddComponent(Component* c)
+Component* GameObject::AddComponent(Component* c)
 {
+	if (c == nullptr)
+		return c;
+
+	//Components limits check
+	switch (c->type)
+	{
+	case COMPONENT_TYPE::TRANSFORM:
+	{
+		C_Transform* hasTransform = this->GetComponent<C_Transform>();
+		if (hasTransform != nullptr)
+		{
+			LOG("GameObject already has a Transform Component!!!")
+			return hasTransform;
+		}
+	}
+	break;
+	case COMPONENT_TYPE::MESH:{}
+	break;
+	case COMPONENT_TYPE::MATERIAL:{}
+	break;
+	default:
+		break;
+	}
+
 	c->SetGameObject(this);
 	components.push_back(c);
+
+	return c;
 }

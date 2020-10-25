@@ -115,6 +115,8 @@ GameObject* M_Scene::CreateGameObject(GameObject* parent)
 	newGameObject->parent = parent;
 	newGameObject->SetId(GenerateId());
 
+	newGameObject->CreateComponent(COMPONENT_TYPE::TRANSFORM);
+
 	return newGameObject;
 }
 
@@ -122,8 +124,6 @@ uint M_Scene::GenerateId()
 {
 	return globalId++;
 }
-
-
 
 bool M_Scene::DeleteGameObject(unsigned int id)
 {

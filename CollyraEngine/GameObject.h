@@ -24,7 +24,9 @@ public:
 	void Update(float dt);
 
 	Component* CreateComponent(COMPONENT_TYPE type);
-	void AddComponent(Component* c);
+
+	//If succesfull to Add return the component, else return nullptr
+	Component* AddComponent(Component* c);
 
 	template<typename T>
 	T* GetComponent();

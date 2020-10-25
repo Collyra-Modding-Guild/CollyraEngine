@@ -5,6 +5,7 @@
 
 #include "GameObject.h"
 #include "C_Mesh.h"
+#include "C_Transform.h"
 
 #include "p2Defs.h"
 #include "MathGeoLib/include/Math/float3.h"
@@ -83,6 +84,18 @@ bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, GameOb
 {
 	GameObject* newGameObject = App->scene->CreateGameObject(parent);
 
+	//Transform Load------
+	aiVector3D translation, scaling;
+	aiQuaternion rotation;
+
+	node->mTransformation.Decompose(scaling, rotation, translation);
+	float3 pos(translation.x, translation.y, translation.z);
+	Quat rot(rotation.x, rotation.y, rotation.z, rotation.w);
+	float3 scale(scaling.x, scaling.y, scaling.z);
+
+	newGameObject->GetComponent<C_Transform>()->SetTransformation(pos, rot, scale);
+
+	//Mesh Load---------
 	for (int i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
@@ -120,6 +133,10 @@ bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, GameOb
 
 		newMesh->GenerateMesh(vertices, indices, normals, textureCoords);
 	}
+
+	//Materials Load-----
+
+
 
 	LoadSceneMeshes(scene, node, newGameObject);
 
