@@ -6,10 +6,10 @@
 class C_Mesh : public Component
 {
 public:
-	C_Mesh();
+	C_Mesh(bool active);
 	~C_Mesh();
 
-	void Update() override;
+	void Update(float dt) override;
 
 private:
 

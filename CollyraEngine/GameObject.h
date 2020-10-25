@@ -11,7 +11,6 @@ enum class COMPONENT_TYPE
 	MATERIAL
 };
 
-
 class Component;
 
 class GameObject
@@ -21,15 +20,25 @@ public:
 	GameObject();
 	virtual ~GameObject();
 
-	void Update();
+	void Start();
+	void Update(float dt);
 
 	Component* CreateComponent(COMPONENT_TYPE type);
+	void AddComponent(Component* c);
 
+	template<typename	T>
+	T* GetComponent();
+
+	unsigned int GetId() const;
+	void SetId(unsigned int newId);
 
 public:
-	std::string name;
 	std::vector<Component*> components;
 	GameObject* parent;
 	std::vector<GameObject*> children;
 
+private:
+	unsigned int id;
+
 };
+

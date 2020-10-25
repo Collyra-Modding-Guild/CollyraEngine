@@ -3,8 +3,10 @@
 
 #include "Module.h"
 #include <vector>
+#include <stack>
 
 class GameObject;
+class Component;
 
 class M_Scene : public Module
 {
@@ -17,11 +19,17 @@ public:
 	updateStatus Update(float dt) override;
 	bool CleanUp() override;
 
-	GameObject* CreateGameObject();
+	GameObject* CreateGameObject(GameObject* parent);
+	bool DeleteGameObject(unsigned int id);
+	bool DeleteGameObject(GameObject* gameObject);
 
-public:
+	unsigned int GenerateId();
+
+private:
 	GameObject* root;
+	unsigned int globalId;
 
 };
 
 #endif // __ModuleResources_H__
+

@@ -6,10 +6,10 @@ class C_Material : public Component
 {
 public:
 
-	C_Material();
+	C_Material(bool active);
 	~C_Material();
 
-	void Update() override;
+	void Update(float dt) override;
 
 private:
 

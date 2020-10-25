@@ -6,17 +6,24 @@ class Component
 {
 public:
 
-	Component();
+	Component(COMPONENT_TYPE type,  bool active = true);
 	virtual ~Component();
 
-	virtual void Update();
+	virtual void Start();
+	virtual void Update(float dt);
 
 	virtual void Enable();
 	virtual void Disable();
 
+	GameObject* GetGameObject()	const;
+	void	SetGameObject(GameObject* go);
+
+
 public:
 	COMPONENT_TYPE type;
 	bool active;
+
+private:
 	GameObject* myGameObject;
 
 };

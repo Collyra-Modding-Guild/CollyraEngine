@@ -1,21 +1,30 @@
 #include "Component.h"
 
-Component::Component() : active(true), type(COMPONENT_TYPE::NO_TYPE), myGameObject(nullptr)
-{
-}
+Component::Component(COMPONENT_TYPE type, bool active) :
+	active(active), type(type), myGameObject(nullptr)
+{}
 
 Component::~Component()
-{
-}
+{}
 
-void Component::Update()
-{
-}
+void Component::Start()
+{}
+
+void Component::Update(float dt)
+{}
 
 void Component::Enable()
-{
-}
+{}
 
 void Component::Disable()
+{}
+
+GameObject* Component::GetGameObject() const
 {
+	return	myGameObject;
+}
+
+void Component::SetGameObject(GameObject* go)
+{
+	myGameObject = go;
 }
