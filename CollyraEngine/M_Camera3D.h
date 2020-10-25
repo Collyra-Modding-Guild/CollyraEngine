@@ -27,11 +27,15 @@ private:
 	void CameraMovement(float dt);
 	void CameraFocus();
 	void CameraOrbital();
+
+	void ProvisionalReference();
+
 	vec3 CameraZoom(float dt);
 
 public:
 	
-	vec3 X, Y, Z, Position, Reference, camDistanceFromCar, newCameraPos;
+	vec3 X, Y, Z, Position, Reference, camDistanceFromCar, newCameraPos, focus;
+
 	mat3x3 rotation;
 
 	bool editorCamera;

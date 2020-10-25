@@ -3,6 +3,8 @@
 #include "M_Window.h"
 #include "M_Input.h"
 
+#include "MathGeoLib/include/Geometry/Frustum.h"
+
 M_Camera3D::M_Camera3D(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), spdMultiplier(2.0f), editorCamera(true)
 {
 	CalculateViewMatrix();
@@ -49,10 +51,7 @@ updateStatus M_Camera3D::Update(float dt)
 		return UPDATE_STOP;
 	}
 
-	
 	CameraMovement(dt);
-
-
 
 	// Recalculate matrix -------------
 	CalculateViewMatrix();
@@ -66,8 +65,6 @@ void M_Camera3D::CameraMovement(float dt)
 {
 	vec3 newPos(0, 0, 0);
 	float speed = DEFAULT_MOUSE_SPEED * dt;
-
-	
 
 	if (inputModule->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
 		speed = (speed * 2);
@@ -119,10 +116,16 @@ void M_Camera3D::CameraMovement(float dt)
 		Position = Reference + Z * length(Position);
 	}
 
+	/*ProvisionalReference();
+	float2 focusSpace = Frustum::ScreenToViewportSpace({ focus.x, focus.y }, App->window->screenWidth, App->window->screenHeight);
+	focus = (focusSpace.x, focusSpace.y, focus.z);
+
+	Look(Position, focus, true);*/
+	
+
 	Position += newPos + zoom;
 	Reference += newPos + zoom;
 
-	
 }
 
 // -----------------------------------------------------------------
@@ -152,6 +155,19 @@ void M_Camera3D::CameraOrbital()
 
 }
 
+// -----------------------------------------------------------------
+void M_Camera3D::ProvisionalReference()
+{
+	int X = App->input->GetMouseX();
+	int Y = App->input->GetMouseY();
+	int Z = 500;
+
+	if (App->input->GetMouseButton(1) == KEY_DOWN) 
+	{
+		focus = (X, Y, Z);
+		LOG("X: %d  Y: %d  Z: %d", X, Y, Z);
+	}		
+}
 
 // -----------------------------------------------------------------
 void M_Camera3D::Look(const vec3& Position, const vec3& Reference, bool RotateAroundReference)
