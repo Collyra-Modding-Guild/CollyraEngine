@@ -2,6 +2,9 @@
 #include "GameObject.h"
 #include "p2Defs.h"
 
+#include "Component.h"
+#include "C_Mesh.h"
+
 M_Scene::M_Scene(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), root(nullptr), globalId(0)
 {}
 
@@ -12,6 +15,7 @@ bool M_Scene::Awake()
 {
 	root = new GameObject();
 	root->SetId(GenerateId());
+
 	return true;
 }
 
@@ -50,6 +54,50 @@ updateStatus M_Scene::Update(float dt)
 	return UPDATE_CONTINUE;
 }
 
+updateStatus M_Scene::Draw(float dt)
+{
+	std::stack<GameObject*> stack;
+	GameObject* currNode = nullptr;
+
+	if (root == nullptr)
+	{
+		LOG("Root node did not exist!");
+		return UPDATE_STOP;
+	}
+
+	stack.push(root);
+
+	while (!stack.empty())
+	{
+		currNode = stack.top();
+		stack.pop();
+
+		if (currNode != nullptr)
+		{
+			C_Mesh* mesh = currNode->GetComponent<C_Mesh>();
+
+			if (mesh != nullptr)
+			{
+				mesh->Render();
+			}
+
+		}
+		else
+			continue;
+
+		int childNum = currNode->children.size();
+		for (int i = 0; i < childNum; i++)
+		{
+			stack.push(currNode->children[i]);
+		}
+	}
+}
+
+updateStatus M_Scene::DebugDraw(float dt)
+{
+	return updateStatus();
+}
+
 bool M_Scene::CleanUp()
 {
 	RELEASE(root);
@@ -64,7 +112,7 @@ GameObject* M_Scene::CreateGameObject(GameObject* parent)
 	GameObject* newGameObject = new GameObject();
 
 	parent->children.push_back(newGameObject);
-	newGameObject->parent = newGameObject;
+	newGameObject->parent = parent;
 	newGameObject->SetId(GenerateId());
 
 	return newGameObject;
@@ -74,6 +122,8 @@ uint M_Scene::GenerateId()
 {
 	return globalId++;
 }
+
+
 
 bool M_Scene::DeleteGameObject(unsigned int id)
 {

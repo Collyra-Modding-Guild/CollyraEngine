@@ -22,6 +22,7 @@ struct PathNode
 		for (int i = 0; i < children.size(); i++)
 			if (children[i].isFile == false)
 				return false;
+
 		return true;
 	}
 

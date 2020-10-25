@@ -1,7 +1,10 @@
 #include "Application.h"
 #include "MeshLoader.h"
-#include "Mesh.h"
 #include "M_FileManager.h"
+#include "M_Scene.h"
+
+#include "GameObject.h"
+#include "C_Mesh.h"
 
 #include "p2Defs.h"
 #include "MathGeoLib/include/Math/float3.h"
@@ -32,24 +35,25 @@ void MeshLoader::CleanUp()
 	aiDetachAllLogStreams();
 }
 
-std::vector<Mesh> MeshLoader::Load(const char* path)
+void MeshLoader::Load(const char* path)
 {
-	char* buffer = nullptr; 
-	
+	char* buffer = nullptr;
+
 	uint bytesFile = App->physFS->Load(path, &buffer);
 
 	const aiScene* scene = aiImportFileFromMemory(buffer, bytesFile, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
 
 	RELEASE_ARRAY(buffer);
 
-	std::vector<Mesh> loadedMeshes;
+	std::vector<C_Mesh> loadedMeshes;
 	bool ret = true;
 
 	if (scene)
 	{
-		// Use scene->mNumMeshes to iterate on scene->mMeshes array
 		//WARNING: assuming that all the mesh is made from triangles
-		ret = LoadSceneMeshes(scene, loadedMeshes);
+		GameObject* sceneRoot = App->scene->CreateGameObject(nullptr);
+
+		ret = LoadSceneMeshes(scene, scene->mRootNode, sceneRoot);
 
 		if (ret && loadedMeshes.size() > 0)
 		{
@@ -63,16 +67,25 @@ std::vector<Mesh> MeshLoader::Load(const char* path)
 		LOG("Error loading scene %s", path);
 	}
 
-	
-
-	return loadedMeshes;
 }
 
-bool MeshLoader::LoadSceneMeshes(const aiScene* scene, std::vector<Mesh>& loadedMeshes)
+bool MeshLoader::LoadSceneMeshes(const aiScene* scene, const aiNode* parent, GameObject* gbParent)
 {
-	for (int i = 0; i < scene->mNumMeshes; i++)
+	for (int i = 0; i < parent->mNumChildren; i++)
 	{
-		aiMesh* mesh = scene->mMeshes[i];
+		LoadNodeMeshes(scene, parent->mChildren[i], gbParent);
+	}
+
+	return true;
+}
+
+bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, GameObject* parent)
+{
+	GameObject* newGameObject = App->scene->CreateGameObject(parent);
+
+	for (int i = 0; i < node->mNumMeshes; i++)
+	{
+		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 
 		std::vector<float3> vertices;
 		std::vector<float3> normals;
@@ -103,12 +116,16 @@ bool MeshLoader::LoadSceneMeshes(const aiScene* scene, std::vector<Mesh>& loaded
 		else
 			LOG("New mesh with %i indices", indices.size());
 
+		C_Mesh* newMesh = (C_Mesh*)newGameObject->CreateComponent(COMPONENT_TYPE::MESH);
 
-		loadedMeshes.push_back(Mesh(vertices, indices, normals, textureCoords));
+		newMesh->GenerateMesh(vertices, indices, normals, textureCoords);
 	}
+
+	LoadSceneMeshes(scene, node, newGameObject);
 
 	return true;
 }
+
 
 void MeshLoader::LoadVertices(aiMesh* mesh, std::vector<float3>& vertices, std::vector<float3>& normals, std::vector<float2>& textureCoords)
 {

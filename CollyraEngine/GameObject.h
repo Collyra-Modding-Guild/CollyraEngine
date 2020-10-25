@@ -26,7 +26,7 @@ public:
 	Component* CreateComponent(COMPONENT_TYPE type);
 	void AddComponent(Component* c);
 
-	template<typename	T>
+	template<typename T>
 	T* GetComponent();
 
 	unsigned int GetId() const;
@@ -42,3 +42,14 @@ private:
 
 };
 
+template<typename T>
+T* GameObject::GetComponent()
+{
+	for (int i = 0; i < components.size(); i++)
+	{
+		T* c = dynamic_cast<T*>(components[i]);
+		if (c != nullptr)
+			return	c;
+	}
+	return nullptr;
+}

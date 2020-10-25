@@ -2,6 +2,10 @@
 #include "Component.h"
 #include "p2Defs.h"
 
+#include "C_Transform.h"
+#include "C_Material.h"
+#include "C_Mesh.h"
+
 GameObject::GameObject() : parent(nullptr), id(0)
 {}
 
@@ -36,7 +40,35 @@ void GameObject::Update(float dt)
 
 Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 {
-	return nullptr;
+	Component* newComponent = nullptr;
+
+	switch (type)
+	{
+	case COMPONENT_TYPE::TRANSFORM:
+	{
+		newComponent = new C_Transform();
+	}
+		break;
+	case COMPONENT_TYPE::MESH:
+	{
+		newComponent = new C_Mesh();
+	}
+		break;
+	case COMPONENT_TYPE::MATERIAL:
+	{
+		newComponent = new C_Mesh();
+	}
+		break;
+	default:
+		break;
+	}
+
+	if (newComponent != nullptr)
+	{
+		AddComponent(newComponent);
+	}
+
+	return newComponent;
 }
 
 unsigned int GameObject::GetId() const
@@ -47,18 +79,6 @@ unsigned int GameObject::GetId() const
 void GameObject::SetId(unsigned int newId)
 {
 	this->id = newId;
-}
-
-template<typename T>
-T* GameObject::GetComponent()
-{
-	for (int i = 0; i < components.size(); i++)
-	{
-		T* c = dynamic_cast<T*>components[i];
-		if (c != nullptr)
-			return	c;
-	}
-	return nullptr;
 }
 
 void GameObject::AddComponent(Component* c)

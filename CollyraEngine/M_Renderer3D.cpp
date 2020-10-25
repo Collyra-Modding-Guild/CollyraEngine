@@ -202,10 +202,10 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 
 	BeginDrawMode();
 
-	if (drawingDebugNormals == true)
-	{
-		DrawNormals();
-	}
+	//if (drawingDebugNormals == true)
+	//{
+	//	//DrawNormals();
+	//}
 
 	//Debug Render
 	if (App->IsDebugModeOn() == true)
@@ -246,52 +246,35 @@ bool M_Renderer3D::CleanUp()
 	return true;
 }
 
-updateStatus M_Renderer3D::Draw(float dt)
-{
-	updateStatus ret = updateStatus::UPDATE_CONTINUE;
-
-	std::vector<Mesh>* meshes = App->resources->GetMeshes();
-
-	if (meshes != nullptr)
-	{
-		for (uint i = 0; i < meshes->size(); i++)
-		{
-			meshes->at(i).Render();
-		}
-	}
-
-	return ret;
-}
-
-void M_Renderer3D::DrawNormals()
-{
-	std::vector<Mesh>* meshes = App->resources->GetMeshes();
-
-	if (meshes != nullptr)
-	{
-		for (uint i = 0; i < meshes->size(); i++)
-		{
-			meshes->at(i).DrawNormals();
-		}
-	}
-
-}
-
-updateStatus M_Renderer3D::DebugDraw(float dt)
-{
-	updateStatus ret = updateStatus::UPDATE_CONTINUE;
-
-	std::vector<Mesh>* meshes = App->resources->GetMeshes();
-
-	if (meshes != nullptr)
-	{
-		for (uint i = 0; i < meshes->size(); i++)
-		{
-			meshes->at(i).Render(true);
-		}
-	}
-	return ret;
-}
+//void M_Renderer3D::DrawNormals()
+//{
+//	std::vector<Mesh>* meshes = App->resources->GetMeshes();
+//
+//	if (meshes != nullptr)
+//	{
+//		for (uint i = 0; i < meshes->size(); i++)
+//		{
+//			meshes->at(i).DrawNormals();
+//		}
+//	}
+//
+//}
+//
+//updateStatus M_Renderer3D::DebugDraw(float dt)
+//{
+//	updateStatus ret = updateStatus::UPDATE_CONTINUE;
+//
+//	std::vector<Mesh>* meshes = App->resources->GetMeshes();
+//
+//	if (meshes != nullptr)
+//	{
+//		for (uint i = 0; i < meshes->size(); i++)
+//		{
+//			meshes->at(i).Render(true);
+//		}
+//	}
+//	return ret;
+//}
 
 //Called when a window is alterated
 void M_Renderer3D::OnResize(float width, float height)

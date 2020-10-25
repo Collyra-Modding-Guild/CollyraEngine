@@ -18,18 +18,10 @@ public:
 
 	bool CleanUp();
 
-	void CreateMeshesExternal(const char* path);
+	//void CreateMeshesExternal(const char* path);
 
 	void CreateMeshesInternal(const char* path);
 
-	std::vector<Mesh>* GetMeshes();
-
-public:
-	//Meshes----
-	std::vector<Mesh> meshes;
-
-private:
-	void AddMeshes(std::vector<Mesh>& newMeshes);
 
 };
 
