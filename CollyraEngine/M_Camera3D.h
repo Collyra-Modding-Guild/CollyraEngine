@@ -2,6 +2,9 @@
 #include "Module.h"
 #include "glmath.h"
 
+#define DEFAULT_MOUSE_SPEED 10.0f
+#define DEFAULT_WHEEL_SPEED 100.0f
+
 class M_Camera3D : public Module
 {
 public:
@@ -19,8 +22,12 @@ public:
 	vec3 GetCameraPosition();
 
 private:
-
 	void CalculateViewMatrix();
+
+	void CameraMovement(float dt);
+	void CameraFocus();
+	void CameraOrbital();
+	vec3 CameraZoom(float dt);
 
 public:
 	
@@ -31,6 +38,6 @@ public:
 	float spdMultiplier;
 
 private:
-
+	M_Input* inputModule;
 	mat4x4 ViewMatrix, ViewMatrixInverse;
 };
