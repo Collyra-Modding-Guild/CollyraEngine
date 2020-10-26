@@ -18,7 +18,7 @@ public:
 
 	void SetTextureId(uint newId);
 
-	void Render(bool globalWireMode = false) const;
+	void Render(float4x4 transform = float4x4::identity,bool globalWireMode = false) const;
 	void InnerRender() const;
 
 	void DrawNormals() const;

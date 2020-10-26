@@ -312,9 +312,6 @@
     <ClInclude Include="MeshLoader.h">
       <Filter>Sources\Helpers</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Sources\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="M_FileManager.h">
       <Filter>Sources\Modules</Filter>
     </ClInclude>
@@ -520,9 +517,6 @@
     </ClCompile>
     <ClCompile Include="MeshLoader.cpp">
       <Filter>Sources\Helpers</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Sources\Containers</Filter>
     </ClCompile>
     <ClCompile Include="M_FileManager.cpp">
       <Filter>Sources\Modules</Filter>

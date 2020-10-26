@@ -98,7 +98,8 @@ bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, GameOb
 	Quat rot(rotation.x, rotation.y, rotation.z, rotation.w);
 	float3 scale(scaling.x, scaling.y, scaling.z);
 
-	newGameObject->GetComponent<C_Transform>()->SetTransformation(pos, rot, scale);
+	newGameObject->GetComponent<C_Transform>()->SetLocalTransformation(pos, rot, scale);
+	newGameObject->GetComponent<C_Transform>()->GenerateGlobalTransformationFrom(parent->GetComponent<C_Transform>()->GetGlobalTransform());
 
 	//Mesh Load---------
 	for (int i = 0; i < node->mNumMeshes; i++)
@@ -180,7 +181,6 @@ void MeshLoader::LoadVertices(aiMesh* mesh, std::vector<float3>& vertices, std::
 			textCoord = float2(0.0f, 0.0f);
 
 		textureCoords.push_back(textCoord);
-
 	}
 }
 

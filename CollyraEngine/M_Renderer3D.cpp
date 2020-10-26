@@ -7,7 +7,6 @@
 #include "M_Resources.h"
 
 #include "Primitive.h"
-#include "Mesh.h"
 #include "TextureLoader.h"
 
 #include "Glew/include/glew.h"

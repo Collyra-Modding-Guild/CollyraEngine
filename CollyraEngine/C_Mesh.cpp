@@ -102,9 +102,10 @@ void C_Mesh::SetTextureId(uint newId)
 }
 
 // ------------------------------------------------------------
-void C_Mesh::Render(bool globalWireMode) const
+void C_Mesh::Render(float4x4 transform,bool globalWireMode) const
 {
 	glPushMatrix();
+	glMultMatrixf((float*)&transform);
 
 	if (globalWireMode)
 		glColor3f(wireColor.r, wireColor.g, wireColor.b);

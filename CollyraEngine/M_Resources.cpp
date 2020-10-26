@@ -3,7 +3,6 @@
 #include "M_FileManager.h"
 
 #include "MeshLoader.h"
-#include "Mesh.h"
 #include "TextureLoader.h"
 
 M_Resources::M_Resources(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled)
@@ -46,11 +45,11 @@ void M_Resources::ImportResourceInternal(const char* path)
 
 	App->physFS->SplitFilePath(normalizedPath.c_str(), &relativePath, nullptr, nullptr, &extension);
 
-	//if (relativePath == "")
-	//{
-	//	LOG("Invalid Path!!! We only load assets from the project folder for now :P");
-	//	return;
-	//}
+	if (relativePath == "")
+	{
+		LOG("Invalid Path!!! We only load assets from the project folder for now :P");
+		return;
+	}
 
 	extension = App->physFS->LowerCaseString(extension.c_str());
 

@@ -1717,7 +1717,7 @@ float4x4 float4x4::operator *(const float3x4 &rhs) const
 float4x4 float4x4::operator *(const float4x4 &rhs) const
 {
 	float4x4 r;
-#ifdef MATH_AUTOMATIC_SSE
+#ifdef false
 	mat4x4_mul_mat4x4(r.row, this->row, rhs.row);
 #else
 	const float *c0 = rhs.ptr();

@@ -4,6 +4,7 @@
 
 #include "Component.h"
 #include "C_Mesh.h"
+#include "C_Transform.h"
 
 M_Scene::M_Scene(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), root(nullptr), globalId(0)
 {}
@@ -75,10 +76,11 @@ updateStatus M_Scene::Draw(float dt)
 		if (currNode != nullptr)
 		{
 			C_Mesh* mesh = currNode->GetComponent<C_Mesh>();
+			C_Transform* transform = currNode->GetComponent<C_Transform>();
 
-			if (mesh != nullptr)
+			if (mesh != nullptr && transform != nullptr)
 			{
-				mesh->Render();
+				mesh->Render(transform->GetTGlobalTransform());
 			}
 
 		}

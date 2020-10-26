@@ -5,7 +5,6 @@
 #include "M_Resources.h"
 
 #include "MeshLoader.h"
-#include "Mesh.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_sdl.h"
