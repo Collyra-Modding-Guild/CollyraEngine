@@ -18,12 +18,11 @@ public:
 	GameObject* GetGameObject()	const;
 	void	SetGameObject(GameObject* go);
 
+	COMPONENT_TYPE GetType() const;
 
-public:
+protected:
 	COMPONENT_TYPE type;
 	bool active;
-
-private:
 	GameObject* myGameObject;
 
 };

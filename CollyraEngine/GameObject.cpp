@@ -103,7 +103,7 @@ Component* GameObject::AddComponent(Component* c)
 		return c;
 
 	//Components limits check
-	switch (c->type)
+	switch (c->GetType())
 	{
 	case COMPONENT_TYPE::TRANSFORM:
 	{
