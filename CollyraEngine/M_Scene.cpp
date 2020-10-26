@@ -5,6 +5,7 @@
 #include "Component.h"
 #include "C_Mesh.h"
 #include "C_Transform.h"
+#include "C_Material.h"
 
 M_Scene::M_Scene(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), root(nullptr), globalId(0)
 {}
@@ -77,12 +78,19 @@ updateStatus M_Scene::Draw(float dt)
 		{
 			C_Mesh* mesh = currNode->GetComponent<C_Mesh>();
 			C_Transform* transform = currNode->GetComponent<C_Transform>();
-
+			C_Material* material = currNode->GetComponent<C_Material>();
+			
 			if (mesh != nullptr && transform != nullptr)
 			{
-				mesh->Render(transform->GetTGlobalTransform());
-			}
-
+				if (material != nullptr) 
+				{
+					mesh->Render(transform->GetTGlobalTransform(), material->GetTexture(), material->GetColor());
+				}
+				else 
+				{
+					mesh->Render(transform->GetTGlobalTransform());
+				}					
+			} 
 		}
 		else
 			continue;

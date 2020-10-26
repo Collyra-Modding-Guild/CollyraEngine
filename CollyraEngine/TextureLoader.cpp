@@ -46,7 +46,7 @@ void TextureLoader::CleanUp()
 
 uint TextureLoader::LoadDefaultTexture()
 {
-	uint textID = 1;
+	uint texID = 1;
 
 	GLubyte checkerImage[20][20][4];
 
@@ -63,39 +63,27 @@ uint TextureLoader::LoadDefaultTexture()
 	}
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glGenTextures(1, &textID);
-	glBindTexture(GL_TEXTURE_2D, textID);
+	glGenTextures(1, &texID);
+	glBindTexture(GL_TEXTURE_2D, texID);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 20, 20, 0, GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);
 
-	return textID;
+	return texID;
 }
 
 uint TextureLoader::Load(const char* path)
 {
-	uint Image = 0;
+	char* buffer = nullptr;
 
-	ilGenImages(1, &Image);
-	ilBindImage(Image);
+	uint bytesFile = App->physFS->Load(path, &buffer);
 
-	//-------------
-	ilLoadImage(path);
-
+	ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, bytesFile);
 	uint ret = ilutGLBindTexImage();
-	ilDeleteImages(1, &Image);
-
-	//----------------------- 
-	//char* buffer = nullptr;
-
-	//uint bytesFile = App->physFS->Load(path, &buffer);
-
-	//ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, bytesFile);
-	//uint ret = ilutGLBindTexImage();
-
-	//RELEASE_ARRAY(buffer);
+	
+	RELEASE_ARRAY(buffer);
 
 	return ret;
 }

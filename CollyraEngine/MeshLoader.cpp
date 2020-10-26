@@ -6,6 +6,9 @@
 #include "GameObject.h"
 #include "C_Mesh.h"
 #include "C_Transform.h"
+#include "C_Material.h"
+
+#include "TextureLoader.h"
 
 #include "p2Defs.h"
 #include "MathGeoLib/include/Math/float3.h"
@@ -141,7 +144,9 @@ bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, GameOb
 	}
 
 	//Materials Load-----
+	C_Material* newMaterial = (C_Material*)newGameObject->CreateComponent(COMPONENT_TYPE::MATERIAL);
 
+	newMaterial->SetTexture(TextureLoader::Load("Assets/house.png"));
 
 
 	LoadSceneMeshes(scene, node, newGameObject);

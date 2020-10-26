@@ -9,19 +9,18 @@
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
-C_Mesh::C_Mesh(bool active) : Component(COMPONENT_TYPE::MESH, active), idIndex(-1), idVertex(-1), idNormals(-1), idTextureCoords(-1), idTextureImage(-1),
-wire(false), noFace(false)
+C_Mesh::C_Mesh(bool active) : Component(COMPONENT_TYPE::MESH, active), idIndex(-1), idVertex(-1), idNormals(-1), idTextureCoords(-1)
 {
 }
 
 C_Mesh::C_Mesh(std::vector<float3> vertices, std::vector<uint> indices, std::vector<float3> normals, std::vector<float2> textureCoords, bool active) :
 	Component(COMPONENT_TYPE::MESH, active),
-	idIndex(-1), idVertex(-1), idNormals(-1), idTextureCoords(-1), idTextureImage(-1),
+	idIndex(-1), idVertex(-1), idNormals(-1), idTextureCoords(-1),
 	wire(false), noFace(false)
 {}
 
 C_Mesh::C_Mesh(const C_Mesh& copy) : Component(COMPONENT_TYPE::MESH, copy.active),
-idVertex(-1), idIndex(-1), idNormals(-1), idTextureCoords(-1), idTextureImage(-1),
+idVertex(-1), idIndex(-1), idNormals(-1), idTextureCoords(-1), 
 vertices(copy.vertices), indices(copy.indices), normals(copy.normals), textureCoords(copy.textureCoords)
 {
 	GenerateBuffers();
@@ -79,7 +78,6 @@ void C_Mesh::GenerateBuffers()
 
 void C_Mesh::GenerateColors()
 {
-	color = Color((float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f);
 	wireColor = Color((float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f);
 }
 
@@ -96,13 +94,9 @@ void C_Mesh::ClearMesh()
 	glDeleteBuffers(1, &idTextureCoords);
 }
 
-void C_Mesh::SetTextureId(uint newId)
-{
-	idTextureImage = newId;
-}
 
 // ------------------------------------------------------------
-void C_Mesh::Render(float4x4 transform,bool globalWireMode) const
+void C_Mesh::Render(float4x4 transform, uint textureID, Color color, bool globalWireMode) const
 {
 	glPushMatrix();
 	glMultMatrixf((float*)&transform);
@@ -112,13 +106,13 @@ void C_Mesh::Render(float4x4 transform,bool globalWireMode) const
 	else
 		glColor3f(color.r, color.g, color.b);
 
-	InnerRender();
+	InnerRender(textureID);
 
 	glPopMatrix();
 }
 
 // ------------------------------------------------------------
-void C_Mesh::InnerRender() const
+void C_Mesh::InnerRender(uint textureID) const
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
 
@@ -128,7 +122,7 @@ void C_Mesh::InnerRender() const
 	if (idTextureCoords != -1)
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	if (idTextureImage != -1)
+	if (textureID != -1)
 	{
 		glEnableClientState(GL_TEXTURE_2D);
 	}
@@ -148,9 +142,9 @@ void C_Mesh::InnerRender() const
 		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 	}
 
-	if (idTextureImage != -1)
+	if (textureID != -1)
 	{
-		glBindTexture(GL_TEXTURE_2D, idTextureImage);
+		glBindTexture(GL_TEXTURE_2D, textureID);
 	}
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndex);

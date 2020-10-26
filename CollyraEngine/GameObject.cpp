@@ -60,7 +60,7 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 		break;
 	case COMPONENT_TYPE::MATERIAL:
 	{
-		newComponent = new C_Mesh();
+		newComponent = new C_Material();
 	}
 		break;
 	default:

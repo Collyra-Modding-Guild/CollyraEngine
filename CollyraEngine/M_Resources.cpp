@@ -59,7 +59,7 @@ void M_Resources::ImportResourceInternal(const char* path)
 	}
 	else if (extension == "png" || extension == "dds")
 	{
-		LOG("There is no loading textures yet!");
+		TextureLoader::Load(relativePath.c_str());
 	}
 
 }
