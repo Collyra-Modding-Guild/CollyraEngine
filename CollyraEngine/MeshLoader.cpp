@@ -60,9 +60,9 @@ void MeshLoader::Load(const char* path)
 	if (scene)
 	{
 		//WARNING: assuming that all the mesh is made from triangles
-		GameObject* sceneRoot = App->scene->CreateGameObject(nullptr);
+		GameObject* sceneRoot = App->scene->CreateGameObject(scene->mRootNode->mName.C_Str(),nullptr);
 
-		ret = LoadSceneMeshes(scene, scene->mRootNode, sceneRoot);
+		ret = LoadSceneMeshes(scene, scene->mRootNode, path, sceneRoot);
 
 		if (ret && loadedMeshes.size() > 0)
 		{
@@ -78,19 +78,19 @@ void MeshLoader::Load(const char* path)
 
 }
 
-bool MeshLoader::LoadSceneMeshes(const aiScene* scene, const aiNode* parent, GameObject* gbParent)
+bool MeshLoader::LoadSceneMeshes(const aiScene* scene, const aiNode* parent, const char* filePath, GameObject* gbParent)
 {
 	for (int i = 0; i < parent->mNumChildren; i++)
 	{
-		LoadNodeMeshes(scene, parent->mChildren[i], gbParent);
+		LoadNodeMeshes(scene, parent->mChildren[i], filePath, gbParent);
 	}
 
 	return true;
 }
 
-bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, GameObject* parent)
+bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const char* filePath, GameObject* parent)
 {
-	GameObject* newGameObject = App->scene->CreateGameObject(parent);
+	GameObject* newGameObject = App->scene->CreateGameObject(node->mName.C_Str(),parent);
 
 	//Transform Load------
 	aiVector3D translation, scaling;
@@ -141,15 +141,63 @@ bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, GameOb
 		C_Mesh* newMesh = (C_Mesh*)newGameObject->CreateComponent(COMPONENT_TYPE::MESH);
 
 		newMesh->GenerateMesh(vertices, indices, normals, textureCoords);
+
+		//Materials Load------------
+		if (mesh->mMaterialIndex > 0 && scene->HasMaterials())
+		{
+			aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+			aiString path;
+			material->GetTexture(aiTextureType_DIFFUSE, 0, &path);
+
+			std::string pathRelativeToFbx = path.C_Str();
+
+			uint cutPos = pathRelativeToFbx.find_first_of("..");
+			if (cutPos < pathRelativeToFbx.length())
+			{
+				pathRelativeToFbx = pathRelativeToFbx.substr(cutPos + 3);
+				pathRelativeToFbx = App->physFS->NormalizePath(pathRelativeToFbx.c_str());
+
+				std::string relativePath = "";
+				App->physFS->SplitFilePath(filePath, nullptr, &relativePath, nullptr, nullptr);
+				pathRelativeToFbx = relativePath + pathRelativeToFbx;
+
+				uint loadTexture = TextureLoader::Load(pathRelativeToFbx.c_str());
+				if (loadTexture == 0)
+				{
+					LOG("Checking if texture exists in Textures Folder....")
+					std::string textureName = "";
+					std::string textureExtension = "";
+					App->physFS->SplitFilePath(path.C_Str(), nullptr, nullptr, &textureName, &textureExtension);
+					std::string defaultPath = TEXTYRES_PATH;
+					defaultPath += "/" + textureName + "." + textureExtension;
+					loadTexture = TextureLoader::Load(defaultPath.c_str());
+				}
+
+				C_Material* newMaterial = (C_Material*)newGameObject->CreateComponent(COMPONENT_TYPE::MATERIAL);
+
+				if (loadTexture != 0)
+				{
+					LOG("Texture found! ID: %i",loadTexture);
+					newMaterial->SetTexture(loadTexture);
+				}
+				else
+				{
+					LOG("Material found but could not be loaded. Texture not found in path given by scene: %s", pathRelativeToFbx.c_str());
+				}
+			}
+			else
+			{
+				LOG("Material found but could not be loaded. Could not extract path: %s", path.C_Str());
+			}
+
+
+		}
 	}
 
-	//Materials Load-----
-	C_Material* newMaterial = (C_Material*)newGameObject->CreateComponent(COMPONENT_TYPE::MATERIAL);
-
-	newMaterial->SetTexture(TextureLoader::Load("Assets/house.png"));
 
 
-	LoadSceneMeshes(scene, node, newGameObject);
+
+	LoadSceneMeshes(scene, node, filePath, newGameObject);
 
 	return true;
 }

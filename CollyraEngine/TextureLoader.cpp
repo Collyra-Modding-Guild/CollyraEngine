@@ -80,6 +80,9 @@ uint TextureLoader::Load(const char* path)
 
 	uint bytesFile = App->physFS->Load(path, &buffer);
 
+	if(bytesFile == 0)
+		return 0;
+
 	ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, bytesFile);
 	uint ret = ilutGLBindTexImage();
 	

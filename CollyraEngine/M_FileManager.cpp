@@ -103,8 +103,7 @@ uint M_FileManager::Load(const char* path, char** buffer) const
 
 	if (file == nullptr)
 	{
-		LOG("%s", path, "ERROR: %s", PHYSFS_getLastError());
-		LOG("Error loading the file. Check the file is in the project folder");
+		LOG("Error loading path. Check the file is in the project folder: % s", path, "ERROR: % s", PHYSFS_getLastError());
 		return 0;
 	}
 

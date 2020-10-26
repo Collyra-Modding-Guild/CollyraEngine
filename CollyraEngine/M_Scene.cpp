@@ -15,7 +15,7 @@ M_Scene::~M_Scene()
 
 bool M_Scene::Awake()
 {
-	root = new GameObject();
+	root = new GameObject("root");
 	root->SetId(GenerateId());
 
 	return true;
@@ -114,12 +114,18 @@ bool M_Scene::CleanUp()
 	return true;
 }
 
-GameObject* M_Scene::CreateGameObject(GameObject* parent)
+GameObject* M_Scene::CreateGameObject(std::string name,GameObject* parent)
 {
 	if (parent == nullptr)
 		parent = root;
 
-	GameObject* newGameObject = new GameObject();
+	//TODO: Make that names follow Empty(n)
+	if (name == "")
+	{
+		name = "Empty GameObject";
+	}
+
+	GameObject* newGameObject = new GameObject(name);
 
 	parent->children.push_back(newGameObject);
 	newGameObject->parent = parent;

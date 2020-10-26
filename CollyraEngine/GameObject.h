@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <string>
 
 enum class COMPONENT_TYPE
 {
@@ -17,7 +18,7 @@ class GameObject
 {
 public:
 
-	GameObject();
+	GameObject(std::string name);
 	virtual ~GameObject();
 
 	void Start();
@@ -35,6 +36,7 @@ public:
 	void SetId(unsigned int newId);
 
 public:
+	std::string name;
 	std::vector<Component*> components;
 	GameObject* parent;
 	std::vector<GameObject*> children;

@@ -4,6 +4,7 @@
 #include "Module.h"
 #include <vector>
 #include <stack>
+#include <string>
 
 class GameObject;
 class Component;
@@ -22,7 +23,7 @@ public:
 
 	bool CleanUp() override;
 
-	GameObject* CreateGameObject(GameObject* parent);
+	GameObject* CreateGameObject(std::string name = "", GameObject* parent = nullptr);
 	bool DeleteGameObject(unsigned int id);
 	bool DeleteGameObject(GameObject* gameObject);
 

@@ -6,7 +6,7 @@
 #include "C_Material.h"
 #include "C_Mesh.h"
 
-GameObject::GameObject() : parent(nullptr), id(0)
+GameObject::GameObject(std::string name) : parent(nullptr), id(0), name(name)
 {}
 
 GameObject::~GameObject()
