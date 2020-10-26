@@ -345,6 +345,12 @@
     <ClInclude Include="C_Material.h">
       <Filter>Sources\Components</Filter>
     </ClInclude>
+    <ClInclude Include="WG_Hierarchy.h">
+      <Filter>Sources\WindowGroup</Filter>
+    </ClInclude>
+    <ClInclude Include="WG_Inspector.h">
+      <Filter>Sources\WindowGroup</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="log.cpp">
@@ -550,6 +556,12 @@
     </ClCompile>
     <ClCompile Include="C_Material.cpp">
       <Filter>Sources\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="WG_Hierarchy.cpp">
+      <Filter>Sources\WindowGroup</Filter>
+    </ClCompile>
+    <ClCompile Include="WG_Inspector.cpp">
+      <Filter>Sources\WindowGroup</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

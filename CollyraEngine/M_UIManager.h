@@ -10,6 +10,8 @@ class WindowGroup;
 class WG_Config;
 class WG_Console;
 class WG_Scene;
+class WG_Hierarchy;
+class WG_Inspector;
 
 
 class M_UIManager : public Module
@@ -50,6 +52,8 @@ public:
 	WG_Config* configWindow;
 	WG_Console* consoleWindow;
 	WG_Scene* sceneWindow;
+	WG_Hierarchy* hierarchyWindow;
+	WG_Inspector* inspectorWindow;
 
 private:
 	//Bool controllers for the editor menus-----------
