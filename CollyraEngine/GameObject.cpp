@@ -28,14 +28,18 @@ GameObject::~GameObject()
 
 void GameObject::Start()
 {
-	for (auto c : components)
-		c->Start();
+	for (uint i = 0; i < components.size(); i++)
+	{
+		components[i]->Start();
+	}
 }
 
 void GameObject::Update(float dt)
 {
-	for (auto c : components)
-		c->Update(dt);
+	for (uint i = 0; i < components.size(); i++)
+	{
+		components[i]->Update(dt);
+	}
 }
 
 Component* GameObject::CreateComponent(COMPONENT_TYPE type)
@@ -77,6 +81,8 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 			return ret;
 		}
 	}
+
+	newComponent->Start();
 
 	return newComponent;
 }
