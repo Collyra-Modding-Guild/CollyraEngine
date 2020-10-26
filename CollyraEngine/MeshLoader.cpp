@@ -42,6 +42,11 @@ void MeshLoader::Load(const char* path)
 
 	uint bytesFile = App->physFS->Load(path, &buffer);
 
+	if (bytesFile == 0)
+	{
+		return;
+	}
+
 	const aiScene* scene = aiImportFileFromMemory(buffer, bytesFile, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
 
 	RELEASE_ARRAY(buffer);

@@ -18,6 +18,10 @@ public:
 
 	bool CleanUp();
 
+	void ImportResourceInternal(const char* path);
+
+private:
+
 	//void CreateMeshesExternal(const char* path);
 
 	void CreateMeshesInternal(const char* path);

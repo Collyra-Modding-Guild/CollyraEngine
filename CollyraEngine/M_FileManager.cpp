@@ -101,6 +101,13 @@ uint M_FileManager::Load(const char* path, char** buffer) const
 	// Returns a filehandle on success that we will need for the PHYSFS_fileLength
 	PHYSFS_file* file = PHYSFS_openRead(path);
 
+	if (file == nullptr)
+	{
+		LOG("%s", path, "ERROR: %s", PHYSFS_getLastError());
+		LOG("Error loading the file. Check the file is in the project folder");
+		return 0;
+	}
+
 	// Check for end-of-file state on a PhysicsFS filehandle.
 	if (!PHYSFS_eof(file))
 	{
@@ -345,13 +352,22 @@ std::string M_FileManager::LowerCaseString(const char* path) const
 	return newPath;
 }
 
-void M_FileManager::SplitFilePath(const char* full_path, std::string* path, std::string* file, std::string* extension) const
+void M_FileManager::SplitFilePath(const char* full_path, std::string* projectPath, std::string* path, std::string* file, std::string* extension) const
 {
 	if (full_path != nullptr)
 	{
 		std::string full(full_path);
 		size_t pos_separator = full.find_last_of("\\/");
+		size_t projectSeparator = full.find("CollyraEngine/Engine");
 		size_t pos_dot = full.find_last_of(".");
+
+		if (projectPath != nullptr)
+		{
+			if (projectSeparator < full.length())
+				*projectPath = full.substr(projectSeparator + 21);
+			else
+				projectPath->clear();
+		}
 
 		if (path != nullptr)
 		{
