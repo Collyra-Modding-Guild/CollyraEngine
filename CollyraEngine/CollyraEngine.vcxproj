@@ -169,6 +169,8 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="WG_Config.h" />
     <ClInclude Include="WG_Console.h" />
+    <ClInclude Include="WG_Hierarchy.h" />
+    <ClInclude Include="WG_Inspector.h" />
     <ClInclude Include="WG_Scene.h" />
     <ClInclude Include="WindowGroup.h" />
   </ItemGroup>
@@ -238,6 +240,8 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="WG_Config.cpp" />
     <ClCompile Include="WG_Console.cpp" />
+    <ClCompile Include="WG_Hierarchy.cpp" />
+    <ClCompile Include="WG_Inspector.cpp" />
     <ClCompile Include="WG_Scene.cpp" />
     <ClCompile Include="WindowGroup.cpp" />
   </ItemGroup>

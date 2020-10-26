@@ -9,7 +9,9 @@ enum WG_TYPE
 	WG_NONE = -1,
 
 	WG_CONFIG,
-	WG_CONSOLE
+	WG_CONSOLE,
+	WG_INSPECTOR,
+	WG_HIERARCHY
 };
 
 class ImVec2;

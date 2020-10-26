@@ -29,7 +29,6 @@ WG_Config::~WG_Config()
 
 updateStatus WG_Config::Update()
 {
-	updateStatus ret = UPDATE_CONTINUE;
 
 	ImGuiIO& io = ImGui::GetIO();
 
@@ -37,23 +36,15 @@ updateStatus WG_Config::Update()
 
 	static char string[SHORT_STR];
 
-	M_Window* windowModule = (M_Window*)App->GetModulePointer(M_WINDOW);
-
-	if (windowModule == nullptr || windowModule->GetType() != M_WINDOW)
-	{
-		return UPDATE_STOP;
-	}
-
-
 	if (ImGui::CollapsingHeader("Application"))
 	{
 		// - - - - - - - App Title - - - - - - - - -
-		strcpy_s(string, SHORT_STR, windowModule->winTitle);
+		strcpy_s(string, SHORT_STR, App->window->winTitle);
 		if (ImGui::InputText("App Name", string, 26))
-			windowModule->SetTitle(string);
+			App->window->SetTitle(string);
 
 		// - - - - - - - Organization - - - - - - - - -
-		strcpy_s(string, SHORT_STR, windowModule->orgTitle);
+		strcpy_s(string, SHORT_STR, App->window->orgTitle);
 		ImGui::InputText("Organization", string, 26);
 
 		ImGui::Separator(); // - - - - - - - - - - - - -
@@ -75,32 +66,32 @@ updateStatus WG_Config::Update()
 	if (ImGui::CollapsingHeader("Window"))
 	{
 		// - - - - - - - - Window Brightness - - - - - - - - - -
-		if (ImGui::SliderFloat("Brightness", &windowModule->brightness, 0.0f, 1.0f))
-			SDL_SetWindowBrightness(windowModule->window, windowModule->brightness);
+		if (ImGui::SliderFloat("Brightness", &App->window->brightness, 0.0f, 1.0f))
+			SDL_SetWindowBrightness(App->window->window, App->window->brightness);
 
 		// - - - - - - - - Screen Surface - - - - - - - - - -
-		if (ImGui::SliderInt("Width", &windowModule->screenWidth, 0, 1920))
-			SDL_SetWindowSize(windowModule->window, windowModule->screenWidth, windowModule->screenHeight);
+		if (ImGui::SliderInt("Width", &App->window->screenWidth, 0, 1920))
+			SDL_SetWindowSize(App->window->window, App->window->screenWidth, App->window->screenHeight);
 
-		if (ImGui::SliderInt("Height", &windowModule->screenHeight, 0, 1080))
-			SDL_SetWindowSize(windowModule->window, windowModule->screenWidth, windowModule->screenHeight);
+		if (ImGui::SliderInt("Height", &App->window->screenHeight, 0, 1080))
+			SDL_SetWindowSize(App->window->window, App->window->screenWidth, App->window->screenHeight);
 
 		// - - - - - - - - Display Modes - - - - - - - - - -
-		if (ImGui::Checkbox("Fullscreen", &windowModule->fullscreen))
-			windowModule->SetFullscreen(windowModule->fullscreen);
+		if (ImGui::Checkbox("Fullscreen", &App->window->fullscreen))
+			App->window->SetFullscreen(App->window->fullscreen);
 
 		ImGui::SameLine();
 
-		if (ImGui::Checkbox("Resizable", &windowModule->resizable))
-			SDL_SetWindowResizable(windowModule->window, (SDL_bool)windowModule->resizable);
+		if (ImGui::Checkbox("Resizable", &App->window->resizable))
+			SDL_SetWindowResizable(App->window->window, (SDL_bool)App->window->resizable);
 
-		if (ImGui::Checkbox("Borderless", &windowModule->borderless))
-			windowModule->SetBorderless(windowModule->borderless);
+		if (ImGui::Checkbox("Borderless", &App->window->borderless))
+			App->window->SetBorderless(App->window->borderless);
 
 		ImGui::SameLine();
 
-		if (ImGui::Checkbox("Full Desktop", &windowModule->fullscreenDesktop))
-			windowModule->SetFullscreenDesktop(windowModule->fullscreenDesktop);
+		if (ImGui::Checkbox("Full Desktop", &App->window->fullscreenDesktop))
+			App->window->SetFullscreenDesktop(App->window->fullscreenDesktop);
 
 	}
 
@@ -321,7 +312,7 @@ updateStatus WG_Config::Update()
 
 	ImGui::End();
 
-	return ret;
+	return UPDATE_CONTINUE;
 }
 
 void WG_Config::Cleanup()

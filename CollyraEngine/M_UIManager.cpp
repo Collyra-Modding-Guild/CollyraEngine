@@ -8,6 +8,8 @@
 #include "WG_Config.h"
 #include "WG_Console.h"
 #include "WG_Scene.h"
+#include "WG_Hierarchy.h"
+#include "WG_Inspector.h"
 
 //OpenGL
 #include "Glew/include/glew.h"
@@ -39,6 +41,8 @@ bool M_UIManager::Awake()
 	windowGroups.push_back(configWindow = new WG_Config(true));
 	windowGroups.push_back(consoleWindow = new WG_Console(true));
 	windowGroups.push_back(sceneWindow = new WG_Scene(true));
+	windowGroups.push_back(hierarchyWindow = new WG_Hierarchy(true));
+	windowGroups.push_back(inspectorWindow = new WG_Inspector(true));
 
 	return true;
 }
@@ -144,6 +148,9 @@ bool M_UIManager::CleanUp()
 
 	configWindow = nullptr;
 	consoleWindow = nullptr;
+	sceneWindow = nullptr;
+	inspectorWindow = nullptr;
+	hierarchyWindow = nullptr;
 
 	return true;
 }
@@ -216,6 +223,14 @@ bool M_UIManager::ShowMainMenuBar()
 			if (consoleWindow != nullptr)
 			{
 				ImGui::MenuItem("Console", "", &consoleWindow->active);
+			}
+			if (hierarchyWindow != nullptr)
+			{
+				ImGui::MenuItem("Hierarchy", "", &hierarchyWindow->active);
+			}
+			if (inspectorWindow != nullptr)
+			{
+				ImGui::MenuItem("Inspector", "", &inspectorWindow->active);
 			}
 
 			ImGui::EndMenu();
