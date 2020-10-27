@@ -394,6 +394,74 @@ void M_FileManager::SplitFilePath(const char* full_path, std::string* projectPat
 	}
 }
 
+std::string M_FileManager::GetProjectPathFromInternalRelative(std::string& fileProjectPath, std::string& fileRelativePath) const
+{
+	//Normalize all the paths------------
+	fileRelativePath = NormalizePath(fileRelativePath.c_str());
+	fileProjectPath = NormalizePath(fileProjectPath.c_str());
+
+	//Get how many folders we want to erase-----
+	uint foldersToGoBack = 0;
+	for (int i = 0; i + 2 < fileRelativePath.size(); ++i)
+	{
+		if (fileRelativePath[i] == '.' && fileRelativePath[i + 1] == '.' && fileRelativePath[i + 2] == '/')
+			foldersToGoBack++;
+	}
+
+	//We delete the "../" from the relative path
+	fileRelativePath = fileRelativePath.substr(foldersToGoBack * 3);
+
+	//If the project relative path starts with "/Assets", we delete the "/". Should not happen, just in case
+	if (fileProjectPath[0] != '/')
+		fileProjectPath = "/" + fileProjectPath;
+
+
+	//Location of the first folder,----
+	//If the path ends with "/" we make sure to start from there
+	int toDeleteSince = -1;
+	int toDeleteTo = -1;
+
+	//How many folders we have in total
+	int foldersToDelete = 0;
+	for (int i = fileProjectPath.size() - 1; i >= 0; i--)
+	{
+		if (fileProjectPath[i] == '/')
+		{
+
+			if (toDeleteSince == -1)
+				toDeleteSince = i;
+			else
+			{
+				if (foldersToDelete < foldersToGoBack)
+				{
+					toDeleteTo = i;
+					toDeleteSince = i;
+				}
+				foldersToDelete++;
+			}
+
+
+		}
+	}
+
+	//Final Cut--------
+	if (foldersToDelete < foldersToGoBack)
+	{
+		LOG("Relative path is larger then the project folder tree. Proaable failure...")
+	}
+	else if (foldersToDelete == foldersToGoBack)
+	{
+		fileProjectPath = "";
+	}
+	else
+	{
+		fileProjectPath = fileProjectPath.substr(0, toDeleteTo + 1);
+	}
+
+
+	return std::string(fileProjectPath + fileRelativePath);
+}
+
 unsigned int M_FileManager::Load(const char* path, const char* file, char** buffer) const
 {
 	std::string full_path(path);

@@ -9,7 +9,8 @@
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 
-C_Mesh::C_Mesh(bool active) : Component(COMPONENT_TYPE::MESH, active), idIndex(-1), idVertex(-1), idNormals(-1), idTextureCoords(-1)
+C_Mesh::C_Mesh(bool active) : Component(COMPONENT_TYPE::MESH, active), idIndex(-1), idVertex(-1), idNormals(-1), idTextureCoords(-1),
+wire(false), noFace(false)
 {
 }
 
@@ -20,7 +21,7 @@ C_Mesh::C_Mesh(std::vector<float3> vertices, std::vector<uint> indices, std::vec
 {}
 
 C_Mesh::C_Mesh(const C_Mesh& copy) : Component(COMPONENT_TYPE::MESH, copy.active),
-idVertex(-1), idIndex(-1), idNormals(-1), idTextureCoords(-1), 
+idVertex(-1), idIndex(-1), idNormals(-1), idTextureCoords(-1),
 vertices(copy.vertices), indices(copy.indices), normals(copy.normals), textureCoords(copy.textureCoords)
 {
 	GenerateBuffers();
@@ -88,10 +89,10 @@ void C_Mesh::ClearMesh()
 	normals.clear();
 	textureCoords.clear();
 
-	glDeleteBuffers(1, &idVertex);
-	glDeleteBuffers(1, &idIndex);
-	glDeleteBuffers(1, &idNormals);
-	glDeleteBuffers(1, &idTextureCoords);
+	//glDeleteBuffers(1, &idVertex);
+	//glDeleteBuffers(1, &idIndex);
+	//glDeleteBuffers(1, &idNormals);
+	//glDeleteBuffers(1, &idTextureCoords);
 }
 
 
