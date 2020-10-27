@@ -97,6 +97,16 @@ void GameObject::SetId(unsigned int newId)
 	this->id = newId;
 }
 
+std::string GameObject::GetName() const
+{
+	return name;
+}
+
+void GameObject::SetName(std::string newName)
+{
+	name = newName;
+}
+
 Component* GameObject::AddComponent(Component* c)
 {
 	if (c == nullptr)

@@ -35,13 +35,16 @@ public:
 	unsigned int GetId() const;
 	void SetId(unsigned int newId);
 
+	std::string GetName() const;
+	void SetName(std::string newName);
+
 public:
-	std::string name;
 	std::vector<Component*> components;
 	GameObject* parent;
 	std::vector<GameObject*> children;
 
 private:
+	std::string name;
 	unsigned int id;
 
 };

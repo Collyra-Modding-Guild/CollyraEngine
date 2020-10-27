@@ -85,6 +85,14 @@ bool M_UIManager::Start()
 	ImGui_ImplSDL2_InitForOpenGL(windowModule->window, renderModule->context);
 	ImGui_ImplOpenGL3_Init("#version 130");
 
+	for (uint i = 0; i < windowGroups.size(); i++)
+	{
+		if (windowGroups[i]->active == true)
+		{
+			windowGroups[i]->Start();
+		}
+	}
+
 	return true;
 }
 

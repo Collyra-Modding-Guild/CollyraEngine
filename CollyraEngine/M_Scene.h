@@ -29,6 +29,11 @@ public:
 
 	unsigned int GenerateId();
 
+	const GameObject* GetRoot();
+
+private:
+	void CheckSiblingsName(GameObject* parent, std::string& myName);
+
 private:
 	GameObject* root;
 	unsigned int globalId;

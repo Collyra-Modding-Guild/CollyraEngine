@@ -25,6 +25,7 @@ public:
 	void SetActive(bool setActive);
 	bool GetActive();
 
+	virtual updateStatus Start();
 	virtual updateStatus Update();
 	virtual void CleanUp();
 

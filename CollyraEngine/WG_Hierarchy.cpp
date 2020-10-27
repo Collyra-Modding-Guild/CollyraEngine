@@ -1,14 +1,18 @@
 #include "WG_Hierarchy.h"
 #include "Application.h"
+#include "M_Scene.h"
+#include "GameObject.h"
 
-WG_Hierarchy::WG_Hierarchy(bool isActive) : WindowGroup(WG_HIERARCHY, isActive)
-{
-
-}
+WG_Hierarchy::WG_Hierarchy(bool isActive) : WindowGroup(WG_HIERARCHY, isActive), rootPointer(nullptr)
+{}
 
 WG_Hierarchy::~WG_Hierarchy()
-{
+{}
 
+updateStatus WG_Hierarchy::Start()
+{
+	rootPointer = App->scene->GetRoot();
+	return UPDATE_CONTINUE;
 }
 
 updateStatus WG_Hierarchy::Update()
@@ -17,6 +21,7 @@ updateStatus WG_Hierarchy::Update()
 
 	ImGui::Begin("Hierarchy");
 
+	CreateHierarchy(rootPointer);
 
 	ImGui::End();
 
@@ -24,4 +29,22 @@ updateStatus WG_Hierarchy::Update()
 }
 
 void WG_Hierarchy::Cleanup()
-{}
+{
+	rootPointer = nullptr;
+}
+
+void WG_Hierarchy::CreateHierarchy(const GameObject* gameObject)
+{
+	if (ImGui::TreeNodeEx(gameObject->GetName().c_str()))
+	{
+		for (int i = 0; i < gameObject->children.size(); i++)
+		{
+			CreateHierarchy(gameObject->children[i]);
+		}
+
+		ImGui::TreePop();
+	}
+
+
+		
+}

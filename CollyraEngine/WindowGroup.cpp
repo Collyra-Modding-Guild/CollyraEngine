@@ -18,6 +18,11 @@ bool WindowGroup::GetActive()
 	return active;
 }
 
+updateStatus WindowGroup::Start()
+{
+	return UPDATE_CONTINUE;
+}
+
 updateStatus WindowGroup::Update()
 {
 	return UPDATE_CONTINUE;

@@ -79,18 +79,18 @@ updateStatus M_Scene::Draw(float dt)
 			C_Mesh* mesh = currNode->GetComponent<C_Mesh>();
 			C_Transform* transform = currNode->GetComponent<C_Transform>();
 			C_Material* material = currNode->GetComponent<C_Material>();
-			
+
 			if (mesh != nullptr && transform != nullptr)
 			{
-				if (material != nullptr) 
+				if (material != nullptr)
 				{
 					mesh->Render(transform->GetTGlobalTransform(), material->GetTexture(), material->GetColor());
 				}
-				else 
+				else
 				{
 					mesh->Render(transform->GetTGlobalTransform());
-				}					
-			} 
+				}
+			}
 		}
 		else
 			continue;
@@ -114,16 +114,17 @@ bool M_Scene::CleanUp()
 	return true;
 }
 
-GameObject* M_Scene::CreateGameObject(std::string name,GameObject* parent)
+GameObject* M_Scene::CreateGameObject(std::string name, GameObject* parent)
 {
 	if (parent == nullptr)
 		parent = root;
 
-	//TODO: Make that names follow Empty(n)
 	if (name == "")
 	{
 		name = "Empty GameObject";
 	}
+
+	CheckSiblingsName(parent, name);
 
 	GameObject* newGameObject = new GameObject(name);
 
@@ -139,6 +140,30 @@ GameObject* M_Scene::CreateGameObject(std::string name,GameObject* parent)
 uint M_Scene::GenerateId()
 {
 	return globalId++;
+}
+
+const GameObject* M_Scene::GetRoot()
+{
+	return root;
+}
+
+void M_Scene::CheckSiblingsName(GameObject* parent, std::string& myName)
+{
+	uint siblingSameName = 0;
+	for (int i = 0; i < parent->children.size(); i++)
+	{
+		std::size_t found = parent->children[i]->GetName().find(myName);
+		if (found != std::string::npos)
+			siblingSameName++;
+	}
+
+	if (siblingSameName > 0)
+	{
+		char str[10];
+		sprintf_s(str, 10, "%i", siblingSameName);
+		std::string number = str;
+		myName += " (" + number + ")";
+	}
 }
 
 bool M_Scene::DeleteGameObject(unsigned int id)
