@@ -42,18 +42,21 @@ void WG_Hierarchy::Cleanup()
 void WG_Hierarchy::CreateHierarchy(const GameObject* gameObject)
 {
 
-	SetTreeNodeFlags(gameObject);	
+	SetTreeNodeFlags(gameObject);
 
-	if (ImGui::TreeNodeEx(gameObject->GetName().c_str(), flag))
-	{	
-		if (ImGui::IsItemClicked())
+	bool isNodeOpened = ImGui::TreeNodeEx(gameObject->GetName().c_str(), flag);
+
+	if (ImGui::IsItemClicked())
+	{
+		if (gameObject->GetId() != ROOT)
 		{
-			if (gameObject->GetId() != ROOT)
-			{
-				App->uiManager->SetFocusedGameObject(gameObject->GetId());
-				selected = gameObject->GetId();
-			}
+			App->uiManager->SetFocusedGameObject(gameObject->GetId());
+			selected = gameObject->GetId();
 		}
+	}
+
+	if (isNodeOpened)
+	{
 
 		for (int i = 0; i < gameObject->children.size(); i++)
 		{
