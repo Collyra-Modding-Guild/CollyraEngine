@@ -4,6 +4,7 @@
 #include "M_Input.h"
 #include "M_Window.h"
 
+
 // All UI Windows
 #include "WindowGroup.h"
 #include "WG_Config.h"
@@ -210,6 +211,30 @@ bool M_UIManager::ShowMainMenuBar()
 			ImGui::MenuItem("Documents", NULL, true);
 			ImGui::EndMenu();
 		}
+
+		if (ImGui::BeginMenu("Primitives"))
+		{
+			ImVec2 buttonSize = { 70, 20 };
+
+			if (ImGui::Button("Cube", buttonSize))
+			{
+
+			}
+			if (ImGui::Button("Sphere", buttonSize))
+			{
+
+			}
+			if (ImGui::Button("Cylinder", buttonSize))
+			{
+
+			}
+			if (ImGui::Button("Pyramid", buttonSize))
+			{
+
+			}
+			ImGui::EndMenu();
+		}
+
 		if (ImGui::BeginMenu("Tools"))
 		{
 			ImGui::MenuItem("Metrics", NULL, true);
