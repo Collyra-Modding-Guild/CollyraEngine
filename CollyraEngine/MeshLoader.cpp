@@ -144,52 +144,8 @@ bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const 
 		{
 			aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-			aiString path;
-			material->GetTexture(aiTextureType_DIFFUSE, 0, &path);
-
-			C_Material* newMaterial = nullptr;
-
-			aiColor4D materialColor;
-			if (aiGetMaterialColor(material, AI_MATKEY_COLOR_DIFFUSE, &materialColor))
-			{
-				newMaterial = (C_Material*)newGameObject->CreateComponent(COMPONENT_TYPE::MATERIAL);
-				newMaterial->SetColor(Color{ materialColor.r, materialColor.g, materialColor.b, materialColor.a });
-			}
-
-			if (path.length > 0)
-			{
-				std::string pathRelativeToFbx = path.C_Str();
-				std::string relativePath = "";
-				App->physFS->SplitFilePath(filePath, nullptr, &relativePath, nullptr, nullptr);
-				pathRelativeToFbx = App->physFS->GetProjectPathFromInternalRelative(relativePath, pathRelativeToFbx);
-
-				uint loadTexture = TextureLoader::Load(pathRelativeToFbx.c_str());
-				if (loadTexture == 0)
-				{
-					LOG("Checking if texture exists in Textures Folder....");
-					std::string textureName = "";
-					std::string textureExtension = "";
-					App->physFS->SplitFilePath(path.C_Str(), nullptr, nullptr, &textureName, &textureExtension);
-					std::string defaultPath = TEXTYRES_PATH;
-					defaultPath += "/" + textureName + "." + textureExtension;
-					loadTexture = TextureLoader::Load(defaultPath.c_str());
-				}
-
-				if (loadTexture != 0)
-				{
-					LOG("Texture found! ID: %i", loadTexture);
-
-					if (newMaterial == nullptr)
-						newMaterial = (C_Material*)newGameObject->CreateComponent(COMPONENT_TYPE::MATERIAL);
-
-					newMaterial->SetTexture(loadTexture);
-				}
-				else
-				{
-					LOG("Material found but could not be loaded. Texture not found in path given by scene: %s", pathRelativeToFbx.c_str());
-				}
-			}
-
+			if (material != nullptr)
+				LoadMaterialFromMesh(material, newGameObject, filePath);
 		}
 	}
 
@@ -197,6 +153,54 @@ bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const 
 	LoadSceneMeshes(scene, node, filePath, newGameObject);
 
 	return true;
+}
+
+void MeshLoader::LoadMaterialFromMesh(const aiMaterial* mat, GameObject* newGameObject, const char* filePath)
+{
+	aiString path;
+	mat->GetTexture(aiTextureType_DIFFUSE, 0, &path);
+
+	C_Material* newMaterial = nullptr;
+	aiColor4D materialColor;
+	if (aiGetMaterialColor(mat, AI_MATKEY_COLOR_DIFFUSE, &materialColor) == aiReturn_SUCCESS)
+	{
+		newMaterial = (C_Material*)newGameObject->CreateComponent(COMPONENT_TYPE::MATERIAL);
+		newMaterial->SetColor(Color{ materialColor.r, materialColor.g, materialColor.b, materialColor.a });
+	}
+
+	if (path.length > 0)
+	{
+		std::string pathRelativeToFbx = path.C_Str();
+		std::string relativePath = "";
+		App->physFS->SplitFilePath(filePath, nullptr, &relativePath, nullptr, nullptr);
+		pathRelativeToFbx = App->physFS->GetProjectPathFromInternalRelative(relativePath, pathRelativeToFbx);
+
+		uint loadTexture = TextureLoader::Load(pathRelativeToFbx.c_str());
+		if (loadTexture == 0)
+		{
+			LOG("Checking if texture exists in Textures Folder....");
+			std::string textureName = "";
+			std::string textureExtension = "";
+			App->physFS->SplitFilePath(path.C_Str(), nullptr, nullptr, &textureName, &textureExtension);
+			std::string defaultPath = TEXTYRES_PATH;
+			defaultPath += "/" + textureName + "." + textureExtension;
+			loadTexture = TextureLoader::Load(defaultPath.c_str());
+		}
+
+		if (loadTexture != 0)
+		{
+			LOG("Texture found! ID: %i", loadTexture);
+
+			if (newMaterial == nullptr)
+				newMaterial = (C_Material*)newGameObject->CreateComponent(COMPONENT_TYPE::MATERIAL);
+
+			newMaterial->SetTexture(loadTexture);
+		}
+		else
+		{
+			LOG("Material found but could not be loaded. Texture not found in path given by scene: %s", pathRelativeToFbx.c_str());
+		}
+	}
 }
 
 
