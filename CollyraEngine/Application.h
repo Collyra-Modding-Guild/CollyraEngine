@@ -8,6 +8,9 @@
 #include "PerfTimer.h"
 #include "Timer.h"
 
+#define COLLYRA_VERSION_MAJOR 0
+#define COLLYRA_VERSION_MINOR 1
+
 class Module;
 class M_Window;
 class M_Renderer3D;

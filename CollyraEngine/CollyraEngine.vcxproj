@@ -167,6 +167,7 @@
     <ClInclude Include="PrimitivesIndices.h" />
     <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="WG_About.h" />
     <ClInclude Include="WG_Config.h" />
     <ClInclude Include="WG_Console.h" />
     <ClInclude Include="WG_Hierarchy.h" />
@@ -238,6 +239,7 @@
     <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="WG_About.cpp" />
     <ClCompile Include="WG_Config.cpp" />
     <ClCompile Include="WG_Console.cpp" />
     <ClCompile Include="WG_Hierarchy.cpp" />

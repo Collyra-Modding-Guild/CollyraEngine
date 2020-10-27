@@ -18,6 +18,9 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "SDL/include/SDL.h"
 
+//DevIL
+#include "Devil/include/il.h"
+
 #pragma comment (lib, "Glew/libx86/glew32.lib")
 
 WG_Config::WG_Config(bool isActive) : WindowGroup(WG_CONFIG, isActive),
@@ -160,6 +163,22 @@ updateStatus WG_Config::Update()
 		ImGui::Text("SDL Version:");
 		ImGui::SameLine();
 		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%d.%d.%d", ver.major, ver.minor, ver.patch);
+
+		GLint major, minor;
+		glGetIntegerv(GL_MAJOR_VERSION, &major);
+		glGetIntegerv(GL_MINOR_VERSION, &minor);
+
+		ImGui::Text("OpenGL Version:");
+		ImGui::SameLine();
+		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%d.%d", major, minor);
+		
+		ImGui::Text("DevIL Version:");
+		ImGui::SameLine();
+		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%d", IL_VERSION);
+
+		ImGui::Text("Glew Version:");
+		ImGui::SameLine();
+		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%d.%d.%d", GLEW_VERSION_MAJOR, GLEW_VERSION_MINOR, GLEW_VERSION_MICRO);
 
 		ImGui::Separator();
 
