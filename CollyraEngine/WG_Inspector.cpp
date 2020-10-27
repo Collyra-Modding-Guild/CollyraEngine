@@ -4,6 +4,11 @@
 
 #include "GameObject.h"
 
+#include "Component.h"
+#include "C_Material.h"
+#include "C_Mesh.h"
+#include "C_Transform.h"
+
 
 WG_Inspector::WG_Inspector(bool isActive) : WindowGroup(WG_INSPECTOR, isActive), focusedGameObject(nullptr),
 focusedId(-1)
@@ -25,6 +30,11 @@ updateStatus WG_Inspector::Update()
 	if (focusedId != -1)
 	{
 		//TODO: Get Gameobject info
+		ImGui::Text(focusedGameObject->GetName().c_str());
+
+		float3 pep = focusedGameObject->GetComponent<C_Transform>()->GetPosition();
+
+		ImGui::Text("%f.%f.%f", pep.x, pep.y, pep.z);
 		true;
 	}
 

@@ -23,7 +23,7 @@ public:
 
 private:
 	int focusedId;
-	const GameObject* focusedGameObject;
+	GameObject* focusedGameObject;
 
 };
 

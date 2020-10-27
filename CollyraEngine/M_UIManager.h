@@ -39,7 +39,7 @@ public:
 	bool			IsDebugModeOn();
 	void			GetWindowSceneSize(float& w, float& h);
 	void			GameObjectDestroyed(uint id);
-
+	void            SetFocusedGameObject(uint id);
 
 private:
 	//Functions for the editor menus-----------
@@ -49,6 +49,7 @@ private:
 	void			EnableDockSpace();
 
 public:
+
 	std::vector<WindowGroup*> windowGroups;
 
 	WG_Config*		configWindow;

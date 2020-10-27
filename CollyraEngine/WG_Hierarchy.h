@@ -6,6 +6,8 @@
 
 class GameObject;
 
+#define ROOT 0
+
 class WG_Hierarchy : public WindowGroup
 {
 public:
@@ -20,8 +22,12 @@ public:
 
 private:
 	void CreateHierarchy(const GameObject* parent);
+	void SetTreeNodeFlags(const GameObject* parent);
 
 private:
+	ImGuiTreeNodeFlags flag;
+	int selected;
+
 	const GameObject* rootPointer;
 
 };

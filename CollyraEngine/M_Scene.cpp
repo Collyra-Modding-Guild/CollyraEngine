@@ -18,7 +18,7 @@ M_Scene::~M_Scene()
 
 bool M_Scene::Awake()
 {
-	root = new GameObject("root");
+	root = new GameObject("Scene");
 	root->SetId(GenerateId());
 
 	return true;
@@ -145,7 +145,7 @@ uint M_Scene::GenerateId()
 	return globalId++;
 }
 
-const GameObject* M_Scene::GetRoot()
+const GameObject* M_Scene::GetRoot() 
 {
 	return root;
 }

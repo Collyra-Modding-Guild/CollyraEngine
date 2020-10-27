@@ -432,3 +432,12 @@ void M_UIManager::NewConsoleLog(const char* newLog)
 		consoleWindow->NewLog(newLog);
 	}
 }
+
+void M_UIManager::SetFocusedGameObject(uint id)
+{
+	if (inspectorWindow != nullptr)
+	{
+		WG_Inspector* inspector = (WG_Inspector*)inspectorWindow;
+		inspector->SetGameObject(id);
+	}
+}
