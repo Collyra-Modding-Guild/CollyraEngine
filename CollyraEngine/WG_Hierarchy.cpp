@@ -44,7 +44,4 @@ void WG_Hierarchy::CreateHierarchy(const GameObject* gameObject)
 
 		ImGui::TreePop();
 	}
-
-
-		
 }

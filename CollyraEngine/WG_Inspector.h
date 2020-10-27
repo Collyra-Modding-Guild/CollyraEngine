@@ -4,6 +4,7 @@
 #include "WindowGroup.h"
 #include "Imgui/imgui.h"
 
+class GameObject;
 
 class WG_Inspector : public WindowGroup
 {
@@ -16,7 +17,13 @@ public:
 
 	virtual void Cleanup();
 
+	void SetGameObject(uint focusedGameObject);
+	void SetGameObject(GameObject* focusedGameObject);
+	void OnDestroyedId(uint destroyedGameObject);
+
 private:
+	int focusedId;
+	const GameObject* focusedGameObject;
 
 };
 

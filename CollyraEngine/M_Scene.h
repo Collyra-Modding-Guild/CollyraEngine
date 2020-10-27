@@ -25,6 +25,8 @@ public:
 
 	GameObject* CreateGameObject(std::string name = "", GameObject* parent = nullptr);
 	bool DeleteGameObject(unsigned int id);
+	GameObject* GetGameObject(unsigned int id);
+	GameObject* GetGameObject(std::string name);
 	bool DeleteGameObject(GameObject* gameObject);
 
 	unsigned int GenerateId();

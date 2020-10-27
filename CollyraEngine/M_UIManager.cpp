@@ -375,6 +375,15 @@ void M_UIManager::GetWindowSceneSize(float& w, float& h)
 	}
 }
 
+void M_UIManager::GameObjectDestroyed(uint id)
+{
+	if (inspectorWindow != nullptr)
+	{
+		WG_Inspector* inspector = (WG_Inspector*)inspectorWindow;
+		inspector->OnDestroyedId(id);
+	}
+}
+
 
 void M_UIManager::NewInputLog(uint key, uint state, bool isMouse)
 {

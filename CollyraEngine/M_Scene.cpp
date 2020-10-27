@@ -7,6 +7,9 @@
 #include "C_Transform.h"
 #include "C_Material.h"
 
+#include "Application.h"
+#include "M_UIManager.h"
+
 M_Scene::M_Scene(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), root(nullptr), globalId(0)
 {}
 
@@ -166,6 +169,73 @@ void M_Scene::CheckSiblingsName(GameObject* parent, std::string& myName)
 	}
 }
 
+GameObject* M_Scene::GetGameObject(unsigned int id)
+{
+	std::stack<GameObject*> stack;
+	GameObject* currNode = nullptr;
+
+	if (root == nullptr)
+	{
+		LOG("Root node did not exist!");
+		return nullptr;
+	}
+
+	stack.push(root);
+
+	while (!stack.empty())
+	{
+		currNode = stack.top();
+		stack.pop();
+
+		if (currNode->GetId() == id)
+		{
+			return currNode;
+		}
+
+		int childNum = currNode->children.size();
+		for (int i = 0; i < childNum; i++)
+		{
+			stack.push(currNode->children[i]);
+		}
+	}
+
+	return nullptr;
+}
+
+GameObject* M_Scene::GetGameObject(std::string name)
+{
+	std::stack<GameObject*> stack;
+	GameObject* currNode = nullptr;
+
+	if (root == nullptr)
+	{
+		LOG("Root node did not exist!");
+		return nullptr;
+	}
+
+	stack.push(root);
+
+	while (!stack.empty())
+	{
+		currNode = stack.top();
+		stack.pop();
+
+		if (currNode->GetName() == name)
+		{
+			return currNode;
+		}
+
+		int childNum = currNode->children.size();
+		for (int i = 0; i < childNum; i++)
+		{
+			stack.push(currNode->children[i]);
+		}
+	}
+
+	return nullptr;
+}
+
+
 bool M_Scene::DeleteGameObject(unsigned int id)
 {
 	std::stack<GameObject*> stack;
@@ -204,8 +274,10 @@ bool M_Scene::DeleteGameObject(unsigned int id)
 	return false;
 }
 
+
 bool M_Scene::DeleteGameObject(GameObject* gameObject)
 {
+	App->uiManager->GameObjectDestroyed(gameObject->GetId());
 	RELEASE(gameObject);
 
 	return true;

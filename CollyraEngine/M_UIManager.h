@@ -38,6 +38,7 @@ public:
 	void			NewFpsLog(float currMs, float currFps);
 	bool			IsDebugModeOn();
 	void			GetWindowSceneSize(float& w, float& h);
+	void			GameObjectDestroyed(uint id);
 
 
 private:

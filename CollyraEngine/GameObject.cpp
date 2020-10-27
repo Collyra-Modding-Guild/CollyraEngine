@@ -6,6 +6,9 @@
 #include "C_Material.h"
 #include "C_Mesh.h"
 
+#include "M_Scene.h"
+#include "Application.h"
+
 GameObject::GameObject(std::string name) : parent(nullptr), id(0), name(name)
 {}
 
@@ -13,7 +16,7 @@ GameObject::~GameObject()
 {
 	for (int i = 0; i < children.size(); i++)
 	{
-		RELEASE(children[i]);
+		App->scene->DeleteGameObject(children[i]);
 	}
 
 	children.clear();
