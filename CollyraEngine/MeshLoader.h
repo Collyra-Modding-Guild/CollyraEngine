@@ -20,9 +20,9 @@ namespace MeshLoader
 
 	void Load(const char* path);
 
-	bool LoadSceneMeshes(const aiScene* scene, const aiNode* root, const char* filePath, GameObject* parent = nullptr);
-	bool LoadNodeMeshes(const aiScene* scene, const aiNode* node, const char* filePath, GameObject* parent = nullptr);
-	void LoadMaterialFromMesh(const aiMaterial* mat, GameObject* newGameObject, const char* filePath);
+	bool LoadSceneMeshes(const aiScene* scene, const aiNode* root, const char* filePath, GameObject* parent = nullptr, float4x4 transform = float4x4::identity);
+	bool LoadNodeMeshes(const aiScene* scene, const aiNode* node, const char* filePath, GameObject* parent = nullptr, float4x4 transform = float4x4::identity);
+	void LoadMaterialFromMesh(const aiMaterial* mat, GameObject* newGameObject, const char* meshPath);
 	void LoadVertices(aiMesh* mesh, std::vector<float3>& vertices, std::vector<float3>& normals, std::vector<float2>& textureCoords);
 	bool LoadIndices(aiMesh* mesh, std::vector<uint>& indices);
 }

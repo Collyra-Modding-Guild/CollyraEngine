@@ -60,7 +60,9 @@ void MeshLoader::Load(const char* path)
 	if (scene)
 	{
 		//WARNING: assuming that all the mesh is made from triangles
-		GameObject* sceneRoot = App->scene->CreateGameObject(scene->mRootNode->mName.C_Str(), nullptr);
+		std::string fbxName = "";
+		App->physFS->SplitFilePath(path, nullptr, nullptr, &fbxName, nullptr);
+		GameObject* sceneRoot = App->scene->CreateGameObject(fbxName.c_str(), nullptr);
 
 		ret = LoadSceneMeshes(scene, scene->mRootNode, path, sceneRoot);
 
@@ -78,84 +80,101 @@ void MeshLoader::Load(const char* path)
 
 }
 
-bool MeshLoader::LoadSceneMeshes(const aiScene* scene, const aiNode* parent, const char* filePath, GameObject* gbParent)
+bool MeshLoader::LoadSceneMeshes(const aiScene* scene, const aiNode* parent, const char* filePath, GameObject* gbParent, float4x4 transform)
 {
 	for (int i = 0; i < parent->mNumChildren; i++)
 	{
-		LoadNodeMeshes(scene, parent->mChildren[i], filePath, gbParent);
+		LoadNodeMeshes(scene, parent->mChildren[i], filePath, gbParent, transform);
 	}
 
 	return true;
 }
 
-bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const char* filePath, GameObject* parent)
+bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const char* filePath, GameObject* parent, float4x4 transform)
 {
-	GameObject* newGameObject = App->scene->CreateGameObject(node->mName.C_Str(), parent);
+	GameObject* newGameObject = nullptr;
 
-	//Transform Load------
 	aiVector3D translation, scaling;
 	aiQuaternion rotation;
-
 	node->mTransformation.Decompose(scaling, rotation, translation);
 	float3 pos(translation.x, translation.y, translation.z);
 	Quat rot(rotation.x, rotation.y, rotation.z, rotation.w);
 	float3 scale(scaling.x, scaling.y, scaling.z);
 
-	newGameObject->GetComponent<C_Transform>()->SetLocalTransformation(pos, rot, scale);
-	newGameObject->GetComponent<C_Transform>()->GenerateGlobalTransformationFrom(parent->GetComponent<C_Transform>()->GetGlobalTransform());
-
-	//Mesh Load---------
-	for (int i = 0; i < node->mNumMeshes; i++)
+	if (node->mNumMeshes > 0)
 	{
-		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+		GameObject* newGameObject = App->scene->CreateGameObject(node->mName.C_Str(), parent);
 
-		std::vector<float3> vertices;
-		std::vector<float3> normals;
-		std::vector<float2> textureCoords;
-		std::vector<uint> indices;
+		//Transform Load------
 
-		vertices.reserve(mesh->mNumVertices);
-		if (mesh->HasNormals())
-			normals.reserve(mesh->mNumVertices);
-		textureCoords.reserve(mesh->mNumVertices);
+		newGameObject->GetComponent<C_Transform>()->SetLocalTransformation(pos, rot, scale);
+		newGameObject->GetComponent<C_Transform>()->GenerateGlobalTransformationFrom(transform);
 
-		LoadVertices(mesh, vertices, normals, textureCoords);
-		if (vertices.size() == 0)
+		//Mesh Load---------
+		for (int i = 0; i < node->mNumMeshes; i++)
 		{
-			LOG("Error loading vertices in scene")
-				return false;
+			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+
+			std::vector<float3> vertices;
+			std::vector<float3> normals;
+			std::vector<float2> textureCoords;
+			std::vector<uint> indices;
+
+			vertices.reserve(mesh->mNumVertices);
+			if (mesh->HasNormals())
+				normals.reserve(mesh->mNumVertices);
+			textureCoords.reserve(mesh->mNumVertices);
+
+			LoadVertices(mesh, vertices, normals, textureCoords);
+			if (vertices.size() == 0)
+			{
+				LOG("Error loading vertices in scene")
+					return false;
+			}
+
+			indices.reserve(mesh->mNumFaces * 3);
+			bool ret = LoadIndices(mesh, indices);
+			if (indices.size() == 0 || !ret)
+			{
+				LOG("Error loading indices in scene")
+					return false;
+			}
+			LOG("New mesh with %i vertices & %i indices", vertices.size(), indices.size());
+
+			C_Mesh* newMesh = (C_Mesh*)newGameObject->CreateComponent(COMPONENT_TYPE::MESH);
+
+			newMesh->GenerateMesh(vertices, indices, normals, textureCoords);
+
+			//Materials Load------------
+			if (scene->HasMaterials())
+			{
+				aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+
+				if (material != nullptr)
+					LoadMaterialFromMesh(material, newGameObject, filePath);
+			}
 		}
 
-		indices.reserve(mesh->mNumFaces * 3);
-		bool ret = LoadIndices(mesh, indices);
-		if (indices.size() == 0 || !ret)
-		{
-			LOG("Error loading indices in scene")
-				return false;
-		}
-		LOG("New mesh with %i vertices & %i indices", vertices.size(), indices.size());
-
-		C_Mesh* newMesh = (C_Mesh*)newGameObject->CreateComponent(COMPONENT_TYPE::MESH);
-
-		newMesh->GenerateMesh(vertices, indices, normals, textureCoords);
-
-		//Materials Load------------
-		if (scene->HasMaterials())
-		{
-			aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-
-			if (material != nullptr)
-				LoadMaterialFromMesh(material, newGameObject, filePath);
-		}
 	}
 
 
-	LoadSceneMeshes(scene, node, filePath, newGameObject);
+	if (newGameObject == nullptr)
+	{
+		transform = transform * float4x4::FromTRS(pos, rot, scale);
+		LoadSceneMeshes(scene, node, filePath, parent, transform);
+
+	}
+	else
+	{
+		transform = transform * float4x4::FromTRS(pos, rot, scale);
+		LoadSceneMeshes(scene, node, filePath, newGameObject, transform);
+	}
+
 
 	return true;
 }
 
-void MeshLoader::LoadMaterialFromMesh(const aiMaterial* mat, GameObject* newGameObject, const char* filePath)
+void MeshLoader::LoadMaterialFromMesh(const aiMaterial* mat, GameObject* newGameObject, const char* meshPath)
 {
 	aiString path;
 	mat->GetTexture(aiTextureType_DIFFUSE, 0, &path);
@@ -172,7 +191,7 @@ void MeshLoader::LoadMaterialFromMesh(const aiMaterial* mat, GameObject* newGame
 	{
 		std::string pathRelativeToFbx = path.C_Str();
 		std::string relativePath = "";
-		App->physFS->SplitFilePath(filePath, nullptr, &relativePath, nullptr, nullptr);
+		App->physFS->SplitFilePath(meshPath, nullptr, &relativePath, nullptr, nullptr);
 		pathRelativeToFbx = App->physFS->GetProjectPathFromInternalRelative(relativePath, pathRelativeToFbx);
 
 		uint loadTexture = TextureLoader::Load(pathRelativeToFbx.c_str());
@@ -189,7 +208,7 @@ void MeshLoader::LoadMaterialFromMesh(const aiMaterial* mat, GameObject* newGame
 
 		if (loadTexture != 0)
 		{
-			LOG("Texture found! ID: %i", loadTexture);
+			LOG("Texture loaded! ID: %i", loadTexture);
 
 			if (newMaterial == nullptr)
 				newMaterial = (C_Material*)newGameObject->CreateComponent(COMPONENT_TYPE::MATERIAL);
