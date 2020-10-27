@@ -12,6 +12,7 @@ class WG_Console;
 class WG_Scene;
 class WG_Hierarchy;
 class WG_Inspector;
+class WG_About;
 
 
 class M_UIManager : public Module
@@ -49,18 +50,17 @@ private:
 public:
 	std::vector<WindowGroup*> windowGroups;
 
-	WG_Config* configWindow;
-	WG_Console* consoleWindow;
-	WG_Scene* sceneWindow;
-	WG_Hierarchy* hierarchyWindow;
-	WG_Inspector* inspectorWindow;
+	WG_Config*		configWindow;
+	WG_Console*		consoleWindow;
+	WG_Scene*		sceneWindow;
+	WG_Hierarchy*	hierarchyWindow;
+	WG_Inspector*	inspectorWindow;
+	WG_About*		aboutWindow;
 
 private:
 	//Bool controllers for the editor menus-----------
 	bool showDemoWindow;
-
 	bool showConfigMenu;
-
 
 };
 

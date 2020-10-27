@@ -4,12 +4,15 @@
 #include "M_Input.h"
 #include "M_Window.h"
 
+
+// All UI Windows
 #include "WindowGroup.h"
 #include "WG_Config.h"
 #include "WG_Console.h"
 #include "WG_Scene.h"
 #include "WG_Hierarchy.h"
 #include "WG_Inspector.h"
+#include "WG_About.h"
 
 //OpenGL
 #include "Glew/include/glew.h"
@@ -43,6 +46,7 @@ bool M_UIManager::Awake()
 	windowGroups.push_back(sceneWindow = new WG_Scene(true));
 	windowGroups.push_back(hierarchyWindow = new WG_Hierarchy(true));
 	windowGroups.push_back(inspectorWindow = new WG_Inspector(true));
+	windowGroups.push_back(aboutWindow = new WG_About(true));
 
 	return true;
 }
@@ -159,6 +163,7 @@ bool M_UIManager::CleanUp()
 	sceneWindow = nullptr;
 	inspectorWindow = nullptr;
 	hierarchyWindow = nullptr;
+	aboutWindow = nullptr;
 
 	return true;
 }
@@ -214,6 +219,30 @@ bool M_UIManager::ShowMainMenuBar()
 			ImGui::MenuItem("Documents", NULL, true);
 			ImGui::EndMenu();
 		}
+
+		if (ImGui::BeginMenu("Primitives"))
+		{
+			ImVec2 buttonSize = { 70, 20 };
+
+			if (ImGui::Button("Cube", buttonSize))
+			{
+
+			}
+			if (ImGui::Button("Sphere", buttonSize))
+			{
+
+			}
+			if (ImGui::Button("Cylinder", buttonSize))
+			{
+
+			}
+			if (ImGui::Button("Pyramid", buttonSize))
+			{
+
+			}
+			ImGui::EndMenu();
+		}
+
 		if (ImGui::BeginMenu("Tools"))
 		{
 			ImGui::MenuItem("Metrics", NULL, true);
@@ -240,6 +269,11 @@ bool M_UIManager::ShowMainMenuBar()
 			{
 				ImGui::MenuItem("Inspector", "", &inspectorWindow->active);
 			}
+			if (aboutWindow != nullptr)
+			{
+				ImGui::MenuItem("About", "", &aboutWindow->active);
+			}
+
 
 			ImGui::EndMenu();
 		}
