@@ -31,7 +31,7 @@ updateStatus WG_Inspector::Update()
 	if (focusedId != -1)
 	{
 
-		if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
+		if (App->input->GetKey(SDL_SCANCODE_DELETE) == KEY_DOWN)
 		{
 			App->scene->DeleteGameObject(focusedGameObject);
 			ImGui::End();
