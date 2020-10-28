@@ -43,16 +43,16 @@
     <Filter Include="Sources\Game Objects">
       <UniqueIdentifier>{d40c67e7-390e-4057-a43c-5350649f4f62}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Sources\Components">
+    <Filter Include="Sources\Game Objects\Components">
       <UniqueIdentifier>{78f32b22-dc58-4989-b9e9-79ec54affa24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Helpers\Loaders">
+      <UniqueIdentifier>{981fd667-df83-439a-ad8e-25756afac357}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Module.h">
       <Filter>Sources\Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="glmath.h">
-      <Filter>Sources\Containers</Filter>
     </ClInclude>
     <ClInclude Include="Application.h">
       <Filter>Sources</Filter>
@@ -309,17 +309,11 @@
     <ClInclude Include="PrimitivesIndices.h">
       <Filter>Sources\Helpers</Filter>
     </ClInclude>
-    <ClInclude Include="MeshLoader.h">
-      <Filter>Sources\Helpers</Filter>
-    </ClInclude>
     <ClInclude Include="M_FileManager.h">
       <Filter>Sources\Modules</Filter>
     </ClInclude>
     <ClInclude Include="PathNode.h">
       <Filter>Sources\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureLoader.h">
-      <Filter>Sources\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="M_Resources.h">
       <Filter>Sources\Modules</Filter>
@@ -331,16 +325,16 @@
       <Filter>Sources\Game Objects</Filter>
     </ClInclude>
     <ClInclude Include="Component.h">
-      <Filter>Sources\Components</Filter>
+      <Filter>Sources\Game Objects\Components</Filter>
     </ClInclude>
     <ClInclude Include="C_Mesh.h">
-      <Filter>Sources\Components</Filter>
+      <Filter>Sources\Game Objects\Components</Filter>
     </ClInclude>
     <ClInclude Include="C_Transform.h">
-      <Filter>Sources\Components</Filter>
+      <Filter>Sources\Game Objects\Components</Filter>
     </ClInclude>
     <ClInclude Include="C_Material.h">
-      <Filter>Sources\Components</Filter>
+      <Filter>Sources\Game Objects\Components</Filter>
     </ClInclude>
     <ClInclude Include="WG_Hierarchy.h">
       <Filter>Sources\WindowGroup</Filter>
@@ -350,6 +344,18 @@
     </ClInclude>
     <ClInclude Include="WG_About.h">
       <Filter>Sources\WindowGroup</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureLoader.h">
+      <Filter>Sources\Helpers\Loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshLoader.h">
+      <Filter>Sources\Helpers\Loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGL.h">
+      <Filter>Sources\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="glmath.h">
+      <Filter>Sources\Helpers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -364,9 +370,6 @@
     </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="glmath.cpp">
-      <Filter>Sources\Containers</Filter>
     </ClCompile>
     <ClCompile Include="Primitive.cpp">
       <Filter>Sources\Helpers</Filter>
@@ -524,14 +527,8 @@
     <ClCompile Include="WG_Scene.cpp">
       <Filter>Sources\WindowGroup</Filter>
     </ClCompile>
-    <ClCompile Include="MeshLoader.cpp">
-      <Filter>Sources\Helpers</Filter>
-    </ClCompile>
     <ClCompile Include="M_FileManager.cpp">
       <Filter>Sources\Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureLoader.cpp">
-      <Filter>Sources\Helpers</Filter>
     </ClCompile>
     <ClCompile Include="M_Resources.cpp">
       <Filter>Sources\Modules</Filter>
@@ -543,16 +540,16 @@
       <Filter>Sources\Game Objects</Filter>
     </ClCompile>
     <ClCompile Include="Component.cpp">
-      <Filter>Sources\Components</Filter>
+      <Filter>Sources\Game Objects\Components</Filter>
     </ClCompile>
     <ClCompile Include="C_Mesh.cpp">
-      <Filter>Sources\Components</Filter>
+      <Filter>Sources\Game Objects\Components</Filter>
     </ClCompile>
     <ClCompile Include="C_Transform.cpp">
-      <Filter>Sources\Components</Filter>
+      <Filter>Sources\Game Objects\Components</Filter>
     </ClCompile>
     <ClCompile Include="C_Material.cpp">
-      <Filter>Sources\Components</Filter>
+      <Filter>Sources\Game Objects\Components</Filter>
     </ClCompile>
     <ClCompile Include="WG_Hierarchy.cpp">
       <Filter>Sources\WindowGroup</Filter>
@@ -562,6 +559,15 @@
     </ClCompile>
     <ClCompile Include="WG_About.cpp">
       <Filter>Sources\WindowGroup</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureLoader.cpp">
+      <Filter>Sources\Helpers\Loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshLoader.cpp">
+      <Filter>Sources\Helpers\Loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="glmath.cpp">
+      <Filter>Sources\Helpers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

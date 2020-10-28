@@ -41,11 +41,12 @@ void WG_Hierarchy::Cleanup()
 
 void WG_Hierarchy::CreateHierarchy(const GameObject* gameObject)
 {
-
+	//Reset the Flags
 	SetTreeNodeFlags(gameObject);
 
 	bool isNodeOpened = ImGui::TreeNodeEx(gameObject->GetName().c_str(), flag);
 
+	//Check Clicked
 	if (ImGui::IsItemClicked())
 	{
 		if (gameObject->GetId() != ROOT)
@@ -55,9 +56,9 @@ void WG_Hierarchy::CreateHierarchy(const GameObject* gameObject)
 		}
 	}
 
+	//If the Node is opened, display the childs
 	if (isNodeOpened)
 	{
-
 		for (int i = 0; i < gameObject->children.size(); i++)
 		{
 			CreateHierarchy(gameObject->children[i]);			

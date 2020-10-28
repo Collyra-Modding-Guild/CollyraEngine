@@ -9,15 +9,7 @@
 #include "Primitive.h"
 #include "TextureLoader.h"
 
-#include "Glew/include/glew.h"
-#pragma comment (lib, "Glew/libx86/glew32.lib")
-
-#include "SDL\include\SDL_opengl.h"
-#include <gl/GL.h>
-#include <gl/GLU.h>
-
-#pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
-#pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
+#include "OpenGL.h"
 
 M_Renderer3D::M_Renderer3D(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled),
 renderer(nullptr), frameBuffer(-1), textureBuffer(-1), depthBuffer(-1),
@@ -104,7 +96,6 @@ bool M_Renderer3D::Awake()
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_BLEND);
 
-
 		//Check for error
 		error = glGetError();
 		if (error != GL_NO_ERROR)
@@ -121,7 +112,6 @@ bool M_Renderer3D::Awake()
 		lights[0].ambient.Set(0.25f, 0.25f, 0.25f, 1.0f);
 		lights[0].diffuse.Set(0.75f, 0.75f, 0.75f, 1.0f);
 		lights[0].Awake();
-
 
 		GLfloat MaterialAmbient[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, MaterialAmbient);
@@ -149,17 +139,16 @@ void M_Renderer3D::GenerateFrameBuffers(int width, int height)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	//Generate the depth buffer
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
+
+	//Generate the depth buffer-------------
 	glGenRenderbuffers(1, &depthBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
-
 	glBindTexture(GL_TEXTURE_2D, 0);
-
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -183,8 +172,6 @@ updateStatus M_Renderer3D::PreUpdate(float dt)
 	}
 
 	glLoadMatrixf(cameraModule->GetViewMatrix());
-
-	// light 0 on cam pos
 
 	lights[0].SetPos(cameraModule->Position.x, cameraModule->Position.y, cameraModule->Position.z);
 
@@ -245,36 +232,6 @@ bool M_Renderer3D::CleanUp()
 	return true;
 }
 
-//void M_Renderer3D::DrawNormals()
-//{
-//	std::vector<Mesh>* meshes = App->resources->GetMeshes();
-//
-//	if (meshes != nullptr)
-//	{
-//		for (uint i = 0; i < meshes->size(); i++)
-//		{
-//			meshes->at(i).DrawNormals();
-//		}
-//	}
-//
-//}
-//
-//updateStatus M_Renderer3D::DebugDraw(float dt)
-//{
-//	updateStatus ret = updateStatus::UPDATE_CONTINUE;
-//
-//	std::vector<Mesh>* meshes = App->resources->GetMeshes();
-//
-//	if (meshes != nullptr)
-//	{
-//		for (uint i = 0; i < meshes->size(); i++)
-//		{
-//			meshes->at(i).Render(true);
-//		}
-//	}
-//	return ret;
-//}
-
 //Called when a window is alterated
 void M_Renderer3D::OnResize(float width, float height)
 {
@@ -293,48 +250,6 @@ void M_Renderer3D::OnResize(float width, float height)
 	glLoadMatrixf(App->camera->GetViewMatrix());
 
 	GenerateFrameBuffers(width, height);
-}
-
-// Blit to screen
-bool M_Renderer3D::Blit(SDL_Texture* texture, int x, int y, const SDL_Rect* section, float speed_x, float speed_y, SDL_RendererFlip flip, double angle, int pivot_x, int pivot_y) const
-{
-	bool ret = true;
-
-	SDL_Rect rect;
-	rect.x = (int)x;
-	rect.y = (int)y;
-
-	if (section != NULL)
-	{
-		rect.w = section->w;
-		rect.h = section->h;
-	}
-	else
-	{
-		SDL_QueryTexture(texture, NULL, NULL, &rect.w, &rect.h);
-	}
-
-	rect.w *= 10;
-	rect.h *= 10;
-
-	SDL_Point* p = NULL;
-	SDL_Point pivot;
-
-	if (pivot_x != INT_MAX && pivot_y != INT_MAX)
-	{
-		pivot.x = pivot_x;
-		pivot.y = pivot_y;
-		p = &pivot;
-	}
-
-
-	if (SDL_RenderCopyEx(renderer, texture, section, &rect, angle, p, flip) != 0)
-	{
-		LOG("Cannot blit to screen. SDL_RenderCopy error: %s", SDL_GetError());
-		ret = false;
-	}
-
-	return ret;
 }
 
 void M_Renderer3D::BeginDebugMode()

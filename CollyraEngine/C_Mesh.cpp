@@ -1,32 +1,16 @@
 #include "C_Mesh.h"
 
-#include "Glew/include/glew.h"
-#pragma comment (lib, "Glew/libx86/glew32.lib")
-
-#include <gl/GL.h>
-#include <gl/GLU.h>
-
-#pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
-#pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
+#include "OpenGL.h"
 
 C_Mesh::C_Mesh(bool active) : Component(COMPONENT_TYPE::MESH, active), idIndex(-1), idVertex(-1), idNormals(-1), idTextureCoords(-1),
 wire(false), noFace(false)
-{
-}
+{}
 
 C_Mesh::C_Mesh(std::vector<float3> vertices, std::vector<uint> indices, std::vector<float3> normals, std::vector<float2> textureCoords, bool active) :
 	Component(COMPONENT_TYPE::MESH, active),
 	idIndex(-1), idVertex(-1), idNormals(-1), idTextureCoords(-1),
 	wire(false), noFace(false)
 {}
-
-C_Mesh::C_Mesh(const C_Mesh& copy) : Component(COMPONENT_TYPE::MESH, copy.active),
-idVertex(-1), idIndex(-1), idNormals(-1), idTextureCoords(-1),
-vertices(copy.vertices), indices(copy.indices), normals(copy.normals), textureCoords(copy.textureCoords)
-{
-	GenerateBuffers();
-	GenerateColors();
-}
 
 C_Mesh::~C_Mesh()
 {
@@ -41,7 +25,7 @@ void C_Mesh::GenerateMesh(std::vector<float3> vertices, std::vector<uint> indice
 	this->textureCoords = textureCoords;
 
 	GenerateBuffers();
-	GenerateColors();
+	GenerateWireColor();
 }
 
 void C_Mesh::GenerateBuffers()
@@ -77,7 +61,7 @@ void C_Mesh::GenerateBuffers()
 	}
 }
 
-void C_Mesh::GenerateColors()
+void C_Mesh::GenerateWireColor()
 {
 	wireColor = Color((float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f);
 }
@@ -124,9 +108,7 @@ void C_Mesh::InnerRender(int textureID) const
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	if (textureID != -1)
-	{
 		glEnableClientState(GL_TEXTURE_2D);
-	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, idVertex);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
@@ -155,10 +137,9 @@ void C_Mesh::InnerRender(int textureID) const
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
 	glDisableClientState(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, 0);
 
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_TEXTURE_COORD_ARRAY, 0);

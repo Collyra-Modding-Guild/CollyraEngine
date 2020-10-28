@@ -7,10 +7,7 @@
 #include "p2Defs.h"
 
 //OpenGL
-#include "Glew/include/glew.h"
-#include "SDL/include/SDL_opengl.h"
-#include <gl/GL.h>
-#include <gl/GLU.h>
+#include "OpenGL.h"
 
 //ImGui
 #include "imgui/imgui_internal.h"
@@ -20,8 +17,6 @@
 
 //DevIL
 #include "Devil/include/il.h"
-
-#pragma comment (lib, "Glew/libx86/glew32.lib")
 
 WG_Config::WG_Config(bool isActive) : WindowGroup(WG_CONFIG, isActive),
 fpsLog(FRAMERATE_LOG_SIZE), msLog(FRAMERATE_LOG_SIZE), newInput(false), debugMode(false)

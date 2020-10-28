@@ -12,8 +12,6 @@ public:
 	C_Transform(float4x4 parentTransform, float4x4 localTransform);
 	~C_Transform();
 
-	void Update(float dt) override;
-
 	void SetLocalTransformation(float4x4 transform);
 	void SetLocalTransformation(float3 pos, Quat rotation, float3 scale);
 	void GenerateGlobalTransformationFrom(float4x4 parentTransform);

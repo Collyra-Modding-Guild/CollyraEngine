@@ -13,14 +13,10 @@
 
 WG_Inspector::WG_Inspector(bool isActive) : WindowGroup(WG_INSPECTOR, isActive), focusedGameObject(nullptr),
 focusedId(-1)
-{
-
-}
+{}
 
 WG_Inspector::~WG_Inspector()
-{
-
-}
+{}
 
 updateStatus WG_Inspector::Update()
 {
@@ -30,14 +26,13 @@ updateStatus WG_Inspector::Update()
 
 	if (focusedId != -1)
 	{
-
+		//Delete the selected item------------
 		if (App->input->GetKey(SDL_SCANCODE_DELETE) == KEY_DOWN)
 		{
 			App->scene->DeleteGameObject(focusedGameObject);
 			ImGui::End();
 			return UPDATE_CONTINUE;
 		}
-
 
 		ImGui::Checkbox("|", &focusedGameObject->active);
 		ImGui::SameLine();
@@ -56,7 +51,6 @@ updateStatus WG_Inspector::Update()
 		if (ImGui::Checkbox("Static", &staticGameObject))
 			LOG("Static gameObject not Implemented");	
 
-		
 
 		ImGui::Spacing();
 		ImGui::Spacing();

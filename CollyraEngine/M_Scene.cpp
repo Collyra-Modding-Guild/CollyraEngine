@@ -79,21 +79,7 @@ updateStatus M_Scene::Draw(float dt)
 
 		if (currNode != nullptr && currNode->active)
 		{
-			C_Mesh* mesh = currNode->GetComponent<C_Mesh>();
-			C_Transform* transform = currNode->GetComponent<C_Transform>();
-			C_Material* material = currNode->GetComponent<C_Material>();
-
-			if (mesh != nullptr && transform != nullptr)
-			{
-				if (material != nullptr)
-				{
-					mesh->Render(transform->GetTGlobalTransform(), (int)material->GetTexture(), material->GetColor());
-				}
-				else
-				{
-					mesh->Render(transform->GetTGlobalTransform());
-				}
-			}
+			DrawGameObject(currNode);
 		}
 		else
 			continue;
@@ -166,6 +152,25 @@ void M_Scene::CheckSiblingsName(GameObject* parent, std::string& myName)
 		sprintf_s(str, 10, "%i", siblingSameName);
 		std::string number = str;
 		myName += " (" + number + ")";
+	}
+}
+
+void M_Scene::DrawGameObject(GameObject* gameObject)
+{
+	C_Mesh* mesh = gameObject->GetComponent<C_Mesh>();
+	C_Transform* transform = gameObject->GetComponent<C_Transform>();
+	C_Material* material = gameObject->GetComponent<C_Material>();
+
+	if (mesh != nullptr && transform != nullptr)
+	{
+		if (material != nullptr)
+		{
+			mesh->Render(transform->GetTGlobalTransform(), (int)material->GetTexture(), material->GetColor());
+		}
+		else
+		{
+			mesh->Render(transform->GetTGlobalTransform());
+		}
 	}
 }
 
@@ -268,10 +273,12 @@ bool M_Scene::DeleteGameObject(unsigned int id)
 		}
 	}
 
-	if (toDelete != nullptr)
-		DeleteGameObject(toDelete);
+	bool ret = false;
 
-	return false;
+	if (toDelete != nullptr)
+		ret = DeleteGameObject(toDelete);
+
+	return ret;
 }
 
 
@@ -280,8 +287,10 @@ bool M_Scene::DeleteGameObject(GameObject* gameObject)
 	if (gameObject == nullptr)
 		return false;
 
+	//Notify the UI that a GameObject has been destroyed---------
 	App->uiManager->GameObjectDestroyed(gameObject->GetId());
 
+	//Notify the Parent that his child is going to die-----------
 	if (gameObject->parent != nullptr)
 		gameObject->parent->NotifyChildDeath(gameObject);
 
