@@ -281,7 +281,7 @@ void WG_Inspector::DrawHeaderGameObject()
 	ImGui::Text("Tag");
 	ImGui::SameLine();
 
-	ImGui::SetNextItemWidth(100.0f);
+	ImGui::SetNextItemWidth(110.0f);
 	if (ImGui::BeginCombo("##tags", currentTag))
 	{
 		for (int n = 0; n < TAGS_NUM; n++)
@@ -299,7 +299,7 @@ void WG_Inspector::DrawHeaderGameObject()
 	ImGui::Text("Layer");
 	ImGui::SameLine();
 
-	ImGui::SetNextItemWidth(100.0f);
+	ImGui::SetNextItemWidth(110.0f);
 	if (ImGui::BeginCombo("##layers", currentLayer))
 	{
 		for (int n = 0; n < LAYERS_NUM; n++)
