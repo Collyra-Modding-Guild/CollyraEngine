@@ -77,7 +77,7 @@ updateStatus M_Scene::Draw(float dt)
 		currNode = stack.top();
 		stack.pop();
 
-		if (currNode != nullptr)
+		if (currNode != nullptr && currNode->active)
 		{
 			C_Mesh* mesh = currNode->GetComponent<C_Mesh>();
 			C_Transform* transform = currNode->GetComponent<C_Transform>();

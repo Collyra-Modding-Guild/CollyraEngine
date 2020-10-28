@@ -36,6 +36,7 @@ public:
 	void SetId(unsigned int newId);
 
 	std::string GetName() const;
+
 	void SetName(std::string newName);
 
 	void NotifyChildDeath(GameObject* deadChild);
@@ -44,6 +45,8 @@ public:
 	std::vector<Component*> components;
 	GameObject* parent;
 	std::vector<GameObject*> children;
+
+	bool active;
 
 private:
 	std::string name;
