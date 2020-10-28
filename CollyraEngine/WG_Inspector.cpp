@@ -31,8 +31,6 @@ updateStatus WG_Inspector::Update()
 	if (focusedId != -1)
 	{
 
-		//TODO: Get Gameobject info
-
 		if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
 		{
 			App->scene->DeleteGameObject(focusedGameObject);
@@ -49,7 +47,7 @@ updateStatus WG_Inspector::Update()
 
 		ImGuiInputTextFlags inspectorNameFlags = ImGuiInputTextFlags_EnterReturnsTrue;
 
-		if (ImGui::InputText("##", inspectorName, 30, inspectorNameFlags))
+		if (ImGui::InputText("##name", inspectorName, 30, inspectorNameFlags))
 			focusedGameObject->SetName(inspectorName);
 
 		ImGui::SameLine();
@@ -70,6 +68,15 @@ updateStatus WG_Inspector::Update()
 		Quat selectedRotation = focusedGameObject->GetComponent<C_Transform>()->GetRotation();
 		float3 selectedScale = focusedGameObject->GetComponent<C_Transform>()->GetScale();
 
+
+	
+
+		bool transformActive = true;
+		if (ImGui::Checkbox("", &transformActive))
+			LOG("Transform is always active.")
+
+		ImGui::SameLine();
+
 		if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 
@@ -82,19 +89,19 @@ updateStatus WG_Inspector::Update()
 			ImGui::Text("X");
 			ImGui::SameLine();
 			ImGui::SetNextItemWidth(50.0f);
-			ImGui::DragFloat("##", &selectedPosition.x, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
+			ImGui::DragFloat("##posX", &selectedPosition.x, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
 
 			ImGui::SameLine();
 			ImGui::Text("Y");
 			ImGui::SameLine();
 			ImGui::SetNextItemWidth(50.0f);
-			ImGui::DragFloat("##", &selectedPosition.y, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
+			ImGui::DragFloat("##posY", &selectedPosition.y, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
 
 			ImGui::SameLine();
 			ImGui::Text("Z");
 			ImGui::SameLine();
 			ImGui::SetNextItemWidth(50.0f);
-			ImGui::DragFloat("##", &selectedPosition.z, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
+			ImGui::DragFloat("##posZ", &selectedPosition.z, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
 
 			// ROTATION - - - - - - - - - - - - - - - - - - - - - - 
 			ImGui::Spacing();
@@ -105,19 +112,19 @@ updateStatus WG_Inspector::Update()
 			ImGui::Text("X");
 			ImGui::SameLine();
 			ImGui::SetNextItemWidth(50.0f);
-			ImGui::DragFloat("##", &selectedRotation.x, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
+			ImGui::DragFloat("##rotX", &selectedRotation.x, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
 
 			ImGui::SameLine();
 			ImGui::Text("Y");
 			ImGui::SameLine();
 			ImGui::SetNextItemWidth(50.0f);
-			ImGui::DragFloat("##", &selectedRotation.y, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
+			ImGui::DragFloat("##rotY", &selectedRotation.y, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
 
 			ImGui::SameLine();
 			ImGui::Text("Z");
 			ImGui::SameLine();
 			ImGui::SetNextItemWidth(50.0f);
-			ImGui::DragFloat("##", &selectedRotation.z, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
+			ImGui::DragFloat("##rotZ", &selectedRotation.z, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
 
 
 			// SCALE  - - - - - - - - - - - - - - - - - - - - - - 
@@ -129,19 +136,19 @@ updateStatus WG_Inspector::Update()
 			ImGui::Text("X");
 			ImGui::SameLine();
 			ImGui::SetNextItemWidth(50.0f);
-			ImGui::DragFloat("##", &selectedScale.x, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
+			ImGui::DragFloat("##scaX", &selectedScale.x, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
 
 			ImGui::SameLine();
 			ImGui::Text("Y");
 			ImGui::SameLine();
 			ImGui::SetNextItemWidth(50.0f);
-			ImGui::DragFloat("##", &selectedScale.y, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
+			ImGui::DragFloat("##scaY", &selectedScale.y, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
 
 			ImGui::SameLine();
 			ImGui::Text("Z");
 			ImGui::SameLine();
 			ImGui::SetNextItemWidth(50.0f);
-			ImGui::DragFloat("##", &selectedScale.z, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
+			ImGui::DragFloat("##scaZ", &selectedScale.z, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
 
 			ImGui::Spacing();
 		}
@@ -150,21 +157,32 @@ updateStatus WG_Inspector::Update()
 		ImGui::Separator();
 		ImGui::Spacing();
 
-		if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
-		{
+		bool meshActive = true;
+		if (ImGui::Checkbox("", &meshActive))
+			LOG("Mesh is always active.")
 
-		}
-
-		ImGui::Spacing();
-		ImGui::Separator();
-		ImGui::Spacing();
+		ImGui::SameLine();
 
 		if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 
 		}
-
 	
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
+		bool materialActive = true;
+		if (ImGui::Checkbox("", &materialActive))
+			LOG("Material is always active.")
+
+		ImGui::SameLine();
+
+		if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+
+		}
+
 	}
 
 	ImGui::End();
