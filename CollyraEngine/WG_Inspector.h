@@ -23,6 +23,12 @@ public:
 	GameObject* GetGameObject() const;
 	void OnDestroyedId(uint destroyedGameObject);
 
+	void DrawTransformComponent (ImGuiTreeNodeFlags_ flag);
+	void DrawMeshComponent(ImGuiTreeNodeFlags_ flag);
+	void DrawMaterialComponent(ImGuiTreeNodeFlags_ flag);
+
+	void DrawHeaderGameObject();
+
 private:
 	int focusedId;
 	GameObject* focusedGameObject;
