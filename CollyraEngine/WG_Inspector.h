@@ -18,7 +18,9 @@ public:
 	virtual void Cleanup();
 
 	void SetGameObject(uint focusedGameObject);
+	int GetFocusedGameObjectId() const;
 	void SetGameObject(GameObject* focusedGameObject);
+	GameObject* GetGameObject() const;
 	void OnDestroyedId(uint destroyedGameObject);
 
 private:

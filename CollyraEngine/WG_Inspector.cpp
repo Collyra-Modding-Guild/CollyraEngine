@@ -1,6 +1,7 @@
 #include "WG_Inspector.h"
 #include "Application.h"
 #include "M_Scene.h"
+#include "M_Input.h"
 
 #include "GameObject.h"
 
@@ -29,6 +30,17 @@ updateStatus WG_Inspector::Update()
 
 	if (focusedId != -1)
 	{
+
+		//TODO: Get Gameobject info
+
+		if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
+		{
+			App->scene->DeleteGameObject(focusedGameObject);
+			ImGui::End();
+			return UPDATE_CONTINUE;
+		}
+
+
 		ImGui::Checkbox("|", &focusedGameObject->active);
 		ImGui::SameLine();
 
@@ -173,6 +185,11 @@ void WG_Inspector::SetGameObject(uint focusedGameObject)
 		focusedId = focusedGameObject;
 }
 
+int WG_Inspector::GetFocusedGameObjectId() const
+{
+	return focusedId;
+}
+
 void WG_Inspector::SetGameObject(GameObject* focusedGameObject)
 {
 	if (focusedGameObject != nullptr)
@@ -180,6 +197,11 @@ void WG_Inspector::SetGameObject(GameObject* focusedGameObject)
 		this->focusedGameObject = focusedGameObject;
 		focusedId = focusedGameObject->GetId();
 	}
+}
+
+GameObject* WG_Inspector::GetGameObject() const
+{
+	return focusedGameObject;
 }
 
 void WG_Inspector::OnDestroyedId(uint destroyedGameObject)

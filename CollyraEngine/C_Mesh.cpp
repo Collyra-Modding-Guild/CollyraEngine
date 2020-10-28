@@ -89,15 +89,15 @@ void C_Mesh::ClearMesh()
 	normals.clear();
 	textureCoords.clear();
 
-	//glDeleteBuffers(1, &idVertex);
-	//glDeleteBuffers(1, &idIndex);
-	//glDeleteBuffers(1, &idNormals);
-	//glDeleteBuffers(1, &idTextureCoords);
+	glDeleteBuffers(1, &idVertex);
+	glDeleteBuffers(1, &idIndex);
+	glDeleteBuffers(1, &idNormals);
+	glDeleteBuffers(1, &idTextureCoords);
 }
 
 
 // ------------------------------------------------------------
-void C_Mesh::Render(float4x4 transform, uint textureID, Color color, bool globalWireMode) const
+void C_Mesh::Render(float4x4 transform, int textureID, Color color, bool globalWireMode) const
 {
 	glPushMatrix();
 	glMultMatrixf((float*)&transform);
@@ -113,7 +113,7 @@ void C_Mesh::Render(float4x4 transform, uint textureID, Color color, bool global
 }
 
 // ------------------------------------------------------------
-void C_Mesh::InnerRender(uint textureID) const
+void C_Mesh::InnerRender(int textureID) const
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
 

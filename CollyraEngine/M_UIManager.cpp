@@ -441,3 +441,13 @@ void M_UIManager::SetFocusedGameObject(uint id)
 		inspector->SetGameObject(id);
 	}
 }
+
+int M_UIManager::GetFocusedGameObjectId() const
+{
+	if (inspectorWindow != nullptr)
+	{
+		WG_Inspector* inspector = (WG_Inspector*)inspectorWindow;
+		return inspector->GetFocusedGameObjectId();
+	}
+	return -1;
+}

@@ -1,9 +1,12 @@
 #include "M_Resources.h"
 #include "Application.h"
 #include "M_FileManager.h"
+#include "M_UIManager.h"
+#include "M_Scene.h"
 
 #include "MeshLoader.h"
 #include "TextureLoader.h"
+#include "C_Material.h"
 
 M_Resources::M_Resources(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled)
 {}
@@ -59,7 +62,23 @@ void M_Resources::ImportResourceInternal(const char* path)
 	}
 	else if (extension == "png" || extension == "dds")
 	{
-		TextureLoader::Load(relativePath.c_str());
+		int gameObjectTarget = App->uiManager->GetFocusedGameObjectId();
+		if (gameObjectTarget != -1)
+		{
+			GameObject* focus = App->scene->GetGameObject(gameObjectTarget);
+
+			C_Material* cMaterial = focus->GetComponent<C_Material>();
+
+			if (cMaterial == nullptr)
+			{
+				cMaterial = (C_Material*)focus->CreateComponent(COMPONENT_TYPE::MATERIAL);
+			}
+
+			cMaterial->SetTexture(TextureLoader::Load(relativePath.c_str()));
+
+		}
+		else
+			LOG("No Game Object selected to load the Texture into!!");
 	}
 
 }

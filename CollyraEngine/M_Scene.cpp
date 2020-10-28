@@ -87,7 +87,7 @@ updateStatus M_Scene::Draw(float dt)
 			{
 				if (material != nullptr)
 				{
-					mesh->Render(transform->GetTGlobalTransform(), material->GetTexture(), material->GetColor());
+					mesh->Render(transform->GetTGlobalTransform(), (int)material->GetTexture(), material->GetColor());
 				}
 				else
 				{
@@ -145,7 +145,7 @@ uint M_Scene::GenerateId()
 	return globalId++;
 }
 
-const GameObject* M_Scene::GetRoot() 
+const GameObject* M_Scene::GetRoot()
 {
 	return root;
 }
@@ -277,9 +277,15 @@ bool M_Scene::DeleteGameObject(unsigned int id)
 
 bool M_Scene::DeleteGameObject(GameObject* gameObject)
 {
+	if (gameObject == nullptr)
+		return false;
+
 	App->uiManager->GameObjectDestroyed(gameObject->GetId());
+
+	if (gameObject->parent != nullptr)
+		gameObject->parent->NotifyChildDeath(gameObject);
+
 	RELEASE(gameObject);
 
 	return true;
 }
-

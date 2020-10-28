@@ -10,8 +10,7 @@
 #pragma comment (lib, "opengl32.lib") 
 
 C_Material::C_Material(bool active) : Component(COMPONENT_TYPE::MATERIAL, active), idTextureImage(0), color({ 156, 156, 156 })
-{
-}
+{}
 
 C_Material::~C_Material()
 {
@@ -19,8 +18,7 @@ C_Material::~C_Material()
 }
 
 void C_Material::Update(float dt)
-{
-}
+{}
 
 void C_Material::SetTexture(uint idTexture)
 {
@@ -51,5 +49,5 @@ Color C_Material::GetColor() const
 
 void C_Material::ClearTexture()
 {
-	glDeleteBuffers(1, &idTextureImage);
+	glDeleteTextures(1, &idTextureImage);
 }

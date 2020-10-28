@@ -16,8 +16,8 @@ public:
 
 	void GenerateMesh(std::vector<float3> vertices, std::vector<uint> indices, std::vector<float3> normals, std::vector<float2> textureCoords);
 
-	void Render(float4x4 transform = float4x4::identity, uint textureID = NULL, Color color = { 156, 156, 156 }, bool globalWireMode = false) const;
-	void InnerRender(uint textureID) const;
+	void Render(float4x4 transform = float4x4::identity, int textureID = -1, Color color = { 156, 156, 156 }, bool globalWireMode = false) const;
+	void InnerRender(int textureID) const;
 
 	void DrawNormals() const;
 

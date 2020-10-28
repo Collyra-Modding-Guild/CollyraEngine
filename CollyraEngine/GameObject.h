@@ -39,6 +39,8 @@ public:
 
 	void SetName(std::string newName);
 
+	void NotifyChildDeath(GameObject* deadChild);
+
 public:
 	std::vector<Component*> components;
 	GameObject* parent;

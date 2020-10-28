@@ -54,9 +54,6 @@ void MeshLoader::Load(const char* path)
 
 	RELEASE_ARRAY(buffer);
 
-	std::vector<C_Mesh> loadedMeshes;
-	bool ret = true;
-
 	if (scene)
 	{
 		//WARNING: assuming that all the mesh is made from triangles
@@ -64,16 +61,12 @@ void MeshLoader::Load(const char* path)
 		App->physFS->SplitFilePath(path, nullptr, nullptr, &fbxName, nullptr);
 		GameObject* sceneRoot = App->scene->CreateGameObject(fbxName.c_str(), nullptr);
 
-		ret = LoadSceneMeshes(scene, scene->mRootNode, path, sceneRoot);
+		LoadSceneMeshes(scene, scene->mRootNode, path, sceneRoot);
 
-		if (ret && loadedMeshes.size() > 0)
-		{
-			LOG("Loaded %i mesh(es)!", loadedMeshes.size())
-		}
 		aiReleaseImport(scene);
 	}
 
-	if (!scene || !ret)
+	if (!scene)
 	{
 		LOG("Error loading scene %s", path);
 	}
@@ -157,16 +150,15 @@ bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const 
 
 	}
 
+	transform = transform * float4x4::FromTRS(pos, rot, scale);
 
 	if (newGameObject == nullptr)
 	{
-		transform = transform * float4x4::FromTRS(pos, rot, scale);
 		LoadSceneMeshes(scene, node, filePath, parent, transform);
 
 	}
 	else
 	{
-		transform = transform * float4x4::FromTRS(pos, rot, scale);
 		LoadSceneMeshes(scene, node, filePath, newGameObject, transform);
 	}
 
