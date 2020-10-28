@@ -89,10 +89,10 @@ void C_Mesh::ClearMesh()
 	normals.clear();
 	textureCoords.clear();
 
-	//glDeleteBuffers(1, &idVertex);
-	//glDeleteBuffers(1, &idIndex);
-	//glDeleteBuffers(1, &idNormals);
-	//glDeleteBuffers(1, &idTextureCoords);
+	glDeleteBuffers(1, &idVertex);
+	glDeleteBuffers(1, &idIndex);
+	glDeleteBuffers(1, &idNormals);
+	glDeleteBuffers(1, &idTextureCoords);
 }
 
 
