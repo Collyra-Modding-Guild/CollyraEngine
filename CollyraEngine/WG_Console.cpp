@@ -77,10 +77,7 @@ void WG_Console::Draw(const char* title, bool* p_open)
 		ImGui::EndPopup();
 	}
 
-	ImGui::TextWrapped(
-		"This example implements a console with basic coloring, completion (TAB key) and history (Up/Down keys). A more elaborate "
-		"implementation may want to store entries along with extra data such as timestamp, emitter, etc.");
-	ImGui::TextWrapped("Enter 'HELP' for help.");
+	ImGui::TextWrapped("History: UP/DOWN, \n Enter 'HELP' for help.");
 
 	if (ImGui::SmallButton("Clear")) { ClearLog(); }
 	ImGui::SameLine();
