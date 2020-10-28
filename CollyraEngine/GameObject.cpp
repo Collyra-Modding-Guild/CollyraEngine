@@ -110,6 +110,17 @@ void GameObject::SetName(std::string newName)
 	name = newName;
 }
 
+void GameObject::NotifyChildDeath(GameObject* deadChild)
+{
+	for (int i = 0; i < children.size(); i++)
+	{
+		if (children[i] == deadChild)
+		{
+			children.erase(children.begin() + i);
+		}
+	}
+}
+
 Component* GameObject::AddComponent(Component* c)
 {
 	if (c == nullptr)

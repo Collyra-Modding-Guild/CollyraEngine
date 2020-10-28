@@ -1,6 +1,7 @@
 #include "WG_Inspector.h"
 #include "Application.h"
 #include "M_Scene.h"
+#include "M_Input.h"
 
 #include "GameObject.h"
 
@@ -30,6 +31,14 @@ updateStatus WG_Inspector::Update()
 	if (focusedId != -1)
 	{
 		//TODO: Get Gameobject info
+
+		if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
+		{
+			App->scene->DeleteGameObject(focusedGameObject);
+			ImGui::End();
+			return UPDATE_CONTINUE;
+		}
+
 		ImGui::Text(focusedGameObject->GetName().c_str());
 
 		float3 pep = focusedGameObject->GetComponent<C_Transform>()->GetPosition();
