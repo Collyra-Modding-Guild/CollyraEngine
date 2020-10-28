@@ -9,7 +9,7 @@
 #include "M_Scene.h"
 #include "Application.h"
 
-GameObject::GameObject(std::string name) : parent(nullptr), id(0), name(name)
+GameObject::GameObject(std::string name) : parent(nullptr), id(0), name(name), active(true)
 {}
 
 GameObject::~GameObject()
@@ -31,6 +31,9 @@ GameObject::~GameObject()
 
 void GameObject::Start()
 {
+	if (!active)
+		return;
+
 	for (uint i = 0; i < components.size(); i++)
 	{
 		components[i]->Start();
@@ -39,6 +42,9 @@ void GameObject::Start()
 
 void GameObject::Update(float dt)
 {
+	if (!active)
+		return;
+
 	for (uint i = 0; i < components.size(); i++)
 	{
 		components[i]->Update(dt);
