@@ -56,6 +56,11 @@ void WG_Inspector::SetGameObject(uint focusedGameObject)
 		focusedId = focusedGameObject;
 }
 
+int WG_Inspector::GetFocusedGameObjectId() const
+{
+	return focusedId;
+}
+
 void WG_Inspector::SetGameObject(GameObject* focusedGameObject)
 {
 	if (focusedGameObject != nullptr)
@@ -63,6 +68,11 @@ void WG_Inspector::SetGameObject(GameObject* focusedGameObject)
 		this->focusedGameObject = focusedGameObject;
 		focusedId = focusedGameObject->GetId();
 	}
+}
+
+GameObject* WG_Inspector::GetGameObject() const
+{
+	return focusedGameObject;
 }
 
 void WG_Inspector::OnDestroyedId(uint destroyedGameObject)

@@ -32,7 +32,7 @@ public:
 
 	updateStatus Draw2D(float dt);
 
-	// Helpers-----
+	// Window Comunication--------
 	void			NewInputLog(uint keyID, uint keyState, bool isMouse = false);
 	void			NewConsoleLog(const char* newLog);
 	void			NewFpsLog(float currMs, float currFps);
@@ -40,6 +40,7 @@ public:
 	void			GetWindowSceneSize(float& w, float& h);
 	void			GameObjectDestroyed(uint id);
 	void            SetFocusedGameObject(uint id);
+	int				GetFocusedGameObjectId() const;
 
 private:
 	//Functions for the editor menus-----------

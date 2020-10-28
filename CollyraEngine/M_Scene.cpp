@@ -87,7 +87,7 @@ updateStatus M_Scene::Draw(float dt)
 			{
 				if (material != nullptr)
 				{
-					mesh->Render(transform->GetTGlobalTransform(), material->GetTexture(), material->GetColor());
+					mesh->Render(transform->GetTGlobalTransform(), (int)material->GetTexture(), material->GetColor());
 				}
 				else
 				{
