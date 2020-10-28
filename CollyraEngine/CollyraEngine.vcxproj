@@ -161,6 +161,7 @@
     <ClInclude Include="Module.h" />
     <ClInclude Include="M_Input.h" />
     <ClInclude Include="M_Window.h" />
+    <ClInclude Include="OpenGL.h" />
     <ClInclude Include="PathNode.h" />
     <ClInclude Include="PerfTimer.h" />
     <ClInclude Include="Primitive.h" />

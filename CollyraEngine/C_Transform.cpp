@@ -23,9 +23,6 @@ C_Transform::C_Transform(float4x4 parentTransform, float4x4 localTransform) : Co
 C_Transform::~C_Transform()
 {}
 
-void C_Transform::Update(float dt)
-{}
-
 void C_Transform::SetLocalTransformation(float4x4 transform)
 {
 	transform.Decompose(position, rotation, scale);

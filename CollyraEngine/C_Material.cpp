@@ -1,13 +1,7 @@
 #include "C_Material.h"
 #include "TextureLoader.h"
 
-#include "Glew/include/glew.h"
-#include <gl/GL.h>
-#include <gl/GLU.h>
-
-#pragma comment (lib, "Glew/libx86/glew32.lib")
-#pragma comment (lib, "glu32.lib")    
-#pragma comment (lib, "opengl32.lib") 
+#include "OpenGL.h"
 
 C_Material::C_Material(bool active) : Component(COMPONENT_TYPE::MATERIAL, active), idTextureImage(0), color({ 156, 156, 156 })
 {}
@@ -16,9 +10,6 @@ C_Material::~C_Material()
 {
 	ClearTexture();
 }
-
-void C_Material::Update(float dt)
-{}
 
 void C_Material::SetTexture(uint idTexture)
 {

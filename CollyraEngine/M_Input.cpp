@@ -136,11 +136,9 @@ updateStatus M_Input::PreUpdate(float dt)
 			break;
 
 			case SDL_WINDOWEVENT:
-			{
 				break;
-			}
 
-			case (SDL_DROPFILE): 
+			case SDL_DROPFILE: 
 			{     
 				char* droppedFilePath = e.drop.file;
 

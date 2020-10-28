@@ -25,7 +25,7 @@ bool M_Resources::Awake()
 
 bool M_Resources::Start()
 {
-	//Demo---
+	//Load from Start Demo-------
 	CreateMeshesInternal("Assets/Meshes/house.fbx");
 
 	return true;
@@ -65,13 +65,13 @@ void M_Resources::ImportResourceInternal(const char* path)
 		int gameObjectTarget = App->uiManager->GetFocusedGameObjectId();
 		if (gameObjectTarget != -1)
 		{
-			GameObject* focus = App->scene->GetGameObject(gameObjectTarget);
+			GameObject* focusedObject = App->scene->GetGameObject(gameObjectTarget);
 
-			C_Material* cMaterial = focus->GetComponent<C_Material>();
+			C_Material* cMaterial = focusedObject->GetComponent<C_Material>();
 
 			if (cMaterial == nullptr)
 			{
-				cMaterial = (C_Material*)focus->CreateComponent(COMPONENT_TYPE::MATERIAL);
+				cMaterial = (C_Material*)focusedObject->CreateComponent(COMPONENT_TYPE::MATERIAL);
 			}
 
 			cMaterial->SetTexture(TextureLoader::Load(relativePath.c_str()));

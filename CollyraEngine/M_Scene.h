@@ -35,6 +35,7 @@ public:
 
 private:
 	void CheckSiblingsName(GameObject* parent, std::string& myName);
+	void DrawGameObject(GameObject* gameObject);
 
 private:
 	GameObject* root;

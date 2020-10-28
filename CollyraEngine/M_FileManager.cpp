@@ -7,7 +7,6 @@
 
 M_FileManager::M_FileManager(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled)
 {
-
 	// Initialize the PhysicsFS library
 	PHYSFS_init(nullptr);
 
@@ -21,9 +20,7 @@ M_FileManager::M_FileManager(MODULE_TYPE type, bool startEnabled) : Module(type,
 	}
 
 	CreateFolderDirs();
-
 }
-
 
 M_FileManager::~M_FileManager()
 {
@@ -40,12 +37,8 @@ bool M_FileManager::Awake()
 	else
 		LOG("Failed loading Asset Manager");
 
-
-	// PHYSFS_mount("ZIP NAME", nullptr, 1); 
-
 	return true;
 }
-
 
 bool M_FileManager::CleanUp()
 {
@@ -83,7 +76,6 @@ SDL_RWops* M_FileManager::Load(const char* path)
 		bufferVector.push_back(buffer);
 		bytesVector.push_back(bytes);
 	}
-
 	else
 	{
 		ret = SDL_RWFromConstMem(bufferVector[check], bytesVector[check]);

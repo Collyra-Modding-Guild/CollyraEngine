@@ -11,8 +11,6 @@ public:
 	C_Material(bool active = true);
 	~C_Material();
 
-	void Update(float dt) override;
-
 	void SetTexture(uint idTexture);
 	void SetColor(Color color);
 	void SetDefaultTexture();

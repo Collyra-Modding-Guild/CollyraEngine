@@ -351,6 +351,9 @@
     <ClInclude Include="WG_About.h">
       <Filter>Sources\WindowGroup</Filter>
     </ClInclude>
+    <ClInclude Include="OpenGL.h">
+      <Filter>Sources\Helpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="log.cpp">
