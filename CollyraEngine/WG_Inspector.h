@@ -4,6 +4,9 @@
 #include "WindowGroup.h"
 #include "Imgui/imgui.h"
 
+#define TAGS_NUM 3
+#define LAYERS_NUM 3
+
 class GameObject;
 
 class WG_Inspector : public WindowGroup
@@ -32,6 +35,12 @@ public:
 private:
 	int focusedId;
 	GameObject* focusedGameObject;
+
+	const char* tags[TAGS_NUM] = { "Default", "Player", " ... " };
+	const char* currentTag;
+
+	const char* layers[LAYERS_NUM] = { "Default", "Water", " ... " };
+	const char* currentLayer;
 
 };
 

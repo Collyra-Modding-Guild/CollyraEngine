@@ -12,8 +12,9 @@
 
 
 WG_Inspector::WG_Inspector(bool isActive) : WindowGroup(WG_INSPECTOR, isActive), focusedGameObject(nullptr),
-focusedId(-1)
-{}
+focusedId(-1), currentTag(tags[0]), currentLayer(layers[0])
+{
+}
 
 WG_Inspector::~WG_Inspector()
 {}
@@ -199,25 +200,25 @@ void WG_Inspector::DrawMeshComponent(ImGuiTreeNodeFlags_ flag)
 	{
 		ImGui::Text("Mesh          ");
 		ImGui::SameLine();
-		ImGui::Text("Mesh Name");
+		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "Mesh Name");
 		ImGui::Text("Mesh Path     ");
 		ImGui::SameLine();
-		ImGui::Text("Path");
+		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "Path");
 
 		ImGui::Spacing();
 		ImGui::Spacing();
 
 		ImGui::Text("Vertices      ");
 		ImGui::SameLine();
-		ImGui::Text("0");
+		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "0");
 
 		ImGui::Text("Indices       ");
 		ImGui::SameLine();
-		ImGui::Text("0");
+		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "0");
 
 		ImGui::Text("Normals       ");
 		ImGui::SameLine();
-		ImGui::Text("0");
+		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "0");
 
 		ImGui::Spacing();
 		ImGui::Spacing();
@@ -243,10 +244,10 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag)
 	{
 		ImGui::Text("Texture          ");
 		ImGui::SameLine();
-		ImGui::Text("Texture Name");
+		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "Texture Name");
 		ImGui::Text("Texture Path     ");
 		ImGui::SameLine();
-		ImGui::Text("Path");
+		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "Path");
 
 	}
 
@@ -274,6 +275,43 @@ void WG_Inspector::DrawHeaderGameObject()
 	if (ImGui::Checkbox("Static", &staticGameObject))
 		LOG("Static gameObject not Implemented");
 
+	ImGui::Spacing();
+
+
+	ImGui::Text("Tag");
+	ImGui::SameLine();
+
+	ImGui::SetNextItemWidth(100.0f);
+	if (ImGui::BeginCombo("##tags", currentTag))
+	{
+		for (int n = 0; n < TAGS_NUM; n++)
+		{
+			bool is_selected = (currentTag == tags[n]); 
+			if (ImGui::Selectable(tags[n], is_selected))
+				currentTag = tags[n];
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();  
+		}
+		ImGui::EndCombo();
+	}
+
+	ImGui::SameLine();
+	ImGui::Text("Layer");
+	ImGui::SameLine();
+
+	ImGui::SetNextItemWidth(100.0f);
+	if (ImGui::BeginCombo("##layers", currentLayer))
+	{
+		for (int n = 0; n < LAYERS_NUM; n++)
+		{
+			bool is_selected = (currentLayer == layers[n]); 
+			if (ImGui::Selectable(layers[n], is_selected))
+				currentLayer = layers[n];
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();  
+		}
+		ImGui::EndCombo();
+	}
 
 	ImGui::Spacing();
 	ImGui::Spacing();
