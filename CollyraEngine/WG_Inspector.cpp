@@ -157,14 +157,34 @@ updateStatus WG_Inspector::Update()
 		ImGui::Separator();
 		ImGui::Spacing();
 
-		bool meshActive = true;
-		if (ImGui::Checkbox("", &meshActive))
-			LOG("Mesh is always active.")
-
 		ImGui::SameLine();
 
 		if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
 		{
+			ImGui::Text("Mesh          ");
+			ImGui::SameLine();
+			ImGui::Text("Mesh Name");
+			ImGui::Text("Mesh Path     ");
+			ImGui::SameLine();
+			ImGui::Text("Path");
+
+			ImGui::Spacing();
+			ImGui::Spacing();
+
+			ImGui::Text("Vertices      ");
+			ImGui::SameLine();
+			ImGui::Text("0");
+
+			ImGui::Text("Indices       ");
+			ImGui::SameLine();
+			ImGui::Text("0");
+
+			ImGui::Text("Normals       ");
+			ImGui::SameLine();
+			ImGui::Text("0");
+
+			ImGui::Spacing();
+			ImGui::Spacing();
 
 		}
 	
@@ -180,9 +200,17 @@ updateStatus WG_Inspector::Update()
 
 		if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
 		{
+			ImGui::Text("Texture          ");
+			ImGui::SameLine();
+			ImGui::Text("Texture Name");
+			ImGui::Text("Texture Path     ");
+			ImGui::SameLine();
+			ImGui::Text("Path");
 
 		}
 
+		ImGui::Spacing();
+		ImGui::Separator();
 	}
 
 	ImGui::End();

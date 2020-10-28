@@ -27,7 +27,7 @@ private:
 
 	void ClearMesh();
 
-private:
+public:
 
 	uint idVertex;
 	std::vector<float3> vertices;
