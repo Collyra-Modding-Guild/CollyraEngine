@@ -193,7 +193,7 @@ void WG_Inspector::DrawTransformComponent(ImGuiTreeNodeFlags_ flag)
 void WG_Inspector::DrawMeshComponent(ImGuiTreeNodeFlags_ flag, C_Mesh* mesh)
 {
 	bool meshActive = mesh->IsActive();
-	if (ImGui::Checkbox("MeshActive", &meshActive))
+	if (ImGui::Checkbox("##MeshActive", &meshActive))
 		mesh->SetActive(meshActive);
 
 	ImGui::SameLine();
@@ -237,7 +237,7 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* m
 {
 
 	bool materialActive = material->IsActive();
-	if (ImGui::Checkbox("MaterialActive", &materialActive))
+	if (ImGui::Checkbox("##MMaterialActive", &materialActive))
 		material->SetActive(materialActive);
 
 	ImGui::SameLine();

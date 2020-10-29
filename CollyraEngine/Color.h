@@ -3,12 +3,27 @@
 struct Color
 {
 	float r, g, b, a;
-	
+
 	Color() : r(0.0f), g(0.0f), b(0.0f), a(1.0f)
 	{}
 
 	Color(float r, float g, float b, float a = 1.0f) : r(r), g(g), b(b), a(a)
-	{}
+	{
+		if (r > 1.0f)
+		{
+			this->r = r * 0.0039;
+		}
+
+		if (b > 1.0f)
+		{
+			this->b = b * 0.0039;
+		}
+
+		if (g > 1.0f)
+		{
+			this->g = g * 0.0039;
+		}
+	}
 
 	void Set(float r, float g, float b, float a = 1.0f)
 	{
@@ -31,3 +46,4 @@ extern Color Green;
 extern Color Blue;
 extern Color Black;
 extern Color White;
+extern Color Grey;
