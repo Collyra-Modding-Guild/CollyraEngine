@@ -12,10 +12,11 @@ public:
 	C_Material(bool active = true);
 	~C_Material();
 
-	void SetTexture(uint idTexture, bool clearPreviousTexture = true);
+	void SetTexture(uint idTexture);
 	void SetTextureNameAndPath(const char* name, const char* path);
 	void SetColor(Color color);
-	void SetDefaultTexture();
+	void SetUseDefaultTexture(bool defaultTextureOn);
+	bool GetDefaultTextureUsage() const;
 
 	uint GetTexture() const;
 	Color GetColor() const;
@@ -30,5 +31,8 @@ private:
 	Color color;
 	std::string texName;
 	std::string texPath;
+
+	bool useDefaultTexture;
+	uint defaultTextureId;
 
 };

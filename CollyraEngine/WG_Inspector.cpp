@@ -13,7 +13,7 @@
 
 
 WG_Inspector::WG_Inspector(bool isActive) : WindowGroup(WG_INSPECTOR, isActive), focusedGameObject(nullptr),
-focusedId(-1), currentTag(tags[0]), currentLayer(layers[0]), defaultTexture(false), savedTexture(-1)
+focusedId(-1), currentTag(tags[0]), currentLayer(layers[0])
 {
 }
 
@@ -100,7 +100,6 @@ void WG_Inspector::OnDestroyedId(uint destroyedGameObject)
 
 void WG_Inspector::DrawTransformComponent(ImGuiTreeNodeFlags_ flag)
 {
-
 	float3 selectedPosition = focusedGameObject->GetComponent<C_Transform>()->GetPosition();
 	float3 selectedRotation = focusedGameObject->GetComponent<C_Transform>()->GetRotationEuler();
 	float3 selectedScale = focusedGameObject->GetComponent<C_Transform>()->GetScale();
@@ -270,16 +269,12 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* m
 	
 		ImGui::Text("Set Default Texture");
 		ImGui::SameLine();
-		if (ImGui::Checkbox("##defaultTex", &defaultTexture))
-		{
-			if (savedTexture == -1)
-				savedTexture = material->GetTexture();
 
-			if (defaultTexture)
-				material->SetTexture(App->resources->defaultTextureId, false);
-			else
-				material->SetTexture(savedTexture, false);
-		}
+		bool usingDefaultTexture = material->GetDefaultTextureUsage();
+		ImGui::Checkbox("##defaultTex", &usingDefaultTexture);
+
+		material->SetUseDefaultTexture(usingDefaultTexture);
+
 
 		ImGui::Spacing();
 		ImGui::Spacing();

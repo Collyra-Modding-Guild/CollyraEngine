@@ -26,9 +26,10 @@ bool M_Resources::Awake()
 bool M_Resources::Start()
 {
 	//Load from Start Demo-------
+	defaultTextureId = TextureLoader::LoadDefaultTexture();
+
 	CreateMeshesInternal("Assets/Meshes/house.fbx");
 
-	defaultTextureId = TextureLoader::LoadDefaultTexture();
 
 	return true;
 }

@@ -1,9 +1,13 @@
 #include "C_Material.h"
 #include "TextureLoader.h"
 
+#include "Application.h"
+#include "M_Resources.h"
+
 #include "OpenGL.h"
 
-C_Material::C_Material(bool active) : Component(COMPONENT_TYPE::MATERIAL, active), idTextureImage(0), color(Grey)
+C_Material::C_Material(bool active) : Component(COMPONENT_TYPE::MATERIAL, active), idTextureImage(0), color(Grey), useDefaultTexture(false),
+defaultTextureId(App->resources->defaultTextureId)
 {}
 
 C_Material::~C_Material()
@@ -11,10 +15,9 @@ C_Material::~C_Material()
 	ClearTexture();
 }
 
-void C_Material::SetTexture(uint idTexture, bool clearPreviousTexture)
+void C_Material::SetTexture(uint idTexture)
 {
-	if (clearPreviousTexture)
-		ClearTexture();
+	ClearTexture();
 
 	idTextureImage = idTexture;
 }
@@ -30,16 +33,22 @@ void C_Material::SetColor(Color color)
 	this->color = color;
 }
 
-void C_Material::SetDefaultTexture()
+void C_Material::SetUseDefaultTexture(bool defaultTextureOn)
 {
-	ClearTexture();
-	idTextureImage = TextureLoader::LoadDefaultTexture();
+	if (defaultTextureOn != useDefaultTexture)
+		useDefaultTexture = !useDefaultTexture;
+}
 
-	SetTextureNameAndPath("Checkers", "Default");
+bool C_Material::GetDefaultTextureUsage() const
+{
+	return useDefaultTexture;
 }
 
 uint C_Material::GetTexture() const
 {
+	if (useDefaultTexture == true)
+		return defaultTextureId;
+
 	return idTextureImage;
 }
 
