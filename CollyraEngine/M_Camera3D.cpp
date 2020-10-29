@@ -239,12 +239,12 @@ void M_Camera3D::Look(const vec3& Position, const vec3& Reference, bool RotateAr
 
 void M_Camera3D::OrbitalLook(const vec3& Position, const vec3& Reference, bool RotateAroundReference)
 {
-	this->orbitalReference = Reference;
-	this->Position = orbitalReference + Position;
-
 	Z = normalize(Position - Reference);
 	X = normalize(cross(vec3(0.0f, 1.0f, 0.0f), Z));
 	Y = cross(Z, X);
+
+	this->orbitalReference = Reference;
+	this->Position = orbitalReference + Z * 15;
 
 	if (!RotateAroundReference)
 	{
