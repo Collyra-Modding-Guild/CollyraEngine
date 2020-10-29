@@ -243,7 +243,11 @@ bool M_UIManager::ShowMainMenuBar()
 				}
 				if (ImGui::Button("Pyramid", buttonSize))
 				{
-				
+					GameObject* pyramid = App->scene->CreateGameObject("Pyramid");
+					pyramid->CreateComponent(COMPONENT_TYPE::MESH);
+
+					Pyramid infoMesh(2.0f, 3.0f, 2.0f);
+					pyramid->GetComponent<C_Mesh>()->GenerateMesh("Pyramid", "Pyramid", infoMesh.vertices, infoMesh.indices, infoMesh.normals, infoMesh.texCoords);
 				}
 				ImGui::EndMenu();
 			}
