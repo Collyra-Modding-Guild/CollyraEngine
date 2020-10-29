@@ -88,9 +88,9 @@ public:
 	bool Reset();
 
 	updateStatus Draw2D();
-	updateStatus Draw();
+	updateStatus Draw(bool* drawFlags);
 	updateStatus DebugDraw();
-	bool IsDebugModeOn();
+	bool* GetDrawFlags();
 
 	Module* GetModulePointer(MODULE_TYPE type);
 	void NewInputLog(uint key, uint state, bool isMouse = false);

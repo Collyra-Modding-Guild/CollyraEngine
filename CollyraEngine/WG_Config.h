@@ -3,6 +3,7 @@
 
 #include "WindowGroup.h"
 #include "Imgui/imgui.h"
+#include "Globals.h"
 
 #define FRAMERATE_LOG_SIZE 100
 
@@ -23,7 +24,7 @@ public:
 
 	void NewLogFramerate(float newMs, float newFps);
 
-	bool IsDebugModeOn();
+	bool* GetDrawFlags();
 
 private:
 	std::vector<float> fpsLog;
@@ -32,7 +33,7 @@ private:
 	ImGuiTextBuffer logInputs;
 	bool			newInput;
 
-	bool			debugMode;
+	bool			drawFlags[MAX_FLAGS];
 
 };
 

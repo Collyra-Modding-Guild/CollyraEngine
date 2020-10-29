@@ -18,7 +18,7 @@ public:
 
 	bool Awake() override;
 	updateStatus Update(float dt) override;
-	updateStatus Draw(float dt);
+	updateStatus Draw(bool* drawState);
 
 	bool CleanUp() override;
 
@@ -34,7 +34,7 @@ public:
 
 private:
 	void CheckSiblingsName(GameObject* parent, std::string& myName);
-	void DrawGameObject(GameObject* gameObject);
+	void DrawGameObject(GameObject* gameObject, bool* drawState);
 
 public:
 	GameObject* focusedGameObject;

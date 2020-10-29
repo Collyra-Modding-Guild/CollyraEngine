@@ -16,21 +16,36 @@ public:
 	void GenerateMesh(const char* meshName, const char* meshPath,std::vector<float3> vertices, std::vector<uint> indices, std::vector<float3> normals, std::vector<float2> textureCoords);
 	void SetNameAndPath(const char* meshName, const char* meshPath);
 
-	void Render(float4x4 transform = float4x4::identity, int textureID = -1, Color color = Grey, bool globalWireMode = false) const;
+	void Render(bool* drawState,float4x4 transform = float4x4::identity, int textureID = -1, Color color = Grey) const;
 	void InnerRender(int textureID) const;
 
-	void DrawNormals() const;
+	void DrawNormals(bool* drawState) const;
 
 	std::string GetMeshName() const;
 	std::string GetMeshPath() const;
 
+	uint GetVerticesSize() const;
+	uint GetIndicesSize() const;
+	uint GetNormalsSize() const;
+	uint GetTextureCoordsSize() const;
+
+	bool GetDrawingWire() const;
+	void SetDrawingWire(bool newState);
+	bool GetDrawingFaces() const;
+	void SetDrawingFaces(bool newState);
+	bool GetDrawingNormVertices() const;
+	void SetDrawingNormVertices(bool newState);
+	bool GetDrawingNormFaces() const;
+	void SetDrawingNormFaces(bool newState);
+
 private:
 	void GenerateBuffers();
 	void GenerateWireColor();
+	void GenerateSize();
 
 	void ClearMesh();
 
-public:
+private:
 
 	uint idVertex;
 	std::vector<float3> vertices;
@@ -45,9 +60,11 @@ public:
 	std::vector<float2> textureCoords;
 
 	Color wireColor;
-	bool wire, noFace;
+	bool drawWire, drawFaces, drawNormVertices, drawNormFaces;
 
 	std::string name;
 	std::string path;
+
+	float3 meshSize;
 
 };

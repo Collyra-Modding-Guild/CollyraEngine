@@ -36,7 +36,7 @@ public:
 	void			NewInputLog(uint keyID, uint keyState, bool isMouse = false);
 	void			NewConsoleLog(const char* newLog);
 	void			NewFpsLog(float currMs, float currFps);
-	bool			IsDebugModeOn();
+	bool*			GetDrawFlags();
 	void			GetWindowSceneSize(float& w, float& h);
 	void			GameObjectDestroyed(uint id);
 	void            SetFocusedGameObject(uint id);

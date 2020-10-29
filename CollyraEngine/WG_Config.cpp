@@ -19,7 +19,7 @@
 #include "Devil/include/il.h"
 
 WG_Config::WG_Config(bool isActive) : WindowGroup(WG_CONFIG, isActive),
-fpsLog(FRAMERATE_LOG_SIZE), msLog(FRAMERATE_LOG_SIZE), newInput(false), debugMode(false)
+fpsLog(FRAMERATE_LOG_SIZE), msLog(FRAMERATE_LOG_SIZE), newInput(false), drawFlags{true, false, false, false}
 {}
 
 WG_Config::~WG_Config()
@@ -298,11 +298,13 @@ updateStatus WG_Config::Update()
 
 		ImGui::SameLine();
 
-		ImGui::Checkbox("Wire Draw)", &debugMode);
+		ImGui::Checkbox("Wire Draw)", &drawFlags[WIRE]);
 
-		ImGui::Checkbox("Draw Faces", &App->renderer3D->drawingFaces);
+		ImGui::Checkbox("Draw Faces", &drawFlags[FACES]);
 
-		ImGui::Checkbox("Draw Debug Normals", &App->renderer3D->drawingDebugNormals);
+		ImGui::Checkbox("Draw Vertex Normals", &drawFlags[NORMAL_V]);
+
+		ImGui::Checkbox("Draw Face Normals", &drawFlags[NORMAL_F]);
 
 		ImGui::SameLine();
 
@@ -366,7 +368,7 @@ void WG_Config::NewLogFramerate(float newMs, float newFps)
 
 }
 
-bool WG_Config::IsDebugModeOn()
+bool* WG_Config::GetDrawFlags()
 {
-	return debugMode;
+	return drawFlags;
 }

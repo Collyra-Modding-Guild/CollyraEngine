@@ -353,13 +353,13 @@ void M_UIManager::NewFpsLog(float currMs, float currFps)
 	}
 }
 
-bool M_UIManager::IsDebugModeOn()
+bool* M_UIManager::GetDrawFlags()
 {
 	if (configWindow != nullptr)
 	{
-		return (configWindow->IsDebugModeOn());
+		return (configWindow->GetDrawFlags());
 	}
-	return false;
+	return nullptr;
 }
 
 void M_UIManager::GetWindowSceneSize(float& w, float& h)

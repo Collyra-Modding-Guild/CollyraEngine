@@ -90,7 +90,7 @@ public:
 	virtual bool Reset() { return true; }
 
 	virtual updateStatus Draw2D(float dt) { return UPDATE_CONTINUE; }
-	virtual updateStatus Draw(float dt) { return UPDATE_CONTINUE; }
+	virtual updateStatus Draw(bool* drawState) { return UPDATE_CONTINUE; }
 	virtual updateStatus DebugDraw(float dt) { return UPDATE_CONTINUE; }
 
 	MODULE_TYPE GetType() { return type; }

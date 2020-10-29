@@ -26,9 +26,6 @@ public:
 	void GenerateFrameBuffers(int width, int height);
 	uint GetTextureBuffer();
 
-	void BeginDebugMode();
-	void EndDebugMode();
-
 	void BeginDrawMode();
 	void EndDrawMode();
 
@@ -40,10 +37,6 @@ public:
 	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 
 	SDL_Renderer* renderer;
-
-	bool drawingFaces;
-	bool drawingDebugNormals;
-	bool drawingTextures;
 
 private:
 
