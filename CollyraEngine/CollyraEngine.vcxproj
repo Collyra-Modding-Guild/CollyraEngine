@@ -165,7 +165,6 @@
     <ClInclude Include="PathNode.h" />
     <ClInclude Include="PerfTimer.h" />
     <ClInclude Include="Primitive.h" />
-    <ClInclude Include="PrimitivesIndices.h" />
     <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="WG_About.h" />
