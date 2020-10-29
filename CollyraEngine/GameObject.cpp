@@ -47,7 +47,8 @@ void GameObject::Update(float dt)
 
 	for (uint i = 0; i < components.size(); i++)
 	{
-		components[i]->Update(dt);
+		if (components[i]->IsActive() == true)
+			components[i]->Update(dt);
 	}
 }
 
@@ -61,17 +62,17 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 	{
 		newComponent = new C_Transform();
 	}
-		break;
+	break;
 	case COMPONENT_TYPE::MESH:
 	{
 		newComponent = new C_Mesh();
 	}
-		break;
+	break;
 	case COMPONENT_TYPE::MATERIAL:
 	{
 		newComponent = new C_Material();
 	}
-		break;
+	break;
 	default:
 		break;
 	}
@@ -141,14 +142,14 @@ Component* GameObject::AddComponent(Component* c)
 		if (hasTransform != nullptr)
 		{
 			LOG("GameObject already has a Transform Component!!!")
-			return hasTransform;
+				return hasTransform;
 		}
 	}
 	break;
-	case COMPONENT_TYPE::MESH:{}
-	break;
-	case COMPONENT_TYPE::MATERIAL:{}
-	break;
+	case COMPONENT_TYPE::MESH: {}
+							 break;
+	case COMPONENT_TYPE::MATERIAL: {}
+								 break;
 	default:
 		break;
 	}

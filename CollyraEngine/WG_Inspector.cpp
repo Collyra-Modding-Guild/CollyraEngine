@@ -40,15 +40,16 @@ updateStatus WG_Inspector::Update()
 		}
 
 		DrawHeaderGameObject();
-		
+
 		DrawTransformComponent(ImGuiTreeNodeFlags_DefaultOpen);
 
-		if(mesh != nullptr)
+
+		if (mesh != nullptr)
 			DrawMeshComponent(ImGuiTreeNodeFlags_DefaultOpen, mesh);
 
-		if(material != nullptr)
-			DrawMaterialComponent(ImGuiTreeNodeFlags_DefaultOpen, material);	
-		
+		if (material != nullptr)
+			DrawMaterialComponent(ImGuiTreeNodeFlags_DefaultOpen, material);
+
 	}
 
 	ImGui::End();
@@ -101,14 +102,10 @@ void WG_Inspector::DrawTransformComponent(ImGuiTreeNodeFlags_ flag)
 {
 
 	float3 selectedPosition = focusedGameObject->GetComponent<C_Transform>()->GetPosition();
-	Quat selectedRotation = focusedGameObject->GetComponent<C_Transform>()->GetRotation();
+	float3 selectedRotation = focusedGameObject->GetComponent<C_Transform>()->GetRotationEuler();
 	float3 selectedScale = focusedGameObject->GetComponent<C_Transform>()->GetScale();
 
-	bool transformActive = true;
-	if (ImGui::Checkbox("", &transformActive))
-		LOG("Transform is always active.")
-
-		ImGui::SameLine();
+	ImGui::SameLine();
 
 	if (ImGui::CollapsingHeader("Transform", flag))
 	{
@@ -190,16 +187,15 @@ void WG_Inspector::DrawTransformComponent(ImGuiTreeNodeFlags_ flag)
 	ImGui::Separator();
 	ImGui::Spacing();
 
-	
+
 
 }
 
 void WG_Inspector::DrawMeshComponent(ImGuiTreeNodeFlags_ flag, C_Mesh* mesh)
 {
-
-	bool meshActive = true;
-	if (ImGui::Checkbox("", &meshActive))
-		LOG("Mesh is always active.")
+	bool meshActive = mesh->IsActive();
+	if (ImGui::Checkbox("##MeshActive", &meshActive))
+		mesh->SetActive(meshActive);
 
 	ImGui::SameLine();
 
@@ -241,11 +237,11 @@ void WG_Inspector::DrawMeshComponent(ImGuiTreeNodeFlags_ flag, C_Mesh* mesh)
 void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* material)
 {
 
-	bool materialActive = true;
-	if (ImGui::Checkbox("", &materialActive))
-		LOG("Material is always active.")
+	bool materialActive = material->IsActive();
+	if (ImGui::Checkbox("##MMaterialActive", &materialActive))
+		material->SetActive(materialActive);
 
-		ImGui::SameLine();
+	ImGui::SameLine();
 
 	if (ImGui::CollapsingHeader("Material", flag))
 	{
@@ -264,6 +260,7 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* m
 		// We Flip the UVs
 		ImVec2 uvMin = ImVec2(0.0f, 1.0f);                 // Top-left
 		ImVec2 uvMax = ImVec2(1.0f, 0.0f);                 // Lower-right
+
 	
 		ImGui::Text("Set Default Texture");
 		ImGui::SameLine();
@@ -281,9 +278,10 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* m
 		ImGui::Spacing();
 		ImGui::Spacing();
 
+
 		ImGui::Text("Albedo");
 		ImGui::Spacing();
-		ImGui::Indent();	
+		ImGui::Indent();
 		ImGui::Image((ImTextureID)material->GetTexture(), imgPreview, uvMin, uvMax);
 		ImGui::Unindent();
 	}
@@ -323,11 +321,11 @@ void WG_Inspector::DrawHeaderGameObject()
 	{
 		for (int n = 0; n < TAGS_NUM; n++)
 		{
-			bool is_selected = (currentTag == tags[n]); 
+			bool is_selected = (currentTag == tags[n]);
 			if (ImGui::Selectable(tags[n], is_selected))
 				currentTag = tags[n];
-				if (is_selected)
-					ImGui::SetItemDefaultFocus();  
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
 		}
 		ImGui::EndCombo();
 	}
@@ -341,11 +339,11 @@ void WG_Inspector::DrawHeaderGameObject()
 	{
 		for (int n = 0; n < LAYERS_NUM; n++)
 		{
-			bool is_selected = (currentLayer == layers[n]); 
+			bool is_selected = (currentLayer == layers[n]);
 			if (ImGui::Selectable(layers[n], is_selected))
 				currentLayer = layers[n];
 			if (is_selected)
-				ImGui::SetItemDefaultFocus();  
+				ImGui::SetItemDefaultFocus();
 		}
 		ImGui::EndCombo();
 	}

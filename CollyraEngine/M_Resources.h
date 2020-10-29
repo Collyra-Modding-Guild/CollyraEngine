@@ -26,6 +26,7 @@ private:
 
 	void CreateMeshesInternal(const char* path);
 
+
 public: 
 
 	int defaultTextureId;

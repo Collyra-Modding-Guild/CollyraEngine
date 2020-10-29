@@ -19,7 +19,6 @@ public:
 	bool Awake() override;
 	updateStatus Update(float dt) override;
 	updateStatus Draw(float dt);
-	updateStatus DebugDraw(float dt);
 
 	bool CleanUp() override;
 

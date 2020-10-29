@@ -24,13 +24,12 @@
 
 void MeshLoader::Init()
 {
-	if (_DEBUG == 1)
-	{
-		// Stream log messages to Debug window
-		struct aiLogStream stream;
-		stream = aiGetPredefinedLogStream(aiDefaultLogStream_DEBUGGER, nullptr);
-		aiAttachLogStream(&stream);
-	}
+
+	// Stream log messages to Debug window
+	struct aiLogStream stream;
+	stream = aiGetPredefinedLogStream(aiDefaultLogStream_DEBUGGER, nullptr);
+	aiAttachLogStream(&stream);
+
 }
 
 void MeshLoader::CleanUp()
@@ -101,6 +100,7 @@ bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const 
 		//Transform Load------
 
 		newGameObject->GetComponent<C_Transform>()->SetLocalTransformation(pos, rot, scale);
+		parent->GetComponent<C_Transform>()->SetLocalTransformation(transform);
 		newGameObject->GetComponent<C_Transform>()->GenerateGlobalTransformationFrom(transform);
 
 		//Mesh Load---------

@@ -3,7 +3,7 @@
 
 #include "OpenGL.h"
 
-C_Material::C_Material(bool active) : Component(COMPONENT_TYPE::MATERIAL, active), idTextureImage(0), color({ 156, 156, 156 })
+C_Material::C_Material(bool active) : Component(COMPONENT_TYPE::MATERIAL, active), idTextureImage(0), color(Grey)
 {}
 
 C_Material::~C_Material()

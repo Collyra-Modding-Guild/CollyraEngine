@@ -19,6 +19,17 @@ void Component::Enable()
 void Component::Disable()
 {}
 
+bool Component::IsActive() const
+{
+	return active;
+}
+
+void Component::SetActive(bool newState)
+{
+	if (newState != active)
+		active = !active;
+}
+
 GameObject* Component::GetGameObject() const
 {
 	return	myGameObject;
