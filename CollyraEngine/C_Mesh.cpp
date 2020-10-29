@@ -78,8 +78,8 @@ void C_Mesh::GenerateWireColor()
 
 void C_Mesh::GenerateSize()
 {
-	float maxY, maxX, maxZ = 0;
-	float minY, minX, minZ = FLT_MAX;
+	float maxY = 0, maxX = 0, maxZ = 0;
+	float minY = FLT_MAX, minX = FLT_MAX, minZ = FLT_MAX;
 
 	for (int i = 0; i < vertices.size(); i++)
 	{
