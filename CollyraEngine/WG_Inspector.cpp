@@ -226,6 +226,12 @@ void WG_Inspector::DrawMeshComponent(ImGuiTreeNodeFlags_ flag, C_Mesh* mesh)
 		ImGui::Spacing();
 		ImGui::Spacing();
 
+		ImGui::Text("Draw Normals ");
+		ImGui::SameLine();
+		bool drawNormals = false;
+		if (ImGui::Checkbox("##drawNorm", &drawNormals))
+			mesh->DrawNormals();
+		
 	}
 
 	ImGui::Spacing();
