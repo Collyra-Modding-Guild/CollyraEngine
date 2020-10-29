@@ -1,6 +1,5 @@
 #include "Globals.h"
 #include "Primitive.h"
-#include "PrimitivesIndices.h"
 
 #include "OpenGL.h"
 
