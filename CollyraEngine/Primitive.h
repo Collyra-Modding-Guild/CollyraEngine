@@ -60,6 +60,12 @@ public :
 
 public:
 	vec3 size;
+
+	std::vector<float3> vertices;
+	std::vector<float3> normals;
+	std::vector<float2> texCoords;
+
+	std::vector<unsigned int> indices;
 };
 
 // ============================================

@@ -122,7 +122,7 @@ CCube::CCube(float sizeX, float sizeY, float sizeZ) : Primitive(), size(sizeX, s
 
 void CCube::GenerateCubeVertices(float sizeX, float sizeY, float sizeZ)
 {
-	float3 vertices[] =
+	vertices =
 	{
 	{-sizeX, -sizeY, sizeZ},
 	{sizeX, -sizeY, sizeZ},
@@ -135,17 +135,60 @@ void CCube::GenerateCubeVertices(float sizeX, float sizeY, float sizeZ)
 	{-sizeX, sizeY, -sizeZ}
 	};
 
+	normals =
+	{
+	{-sizeX + 1, -sizeY - 1, sizeZ + 1},
+	{sizeX - 1, -sizeY - 1, sizeZ + 1},
+	{sizeX - 1, sizeY + 1, sizeZ  + 1},
+	{-sizeX + 1, sizeY - 1, sizeZ + 1},
+
+	{-sizeX + 1, -sizeY - 1, -sizeZ - 1},
+	{sizeX - 1, -sizeY - 1, -sizeZ - 1},
+	{sizeX - 1, sizeY + 1, -sizeZ - 1},
+	{-sizeX + 1, sizeY + 1, -sizeZ - 1}
+	};
+
+	texCoords = {
+	{ 0.0, 0.0 }, 
+	{1.0, 0.0},	
+	{1.0, 1.0},   
+	{0.0, 1.0}  
+	};
+
 	glGenBuffers(1, (GLuint*)&(verticesID));
 	glBindBuffer(GL_ARRAY_BUFFER, verticesID);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	int verticeSize = vertices.size() * sizeof(float3);
+	glBufferData(GL_ARRAY_BUFFER, verticeSize, &vertices[0], GL_STATIC_DRAW);
 }
 
 void CCube::GenerateCubeIndices()
 {
+	indices =
+	{
+		0, 1, 2,
+		2, 3, 0,
+
+		1, 5, 6,
+		6, 2, 1,
+
+		7, 6, 5,
+		5, 4, 7,
+
+		4, 0, 3,
+		3, 7, 4,
+
+		4, 5, 1,
+		1, 0, 4,
+
+		3, 2, 6,
+		6, 7, 3
+	};
+
 	glGenBuffers(1, (GLuint*)&(indicesID));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);
-	indicesSize = sizeof(cubeIndices) / sizeof(uint);
+	int indi = indices.size() * sizeof(uint);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indi, &indices[0], GL_STATIC_DRAW);
+	indicesSize = sizeof(indices) / sizeof(uint);
 }
 
 

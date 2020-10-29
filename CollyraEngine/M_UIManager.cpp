@@ -219,8 +219,11 @@ bool M_UIManager::ShowMainMenuBar()
 			{
 				if (ImGui::Button("Cube", buttonSize))
 				{
+					GameObject* cube = App->scene->CreateGameObject("Cube");
+					cube->CreateComponent(COMPONENT_TYPE::MESH);
 
-
+					CCube infoMesh(1.0f, 1.0f, 1.0f);
+					cube->GetComponent<C_Mesh>()->GenerateMesh("Cube", "Cube", infoMesh.vertices, infoMesh.indices, infoMesh.normals, infoMesh.texCoords);
 				}
 				if (ImGui::Button("Sphere", buttonSize))
 				{
@@ -239,7 +242,9 @@ bool M_UIManager::ShowMainMenuBar()
 					cylinder->GetComponent<C_Mesh>()->GenerateMesh("Cylinder", "Cylinder", infoMesh.vertices, infoMesh.indices, infoMesh.normals, infoMesh.texCoords);
 				}
 				if (ImGui::Button("Pyramid", buttonSize))
-				{}
+				{
+				
+				}
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenu();
