@@ -239,19 +239,11 @@ bool M_UIManager::ShowMainMenuBar()
 					cylinder->GetComponent<C_Mesh>()->GenerateMesh("Cylinder", "Cylinder", infoMesh.vertices, infoMesh.indices, infoMesh.normals, infoMesh.texCoords);
 				}
 				if (ImGui::Button("Pyramid", buttonSize))
-				{
-
-
-
-				}
+				{}
 				ImGui::EndMenu();
 			}
-			<<<<<< < HEAD
-				if (ImGui::Button("Pyramid", buttonSize))
-				{
-
-				}
 			ImGui::EndMenu();
+
 		}
 
 

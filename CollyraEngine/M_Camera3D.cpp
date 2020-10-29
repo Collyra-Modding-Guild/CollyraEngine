@@ -89,7 +89,7 @@ void M_Camera3D::CameraMovement(float dt)
 
 		float Sensitivity = 0.15f;
 
-		newPos.y += dy * Sensitivity;
+		newPos += Y * dy * Sensitivity;
 		newPos -= X * dx * Sensitivity;
 	}
 
