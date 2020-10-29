@@ -330,6 +330,11 @@ void C_Mesh::SetDrawingNormFaces(bool newState)
 	drawNormFaces = newState;
 }
 
+float3 C_Mesh::GetSize() const
+{
+	return meshSize;
+}
+
 std::string C_Mesh::GetMeshName() const
 {
 	return name;

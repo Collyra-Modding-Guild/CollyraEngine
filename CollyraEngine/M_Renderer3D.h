@@ -29,6 +29,9 @@ public:
 	void BeginDrawMode();
 	void EndDrawMode();
 
+	bool GetVSync();
+	void SetVSync(bool newState);
+
 public:
 
 	Light lights[MAX_LIGHTS];
@@ -44,5 +47,6 @@ private:
 	uint frameBuffer;
 	uint textureBuffer;
 	uint depthBuffer;
+	bool vSync;
 
 };

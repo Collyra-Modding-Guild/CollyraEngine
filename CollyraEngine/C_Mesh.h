@@ -38,6 +38,8 @@ public:
 	bool GetDrawingNormFaces() const;
 	void SetDrawingNormFaces(bool newState);
 
+	float3 GetSize() const;
+
 private:
 	void GenerateBuffers();
 	void GenerateWireColor();
@@ -66,5 +68,4 @@ private:
 	std::string path;
 
 	float3 meshSize;
-
 };

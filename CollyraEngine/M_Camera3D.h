@@ -19,7 +19,7 @@ public:
 
 	void Look(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference = false);
 	void LookAt(const vec3 &Spot);
-	void Move(const vec3 &Movement);
+	void Move(const vec3& Movement, bool changeReference = true);
 	void OrbitalCamera(GameObject* focused, float multiplier = 1.0f);
 
 	float* GetViewMatrix();
@@ -32,17 +32,17 @@ private:
 	void CameraFocus();
 	void CameraOrbital();
 
-	void ProvisionalReference();
+	void ResetReference();
 
 	vec3 CameraZoom(float dt);
 
 public:
 	
-	vec3 X, Y, Z, Position, Reference, camDistanceFromCar, newCameraPos, focus;
+	vec3 X, Y, Z, Position, Reference, newCameraPos, focus;
 
 	mat3x3 rotation;
 
-	bool editorCamera;
+	bool focusingObject;
 	float spdMultiplier;
 
 private:

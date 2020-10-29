@@ -12,7 +12,7 @@
 #include "OpenGL.h"
 
 M_Renderer3D::M_Renderer3D(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled),
-renderer(nullptr), frameBuffer(-1), textureBuffer(-1), depthBuffer(-1)
+renderer(nullptr), frameBuffer(-1), textureBuffer(-1), depthBuffer(-1), vSync(false)
 {}
 
 // Destructor
@@ -45,7 +45,10 @@ bool M_Renderer3D::Awake()
 	{
 		//Use Vsync
 		if (VSYNC && SDL_GL_SetSwapInterval(1) < 0)
+		{
 			LOG("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
+		}
+		vSync = VSYNC;
 
 		//Initialize Projection Matrix
 		glMatrixMode(GL_PROJECTION);
@@ -256,4 +259,14 @@ void M_Renderer3D::BeginDrawMode()
 void M_Renderer3D::EndDrawMode()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+bool M_Renderer3D::GetVSync()
+{
+	return vSync;
+}
+
+void M_Renderer3D::SetVSync(bool newState)
+{
+	vSync = newState;
 }

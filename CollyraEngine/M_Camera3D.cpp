@@ -12,7 +12,7 @@
 
 #include "MathGeoLib/include/Geometry/Frustum.h"
 
-M_Camera3D::M_Camera3D(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), spdMultiplier(2.0f), editorCamera(true)
+M_Camera3D::M_Camera3D(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), spdMultiplier(2.0f), focusingObject(true)
 {
 	CalculateViewMatrix();
 
@@ -60,7 +60,7 @@ updateStatus M_Camera3D::Update(float dt)
 
 	CameraMovement(dt);
 
-	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) 
+	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
 	{
 		OrbitalCamera(App->scene->focusedGameObject);
 	}
@@ -81,8 +81,18 @@ void M_Camera3D::CameraMovement(float dt)
 	if (inputModule->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
 		speed = (speed * 2);
 
-	if (inputModule->GetKey(SDL_SCANCODE_R) == KEY_REPEAT) newPos.y += speed;
-	if (inputModule->GetKey(SDL_SCANCODE_F) == KEY_REPEAT) newPos.y -= speed;
+
+	if (inputModule->GetMouseButton(SDL_BUTTON_MIDDLE) == KEY_REPEAT)
+	{
+		int dx = inputModule->GetMouseXMotion();
+		int dy = inputModule->GetMouseYMotion();
+
+		float Sensitivity = 0.15f;
+
+		newPos.y += dy * Sensitivity;
+		newPos -= X * dx * Sensitivity;
+	}
+
 
 	vec3 zoom = CameraZoom(dt);
 
@@ -123,15 +133,20 @@ void M_Camera3D::CameraMovement(float dt)
 
 
 		if (inputModule->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)newPos -= X * speed;
-		if (inputModule->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += X * speed;	
+		if (inputModule->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += X * speed;
 
 		Position = Reference + Z * length(Position);
 	}
 
+	if ((newPos.x > 0 || newPos.y > 0 || newPos.z > 0.f) && focusingObject == true)
+	{
+		ResetReference();
+		focusingObject = false;
+	}
 
-	Position += newPos + zoom;
-	Reference += newPos + zoom;
 
+	Move(newPos);
+	Move(zoom, (focusingObject == false) ? true : false);
 }
 
 // -----------------------------------------------------------------
@@ -150,29 +165,18 @@ vec3 M_Camera3D::CameraZoom(float dt)
 }
 
 // -----------------------------------------------------------------
-void M_Camera3D::CameraFocus() 
-{
-
-}
+void M_Camera3D::CameraFocus()
+{}
 
 // -----------------------------------------------------------------
-void M_Camera3D::CameraOrbital() 
-{
-
-}
+void M_Camera3D::CameraOrbital()
+{}
 
 // -----------------------------------------------------------------
-void M_Camera3D::ProvisionalReference()
+void M_Camera3D::ResetReference()
 {
-	int X = App->input->GetMouseX();
-	int Y = App->input->GetMouseY();
-	int Z = 500;
-
-	if (App->input->GetMouseButton(1) == KEY_DOWN) 
-	{
-		focus = (X, Y, Z);
-		LOG("X: %d  Y: %d  Z: %d", X, Y, Z);
-	}		
+	this->Reference = this->Position;
+	this->Reference -= Z * 5;
 }
 
 // -----------------------------------------------------------------
@@ -189,6 +193,10 @@ void M_Camera3D::Look(const vec3& Position, const vec3& Reference, bool RotateAr
 	{
 		this->Reference = this->Position;
 		this->Position += Z * 0.05f;
+	}
+	else
+	{
+		focusingObject = true;
 	}
 
 	CalculateViewMatrix();
@@ -208,10 +216,12 @@ void M_Camera3D::LookAt(const vec3& Spot)
 
 
 // -----------------------------------------------------------------
-void M_Camera3D::Move(const vec3& Movement)
+void M_Camera3D::Move(const vec3& Movement, bool changeReference)
 {
 	Position += Movement;
-	Reference += Movement;
+
+	if (changeReference == true)
+		Reference += Movement;
 
 	CalculateViewMatrix();
 }
@@ -219,39 +229,38 @@ void M_Camera3D::Move(const vec3& Movement)
 // -----------------------------------------------------------------
 void M_Camera3D::OrbitalCamera(GameObject* focused, float multiplier)
 {
-	/*if (focused != nullptr)
+	if (focused != nullptr)
 	{
 		vec3 pos = { 0.0f, 0.0f, 0.0f };
 		float dist = length({ 10.0f, 10.0f, 10.0f });
 
 		C_Transform* transform = focused->GetComponent<C_Transform>();
-		pos = { transform->GetPosition().x, transform->GetPosition().y, transform->GetPosition().z };
+		float3 transformPos = transform->GetGlobalTransform().Col3(3);
+		pos = { transformPos.x, transformPos.y, transformPos.z };
 
-		C_Mesh* mesh = obj->GetComponent<C_Mesh>();
-		dist = length({ mesh., mesh->mesh->size_y.width, mesh->mesh->size_z.width });
+		C_Mesh* mesh = focused->GetComponent<C_Mesh>();
 
+		if (mesh != nullptr)
+		{
+			float3 meshSize = mesh->GetSize();
+			dist = length({ meshSize.x, meshSize.y, meshSize.z });
+		}
 
 		vec3 Direction = { 1.0f, 1.0f, 1.0f };
 		vec3 unitDirection = normalize(Direction);
 
-		if (dist > 0.0f) 
+		vec3 newPos = { 1.0f, 1.0f, 1.0f };;
+		if (dist > 0.0f)
 		{
-			Position = pos + unitDirection * dist;
+			newPos = pos + unitDirection * dist;
 		}
-		else 
+		else
 		{
-			Position = pos + Direction;
+			newPos = pos + Direction;
 		}
 
-		Reference = pos;
-
-		Z = unitDirection;
-		X = normalize(cross(vec3(0.0f, 1.0f, 0.0f), Z));
-		Y = cross(Z, X);
-
-		CalculateViewMatrix();*/
-
-		//LookFrom(pos, { 1.0f, 1.0f, 1.0f }, dist * multiplier);
+		Look(newPos * multiplier, pos, true);
+	}
 }
 
 // -----------------------------------------------------------------

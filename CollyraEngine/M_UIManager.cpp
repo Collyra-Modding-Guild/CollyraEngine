@@ -197,21 +197,9 @@ bool M_UIManager::ShowMainMenuBar()
 
 			ImGui::EndMenu();
 		}
-		if (ImGui::BeginMenu("Examples"))
+		if (ImGui::BeginMenu("Editor"))
 		{
-			ImGui::MenuItem("Main menu bar", NULL, true);
-			ImGui::MenuItem("Console", NULL, true);
-			ImGui::MenuItem("Log", NULL, true);
-			ImGui::MenuItem("Simple layout", NULL, true);
-			ImGui::MenuItem("Property editor", NULL, true);
-			ImGui::MenuItem("Long text display", NULL, true);
-			ImGui::MenuItem("Auto-resizing window", NULL, true);
-			ImGui::MenuItem("Constrained-resizing window", NULL, true);
-			ImGui::MenuItem("Simple overlay", NULL, true);
-			ImGui::MenuItem("Manipulating window titles", NULL, true);
-			ImGui::MenuItem("Custom rendering", NULL, true);
-			ImGui::MenuItem("Dockspace", NULL, true);
-			ImGui::MenuItem("Documents", NULL, true);
+			ImGui::MenuItem("WIP", NULL, nullptr, false);
 			ImGui::EndMenu();
 		}
 
@@ -235,14 +223,6 @@ bool M_UIManager::ShowMainMenuBar()
 			{
 
 			}
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Tools"))
-		{
-			ImGui::MenuItem("Metrics", NULL, true);
-			ImGui::MenuItem("Style Editor", NULL, true);
-			ImGui::MenuItem("About Dear ImGui", NULL, true);
 			ImGui::EndMenu();
 		}
 
