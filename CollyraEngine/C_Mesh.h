@@ -43,7 +43,7 @@ public:
 private:
 	void GenerateBuffers();
 	void GenerateWireColor();
-	void GenerateSize();
+	void GenerateSize(float3 scale);
 
 	void ClearMesh();
 

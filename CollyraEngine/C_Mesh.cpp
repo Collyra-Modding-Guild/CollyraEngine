@@ -1,6 +1,8 @@
 #include "C_Mesh.h"
 #include "Globals.h"
 
+#include "C_Transform.h"
+
 #include "OpenGL.h"
 
 C_Mesh::C_Mesh(bool active) : Component(COMPONENT_TYPE::MESH, active), idIndex(-1), idVertex(-1), idNormals(-1), idTextureCoords(-1),
@@ -44,7 +46,7 @@ void C_Mesh::GenerateBuffers()
 		glBindBuffer(GL_ARRAY_BUFFER, idVertex);
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float3), &vertices[0], GL_STATIC_DRAW);
 
-		GenerateSize();
+		GenerateSize(this->myGameObject->GetComponent<C_Transform>()->GetGlobalScale());
 
 		glGenBuffers(1, (GLuint*)&(idIndex));
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndex);
@@ -76,19 +78,19 @@ void C_Mesh::GenerateWireColor()
 	wireColor = Color((float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f);
 }
 
-void C_Mesh::GenerateSize()
+void C_Mesh::GenerateSize(float3 scale)
 {
 	float maxY = 0, maxX = 0, maxZ = 0;
 	float minY = FLT_MAX, minX = FLT_MAX, minZ = FLT_MAX;
 
 	for (int i = 0; i < vertices.size(); i++)
 	{
-		if (vertices[i].x > maxX) 
+		if (vertices[i].x > maxX)
 		{
 			maxX = vertices[i].x;
 		}
 
-		if (vertices[i].x < minX) 
+		if (vertices[i].x < minX)
 		{
 			minX = vertices[i].x;
 		}
@@ -114,9 +116,9 @@ void C_Mesh::GenerateSize()
 		}
 	}
 
-	meshSize.x = abs(maxX - minX);
-	meshSize.y = abs(maxY - minY);
-	meshSize.z = abs(maxZ - minZ);
+	meshSize.x = abs(maxX - minX) * scale.x;
+	meshSize.y = abs(maxY - minY) * scale.y;
+	meshSize.z = abs(maxZ - minZ) * scale.z;
 }
 
 void C_Mesh::ClearMesh()

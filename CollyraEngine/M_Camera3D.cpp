@@ -22,7 +22,7 @@ M_Camera3D::M_Camera3D(MODULE_TYPE type, bool startEnabled) : Module(type, start
 
 	Position = vec3(0.0f, 0.0f, 5.0f);
 	Reference = vec3(0.0f, 0.0f, 0.0f);
-
+	orbitalReference = vec3(0.0f, 0.0f, -15.0f);
 }
 
 M_Camera3D::~M_Camera3D()
@@ -136,7 +136,47 @@ void M_Camera3D::CameraMovement(float dt)
 		if (inputModule->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += X * speed;
 
 		Position = Reference + Z * length(Position);
+		this->orbitalReference = this->Position;
+		this->orbitalReference -= Z * 20;
 	}
+
+	else if(inputModule->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && inputModule->GetKey(SDL_SCANCODE_LALT))
+	{
+		int dx = -inputModule->GetMouseXMotion();
+		int dy = -inputModule->GetMouseYMotion();
+
+		float Sensitivity = 0.25f;
+
+		Position -= orbitalReference;
+
+		if (dx != 0)
+		{
+			float DeltaX = (float)dx * Sensitivity;
+
+			X = rotate(X, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+			Y = rotate(Y, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+			Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+		}
+
+		if (dy != 0)
+		{
+			float DeltaY = (float)dy * Sensitivity;
+
+			Y = rotate(Y, DeltaY, X);
+			Z = rotate(Z, DeltaY, X);
+
+			if (Y.y < 0.0f)
+			{
+				Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
+				Y = cross(Z, X);
+			}
+		}
+
+		Position = orbitalReference + Z * length(Position);
+		this->Reference = this->Position;
+		this->Reference -= Z * 5;
+	}
+
 
 	if ((newPos.x > 0 || newPos.y > 0 || newPos.z > 0.f) && focusingObject == true)
 	{
@@ -146,7 +186,7 @@ void M_Camera3D::CameraMovement(float dt)
 
 
 	Move(newPos);
-	Move(zoom, (focusingObject == false) ? true : false);
+	Move(zoom, !focusingObject);
 }
 
 // -----------------------------------------------------------------
@@ -177,6 +217,9 @@ void M_Camera3D::ResetReference()
 {
 	this->Reference = this->Position;
 	this->Reference -= Z * 5;
+
+	this->orbitalReference = this->Position;
+	this->orbitalReference -= Z * 20;
 }
 
 // -----------------------------------------------------------------
@@ -194,10 +237,34 @@ void M_Camera3D::Look(const vec3& Position, const vec3& Reference, bool RotateAr
 		this->Reference = this->Position;
 		this->Position += Z * 0.05f;
 	}
+
+	this->orbitalReference = this->Position;
+	this->orbitalReference -= Z * 20;
+
+	CalculateViewMatrix();
+}
+
+void M_Camera3D::OrbitalLook(const vec3& Position, const vec3& Reference, bool RotateAroundReference)
+{
+	this->orbitalReference = Reference;
+	this->Position = orbitalReference + Position;
+
+	Z = normalize(Position - Reference);
+	X = normalize(cross(vec3(0.0f, 1.0f, 0.0f), Z));
+	Y = cross(Z, X);
+
+	if (!RotateAroundReference)
+	{
+		this->orbitalReference = this->Position;
+		this->Position += Z * 0.05f;
+	}
 	else
 	{
 		focusingObject = true;
 	}
+
+	this->Reference = orbitalReference;
+	this->Reference -= Z * 15;
 
 	CalculateViewMatrix();
 }
@@ -219,9 +286,12 @@ void M_Camera3D::LookAt(const vec3& Spot)
 void M_Camera3D::Move(const vec3& Movement, bool changeReference)
 {
 	Position += Movement;
+	Reference += Movement;
 
 	if (changeReference == true)
-		Reference += Movement;
+	{
+		orbitalReference += Movement;
+	}
 
 	CalculateViewMatrix();
 }
@@ -259,7 +329,7 @@ void M_Camera3D::OrbitalCamera(GameObject* focused, float multiplier)
 			newPos = pos + Direction;
 		}
 
-		Look(newPos * multiplier, pos, true);
+		OrbitalLook(newPos * multiplier, pos, true);
 	}
 }
 

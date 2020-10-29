@@ -84,6 +84,11 @@ float3 C_Transform::GetScale() const
 	return scale;
 }
 
+float3 C_Transform::GetGlobalScale() const
+{
+	return globalTransform.GetScale();
+}
+
 void C_Transform::GenerateEulerFromRot()
 {
 	rotationEuler = rotation.ToEulerXYZ();

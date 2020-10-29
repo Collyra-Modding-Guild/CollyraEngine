@@ -24,6 +24,7 @@ public:
 	Quat		GetRotation() const;
 	float3		GetRotationEuler() const;
 	float3		GetScale() const;
+	float3		GetGlobalScale() const;
 
 private:
 	void GenerateEulerFromRot();

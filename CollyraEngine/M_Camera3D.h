@@ -18,6 +18,7 @@ public:
 	bool CleanUp();
 
 	void Look(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference = false);
+	void OrbitalLook(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference = false);
 	void LookAt(const vec3 &Spot);
 	void Move(const vec3& Movement, bool changeReference = true);
 	void OrbitalCamera(GameObject* focused, float multiplier = 1.0f);
@@ -38,7 +39,7 @@ private:
 
 public:
 	
-	vec3 X, Y, Z, Position, Reference, newCameraPos, focus;
+	vec3 X, Y, Z, Position, Reference, orbitalReference;
 
 	mat3x3 rotation;
 
