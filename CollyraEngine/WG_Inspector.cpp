@@ -200,12 +200,20 @@ void WG_Inspector::DrawMeshComponent(ImGuiTreeNodeFlags_ flag, C_Mesh* mesh)
 
 	if (ImGui::CollapsingHeader("Mesh", flag))
 	{
+
+		char meshName[80];
+		strcpy_s(meshName, 80, mesh->GetMeshName().c_str());
+
 		ImGui::Text("Mesh          ");
 		ImGui::SameLine();
-		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "Mesh Name");
+		ImGui::TextColored({ 0 , 255 , 255 , 100 }, meshName);
+
+		char meshPath[80];
+		strcpy_s(meshPath, 80, mesh->GetMeshPath().c_str());
+
 		ImGui::Text("Mesh Path     ");
 		ImGui::SameLine();
-		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "Path");
+		ImGui::TextColored({ 0 , 255 , 255 , 100 }, meshPath);
 
 		ImGui::Spacing();
 		ImGui::Spacing();
@@ -250,12 +258,19 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* m
 
 	if (ImGui::CollapsingHeader("Material", flag))
 	{
+		char materialName[80];
+		strcpy_s(materialName, 80, material->GetMaterialName().c_str());
+
 		ImGui::Text("Texture          ");
 		ImGui::SameLine();
-		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "Texture Name");
+		ImGui::TextColored({ 0 , 255 , 255 , 100 }, materialName);
+
+		char materialPath[80];
+		strcpy_s(materialPath, 80, material->GetMaterialPath().c_str());
+
 		ImGui::Text("Texture Path     ");
 		ImGui::SameLine();
-		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "Path");
+		ImGui::TextColored({ 0 , 255 , 255 , 100 }, materialPath);
 
 		ImGui::Spacing();
 		ImGui::Spacing();

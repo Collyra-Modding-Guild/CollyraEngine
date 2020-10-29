@@ -21,6 +21,9 @@ public:
 	uint GetTexture() const;
 	Color GetColor() const;
 
+	std::string GetMaterialName() const;
+	std::string GetMaterialPath() const;
+
 private:
 
 	void ClearTexture();
@@ -29,8 +32,8 @@ private:
 
 	uint idTextureImage;
 	Color color;
-	std::string texName;
-	std::string texPath;
+	std::string name;
+	std::string path;
 
 	bool useDefaultTexture;
 	uint defaultTextureId;
