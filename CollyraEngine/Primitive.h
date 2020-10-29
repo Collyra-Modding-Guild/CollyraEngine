@@ -60,6 +60,12 @@ public :
 
 public:
 	vec3 size;
+
+	std::vector<float3> vertices;
+	std::vector<float3> normals;
+	std::vector<float2> texCoords;
+
+	std::vector<unsigned int> indices;
 };
 
 // ============================================
@@ -144,6 +150,12 @@ public:
 
 public:
 	vec3 size;           // # of bytes to hop to the next vertex (should be 32 bytes)
+
+	std::vector<float3> vertices;
+	std::vector<float3> normals;
+	std::vector<float2> texCoords;
+
+	std::vector<unsigned int> indices;
 
 };
 
