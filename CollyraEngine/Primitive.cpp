@@ -120,40 +120,89 @@ CCube::CCube(float sizeX, float sizeY, float sizeZ) : Primitive(), size(sizeX, s
 
 void CCube::GenerateCubeVertices(float sizeX, float sizeY, float sizeZ)
 {
+
+	// Hard shading vertices
 	vertices =
 	{
-	{-sizeX, -sizeY, sizeZ},
-	{sizeX, -sizeY, sizeZ},
-	{sizeX, sizeY, sizeZ },
-	{-sizeX, sizeY, sizeZ},
+	{sizeX / 2, -sizeY / 2, 0},
+	{-sizeX / 2, -sizeY / 2, 0},
+	{sizeX / 2, sizeY / 2, 0},
+	{-sizeX / 2, sizeY / 2, 0},
 
-	{-sizeX, -sizeY, -sizeZ},
-	{sizeX, -sizeY, -sizeZ},
-	{sizeX, sizeY, -sizeZ},
-	{-sizeX, sizeY, -sizeZ}
+	{sizeX / 2, sizeY / 2, sizeZ},
+	{-sizeX / 2, sizeY / 2, sizeZ},
+	{-sizeX / 2, -sizeY / 2, sizeZ},
+	{sizeX / 2, -sizeY / 2, sizeZ},
+
+	{sizeX / 2, -sizeY / 2, sizeZ},
+	{-sizeX / 2, -sizeY / 2, sizeZ},
+	{-sizeX / 2, -sizeY / 2, 0},
+	{sizeX / 2, -sizeY / 2, 0},
+
+	{sizeX / 2, sizeY / 2, sizeZ},
+	{sizeX / 2, -sizeY / 2, sizeZ},
+	{sizeX / 2, -sizeY / 2, 0}, 
+	{sizeX / 2, sizeY / 2, 0}, 
+
+	{-sizeX / 2, sizeY / 2, sizeZ}, 
+	{sizeX / 2, sizeY / 2, sizeZ}, 
+	{sizeX / 2, sizeY / 2, 0},  
+	{-sizeX / 2, sizeY / 2, 0}, 
+
+	{-sizeX / 2, -sizeY / 2, sizeZ}, 
+	{-sizeX / 2, sizeY / 2, sizeZ},
+	{-sizeX / 2, sizeY / 2, 0},
+	{-sizeX / 2, -sizeY / 2, 0}
 	};
 
-	float nInv = 1.0f / ((sizeX + sizeY + sizeZ) /3);
+	float nInv = 1.0f / ((sizeX + sizeY + sizeZ) / 3);
 
+	// Hard shading normals
 	normals =
 	{
-	{-sizeX - nInv, -sizeY - nInv, sizeZ + nInv},
-	{sizeX + nInv, -sizeY - nInv, sizeZ + nInv},
-	{sizeX + nInv, sizeY + nInv, sizeZ + nInv},
-	{-sizeX - nInv, sizeY + nInv, sizeZ + nInv},
-
-	{-sizeX - nInv, -sizeY - nInv, -sizeZ - nInv},
-	{sizeX + nInv, -sizeY - nInv, -sizeZ - nInv},
-	{sizeX + nInv, sizeY + nInv, -sizeZ - nInv},
-	{-sizeX - nInv, sizeY + nInv, -sizeZ - nInv}
+	{0, 0, -sizeZ},
+	{0, 0, -sizeZ},
+	{0, 0, -sizeZ},
+	{0, 0, -sizeZ},
+	{0, 0, sizeZ},
+	{0, 0, sizeZ},
+	{0, 0, sizeZ},
+	{0, 0, sizeZ},
+	{0, -sizeY, 0},
+	{0, -sizeY, 0},
+	{0, -sizeY, 0},
+	{0, -sizeY, 0},
+	{sizeX, 0, 0},
+	{sizeX, 0, 0},
+	{sizeX, 0, 0},
+	{sizeX, 0, 0},
+	{0, sizeY, 0},
+	{0, sizeY, 0},
+	{0, sizeY, 0},
+	{0, sizeY, 0},
+	{-sizeX, 0, 0},
+	{-sizeX, 0, 0},
+	{-sizeX, 0, 0},
+	{-sizeX, 0, 0},
 	};
 
 	texCoords =
 	{
 	{0.0, 0.0},
 	{1.0, 0.0},
+	{0.0, 1.0},
 	{1.0, 1.0},
-	{0.0, 1.0}
+	{1.0, 1.0},
+	{0.0, 1.0},
+	{0.0, 0.0},
+	{1.0, 0.0},
+	{1.0, 1.0},
+	{0.0, 1.0},
+	{0.0, 0.0},
+	{1.0, 0.0},
+	{1.0, 1.0},
+	{0.0, 1.0},
+	{0.0, 0.0}
 	};
 
 	glGenBuffers(1, (GLuint*)&(verticesID));
@@ -167,22 +216,22 @@ void CCube::GenerateCubeIndices()
 	indices =
 	{
 		0, 1, 2,
-		2, 3, 0,
+		1, 3, 2,
 
-		1, 5, 6,
-		6, 2, 1,
+		4, 5, 6,
+		4, 6, 7,
 
-		7, 6, 5,
-		5, 4, 7,
+		8, 9, 10,
+		8, 10, 11,
 
-		4, 0, 3,
-		3, 7, 4,
+		12, 13, 14,
+		12, 14, 15,
 
-		4, 5, 1,
-		1, 0, 4,
+		16, 17, 18,
+		16, 18, 19,
 
-		3, 2, 6,
-		6, 7, 3
+		20, 21, 22,
+		20, 22, 23
 	};
 
 	glGenBuffers(1, (GLuint*)&(indicesID));
