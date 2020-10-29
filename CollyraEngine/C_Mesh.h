@@ -41,6 +41,7 @@ public:
 private:
 	void GenerateBuffers();
 	void GenerateWireColor();
+	void GenerateSize();
 
 	void ClearMesh();
 
@@ -63,5 +64,7 @@ private:
 
 	std::string name;
 	std::string path;
+
+	float3 meshSize;
 
 };

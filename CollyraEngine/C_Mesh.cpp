@@ -44,6 +44,8 @@ void C_Mesh::GenerateBuffers()
 		glBindBuffer(GL_ARRAY_BUFFER, idVertex);
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float3), &vertices[0], GL_STATIC_DRAW);
 
+		GenerateSize();
+
 		glGenBuffers(1, (GLuint*)&(idIndex));
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndex);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint), &indices[0], GL_STATIC_DRAW);
@@ -72,6 +74,49 @@ void C_Mesh::GenerateBuffers()
 void C_Mesh::GenerateWireColor()
 {
 	wireColor = Color((float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f);
+}
+
+void C_Mesh::GenerateSize()
+{
+	float maxY, maxX, maxZ = 0;
+	float minY, minX, minZ = FLT_MAX;
+
+	for (int i = 0; i < vertices.size(); i++)
+	{
+		if (vertices[i].x > maxX) 
+		{
+			maxX = vertices[i].x;
+		}
+
+		if (vertices[i].x < minX) 
+		{
+			minX = vertices[i].x;
+		}
+
+		if (vertices[i].y > maxY)
+		{
+			maxY = vertices[i].y;
+		}
+
+		if (vertices[i].y < minY)
+		{
+			minY = vertices[i].y;
+		}
+
+		if (vertices[i].z > maxZ)
+		{
+			maxZ = vertices[i].z;
+		}
+
+		if (vertices[i].z < minZ)
+		{
+			minZ = vertices[i].z;
+		}
+	}
+
+	meshSize.x = abs(maxX - minX);
+	meshSize.y = abs(maxY - minY);
+	meshSize.z = abs(maxZ - minZ);
 }
 
 void C_Mesh::ClearMesh()
