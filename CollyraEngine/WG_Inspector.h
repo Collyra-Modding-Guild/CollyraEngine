@@ -9,6 +9,7 @@
 
 class GameObject;
 class C_Mesh;
+class C_Material;
 
 class WG_Inspector : public WindowGroup
 {
@@ -29,7 +30,7 @@ public:
 
 	void DrawTransformComponent (ImGuiTreeNodeFlags_ flag);
 	void DrawMeshComponent(ImGuiTreeNodeFlags_ flag, C_Mesh* mesh);
-	void DrawMaterialComponent(ImGuiTreeNodeFlags_ flag);
+	void DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* material);
 
 	void DrawHeaderGameObject();
 
