@@ -104,9 +104,11 @@ bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const 
 		newGameObject->GetComponent<C_Transform>()->GenerateGlobalTransformationFrom(transform);
 
 		//Mesh Load---------
+		int meshSize = node->mNumMeshes;
 		for (int i = 0; i < node->mNumMeshes; i++)
 		{
 			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+
 
 			std::vector<float3> vertices;
 			std::vector<float3> normals;
@@ -122,7 +124,7 @@ bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const 
 			if (vertices.size() == 0)
 			{
 				LOG("Error loading vertices in scene")
-					return false;
+					continue;
 			}
 
 			indices.reserve(mesh->mNumFaces * 3);
@@ -130,7 +132,7 @@ bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const 
 			if (indices.size() == 0 || !ret)
 			{
 				LOG("Error loading indices in scene")
-					return false;
+					continue;
 			}
 			LOG("New mesh with %i vertices & %i indices", vertices.size(), indices.size());
 
@@ -151,6 +153,7 @@ bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const 
 				if (material != nullptr)
 					LoadMaterialFromMesh(material, newGameObject, filePath);
 			}
+
 		}
 
 	}
