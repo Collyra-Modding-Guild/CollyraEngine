@@ -27,6 +27,9 @@ updateStatus WG_Inspector::Update()
 
 	if (focusedId != -1)
 	{
+		C_Mesh* mesh = focusedGameObject->GetComponent<C_Mesh>();
+		C_Material* material = focusedGameObject->GetComponent<C_Material>();
+
 		//Delete the selected item------------
 		if (App->input->GetKey(SDL_SCANCODE_DELETE) == KEY_DOWN)
 		{
@@ -39,14 +42,13 @@ updateStatus WG_Inspector::Update()
 
 		DrawTransformComponent(ImGuiTreeNodeFlags_DefaultOpen);
 
-		C_Mesh* mesh = focusedGameObject->GetComponent<C_Mesh>();
 
-		if (mesh != nullptr)
+		if(mesh != nullptr)
 			DrawMeshComponent(ImGuiTreeNodeFlags_DefaultOpen, mesh);
 
-		DrawMaterialComponent(ImGuiTreeNodeFlags_DefaultOpen);
-
-
+		if(material != nullptr)
+			DrawMaterialComponent(ImGuiTreeNodeFlags_DefaultOpen, material);	
+		
 	}
 
 	ImGui::End();
@@ -235,7 +237,7 @@ void WG_Inspector::DrawMeshComponent(ImGuiTreeNodeFlags_ flag, C_Mesh* mesh)
 
 }
 
-void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag)
+void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* material)
 {
 
 	bool materialActive = true;
@@ -253,6 +255,20 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag)
 		ImGui::SameLine();
 		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "Path");
 
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		ImVec2 imgPreview = ImVec2(200, 200);
+
+		// We Flip the UVs
+		ImVec2 uvMin = ImVec2(0.0f, 1.0f);                 // Top-left
+		ImVec2 uvMax = ImVec2(1.0f, 0.0f);                 // Lower-right
+	
+		ImGui::Text("Albedo");
+		ImGui::Spacing();
+		ImGui::Indent();	
+		ImGui::Image((ImTextureID)material->GetTexture(), imgPreview, uvMin, uvMax);
+		ImGui::Unindent();
 	}
 
 	ImGui::Spacing();
