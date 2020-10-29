@@ -43,12 +43,12 @@ updateStatus WG_Inspector::Update()
 		DrawTransformComponent(ImGuiTreeNodeFlags_DefaultOpen);
 
 
-		if(mesh != nullptr)
+		if (mesh != nullptr)
 			DrawMeshComponent(ImGuiTreeNodeFlags_DefaultOpen, mesh);
 
-		if(material != nullptr)
-			DrawMaterialComponent(ImGuiTreeNodeFlags_DefaultOpen, material);	
-		
+		if (material != nullptr)
+			DrawMaterialComponent(ImGuiTreeNodeFlags_DefaultOpen, material);
+
 	}
 
 	ImGui::End();
@@ -104,11 +104,7 @@ void WG_Inspector::DrawTransformComponent(ImGuiTreeNodeFlags_ flag)
 	Quat selectedRotation = focusedGameObject->GetComponent<C_Transform>()->GetRotation();
 	float3 selectedScale = focusedGameObject->GetComponent<C_Transform>()->GetScale();
 
-	bool transformActive = true;
-	if (ImGui::Checkbox("", &transformActive))
-		LOG("Transform is always active.")
-
-		ImGui::SameLine();
+	ImGui::SameLine();
 
 	if (ImGui::CollapsingHeader("Transform", flag))
 	{
@@ -240,11 +236,11 @@ void WG_Inspector::DrawMeshComponent(ImGuiTreeNodeFlags_ flag, C_Mesh* mesh)
 void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* material)
 {
 
-	bool materialActive = true;
-	if (ImGui::Checkbox("", &materialActive))
-		LOG("Material is always active.")
+	bool materialActive = material->IsActive();
+	if (ImGui::Checkbox("MaterialActive", &materialActive))
+		material->SetActive(materialActive);
 
-		ImGui::SameLine();
+	ImGui::SameLine();
 
 	if (ImGui::CollapsingHeader("Material", flag))
 	{
@@ -263,10 +259,10 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* m
 		// We Flip the UVs
 		ImVec2 uvMin = ImVec2(0.0f, 1.0f);                 // Top-left
 		ImVec2 uvMax = ImVec2(1.0f, 0.0f);                 // Lower-right
-	
+
 		ImGui::Text("Albedo");
 		ImGui::Spacing();
-		ImGui::Indent();	
+		ImGui::Indent();
 		ImGui::Image((ImTextureID)material->GetTexture(), imgPreview, uvMin, uvMax);
 		ImGui::Unindent();
 	}
