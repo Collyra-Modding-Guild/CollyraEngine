@@ -8,6 +8,7 @@
 #define LAYERS_NUM 3
 
 class GameObject;
+class C_Mesh;
 
 class WG_Inspector : public WindowGroup
 {
@@ -27,7 +28,7 @@ public:
 	void OnDestroyedId(uint destroyedGameObject);
 
 	void DrawTransformComponent (ImGuiTreeNodeFlags_ flag);
-	void DrawMeshComponent(ImGuiTreeNodeFlags_ flag);
+	void DrawMeshComponent(ImGuiTreeNodeFlags_ flag, C_Mesh* mesh);
 	void DrawMaterialComponent(ImGuiTreeNodeFlags_ flag);
 
 	void DrawHeaderGameObject();

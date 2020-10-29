@@ -38,7 +38,12 @@ updateStatus WG_Inspector::Update()
 		DrawHeaderGameObject();
 		
 		DrawTransformComponent(ImGuiTreeNodeFlags_DefaultOpen);
-		DrawMeshComponent(ImGuiTreeNodeFlags_DefaultOpen);
+
+		C_Mesh* mesh = focusedGameObject->GetComponent<C_Mesh>();
+
+		if(mesh != nullptr)
+			DrawMeshComponent(ImGuiTreeNodeFlags_DefaultOpen, mesh);
+
 		DrawMaterialComponent(ImGuiTreeNodeFlags_DefaultOpen);
 		
 		
@@ -187,7 +192,7 @@ void WG_Inspector::DrawTransformComponent(ImGuiTreeNodeFlags_ flag)
 
 }
 
-void WG_Inspector::DrawMeshComponent(ImGuiTreeNodeFlags_ flag)
+void WG_Inspector::DrawMeshComponent(ImGuiTreeNodeFlags_ flag, C_Mesh* mesh)
 {
 
 	bool meshActive = true;
@@ -196,7 +201,7 @@ void WG_Inspector::DrawMeshComponent(ImGuiTreeNodeFlags_ flag)
 
 	ImGui::SameLine();
 
-	if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader("Mesh", flag))
 	{
 		ImGui::Text("Mesh          ");
 		ImGui::SameLine();
@@ -210,15 +215,15 @@ void WG_Inspector::DrawMeshComponent(ImGuiTreeNodeFlags_ flag)
 
 		ImGui::Text("Vertices      ");
 		ImGui::SameLine();
-		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "0");
+		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "%i", mesh->vertices.size());
 
 		ImGui::Text("Indices       ");
 		ImGui::SameLine();
-		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "0");
+		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "%i", mesh->indices.size());
 
 		ImGui::Text("Normals       ");
 		ImGui::SameLine();
-		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "0");
+		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "%i", mesh->normals.size());
 
 		ImGui::Spacing();
 		ImGui::Spacing();
@@ -240,7 +245,7 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag)
 
 		ImGui::SameLine();
 
-	if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader("Material", flag))
 	{
 		ImGui::Text("Texture          ");
 		ImGui::SameLine();
