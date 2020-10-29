@@ -30,8 +30,6 @@ private:
 	void CalculateViewMatrix();
 
 	void CameraMovement(float dt);
-	void CameraFocus();
-	void CameraOrbital();
 
 	void ResetReference();
 

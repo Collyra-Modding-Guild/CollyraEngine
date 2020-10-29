@@ -4,7 +4,6 @@
 
 #include "OpenGL.h"
 
-
 // ------------------------------------------------------------
 Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point), verticesID(0), indicesID(0), indicesSize(-1)
 {}
@@ -139,7 +138,7 @@ void CCube::GenerateCubeVertices(float sizeX, float sizeY, float sizeZ)
 	{
 	{-sizeX + 1, -sizeY - 1, sizeZ + 1},
 	{sizeX - 1, -sizeY - 1, sizeZ + 1},
-	{sizeX - 1, sizeY + 1, sizeZ  + 1},
+	{sizeX - 1, sizeY + 1, sizeZ + 1},
 	{-sizeX + 1, sizeY - 1, sizeZ + 1},
 
 	{-sizeX + 1, -sizeY - 1, -sizeZ - 1},
@@ -148,12 +147,12 @@ void CCube::GenerateCubeVertices(float sizeX, float sizeY, float sizeZ)
 	{-sizeX + 1, sizeY + 1, -sizeZ - 1}
 	};
 
-	texCoords = 
+	texCoords =
 	{
-	{0.0, 0.0}, 
-	{1.0, 0.0},	
-	{1.0, 1.0},   
-	{0.0, 1.0}  
+	{0.0, 0.0},
+	{1.0, 0.0},
+	{1.0, 1.0},
+	{0.0, 1.0}
 	};
 
 	glGenBuffers(1, (GLuint*)&(verticesID));
@@ -215,8 +214,8 @@ void SSphere::GenerateSphereVertices(float radius, int sectors, int stacks)
 {
 
 
-	float x, y, z, xy;                              
-	float nx, ny, nz, lengthInv = 1.0f / radius;    
+	float x, y, z, xy;
+	float nx, ny, nz, lengthInv = 1.0f / radius;
 	float s, t;
 
 	float sectorStep = 2 * PI / sectors;
@@ -225,18 +224,18 @@ void SSphere::GenerateSphereVertices(float radius, int sectors, int stacks)
 
 	for (int i = 0; i <= stacks; ++i)
 	{
-		stackAngle = PI / 2 - i * stackStep;        
-		xy = radius * cosf(stackAngle);            
-		z = radius * sinf(stackAngle);              
+		stackAngle = PI / 2 - i * stackStep;
+		xy = radius * cosf(stackAngle);
+		z = radius * sinf(stackAngle);
 
 
 		for (int j = 0; j <= sectors; ++j)
 		{
-			sectorAngle = j * sectorStep;         
+			sectorAngle = j * sectorStep;
 
-			x = xy * cosf(sectorAngle);            
-			y = xy * sinf(sectorAngle);           
-			vertices.push_back({x, y, z});
+			x = xy * cosf(sectorAngle);
+			y = xy * sinf(sectorAngle);
+			vertices.push_back({ x, y, z });
 
 
 			nx = x * lengthInv;
@@ -262,8 +261,8 @@ void SSphere::GenerateSphereIndices(int sectors, int stacks)
 	int k1, k2;
 	for (int i = 0; i < sectors; ++i)
 	{
-		k1 = i * (sectors + 1);   
-		k2 = k1 + sectors + 1;     
+		k1 = i * (sectors + 1);
+		k2 = k1 + sectors + 1;
 
 		for (int j = 0; j < sectors; ++j, ++k1, ++k2)
 		{
@@ -341,45 +340,46 @@ void CCylinder::GenerateCylinderVertices(float radius, int sectors, int height)
 
 			normals.push_back({ ux, uy, uz });
 
-			texCoords.push_back({ (float)j / sectors, t });                 
+			texCoords.push_back({ (float)j / sectors, t });
 		}
 
-
-		baseCenterIndex = (int)vertices.size();
-		topCenterIndex = baseCenterIndex + sectors + 1;
-
-		for (int i = 0; i < 2; ++i)
-		{
-			float h = -height / 2.0f + i * height;
-			float nz = -1 + i * 2;
-
-			vertices.push_back({0 , 0 , h});   
-			normals.push_back({ 0 , 0 , nz });  
-
-			for (int j = 0, k = 0; j < sectors; ++j, k += 3)
-			{
-				float ux = unitVertices[k];
-				float uy = unitVertices[k + 1];
-
-				// position vector
-				vertices.push_back({ (ux * radius), (uy * radius), h });
-
-				// normal vector
-				normals.push_back({ 0, 0, nz });
-			}
-		}
-
-		glGenBuffers(1, (GLuint*) & (verticesID));
-		glBindBuffer(GL_ARRAY_BUFFER, verticesID);
-		int verticeSize = vertices.size() * sizeof(float3);
-		glBufferData(GL_ARRAY_BUFFER, verticeSize, &vertices[0], GL_STATIC_DRAW);
 	}
+
+	baseCenterIndex = (int)vertices.size();
+	topCenterIndex = baseCenterIndex + sectors + 1;
+
+	for (int i = 0; i < 2; ++i)
+	{
+		float h = -height / 2.0f + i * height;
+		float nz = -1 + i * 2;
+
+		vertices.push_back({ 0 , 0 , h });
+		normals.push_back({ 0 , 0 , nz });
+
+		for (int j = 0, k = 0; j < sectors; ++j, k += 3)
+		{
+			float ux = unitVertices[k];
+			float uy = unitVertices[k + 1];
+
+			// position vector
+			vertices.push_back({ (ux * radius), (uy * radius), h });
+
+			// normal vector
+			normals.push_back({ 0, 0, nz });
+		}
+	}
+
+	glGenBuffers(1, (GLuint*)&(verticesID));
+	glBindBuffer(GL_ARRAY_BUFFER, verticesID);
+	int verticeSize = vertices.size() * sizeof(float3);
+	glBufferData(GL_ARRAY_BUFFER, verticeSize, &vertices[0], GL_STATIC_DRAW);
+
 }
 
 void CCylinder::GenerateCylinderIndices(int sectors)
 {
-	int k1 = 0;                   
-	int k2 = sectors + 1;    
+	int k1 = 0;
+	int k2 = sectors + 1;
 
 	for (int i = 0; i < sectors; ++i, ++k1, ++k2)
 	{
@@ -400,7 +400,7 @@ void CCylinder::GenerateCylinderIndices(int sectors)
 			indices.push_back(k + 1);
 			indices.push_back(k);
 		}
-		else 
+		else
 		{
 			indices.push_back(baseCenterIndex);
 			indices.push_back(baseCenterIndex + 1);
@@ -416,7 +416,7 @@ void CCylinder::GenerateCylinderIndices(int sectors)
 			indices.push_back(k);
 			indices.push_back(k + 1);
 		}
-		else 
+		else
 		{
 			indices.push_back(topCenterIndex);
 			indices.push_back(k);
@@ -533,7 +533,7 @@ void Pyramid::GeneratePyramidIndices()
 		2, 3, 4
 	};
 
-	glGenBuffers(1, (GLuint*) & (indicesID));
+	glGenBuffers(1, (GLuint*)&(indicesID));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesID);
 	int indi = indices.size() * sizeof(uint);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indi, &indices[0], GL_STATIC_DRAW);

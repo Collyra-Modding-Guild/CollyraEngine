@@ -204,13 +204,6 @@ vec3 M_Camera3D::CameraZoom(float dt)
 	return zoom;
 }
 
-// -----------------------------------------------------------------
-void M_Camera3D::CameraFocus()
-{}
-
-// -----------------------------------------------------------------
-void M_Camera3D::CameraOrbital()
-{}
 
 // -----------------------------------------------------------------
 void M_Camera3D::ResetReference()
