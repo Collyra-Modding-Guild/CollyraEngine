@@ -19,6 +19,12 @@ void C_Material::SetTexture(uint idTexture, bool clearPreviousTexture)
 	idTextureImage = idTexture;
 }
 
+void C_Material::SetTextureNameAndPath(const char* name, const char* path)
+{
+	texName = name;
+	texPath = path;
+}
+
 void C_Material::SetColor(Color color)
 {
 	this->color = color;
@@ -28,6 +34,8 @@ void C_Material::SetDefaultTexture()
 {
 	ClearTexture();
 	idTextureImage = TextureLoader::LoadDefaultTexture();
+
+	SetTextureNameAndPath("Checkers", "Default");
 }
 
 uint C_Material::GetTexture() const

@@ -136,7 +136,12 @@ bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const 
 
 			C_Mesh* newMesh = (C_Mesh*)newGameObject->CreateComponent(COMPONENT_TYPE::MESH);
 
-			newMesh->GenerateMesh(vertices, indices, normals, textureCoords);
+			std::string path = "";
+			std::string meshName = "";
+			std::string meshExtension = "";
+			App->physFS->SplitFilePath(filePath, nullptr, &path, &meshName, &meshExtension);
+
+			newMesh->GenerateMesh(std::string(meshName + meshExtension).c_str(), path.c_str(),vertices, indices, normals, textureCoords);
 
 			//Materials Load------------
 			if (scene->HasMaterials())
@@ -205,7 +210,13 @@ void MeshLoader::LoadMaterialFromMesh(const aiMaterial* mat, GameObject* newGame
 			if (newMaterial == nullptr)
 				newMaterial = (C_Material*)newGameObject->CreateComponent(COMPONENT_TYPE::MATERIAL);
 
+			std::string filePath = "";
+			std::string meshName = "";
+			std::string meshExtension = "";
+			App->physFS->SplitFilePath(meshPath, nullptr, &filePath, &meshName, &meshExtension);
+
 			newMaterial->SetTexture(loadTexture);
+			newMaterial->SetTextureNameAndPath(std::string(meshName + meshExtension).c_str(), filePath.c_str());
 		}
 		else
 		{

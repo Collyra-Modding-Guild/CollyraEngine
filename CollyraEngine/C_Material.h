@@ -13,6 +13,7 @@ public:
 	~C_Material();
 
 	void SetTexture(uint idTexture, bool clearPreviousTexture = true);
+	void SetTextureNameAndPath(const char* name, const char* path);
 	void SetColor(Color color);
 	void SetDefaultTexture();
 
@@ -27,5 +28,7 @@ private:
 
 	uint idTextureImage;
 	Color color;
+	std::string texName;
+	std::string texPath;
 
 };
