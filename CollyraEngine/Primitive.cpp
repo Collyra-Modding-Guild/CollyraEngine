@@ -133,17 +133,19 @@ void CCube::GenerateCubeVertices(float sizeX, float sizeY, float sizeZ)
 	{-sizeX, sizeY, -sizeZ}
 	};
 
+	float nInv = 1.0f / ((sizeX + sizeY + sizeZ) /3);
+
 	normals =
 	{
-	{-sizeX + 1, -sizeY - 1, sizeZ + 1},
-	{sizeX - 1, -sizeY - 1, sizeZ + 1},
-	{sizeX - 1, sizeY + 1, sizeZ + 1},
-	{-sizeX + 1, sizeY - 1, sizeZ + 1},
+	{-sizeX - nInv, -sizeY - nInv, sizeZ + nInv},
+	{sizeX + nInv, -sizeY - nInv, sizeZ + nInv},
+	{sizeX + nInv, sizeY + nInv, sizeZ + nInv},
+	{-sizeX - nInv, sizeY + nInv, sizeZ + nInv},
 
-	{-sizeX + 1, -sizeY - 1, -sizeZ - 1},
-	{sizeX - 1, -sizeY - 1, -sizeZ - 1},
-	{sizeX - 1, sizeY + 1, -sizeZ - 1},
-	{-sizeX + 1, sizeY + 1, -sizeZ - 1}
+	{-sizeX - nInv, -sizeY - nInv, -sizeZ - nInv},
+	{sizeX + nInv, -sizeY - nInv, -sizeZ - nInv},
+	{sizeX + nInv, sizeY + nInv, -sizeZ - nInv},
+	{-sizeX - nInv, sizeY + nInv, -sizeZ - nInv}
 	};
 
 	texCoords =
@@ -492,17 +494,15 @@ void Pyramid::GeneratePyramidVertices(float sizeX, float sizeY, float sizeZ)
 	{-sizeX, -sizeY, sizeZ},
 	};
 
+	float nInv = 1.0f / ((sizeX + sizeY + sizeZ) / 3);
+
 	normals =
 	{
-	{-sizeX + 1, -sizeY - 1, sizeZ + 1},
-	{sizeX - 1, -sizeY - 1, sizeZ + 1},
-	{sizeX - 1, sizeY + 1, sizeZ + 1},
-	{-sizeX + 1, sizeY - 1, sizeZ + 1},
-
-	{-sizeX + 1, -sizeY - 1, -sizeZ - 1},
-	{sizeX - 1, -sizeY - 1, -sizeZ - 1},
-	{sizeX - 1, sizeY + 1, -sizeZ - 1},
-	{-sizeX + 1, sizeY + 1, -sizeZ - 1}
+	{0.0f, sizeY + nInv, 0.0f},
+	{-sizeX - nInv, -sizeY - nInv, -sizeZ - nInv},
+	{sizeX + nInv, -sizeY - nInv, -sizeZ - nInv},
+	{sizeX + nInv, -sizeY - nInv, sizeZ + nInv},
+	{-sizeX - nInv, -sizeY - nInv, sizeZ + nInv},
 	};
 
 	texCoords =

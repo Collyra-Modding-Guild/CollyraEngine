@@ -306,9 +306,6 @@
     <ClInclude Include="WG_Scene.h">
       <Filter>Sources\WindowGroup</Filter>
     </ClInclude>
-    <ClInclude Include="PrimitivesIndices.h">
-      <Filter>Sources\Helpers</Filter>
-    </ClInclude>
     <ClInclude Include="M_FileManager.h">
       <Filter>Sources\Modules</Filter>
     </ClInclude>
