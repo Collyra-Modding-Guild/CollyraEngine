@@ -26,7 +26,6 @@ private:
 
 	void CreateMeshesInternal(const char* path);
 
-
 };
 
 #endif // __ModuleResources_H__

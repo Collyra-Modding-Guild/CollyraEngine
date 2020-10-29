@@ -101,7 +101,7 @@ void WG_Inspector::DrawTransformComponent(ImGuiTreeNodeFlags_ flag)
 {
 
 	float3 selectedPosition = focusedGameObject->GetComponent<C_Transform>()->GetPosition();
-	Quat selectedRotation = focusedGameObject->GetComponent<C_Transform>()->GetRotation();
+	float3 selectedRotation = focusedGameObject->GetComponent<C_Transform>()->GetRotationEuler();
 	float3 selectedScale = focusedGameObject->GetComponent<C_Transform>()->GetScale();
 
 	ImGui::SameLine();
