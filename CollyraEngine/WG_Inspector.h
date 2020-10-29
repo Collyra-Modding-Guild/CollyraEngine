@@ -44,6 +44,8 @@ private:
 	const char* layers[LAYERS_NUM] = { "Default", "Water", " ... " };
 	const char* currentLayer;
 
+	bool defaultTexture;
+	int savedTexture;
 };
 
 #endif // __WG_INSPECTOR_H__

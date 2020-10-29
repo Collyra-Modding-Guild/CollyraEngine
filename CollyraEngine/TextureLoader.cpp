@@ -28,6 +28,8 @@ bool TextureLoader::Init()
 		return false;
 	}
 
+
+
 	return true;
 }
 
@@ -38,11 +40,11 @@ uint TextureLoader::LoadDefaultTexture()
 {
 	uint texID = 1;
 
-	GLubyte checkerImage[20][20][4];
+	GLubyte checkerImage[DEFAULT_TEXTURE_SIZE][DEFAULT_TEXTURE_SIZE][4];
 
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < DEFAULT_TEXTURE_SIZE; i++)
 	{
-		for (int j = 0; j < 20; j++)
+		for (int j = 0; j < DEFAULT_TEXTURE_SIZE; j++)
 		{
 			int c = ((((i & 0x8) == 0) ^ (((j & 0x8)) == 0))) * 255;
 			checkerImage[i][j][0] = (GLubyte)c;
@@ -59,7 +61,7 @@ uint TextureLoader::LoadDefaultTexture()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 20, 20, 0, GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, DEFAULT_TEXTURE_SIZE, DEFAULT_TEXTURE_SIZE, 0, GL_RGBA, GL_UNSIGNED_BYTE, checkerImage);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 

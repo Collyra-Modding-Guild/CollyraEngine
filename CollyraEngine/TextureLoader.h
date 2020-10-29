@@ -6,6 +6,9 @@
 
 #include "MathGeoLib/include/MathGeoLib.h"
 
+#define DEFAULT_TEXTURE_SIZE 40
+
+
 class Texture;
 
 namespace TextureLoader

@@ -11,9 +11,11 @@ C_Material::~C_Material()
 	ClearTexture();
 }
 
-void C_Material::SetTexture(uint idTexture)
+void C_Material::SetTexture(uint idTexture, bool clearPreviousTexture)
 {
-	ClearTexture();
+	if (clearPreviousTexture)
+		ClearTexture();
+
 	idTextureImage = idTexture;
 }
 

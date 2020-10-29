@@ -11,7 +11,7 @@ public:
 	C_Material(bool active = true);
 	~C_Material();
 
-	void SetTexture(uint idTexture);
+	void SetTexture(uint idTexture, bool clearPreviousTexture = true);
 	void SetColor(Color color);
 	void SetDefaultTexture();
 

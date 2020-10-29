@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "M_Scene.h"
 #include "M_Input.h"
+#include "M_Resources.h"
 
 #include "GameObject.h"
 
@@ -12,7 +13,7 @@
 
 
 WG_Inspector::WG_Inspector(bool isActive) : WindowGroup(WG_INSPECTOR, isActive), focusedGameObject(nullptr),
-focusedId(-1), currentTag(tags[0]), currentLayer(layers[0])
+focusedId(-1), currentTag(tags[0]), currentLayer(layers[0]), defaultTexture(false), savedTexture(-1)
 {
 }
 
@@ -264,6 +265,22 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* m
 		ImVec2 uvMin = ImVec2(0.0f, 1.0f);                 // Top-left
 		ImVec2 uvMax = ImVec2(1.0f, 0.0f);                 // Lower-right
 	
+		ImGui::Text("Set Default Texture");
+		ImGui::SameLine();
+		if (ImGui::Checkbox("##defaultTex", &defaultTexture))
+		{
+			if (savedTexture == -1)
+				savedTexture = material->GetTexture();
+
+			if (defaultTexture)
+				material->SetTexture(App->resources->defaultTextureId, false);
+			else
+				material->SetTexture(savedTexture, false);
+		}
+
+		ImGui::Spacing();
+		ImGui::Spacing();
+
 		ImGui::Text("Albedo");
 		ImGui::Spacing();
 		ImGui::Indent();	
