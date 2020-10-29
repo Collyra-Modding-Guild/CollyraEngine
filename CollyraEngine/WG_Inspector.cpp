@@ -36,17 +36,17 @@ updateStatus WG_Inspector::Update()
 		}
 
 		DrawHeaderGameObject();
-		
+
 		DrawTransformComponent(ImGuiTreeNodeFlags_DefaultOpen);
 
 		C_Mesh* mesh = focusedGameObject->GetComponent<C_Mesh>();
 
-		if(mesh != nullptr)
+		if (mesh != nullptr)
 			DrawMeshComponent(ImGuiTreeNodeFlags_DefaultOpen, mesh);
 
 		DrawMaterialComponent(ImGuiTreeNodeFlags_DefaultOpen);
-		
-		
+
+
 	}
 
 	ImGui::End();
@@ -188,16 +188,15 @@ void WG_Inspector::DrawTransformComponent(ImGuiTreeNodeFlags_ flag)
 	ImGui::Separator();
 	ImGui::Spacing();
 
-	
+
 
 }
 
 void WG_Inspector::DrawMeshComponent(ImGuiTreeNodeFlags_ flag, C_Mesh* mesh)
 {
-
-	bool meshActive = true;
-	if (ImGui::Checkbox("", &meshActive))
-		LOG("Mesh is always active.")
+	bool meshActive = mesh->IsActive();
+	if (ImGui::Checkbox("MeshActive", &meshActive))
+		mesh->SetActive(meshActive);
 
 	ImGui::SameLine();
 
@@ -291,11 +290,11 @@ void WG_Inspector::DrawHeaderGameObject()
 	{
 		for (int n = 0; n < TAGS_NUM; n++)
 		{
-			bool is_selected = (currentTag == tags[n]); 
+			bool is_selected = (currentTag == tags[n]);
 			if (ImGui::Selectable(tags[n], is_selected))
 				currentTag = tags[n];
-				if (is_selected)
-					ImGui::SetItemDefaultFocus();  
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
 		}
 		ImGui::EndCombo();
 	}
@@ -309,11 +308,11 @@ void WG_Inspector::DrawHeaderGameObject()
 	{
 		for (int n = 0; n < LAYERS_NUM; n++)
 		{
-			bool is_selected = (currentLayer == layers[n]); 
+			bool is_selected = (currentLayer == layers[n]);
 			if (ImGui::Selectable(layers[n], is_selected))
 				currentLayer = layers[n];
 			if (is_selected)
-				ImGui::SetItemDefaultFocus();  
+				ImGui::SetItemDefaultFocus();
 		}
 		ImGui::EndCombo();
 	}

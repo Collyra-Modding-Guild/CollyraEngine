@@ -15,6 +15,9 @@ public:
 	virtual void Enable();
 	virtual void Disable();
 
+	bool IsActive() const;
+	void SetActive(bool newState);
+
 	GameObject* GetGameObject()	const;
 	void	SetGameObject(GameObject* go);
 

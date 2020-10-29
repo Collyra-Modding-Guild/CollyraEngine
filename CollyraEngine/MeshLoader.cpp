@@ -24,13 +24,12 @@
 
 void MeshLoader::Init()
 {
-	if (_DEBUG == 1)
-	{
-		// Stream log messages to Debug window
-		struct aiLogStream stream;
-		stream = aiGetPredefinedLogStream(aiDefaultLogStream_DEBUGGER, nullptr);
-		aiAttachLogStream(&stream);
-	}
+
+	// Stream log messages to Debug window
+	struct aiLogStream stream;
+	stream = aiGetPredefinedLogStream(aiDefaultLogStream_DEBUGGER, nullptr);
+	aiAttachLogStream(&stream);
+
 }
 
 void MeshLoader::CleanUp()

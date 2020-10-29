@@ -92,11 +92,6 @@ updateStatus M_Scene::Draw(float dt)
 	}
 }
 
-updateStatus M_Scene::DebugDraw(float dt)
-{
-	return updateStatus();
-}
-
 bool M_Scene::CleanUp()
 {
 	RELEASE(root);
@@ -161,9 +156,9 @@ void M_Scene::DrawGameObject(GameObject* gameObject)
 	C_Transform* transform = gameObject->GetComponent<C_Transform>();
 	C_Material* material = gameObject->GetComponent<C_Material>();
 
-	if (mesh != nullptr && transform != nullptr)
+	if ((mesh != nullptr && mesh->IsActive() == true) && transform != nullptr)
 	{
-		if (material != nullptr)
+		if (material != nullptr && material->IsActive() == true)
 		{
 			mesh->Render(transform->GetTGlobalTransform(), (int)material->GetTexture(), material->GetColor());
 		}
