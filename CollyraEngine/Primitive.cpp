@@ -536,30 +536,76 @@ void Pyramid::GeneratePyramidVertices(float sizeX, float sizeY, float sizeZ)
 {
 	vertices =
 	{
-	{0.0f, sizeY, 0.0f},
-	{-sizeX, -sizeY, -sizeZ },
-	{sizeX, -sizeY, -sizeZ},
-	{sizeX, -sizeY, sizeZ},
-	{-sizeX, -sizeY, sizeZ},
+	{0, 0, sizeZ},
+	{-sizeX / 2, -sizeY / 2, 0 },
+	{sizeX / 2, -sizeY / 2, 0 },
+
+	{0, 0, sizeZ },
+	{sizeX / 2, -sizeY / 2, 0 },
+	{sizeX / 2, sizeY / 2, 0 },
+
+	{0, 0, sizeZ },
+	{sizeX / 2, sizeY / 2, 0 },
+	{-sizeX / 2, sizeY / 2, 0 },
+
+	{0, 0, sizeZ },
+	{-sizeX / 2, sizeY / 2, 0 },
+	{-sizeX / 2, -sizeY / 2, 0 },
+
+	{-sizeX / 2, -sizeY / 2, 0 },
+	{0, 0, 0 },
+	{sizeX / 2, -sizeY / 2, 0 },
+
+	{sizeX / 2, sizeY / 2, 0 },
+	{-sizeX / 2, sizeY / 2, 0 }
 	};
 
-	float nInv = 1.0f / ((sizeX + sizeY + sizeZ) / 3);
+	float complt = 0.894427180f;
+	float mid = 0.448213590f;
 
 	normals =
 	{
-	{0.0f, sizeY + nInv, 0.0f},
-	{-sizeX - nInv, -sizeY - nInv, -sizeZ - nInv},
-	{sizeX + nInv, -sizeY - nInv, -sizeZ - nInv},
-	{sizeX + nInv, -sizeY - nInv, sizeZ + nInv},
-	{-sizeX - nInv, -sizeY - nInv, sizeZ + nInv},
+	{0, -complt, mid},
+	{0, -complt, mid},
+	{0, -complt, mid},
+
+	{complt, 0, mid},
+	{complt, 0, mid},
+	{complt, 0, mid},
+
+	{0, complt, mid},
+	{0, complt, mid},
+	{0, complt, mid},
+
+	{-complt, 0, mid},
+	{-complt, 0, mid},
+	{-complt, 0, mid},
+
+	{0, 0, -1},
+	{0, 0, -1},
+	{0, 0, -1},
+	{0, 0, -1},
+	{0, 0, -1}
 	};
 
 	texCoords =
 	{
+	{0.5, 1.0},
 	{0.0, 0.0},
 	{1.0, 0.0},
+	{0.5, 1.0},
+	{0.0, 0.0},
+	{1.0, 0.0},
+	{0.0, 0.0},
+	{1.0, 0.0},
+	{0.5, 1.0},
+	{0.0, 0.0},
+	{1.0, 0.0},
+	{0.0, 1.0},
+	{0.5, 0.5},
 	{1.0, 1.0},
-	{0.0, 1.0}
+	{1.0, 0.0},
+	{0.0, 0.0}
 	};
 
 	glGenBuffers(1, (GLuint*)&(verticesID));
@@ -572,13 +618,15 @@ void Pyramid::GeneratePyramidIndices()
 {
 	indices =
 	{
-		0, 2, 1,
-		0, 3, 2,
-		0, 4, 3,
-		0, 1, 4,
+		0, 1, 2,
+		3, 4, 5,
+		6, 7, 8,
+		9, 10, 11,
 
-		4, 1, 2,
-		2, 3, 4
+		12, 13, 14,
+		16, 13, 12,
+		14, 13, 15,
+		15, 13, 16
 	};
 
 	glGenBuffers(1, (GLuint*)&(indicesID));
