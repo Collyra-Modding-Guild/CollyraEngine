@@ -21,6 +21,9 @@ public:
 
 	void DrawNormals() const;
 
+	std::string GetMeshName() const;
+	std::string GetMeshPath() const;
+
 private:
 	void GenerateBuffers();
 	void GenerateWireColor();

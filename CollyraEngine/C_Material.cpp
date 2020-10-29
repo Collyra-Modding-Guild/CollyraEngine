@@ -21,8 +21,8 @@ void C_Material::SetTexture(uint idTexture, bool clearPreviousTexture)
 
 void C_Material::SetTextureNameAndPath(const char* name, const char* path)
 {
-	texName = name;
-	texPath = path;
+	name = name;
+	path = path;
 }
 
 void C_Material::SetColor(Color color)
@@ -46,6 +46,16 @@ uint C_Material::GetTexture() const
 Color C_Material::GetColor() const
 {
 	return color;
+}
+
+std::string C_Material::GetMaterialName() const
+{
+	return name;
+}
+
+std::string C_Material::GetMaterialPath() const
+{
+	return path;
 }
 
 void C_Material::ClearTexture()

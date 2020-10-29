@@ -204,3 +204,13 @@ void C_Mesh::DrawNormals() const
 
 	glLineWidth(1.0f);
 }
+
+std::string C_Mesh::GetMeshName() const
+{
+	return name;
+}
+
+std::string C_Mesh::GetMeshPath() const
+{
+	return path;
+}
