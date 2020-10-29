@@ -10,7 +10,7 @@
 #include "Application.h"
 #include "M_UIManager.h"
 
-M_Scene::M_Scene(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), root(nullptr), globalId(0)
+M_Scene::M_Scene(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), root(nullptr), globalId(0), focusedGameObject(nullptr)
 {}
 
 M_Scene::~M_Scene()

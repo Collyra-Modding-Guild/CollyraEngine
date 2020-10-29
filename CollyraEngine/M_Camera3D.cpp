@@ -2,6 +2,13 @@
 #include "M_Camera3D.h"
 #include "M_Window.h"
 #include "M_Input.h"
+#include "M_Scene.h"
+
+#include "GameObject.h"
+#include "Component.h"
+#include "C_Transform.h"
+#include "C_Mesh.h"
+#include "C_Material.h"
 
 #include "MathGeoLib/include/Geometry/Frustum.h"
 
@@ -52,6 +59,11 @@ updateStatus M_Camera3D::Update(float dt)
 	}
 
 	CameraMovement(dt);
+
+	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) 
+	{
+		OrbitalCamera(App->scene->focusedGameObject);
+	}
 
 	// Recalculate matrix -------------
 	CalculateViewMatrix();
@@ -116,12 +128,6 @@ void M_Camera3D::CameraMovement(float dt)
 		Position = Reference + Z * length(Position);
 	}
 
-	/*ProvisionalReference();
-	float2 focusSpace = Frustum::ScreenToViewportSpace({ focus.x, focus.y }, App->window->screenWidth, App->window->screenHeight);
-	focus = (focusSpace.x, focusSpace.y, focus.z);
-
-	Look(Position, focus, true);*/
-	
 
 	Position += newPos + zoom;
 	Reference += newPos + zoom;
@@ -208,6 +214,44 @@ void M_Camera3D::Move(const vec3& Movement)
 	Reference += Movement;
 
 	CalculateViewMatrix();
+}
+
+// -----------------------------------------------------------------
+void M_Camera3D::OrbitalCamera(GameObject* focused, float multiplier)
+{
+	/*if (focused != nullptr)
+	{
+		vec3 pos = { 0.0f, 0.0f, 0.0f };
+		float dist = length({ 10.0f, 10.0f, 10.0f });
+
+		C_Transform* transform = focused->GetComponent<C_Transform>();
+		pos = { transform->GetPosition().x, transform->GetPosition().y, transform->GetPosition().z };
+
+		C_Mesh* mesh = obj->GetComponent<C_Mesh>();
+		dist = length({ mesh., mesh->mesh->size_y.width, mesh->mesh->size_z.width });
+
+
+		vec3 Direction = { 1.0f, 1.0f, 1.0f };
+		vec3 unitDirection = normalize(Direction);
+
+		if (dist > 0.0f) 
+		{
+			Position = pos + unitDirection * dist;
+		}
+		else 
+		{
+			Position = pos + Direction;
+		}
+
+		Reference = pos;
+
+		Z = unitDirection;
+		X = normalize(cross(vec3(0.0f, 1.0f, 0.0f), Z));
+		Y = cross(Z, X);
+
+		CalculateViewMatrix();*/
+
+		//LookFrom(pos, { 1.0f, 1.0f, 1.0f }, dist * multiplier);
 }
 
 // -----------------------------------------------------------------

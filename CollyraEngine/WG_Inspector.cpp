@@ -63,6 +63,7 @@ void WG_Inspector::Cleanup()
 void WG_Inspector::SetGameObject(uint focusedGameObject)
 {
 	this->focusedGameObject = App->scene->GetGameObject(focusedGameObject);
+	App->scene->focusedGameObject = this->focusedGameObject;
 
 	if (this->focusedGameObject == nullptr)
 		focusedId = -1;

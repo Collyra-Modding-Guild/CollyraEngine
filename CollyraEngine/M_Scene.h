@@ -30,11 +30,14 @@ public:
 
 	unsigned int GenerateId();
 
-	const GameObject* GetRoot();
+	const GameObject* GetRoot();	
 
 private:
 	void CheckSiblingsName(GameObject* parent, std::string& myName);
 	void DrawGameObject(GameObject* gameObject);
+
+public:
+	GameObject* focusedGameObject;
 
 private:
 	GameObject* root;
