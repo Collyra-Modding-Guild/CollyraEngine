@@ -2,6 +2,7 @@
 #include "Color.h"
 #include <vector>
 #include "glmath.h"
+#include "MathGeoLib/include/MathGeoLib.h"
 
 enum PrimitiveTypes
 {
@@ -74,6 +75,10 @@ public:
 
 public:
 
+	std::vector<float3> vertices;
+	std::vector<float3> normals;
+	std::vector<float2> texCoords;
+
 	// memeber vars
 	float radius;
 	int sectorCount;                        // longitude, # of slices
@@ -101,6 +106,10 @@ public:
 	void GenerateCylinderIndices(int sectors);
 
 public:
+
+	std::vector<float3> vertices;
+	std::vector<float3> normals;
+	std::vector<float2> texCoords;
 
 	// memeber vars
 	float height;
@@ -136,19 +145,6 @@ public:
 public:
 	vec3 size;           // # of bytes to hop to the next vertex (should be 32 bytes)
 
-};
-
-
-// ============================================
-class Line : public Primitive
-{
-public:
-	Line();
-	Line(float x, float y, float z);
-	void InnerRender() const;
-public:
-	vec3 origin;
-	vec3 destination;
 };
 
 // ============================================
