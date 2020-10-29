@@ -256,8 +256,8 @@ void M_Camera3D::OrbitalLook(const vec3& Position, const vec3& Reference, bool R
 		focusingObject = true;
 	}
 
-	this->Reference = orbitalReference;
-	this->Reference -= Z * 15;
+	this->Reference = this->Position;
+	this->Reference -= Z * 5;
 
 	CalculateViewMatrix();
 }
