@@ -122,17 +122,17 @@ CCube::CCube(float sizeX, float sizeY, float sizeZ) : Primitive(), size(sizeX, s
 
 void CCube::GenerateCubeVertices(float sizeX, float sizeY, float sizeZ)
 {
-	GLfloat vertices[] =
+	float3 vertices[] =
 	{
-	-sizeX, -sizeY, sizeZ,
-	sizeX, -sizeY, sizeZ,
-	sizeX, sizeY, sizeZ ,
-	-sizeX, sizeY, sizeZ,
+	{-sizeX, -sizeY, sizeZ},
+	{sizeX, -sizeY, sizeZ},
+	{sizeX, sizeY, sizeZ },
+	{-sizeX, sizeY, sizeZ},
 
-	-sizeX, -sizeY, -sizeZ,
-	sizeX, -sizeY, -sizeZ,
-	sizeX, sizeY, -sizeZ,
-	-sizeX, sizeY, -sizeZ
+	{-sizeX, -sizeY, -sizeZ},
+	{sizeX, -sizeY, -sizeZ},
+	{sizeX, sizeY, -sizeZ},
+	{-sizeX, sizeY, -sizeZ}
 	};
 
 	glGenBuffers(1, (GLuint*)&(verticesID));
@@ -169,9 +169,7 @@ SSphere::SSphere(float radius, int sectors, int stacks) : Primitive(), radius(ra
 
 void SSphere::GenerateSphereVertices(float radius, int sectors, int stacks)
 {
-	std::vector<float> vertices;
-	std::vector<float> normals;
-	std::vector<float> texCoords;
+
 
 	float x, y, z, xy;                              
 	float nx, ny, nz, lengthInv = 1.0f / radius;    
@@ -194,35 +192,29 @@ void SSphere::GenerateSphereVertices(float radius, int sectors, int stacks)
 
 			x = xy * cosf(sectorAngle);            
 			y = xy * sinf(sectorAngle);           
-			vertices.push_back(x);
-			vertices.push_back(y);
-			vertices.push_back(z);
+			vertices.push_back({x, y, z});
 
 
 			nx = x * lengthInv;
 			ny = y * lengthInv;
 			nz = z * lengthInv;
-			normals.push_back(nx);
-			normals.push_back(ny);
-			normals.push_back(nz);
+			normals.push_back({ nx, ny, nz });
 
 
 			s = (float)j / sectorCount;
 			t = (float)i / stackCount;
-			texCoords.push_back(s);
-			texCoords.push_back(t);
+			texCoords.push_back({ s , t });
 		}
 	}
 
 	glGenBuffers(1, (GLuint*)&(verticesID));
 	glBindBuffer(GL_ARRAY_BUFFER, verticesID);
-	int verticeSize = vertices.size() * sizeof(float);
+	int verticeSize = vertices.size() * sizeof(float3);
 	glBufferData(GL_ARRAY_BUFFER, verticeSize, &vertices[0], GL_STATIC_DRAW);
 }
 
 void SSphere::GenerateSphereIndices(int sectors, int stacks)
 {
-	std::vector<int> indices;
 	int k1, k2;
 	for (int i = 0; i < sectors; ++i)
 	{
@@ -290,10 +282,6 @@ void CCylinder::GenerateCylinderVertices(float radius, int sectors, int height)
 		unitVertices.push_back(0);                // z
 	}
 
-	std::vector<float> vertices;
-	std::vector<float> normals;
-	std::vector<float> texCoords;
-
 	for (int i = 0; i < 2; ++i)
 	{
 		float h = -height / 2.0f + i * height;
@@ -305,21 +293,15 @@ void CCylinder::GenerateCylinderVertices(float radius, int sectors, int height)
 			float uy = unitVertices[k + 1];
 			float uz = unitVertices[k + 2];
 
+			vertices.push_back({ ux * radius, uy * radius, h });
 
-			vertices.push_back(ux * radius);
-			vertices.push_back(uy * radius);
-			vertices.push_back(h);
+			normals.push_back({ ux, uy, uz });
 
-			normals.push_back(ux);
-			normals.push_back(uy);
-			normals.push_back(uz);
-
-			texCoords.push_back((float)j / sectors);
-			texCoords.push_back(t);                      
+			texCoords.push_back({ (float)j / sectors, t });                 
 		}
 
 
-		baseCenterIndex = (int)vertices.size() / 3;
+		baseCenterIndex = (int)vertices.size();
 		topCenterIndex = baseCenterIndex + sectors + 1;
 
 		for (int i = 0; i < 2; ++i)
@@ -327,8 +309,8 @@ void CCylinder::GenerateCylinderVertices(float radius, int sectors, int height)
 			float h = -height / 2.0f + i * height;
 			float nz = -1 + i * 2;
 
-			vertices.push_back(0);     vertices.push_back(0);     vertices.push_back(h);
-			normals.push_back(0);      normals.push_back(0);      normals.push_back(nz);
+			vertices.push_back({0 , 0 , h});   
+			normals.push_back({ 0 , 0 , nz });  
 
 			for (int j = 0, k = 0; j < sectors; ++j, k += 3)
 			{
@@ -336,27 +318,22 @@ void CCylinder::GenerateCylinderVertices(float radius, int sectors, int height)
 				float uy = unitVertices[k + 1];
 
 				// position vector
-				vertices.push_back(ux * radius);
-				vertices.push_back(uy * radius);
-				vertices.push_back(h);
+				vertices.push_back({ (ux * radius), (uy * radius), h });
 
 				// normal vector
-				normals.push_back(0);
-				normals.push_back(0);
-				normals.push_back(nz);
+				normals.push_back({ 0, 0, nz });
 			}
 		}
 
 		glGenBuffers(1, (GLuint*) & (verticesID));
 		glBindBuffer(GL_ARRAY_BUFFER, verticesID);
-		int verticeSize = vertices.size() * sizeof(float);
+		int verticeSize = vertices.size() * sizeof(float3);
 		glBufferData(GL_ARRAY_BUFFER, verticeSize, &vertices[0], GL_STATIC_DRAW);
 	}
 }
 
 void CCylinder::GenerateCylinderIndices(int sectors)
 {
-	std::vector<int> indices;
 	int k1 = 0;                   
 	int k2 = sectors + 1;    
 
@@ -408,32 +385,6 @@ void CCylinder::GenerateCylinderIndices(int sectors)
 	int indi = indices.size() * sizeof(float);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indi, &indices[0], GL_STATIC_DRAW);
 	indicesSize = indices.size();
-}
-
-
-// LINE ==================================================
-Line::Line() : Primitive(), origin(0, 0, 0), destination(1, 1, 1)
-{
-	type = PrimitiveTypes::Primitive_Line;
-}
-
-Line::Line(float x, float y, float z) : Primitive(), origin(0, 0, 0), destination(x, y, z)
-{
-	type = PrimitiveTypes::Primitive_Line;
-}
-
-void Line::InnerRender() const
-{
-	glLineWidth(2.0f);
-
-	glBegin(GL_LINES);
-
-	glVertex3f(origin.x, origin.y, origin.z);
-	glVertex3f(destination.x, destination.y, destination.z);
-
-	glEnd();
-
-	glLineWidth(1.0f);
 }
 
 // PLANE ==================================================
@@ -489,14 +440,13 @@ Pyramid::Pyramid(float sizeX, float sizeY, float sizeZ) : Primitive(), size(size
 
 void Pyramid::GeneratePyramidVertices(float sizeX, float sizeY, float sizeZ)
 {
-	GLfloat vertices[] =
+	float3 vertices[] =
 	{
-	0.0f, sizeY, 0.0f, 
-
-	-sizeX, -sizeY, -sizeZ,
-	sizeX, -sizeY, -sizeZ,
-	sizeX, -sizeY, sizeZ,
-	-sizeX, -sizeY, sizeZ
+	{0.0f, sizeY, 0.0f},
+	{-sizeX, -sizeY, -sizeZ },
+	{sizeX, -sizeY, -sizeZ},
+	{sizeX, -sizeY, sizeZ},
+	{-sizeX, -sizeY, sizeZ},
 	};
 
 	glGenBuffers(1, (GLuint*)&(verticesID));

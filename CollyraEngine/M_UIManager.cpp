@@ -3,7 +3,15 @@
 #include "M_Renderer3D.h"
 #include "M_Input.h"
 #include "M_Window.h"
+#include "M_Scene.h"
 
+#include "GameObject.h"
+#include "Component.h"
+#include "C_Material.h"
+#include "C_Mesh.h"
+#include "C_Transform.h"
+
+#include "Primitive.h"
 
 // All UI Windows
 #include "WindowGroup.h"
@@ -215,68 +223,83 @@ bool M_UIManager::ShowMainMenuBar()
 			ImGui::EndMenu();
 		}
 
-		if (ImGui::BeginMenu("Primitives"))
+		if (ImGui::BeginMenu("Game Objects"))
 		{
 			ImVec2 buttonSize = { 70, 20 };
 
-			if (ImGui::Button("Cube", buttonSize))
+			if (ImGui::BeginMenu("Create Primitives"))
 			{
+				if (ImGui::Button("Cube", buttonSize))
+				{
+		
+					
+				}
+				if (ImGui::Button("Sphere", buttonSize))
+				{
+					GameObject* sphere = App->scene->CreateGameObject("Sphere");
+					sphere->CreateComponent(COMPONENT_TYPE::MESH);
 
-			}
-			if (ImGui::Button("Sphere", buttonSize))
-			{
+					SSphere infoMesh(1.0f, 36, 18);
+					sphere->GetComponent<C_Mesh>()->GenerateMesh("Sphere", "Sphere", infoMesh.vertices, infoMesh.indices, infoMesh.normals, infoMesh.texCoords);
+				}
+				if (ImGui::Button("Cylinder", buttonSize))
+				{
+					GameObject* cylinder = App->scene->CreateGameObject("Cylinder");
+					cylinder->CreateComponent(COMPONENT_TYPE::MESH);
 
-			}
-			if (ImGui::Button("Cylinder", buttonSize))
-			{
+					CCylinder infoMesh(4.0f, 10, 8);
+					cylinder->GetComponent<C_Mesh>()->GenerateMesh("Cylinder", "Cylinder", infoMesh.vertices, infoMesh.indices, infoMesh.normals, infoMesh.texCoords);
+				}
+				if (ImGui::Button("Pyramid", buttonSize))
+				{
 
-			}
-			if (ImGui::Button("Pyramid", buttonSize))
-			{
 
+
+				}
+				ImGui::EndMenu();
 			}
 			ImGui::EndMenu();
 		}
 
-		if (ImGui::BeginMenu("Tools"))
-		{
-			ImGui::MenuItem("Metrics", NULL, true);
-			ImGui::MenuItem("Style Editor", NULL, true);
-			ImGui::MenuItem("About Dear ImGui", NULL, true);
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Windows"))
-		{
-			if (configWindow != nullptr)
+			if (ImGui::BeginMenu("Tools"))
 			{
-				ImGui::MenuItem("Configuration", "", &configWindow->active);
-			}
-			if (consoleWindow != nullptr)
-			{
-				ImGui::MenuItem("Console", "", &consoleWindow->active);
-			}
-			if (hierarchyWindow != nullptr)
-			{
-				ImGui::MenuItem("Hierarchy", "", &hierarchyWindow->active);
-			}
-			if (inspectorWindow != nullptr)
-			{
-				ImGui::MenuItem("Inspector", "", &inspectorWindow->active);
-			}
-			if (aboutWindow != nullptr)
-			{
-				ImGui::MenuItem("About", "", &aboutWindow->active);
+				ImGui::MenuItem("Metrics", NULL, true);
+				ImGui::MenuItem("Style Editor", NULL, true);
+				ImGui::MenuItem("About Dear ImGui", NULL, true);
+				ImGui::EndMenu();
 			}
 
+			if (ImGui::BeginMenu("Windows"))
+			{
+				if (configWindow != nullptr)
+				{
+					ImGui::MenuItem("Configuration", "", &configWindow->active);
+				}
+				if (consoleWindow != nullptr)
+				{
+					ImGui::MenuItem("Console", "", &consoleWindow->active);
+				}
+				if (hierarchyWindow != nullptr)
+				{
+					ImGui::MenuItem("Hierarchy", "", &hierarchyWindow->active);
+				}
+				if (inspectorWindow != nullptr)
+				{
+					ImGui::MenuItem("Inspector", "", &inspectorWindow->active);
+				}
+				if (aboutWindow != nullptr)
+				{
+					ImGui::MenuItem("About", "", &aboutWindow->active);
+				}
 
-			ImGui::EndMenu();
-		}
 
-		ImGui::EndMainMenuBar();
+				ImGui::EndMenu();
+			}
+
+			ImGui::EndMainMenuBar();
+		
+		return ret;
 	}
-
-	return ret;
 }
 
 void M_UIManager::EnableDockSpace()
