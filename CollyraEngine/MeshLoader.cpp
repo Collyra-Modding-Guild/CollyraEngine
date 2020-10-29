@@ -141,7 +141,7 @@ bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const 
 			std::string meshExtension = "";
 			App->physFS->SplitFilePath(filePath, nullptr, &path, &meshName, &meshExtension);
 
-			newMesh->GenerateMesh(std::string(meshName + meshExtension).c_str(), path.c_str(),vertices, indices, normals, textureCoords);
+			newMesh->GenerateMesh(std::string(meshName + "." + meshExtension).c_str(), filePath, vertices, indices, normals, textureCoords);
 
 			//Materials Load------------
 			if (scene->HasMaterials())
@@ -186,10 +186,13 @@ void MeshLoader::LoadMaterialFromMesh(const aiMaterial* mat, GameObject* newGame
 
 	if (path.length > 0)
 	{
+		std::string loadedPath = "";
+
 		std::string pathRelativeToFbx = path.C_Str();
 		std::string relativePath = "";
 		App->physFS->SplitFilePath(meshPath, nullptr, &relativePath, nullptr, nullptr);
 		pathRelativeToFbx = App->physFS->GetProjectPathFromInternalRelative(relativePath, pathRelativeToFbx);
+		loadedPath = pathRelativeToFbx;
 
 		uint loadTexture = TextureLoader::Load(pathRelativeToFbx.c_str());
 		if (loadTexture == 0)
@@ -201,6 +204,7 @@ void MeshLoader::LoadMaterialFromMesh(const aiMaterial* mat, GameObject* newGame
 			std::string defaultPath = TEXTYRES_PATH;
 			defaultPath += "/" + textureName + "." + textureExtension;
 			loadTexture = TextureLoader::Load(defaultPath.c_str());
+			loadedPath = defaultPath;
 		}
 
 		if (loadTexture != 0)
@@ -210,13 +214,14 @@ void MeshLoader::LoadMaterialFromMesh(const aiMaterial* mat, GameObject* newGame
 			if (newMaterial == nullptr)
 				newMaterial = (C_Material*)newGameObject->CreateComponent(COMPONENT_TYPE::MATERIAL);
 
-			std::string filePath = "";
-			std::string meshName = "";
-			std::string meshExtension = "";
-			App->physFS->SplitFilePath(meshPath, nullptr, &filePath, &meshName, &meshExtension);
+			std::string materialName = "";
+			std::string materialExtension = "";
+			App->physFS->SplitFilePath(loadedPath.c_str(), nullptr, nullptr, &materialName, &materialExtension);
 
 			newMaterial->SetTexture(loadTexture);
-			newMaterial->SetTextureNameAndPath(std::string(meshName + meshExtension).c_str(), filePath.c_str());
+			newMaterial->SetTextureNameAndPath(std::string(materialName + "." + materialExtension).c_str(), loadedPath.c_str());
+
+
 		}
 		else
 		{

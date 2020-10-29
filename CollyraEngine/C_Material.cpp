@@ -24,8 +24,8 @@ void C_Material::SetTexture(uint idTexture)
 
 void C_Material::SetTextureNameAndPath(const char* name, const char* path)
 {
-	name = name;
-	path = path;
+	this->name = name;
+	this->path = path;
 }
 
 void C_Material::SetColor(Color color)
@@ -59,11 +59,17 @@ Color C_Material::GetColor() const
 
 std::string C_Material::GetMaterialName() const
 {
+	if (useDefaultTexture == true)
+		return "Checkers";
+
 	return name;
 }
 
 std::string C_Material::GetMaterialPath() const
 {
+	if (useDefaultTexture == true)
+		return "Default";
+
 	return path;
 }
 
