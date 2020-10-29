@@ -196,7 +196,7 @@ updateStatus Application::Draw2D()
 	return ret;
 }
 
-updateStatus Application::Draw()
+updateStatus Application::Draw(bool* drawFlags)
 {
 	updateStatus ret = UPDATE_CONTINUE;
 
@@ -204,7 +204,7 @@ updateStatus Application::Draw()
 
 	for (int i = 0; i < numModules && ret == UPDATE_CONTINUE; i++)
 	{
-		ret = moduleList[i]->Draw(dt);
+		ret = moduleList[i]->Draw(drawFlags);
 	}
 
 	return ret;
@@ -224,14 +224,14 @@ updateStatus Application::DebugDraw()
 	return ret;
 }
 
-bool Application::IsDebugModeOn()
+bool* Application::GetDrawFlags()
 {
 	if (uiManager != nullptr)
 	{
-		return(uiManager->IsDebugModeOn());
+		return(uiManager->GetDrawFlags());
 	}
 
-	return false;
+	return nullptr;
 }
 
 Module* Application::GetModulePointer(MODULE_TYPE type)

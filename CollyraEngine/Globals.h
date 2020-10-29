@@ -27,6 +27,16 @@ enum updateStatus
 	UPDATE_CONTINUE
 };
 
+enum DRAW_FLAGS
+{
+	FACES,
+	WIRE,
+	NORMAL_V,
+	NORMAL_F,
+
+	MAX_FLAGS
+};
+
 // Configuration -----------
 #define SCREEN_SIZE 1
 #define WIN_FULLSCREEN false

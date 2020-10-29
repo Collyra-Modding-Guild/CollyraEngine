@@ -12,8 +12,7 @@
 #include "OpenGL.h"
 
 M_Renderer3D::M_Renderer3D(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled),
-renderer(nullptr), frameBuffer(-1), textureBuffer(-1), depthBuffer(-1),
-drawingFaces(true), drawingDebugNormals(false), drawingTextures(true)
+renderer(nullptr), frameBuffer(-1), textureBuffer(-1), depthBuffer(-1)
 {}
 
 // Destructor
@@ -188,23 +187,13 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 
 	BeginDrawMode();
 
-	//if (drawingDebugNormals == true)
-	//{
-	//	//DrawNormals();
-	//}
+	bool* drawState = nullptr;
+	drawState = App->GetDrawFlags();
 
-	//Debug Render
-	if (App->IsDebugModeOn() == true)
-	{
-		BeginDebugMode();
-		App->DebugDraw();
-		EndDebugMode();
-	}
+	if (drawState == nullptr)
+		return UPDATE_STOP;
 
-	if (drawingFaces == true)
-	{
-		App->Draw();
-	}
+	App->Draw(drawState);
 
 	EndDrawMode();
 
@@ -250,16 +239,6 @@ void M_Renderer3D::OnResize(float width, float height)
 	glLoadMatrixf(App->camera->GetViewMatrix());
 
 	GenerateFrameBuffers(width, height);
-}
-
-void M_Renderer3D::BeginDebugMode()
-{
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-}
-
-void M_Renderer3D::EndDebugMode()
-{
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void M_Renderer3D::BeginDrawMode()

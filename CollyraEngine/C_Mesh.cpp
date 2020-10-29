@@ -1,15 +1,16 @@
 #include "C_Mesh.h"
+#include "Globals.h"
 
 #include "OpenGL.h"
 
 C_Mesh::C_Mesh(bool active) : Component(COMPONENT_TYPE::MESH, active), idIndex(-1), idVertex(-1), idNormals(-1), idTextureCoords(-1),
-wire(false), noFace(false)
+drawWire(false), drawNormVertices(false), drawNormFaces(false), drawFaces(true)
 {}
 
 C_Mesh::C_Mesh(std::vector<float3> vertices, std::vector<uint> indices, std::vector<float3> normals, std::vector<float2> textureCoords, bool active) :
 	Component(COMPONENT_TYPE::MESH, active),
 	idIndex(-1), idVertex(-1), idNormals(-1), idTextureCoords(-1),
-	wire(false), noFace(false)
+	drawWire(false), drawNormVertices(false), drawNormFaces(false), drawFaces(true)
 {}
 
 C_Mesh::~C_Mesh()
@@ -88,17 +89,32 @@ void C_Mesh::ClearMesh()
 
 
 // ------------------------------------------------------------
-void C_Mesh::Render(float4x4 transform, int textureID, Color color, bool globalWireMode) const
+void C_Mesh::Render(bool* drawState, float4x4 transform, int textureID, Color color) const
 {
 	glPushMatrix();
 	glMultMatrixf((float*)&transform);
 
-	if (globalWireMode)
-		glColor3f(wireColor.r, wireColor.g, wireColor.b);
-	else
-		glColor3f(color.r, color.g, color.b);
+	if (drawWire || drawState[WIRE] == true)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	InnerRender(textureID);
+		glColor3f(wireColor.r, wireColor.g, wireColor.b);
+		glLineWidth(2.0f);
+
+		InnerRender(-1);
+
+		glLineWidth(1.0f);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+
+	if (drawFaces && drawState[FACES] != false)
+	{
+		glColor3f(color.r, color.g, color.b);
+		InnerRender(textureID);
+	}
+
+	if (drawNormVertices || drawNormFaces || drawState[NORMAL_V] == true || drawState[NORMAL_F] == true)
+		DrawNormals(drawState);
 
 	glPopMatrix();
 }
@@ -153,30 +169,34 @@ void C_Mesh::InnerRender(int textureID) const
 
 }
 
-void C_Mesh::DrawNormals() const
+void C_Mesh::DrawNormals(bool* drawState) const
 {
 	glLineWidth(2.0f);
 
 	glBegin(GL_LINES);
 
-	uint lineLength = 5;
+	uint lineLength = 1;
 
 	if (vertices.size() == normals.size())
 		for (uint i = 0, j = 0; i < vertices.size(); i++)
 		{
 			//Draw Vertex Normals-----------------------
-			glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+			if (drawNormVertices == true|| drawState[NORMAL_V])
+			{
+				glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
 
-			float3 vector = vertices[i];
-			float3 normal = vector + normals[i] * lineLength;
 
-			glVertex3f(vector.x, vector.y, vector.z); glVertex3f(normal.x, normal.y, normal.z);
+				float3 vector = vertices[i];
+				float3 normal = vector + normals[i] * lineLength;
+
+				glVertex3f(vector.x, vector.y, vector.z); glVertex3f(normal.x, normal.y, normal.z);
+			}
 
 			glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
 			j++;
 
 			//Draw Faces normals-------------------
-			if (j == 3)
+			if (j == 3 && (drawNormFaces == true || drawState[NORMAL_F]))
 			{
 				float3 P0 = vertices[i - 2];
 				float3 P1 = vertices[i - 1];
@@ -203,6 +223,66 @@ void C_Mesh::DrawNormals() const
 	glEnd();
 
 	glLineWidth(1.0f);
+}
+
+uint C_Mesh::GetVerticesSize() const
+{
+	return vertices.size();
+}
+
+uint C_Mesh::GetIndicesSize() const
+{
+	return indices.size();
+}
+
+uint C_Mesh::GetNormalsSize() const
+{
+	return normals.size();
+}
+
+uint C_Mesh::GetTextureCoordsSize() const
+{
+	return textureCoords.size();
+}
+
+bool C_Mesh::GetDrawingWire() const
+{
+	return drawWire;
+}
+
+void C_Mesh::SetDrawingWire(bool newState)
+{
+	drawWire = newState;
+}
+
+bool C_Mesh::GetDrawingFaces() const
+{
+	return drawFaces;
+}
+
+void C_Mesh::SetDrawingFaces(bool newState)
+{
+	drawFaces = newState;
+}
+
+bool C_Mesh::GetDrawingNormVertices() const
+{
+	return drawNormVertices;
+}
+
+void C_Mesh::SetDrawingNormVertices(bool newState)
+{
+	drawNormVertices = newState;
+}
+
+bool C_Mesh::GetDrawingNormFaces() const
+{
+	return drawNormFaces;
+}
+
+void C_Mesh::SetDrawingNormFaces(bool newState)
+{
+	drawNormFaces = newState;
 }
 
 std::string C_Mesh::GetMeshName() const

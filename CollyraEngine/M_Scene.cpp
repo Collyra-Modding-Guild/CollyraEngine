@@ -59,7 +59,7 @@ updateStatus M_Scene::Update(float dt)
 	return UPDATE_CONTINUE;
 }
 
-updateStatus M_Scene::Draw(float dt)
+updateStatus M_Scene::Draw(bool* drawState)
 {
 	std::stack<GameObject*> stack;
 	GameObject* currNode = nullptr;
@@ -79,7 +79,7 @@ updateStatus M_Scene::Draw(float dt)
 
 		if (currNode != nullptr && currNode->active)
 		{
-			DrawGameObject(currNode);
+			DrawGameObject(currNode, drawState);
 		}
 		else
 			continue;
@@ -150,7 +150,7 @@ void M_Scene::CheckSiblingsName(GameObject* parent, std::string& myName)
 	}
 }
 
-void M_Scene::DrawGameObject(GameObject* gameObject)
+void M_Scene::DrawGameObject(GameObject* gameObject, bool* drawState)
 {
 	C_Mesh* mesh = gameObject->GetComponent<C_Mesh>();
 	C_Transform* transform = gameObject->GetComponent<C_Transform>();
@@ -160,11 +160,11 @@ void M_Scene::DrawGameObject(GameObject* gameObject)
 	{
 		if (material != nullptr && material->IsActive() == true)
 		{
-			mesh->Render(transform->GetTGlobalTransform(), (int)material->GetTexture(), material->GetColor());
+			mesh->Render(drawState,transform->GetTGlobalTransform(), (int)material->GetTexture(), material->GetColor());
 		}
 		else
 		{
-			mesh->Render(transform->GetTGlobalTransform());
+			mesh->Render(drawState,transform->GetTGlobalTransform());
 		}
 	}
 }

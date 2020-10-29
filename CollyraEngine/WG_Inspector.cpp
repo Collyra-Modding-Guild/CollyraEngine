@@ -220,25 +220,45 @@ void WG_Inspector::DrawMeshComponent(ImGuiTreeNodeFlags_ flag, C_Mesh* mesh)
 
 		ImGui::Text("Vertices      ");
 		ImGui::SameLine();
-		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "%i", mesh->vertices.size());
+		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "%i", mesh->GetVerticesSize());
 
 		ImGui::Text("Indices       ");
 		ImGui::SameLine();
-		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "%i", mesh->indices.size());
+		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "%i", mesh->GetIndicesSize());
 
 		ImGui::Text("Normals       ");
 		ImGui::SameLine();
-		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "%i", mesh->normals.size());
+		ImGui::TextColored({ 0 , 255 , 255 , 100 }, "%i", mesh->GetNormalsSize());
 
 		ImGui::Spacing();
 		ImGui::Spacing();
 
-		ImGui::Text("Draw Normals ");
+		ImGui::Text("Vertex Normals");
 		ImGui::SameLine();
-		bool drawNormals = false;
-		if (ImGui::Checkbox("##drawNorm", &drawNormals))
-			mesh->DrawNormals();
-		
+		bool drawNormalV = mesh->GetDrawingNormVertices();
+		ImGui::Checkbox("##drawNormV", &drawNormalV);
+		mesh->SetDrawingNormVertices(drawNormalV);
+
+		ImGui::SameLine();
+		ImGui::Text("Face Normals");
+		ImGui::SameLine();
+		bool drawNormalF = mesh->GetDrawingNormFaces();
+		ImGui::Checkbox("##drawNormF", &drawNormalF);
+		mesh->SetDrawingNormFaces(drawNormalF);
+
+		ImGui::Text("Wire Draw");
+		ImGui::SameLine();
+		bool drawWire = mesh->GetDrawingWire();
+		ImGui::Checkbox("##drawWire", &drawWire);
+		mesh->SetDrawingWire(drawWire);
+		ImGui::SameLine();
+
+		ImGui::Text("Face Draw");
+		ImGui::SameLine();
+		bool drawFaces = mesh->GetDrawingFaces();
+		ImGui::Checkbox("##drawFaces", &drawFaces);
+		mesh->SetDrawingFaces(drawFaces);
+
 	}
 
 	ImGui::Spacing();
@@ -281,7 +301,6 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* m
 		ImVec2 uvMin = ImVec2(0.0f, 1.0f);                 // Top-left
 		ImVec2 uvMax = ImVec2(1.0f, 0.0f);                 // Lower-right
 
-	
 		ImGui::Text("Set Default Texture");
 		ImGui::SameLine();
 
@@ -290,10 +309,8 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* m
 
 		material->SetUseDefaultTexture(usingDefaultTexture);
 
-
 		ImGui::Spacing();
 		ImGui::Spacing();
-
 
 		ImGui::Text("Albedo");
 		ImGui::Spacing();
