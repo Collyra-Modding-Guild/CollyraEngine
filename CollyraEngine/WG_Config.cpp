@@ -224,6 +224,8 @@ updateStatus WG_Config::Update()
 	{
 		// - - - - - - - - Render Additional Options - - - - - - - - - -
 
+		ImGui::BulletText("General:");
+
 		bool check = glIsEnabled(GL_DEPTH_TEST);
 
 		if (ImGui::Checkbox("Depth Test", &check))
@@ -257,6 +259,25 @@ updateStatus WG_Config::Update()
 				LOG("Cull Face: ENABLED.");
 			}
 		}
+		ImGui::SameLine();
+
+		check = glIsEnabled(GL_BLEND);
+
+		if (ImGui::Checkbox("Blend", &check))
+		{
+			if (glIsEnabled(GL_BLEND))
+			{
+				glDisable(GL_BLEND);
+				LOG("Blend: DISABLED.");
+			}
+			else
+			{
+				glEnable(GL_BLEND);
+				LOG("Blend: ENABLED.");
+			}
+		}
+
+		ImGui::BulletText("Lighting:");
 
 		check = glIsEnabled(GL_LIGHTING);
 
@@ -274,7 +295,7 @@ updateStatus WG_Config::Update()
 			}
 		}
 
-		ImGui::SameLine();
+		ImGui::BulletText("Material:");
 
 		check = glIsEnabled(GL_COLOR_MATERIAL);
 
@@ -291,6 +312,7 @@ updateStatus WG_Config::Update()
 				LOG("Color Material: ENABLED.");
 			}
 		}
+		ImGui::SameLine();
 
 		check = glIsEnabled(GL_TEXTURE_2D);
 
@@ -309,33 +331,17 @@ updateStatus WG_Config::Update()
 		}
 
 
-		ImGui::SameLine();
+		ImGui::BulletText("Draw:");
 
 		ImGui::Checkbox("Wire Draw)", &drawFlags[WIRE]);
-
+		ImGui::SameLine();
 		ImGui::Checkbox("Draw Faces", &drawFlags[FACES]);
 
-		ImGui::Checkbox("Draw Vertex Normals", &drawFlags[NORMAL_V]);
+		ImGui::BulletText("Draw Normals:");
 
-		ImGui::Checkbox("Draw Face Normals", &drawFlags[NORMAL_F]);
-
+		ImGui::Checkbox("Vertex Normals", &drawFlags[NORMAL_V]);
 		ImGui::SameLine();
-
-		check = glIsEnabled(GL_BLEND);
-
-		if (ImGui::Checkbox("Blend", &check))
-		{
-			if (glIsEnabled(GL_BLEND))
-			{
-				glDisable(GL_BLEND);
-				LOG("Blend: DISABLED.");
-			}
-			else
-			{
-				glEnable(GL_BLEND);
-				LOG("Blend: ENABLED.");
-			}
-		}
+		ImGui::Checkbox("Face Normals", &drawFlags[NORMAL_F]);
 
 	}
 

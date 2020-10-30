@@ -3,14 +3,10 @@
 #include <windows.h>
 
 WG_About::WG_About(bool isActive) : WindowGroup(WG_ABOUT, isActive)
-{
-
-}
+{}
 
 WG_About::~WG_About()
-{
-
-}
+{}
 
 updateStatus WG_About::Update()
 {
