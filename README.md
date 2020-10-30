@@ -47,6 +47,8 @@ Finally, in the console you will see the system messages displayed as the code r
 - Supr will delete the focus element & all its childs
 - Left click on the arrow to fold/unfold the node's structure.
 
+NOTE: for now, take into account that you can only load files from inside the project folder &  taht, if you load an fbx with an associated texture, it will search for a relative path & then try to see if the texture is in the texture's folder.
+
 
 ## License:
 MIT License
