@@ -279,9 +279,51 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* m
 		char materialName[100];
 		strcpy_s(materialName, 100, material->GetMaterialName().c_str());
 
-		ImGui::Text("Material Color:          ");
+		ImGui::Spacing();	
+
+		ImGui::Text("Texture          ");
 		ImGui::SameLine();
 		ImGui::TextColored({ 0 , 255 , 255 , 100 }, materialName);
+
+		char materialPath[100];
+		strcpy_s(materialPath, 100, material->GetMaterialPath().c_str());
+
+		ImGui::Spacing();
+
+		ImGui::Text("Texture Path     ");
+		ImGui::SameLine();
+		ImGui::TextColored({ 0 , 255 , 255 , 100 }, materialPath);
+
+		ImGui::Spacing();
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		ImGui::Text("Set Default Texture");
+		ImGui::SameLine();
+		bool usingDefaultTexture = material->GetDefaultTextureUsage();
+		ImGui::Checkbox("##defaultTex", &usingDefaultTexture);
+		material->SetUseDefaultTexture(usingDefaultTexture);
+
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		ImVec2 imgPreview = ImVec2(200, 200); // TEXTURE PREVIEW SIZE
+
+		// We Flip the UVs
+		ImVec2 uvMin = ImVec2(0.0f, 1.0f);                 // Top-left
+		ImVec2 uvMax = ImVec2(1.0f, 0.0f);                 // Lower-right
+
+		ImGui::Text("Albedo");
+		ImGui::Spacing();
+		ImGui::Indent();
+		ImGui::Image((ImTextureID)material->GetTexture(), imgPreview, uvMin, uvMax);
+		ImGui::Unindent();
+
+		ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
+
+		ImGui::Text("Material Color:          ");
+
+		ImGui::Spacing();	ImGui::Spacing();	ImGui::Spacing();
 
 		Color myColor = material->GetColor();
 		myColor.r *= 255;
@@ -311,43 +353,9 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* m
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(60.0f);
 		ImGui::DragFloat("##colorA", &myColor.a);
-
-		ImGui::Text("Texture          ");
-		ImGui::SameLine();
-		ImGui::TextColored({ 0 , 255 , 255 , 100 }, materialName);
-
-		char materialPath[100];
-		strcpy_s(materialPath, 100, material->GetMaterialPath().c_str());
-
-		ImGui::Text("Texture Path     ");
-		ImGui::SameLine();
-		ImGui::TextColored({ 0 , 255 , 255 , 100 }, materialPath);
-
-		ImGui::Spacing();
-		ImGui::Spacing();
-
-		ImGui::Text("Set Default Texture");
-		ImGui::SameLine();
-		bool usingDefaultTexture = material->GetDefaultTextureUsage();
-		ImGui::Checkbox("##defaultTex", &usingDefaultTexture);
-		material->SetUseDefaultTexture(usingDefaultTexture);
-
-		ImGui::Spacing();
-		ImGui::Spacing();
-
-		ImVec2 imgPreview = ImVec2(200, 200); // TEXTURE PREVIEW SIZE
-
-		// We Flip the UVs
-		ImVec2 uvMin = ImVec2(0.0f, 1.0f);                 // Top-left
-		ImVec2 uvMax = ImVec2(1.0f, 0.0f);                 // Lower-right
-
-		ImGui::Text("Albedo");
-		ImGui::Spacing();
-		ImGui::Indent();
-		ImGui::Image((ImTextureID)material->GetTexture(), imgPreview, uvMin, uvMax);
-		ImGui::Unindent();
 	}
 
+	ImGui::Spacing();
 	ImGui::Spacing();
 	ImGui::Separator();
 	ImGui::Spacing();
