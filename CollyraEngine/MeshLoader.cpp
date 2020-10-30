@@ -24,7 +24,6 @@
 
 void MeshLoader::Init()
 {
-
 	// Stream log messages to Debug window
 	struct aiLogStream stream;
 	stream = aiGetPredefinedLogStream(aiDefaultLogStream_DEBUGGER, nullptr);
@@ -64,10 +63,9 @@ void MeshLoader::Load(const char* path)
 
 		aiReleaseImport(scene);
 	}
-
-	if (!scene)
+	else
 	{
-		LOG("Error loading scene %s", path);
+		LOG("Error loading aiScene %s", path);
 	}
 
 }
@@ -158,18 +156,11 @@ bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const 
 
 	}
 
+	//We calculate the transform & send it to the recursive interaction
+	// Because we avoid the "empty" TRS parents that assimp generates but we want to keep the Transformation
 	transform = transform * float4x4::FromTRS(pos, rot, scale);
 
-	if (newGameObject == nullptr)
-	{
-		LoadSceneMeshes(scene, node, filePath, parent, transform);
-
-	}
-	else
-	{
-		LoadSceneMeshes(scene, node, filePath, newGameObject, transform);
-	}
-
+	LoadSceneMeshes(scene, node, filePath, newGameObject == nullptr ? parent : newGameObject, transform);
 
 	return true;
 }
@@ -223,7 +214,6 @@ void MeshLoader::LoadMaterialFromMesh(const aiMaterial* mat, GameObject* newGame
 
 			newMaterial->SetTexture(loadTexture);
 			newMaterial->SetTextureNameAndPath(std::string(materialName + "." + materialExtension).c_str(), loadedPath.c_str());
-
 
 		}
 		else

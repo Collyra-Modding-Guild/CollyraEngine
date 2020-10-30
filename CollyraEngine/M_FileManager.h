@@ -28,9 +28,6 @@ public:
 
 	void CreateFolderDirs();
 
-	// Return the bytes of a PhysFS filehandle
-	//uint Load(const char* path, char** buffer) const;
-
 	// Utility functions
 	bool AddPath(const char* path_or_zip);
 	bool Exists(const char* file) const;
@@ -39,14 +36,16 @@ public:
 
 	void DiscoverFiles(const char* directory, std::vector<std::string>& file_list, std::vector<std::string>& dir_list) const;
 	
-
+	//Extension Utils-----------
 	bool HasExtension(const char* path) const;
 	bool HasExtension(const char* path, std::string extension) const;
 	bool HasExtension(const char* path, std::vector<std::string> extensions) const;
 
+	//Path Manipulations Utils--------------
 	std::string NormalizePath(const char* path) const;
 	std::string LowerCaseString(const char* path) const;
 	void SplitFilePath(const char* full_path, std::string* projectPath, std::string* path, std::string* file = nullptr, std::string* extension = nullptr) const;
+	//Gets a path to a file in the project folder & a relative path from that file & returns the combination relative to the project
 	std::string GetProjectPathFromInternalRelative(std::string& projectPath, std::string& pathInternalRelative) const;
 
 	// Open for Read/Write
@@ -75,8 +74,6 @@ private:
 
 private:
 	std::vector<std::string>	pathVector;
-	std::vector<char*>			bufferVector;
-	std::vector<uint>			bytesVector;
 };
 
 #endif // __ModuleFileManager_H__

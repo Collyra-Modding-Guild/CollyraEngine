@@ -38,6 +38,7 @@ void C_Transform::SetLocalTransformation(float3 pos, Quat rot, float3 scl)
 	GenerateEulerFromRot();
 }
 
+//Transposed because OpenGL <=> MathGeoLib communication
 void C_Transform::GenerateGlobalTransformationFrom(float4x4 parentTransform)
 {
 	globalTransform = parentTransform * localTransform;

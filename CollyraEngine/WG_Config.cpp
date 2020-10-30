@@ -50,6 +50,19 @@ updateStatus WG_Config::Update()
 		// - - - - - - - - FPS Cap - - - - - - - - - -
 		ImGui::SliderFloat("Limit Framerate", &App->capTime, 0, 125);
 		ImGui::Text("Limit FPS: %i", int(App->capTime));
+		ImGui::SameLine();
+		M_Renderer3D* renderModule = (M_Renderer3D*)App->GetModulePointer(M_RENDER3D);
+
+		if (renderModule == nullptr)
+			return UPDATE_STOP;
+
+		bool vSync = renderModule->GetVSync();
+		if (ImGui::Checkbox("VSync", &vSync))
+		{
+			SDL_GL_SetSwapInterval(vSync);
+		}
+
+		renderModule->SetVSync(vSync);
 
 		// - - - - - - - - Framerate Stuff Graphs - - - - - - - - - -
 
@@ -91,20 +104,6 @@ updateStatus WG_Config::Update()
 		if (ImGui::Checkbox("Full Desktop", &App->window->fullscreenDesktop))
 			App->window->SetFullscreenDesktop(App->window->fullscreenDesktop);
 
-		ImGui::SameLine();
-
-		M_Renderer3D* renderModule = (M_Renderer3D*)App->GetModulePointer(M_RENDER3D);
-
-		if (renderModule == nullptr)
-			return UPDATE_STOP;
-
-		bool vSync = renderModule->GetVSync();
-		if (ImGui::Checkbox("VSync", &vSync))
-		{
-			SDL_GL_SetSwapInterval(vSync);
-		}
-
-		renderModule->SetVSync(vSync);
 	}
 
 	if (ImGui::CollapsingHeader("File System"))

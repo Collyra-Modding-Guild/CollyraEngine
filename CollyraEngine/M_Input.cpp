@@ -156,7 +156,6 @@ updateStatus M_Input::PreUpdate(float dt)
 	return UPDATE_CONTINUE;
 }
 
-// Called before quitting
 bool M_Input::CleanUp()
 {
 	LOG("Quitting SDL input event subsystem");

@@ -2,8 +2,6 @@
 #include "TextureLoader.h"
 #include "M_FileManager.h"
 
-#include "p2Defs.h"
-
 #include "OpenGL.h"
 
 #include "Devil/include/ilut.h"
@@ -27,8 +25,8 @@ bool TextureLoader::Init()
 		printf("Error initializing DevIL! %s\n", iluErrorString(ilError));
 		return false;
 	}
-
-
+	else
+		LOG("Devil Init!");
 
 	return true;
 }

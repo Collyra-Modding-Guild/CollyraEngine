@@ -12,11 +12,13 @@ public:
 	C_Transform(float4x4 parentTransform, float4x4 localTransform);
 	~C_Transform();
 
+	//Setters-------------------
 	void SetLocalTransformation(float4x4 transform);
 	void SetLocalTransformation(float3 pos, Quat rotation, float3 scale);
 	void GenerateGlobalTransformationFrom(float4x4 parentTransform);
 	void SetGlobalTransformation(float4x4 globalTransform);
 
+	//Getters-------------------
 	float4x4	GetLocalTransform() const;
 	float4x4	GetGlobalTransform() const;
 	float4x4	GetTGlobalTransform() const;

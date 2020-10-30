@@ -1,6 +1,6 @@
 #include "C_Material.h"
-#include "TextureLoader.h"
 
+//TODO: This hurts	my soul
 #include "Application.h"
 #include "M_Resources.h"
 

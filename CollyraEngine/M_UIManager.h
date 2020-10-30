@@ -2,7 +2,6 @@
 #define __ModuleUIManager_H__
 
 #include "Module.h"
-
 #include <string>
 #include <vector>
 
@@ -13,7 +12,6 @@ class WG_Scene;
 class WG_Hierarchy;
 class WG_Inspector;
 class WG_About;
-
 
 class M_UIManager : public Module
 {
@@ -43,9 +41,8 @@ public:
 	int				GetFocusedGameObjectId() const;
 
 private:
+
 	//Functions for the editor menus-----------
-
-
 	bool			ShowMainMenuBar();
 	void			EnableDockSpace();
 

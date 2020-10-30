@@ -3,7 +3,6 @@
 
 #include "Module.h"
 #include <vector>
-#include <stack>
 #include <string>
 
 class GameObject;

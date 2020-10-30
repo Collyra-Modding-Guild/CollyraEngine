@@ -1,6 +1,7 @@
 #include "M_Scene.h"
 #include "GameObject.h"
 #include "p2Defs.h"
+#include <stack>
 
 #include "Component.h"
 #include "C_Mesh.h"
