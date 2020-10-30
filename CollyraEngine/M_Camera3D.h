@@ -21,7 +21,7 @@ public:
 	void OrbitalLook(const vec3 &Position, const vec3 &Reference, bool RotateAroundReference = false);
 	void LookAt(const vec3 &Spot);
 	void Move(const vec3& Movement, bool changeReference = true);
-	void OrbitalCamera(GameObject* focused, float multiplier = 1.0f);
+	void FocusGameObject(GameObject* focused, float multiplier = 1.0f);
 
 	float* GetViewMatrix();
 	vec3 GetCameraPosition();
@@ -30,6 +30,10 @@ private:
 	void CalculateViewMatrix();
 
 	void CameraMovement(float dt);
+
+	void CameraPlanePan(vec3& newPos);
+
+	void OrbitArroundReference(vec3& reference, vec3&pos, vec3 speed);
 
 	void ResetReference();
 

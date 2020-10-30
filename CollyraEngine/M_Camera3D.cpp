@@ -5,10 +5,8 @@
 #include "M_Scene.h"
 
 #include "GameObject.h"
-#include "Component.h"
 #include "C_Transform.h"
 #include "C_Mesh.h"
-#include "C_Material.h"
 
 #include "MathGeoLib/include/Geometry/Frustum.h"
 
@@ -62,7 +60,7 @@ updateStatus M_Camera3D::Update(float dt)
 
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
 	{
-		OrbitalCamera(App->scene->focusedGameObject);
+		FocusGameObject(App->scene->focusedGameObject);
 	}
 
 	// Recalculate matrix -------------
@@ -78,10 +76,43 @@ void M_Camera3D::CameraMovement(float dt)
 	vec3 newPos(0, 0, 0);
 	float speed = DEFAULT_MOUSE_SPEED * dt;
 
+	//Acceleration-------
 	if (inputModule->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
 		speed = (speed * 2);
 
+	CameraPlanePan(newPos);
 
+	vec3 zoom = CameraZoom(dt);
+
+	if (inputModule->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+	{
+		OrbitArroundReference(Reference, newPos, speed);
+		this->orbitalReference = this->Position;
+		this->orbitalReference -= Z * 20;
+	}
+
+	else if(inputModule->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && inputModule->GetKey(SDL_SCANCODE_LALT))
+	{
+		OrbitArroundReference(orbitalReference, newPos, speed);
+		this->Reference = this->Position;
+		this->Reference -= Z * 5;
+	}
+
+	//If we are rotating arround a GameObject, we only change the focus when we move
+	// This allows free zoom arround the focused GameObject
+	if ((newPos.x > 0 || newPos.y > 0 || newPos.z > 0.f) && focusingObject == true)
+	{
+		ResetReference();
+		focusingObject = false;
+	}
+
+	Move(newPos);
+	Move(zoom, !focusingObject);
+}
+
+// -----------------------------------------------------------------
+void M_Camera3D::CameraPlanePan(vec3& newPos)
+{
 	if (inputModule->GetMouseButton(SDL_BUTTON_MIDDLE) == KEY_REPEAT)
 	{
 		int dx = inputModule->GetMouseXMotion();
@@ -92,101 +123,48 @@ void M_Camera3D::CameraMovement(float dt)
 		newPos += Y * dy * Sensitivity;
 		newPos -= X * dx * Sensitivity;
 	}
+}
 
+void M_Camera3D::OrbitArroundReference(vec3& reference, vec3& pos, vec3 speed)
+{
+	int dx = -inputModule->GetMouseXMotion();
+	int dy = -inputModule->GetMouseYMotion();
 
-	vec3 zoom = CameraZoom(dt);
+	float Sensitivity = 0.25f;
 
-	if (inputModule->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+	Position -= reference;
+
+	if (dx != 0)
 	{
-		int dx = -inputModule->GetMouseXMotion();
-		int dy = -inputModule->GetMouseYMotion();
+		float DeltaX = (float)dx * Sensitivity;
 
-		float Sensitivity = 0.25f;
-
-		Position -= Reference;
-
-		if (dx != 0)
-		{
-			float DeltaX = (float)dx * Sensitivity;
-
-			X = rotate(X, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-			Y = rotate(Y, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-			Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-		}
-
-		if (dy != 0)
-		{
-			float DeltaY = (float)dy * Sensitivity;
-
-			Y = rotate(Y, DeltaY, X);
-			Z = rotate(Z, DeltaY, X);
-
-			if (Y.y < 0.0f)
-			{
-				Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
-				Y = cross(Z, X);
-			}
-		}
-
-		if (inputModule->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) newPos -= Z * speed;
-		if (inputModule->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) newPos += Z * speed;
-
-
-		if (inputModule->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)newPos -= X * speed;
-		if (inputModule->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += X * speed;
-
-		Position = Reference + Z * length(Position);
-		this->orbitalReference = this->Position;
-		this->orbitalReference -= Z * 20;
+		X = rotate(X, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+		Y = rotate(Y, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+		Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));
 	}
 
-	else if(inputModule->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && inputModule->GetKey(SDL_SCANCODE_LALT))
+	if (dy != 0)
 	{
-		int dx = -inputModule->GetMouseXMotion();
-		int dy = -inputModule->GetMouseYMotion();
+		float DeltaY = (float)dy * Sensitivity;
 
-		float Sensitivity = 0.25f;
+		Y = rotate(Y, DeltaY, X);
+		Z = rotate(Z, DeltaY, X);
 
-		Position -= orbitalReference;
-
-		if (dx != 0)
+		if (Y.y < 0.0f)
 		{
-			float DeltaX = (float)dx * Sensitivity;
-
-			X = rotate(X, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-			Y = rotate(Y, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-			Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+			Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
+			Y = cross(Z, X);
 		}
-
-		if (dy != 0)
-		{
-			float DeltaY = (float)dy * Sensitivity;
-
-			Y = rotate(Y, DeltaY, X);
-			Z = rotate(Z, DeltaY, X);
-
-			if (Y.y < 0.0f)
-			{
-				Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
-				Y = cross(Z, X);
-			}
-		}
-
-		Position = orbitalReference + Z * length(Position);
-		this->Reference = this->Position;
-		this->Reference -= Z * 5;
 	}
 
-
-	if ((newPos.x > 0 || newPos.y > 0 || newPos.z > 0.f) && focusingObject == true)
-	{
-		ResetReference();
-		focusingObject = false;
-	}
+	if (inputModule->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) pos -= Z * speed;
+	if (inputModule->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) pos += Z * speed;
 
 
-	Move(newPos);
-	Move(zoom, !focusingObject);
+	if (inputModule->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)pos -= X * speed;
+	if (inputModule->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) pos += X * speed;
+
+	Position = reference + Z * length(Position);
 }
 
 // -----------------------------------------------------------------
@@ -244,7 +222,7 @@ void M_Camera3D::OrbitalLook(const vec3& Position, const vec3& Reference, bool R
 	Y = cross(Z, X);
 
 	this->orbitalReference = Reference;
-	this->Position = orbitalReference + Z * 15;
+	this->Position = orbitalReference + length(Position) * Z;
 
 	if (!RotateAroundReference)
 	{
@@ -290,7 +268,7 @@ void M_Camera3D::Move(const vec3& Movement, bool changeReference)
 }
 
 // -----------------------------------------------------------------
-void M_Camera3D::OrbitalCamera(GameObject* focused, float multiplier)
+void M_Camera3D::FocusGameObject(GameObject* focused, float multiplier)
 {
 	if (focused != nullptr)
 	{
@@ -307,6 +285,7 @@ void M_Camera3D::OrbitalCamera(GameObject* focused, float multiplier)
 		{
 			float3 meshSize = mesh->GetSize();
 			dist = length({ meshSize.x, meshSize.y, meshSize.z });
+			multiplier *= 0.75;
 		}
 
 		vec3 Direction = { 1.0f, 1.0f, 1.0f };
@@ -314,14 +293,8 @@ void M_Camera3D::OrbitalCamera(GameObject* focused, float multiplier)
 
 		vec3 newPos = { 1.0f, 1.0f, 1.0f };;
 		if (dist > 0.0f)
-		{
 			newPos = pos + unitDirection * dist;
-		}
-		else
-		{
-			newPos = pos + Direction;
-		}
-
+		
 		OrbitalLook(newPos * multiplier, pos, true);
 	}
 }
