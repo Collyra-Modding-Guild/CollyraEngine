@@ -215,7 +215,7 @@ bool M_UIManager::ShowMainMenuBar()
 		{
 			ImVec2 buttonSize = { 70, 20 };
 
-			if (ImGui::BeginMenu("Create Primitives"))
+			if (ImGui::BeginMenu("Create . . ."))
 			{
 				if (ImGui::Button("Empty", buttonSize))
 				{
