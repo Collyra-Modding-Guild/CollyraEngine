@@ -34,6 +34,8 @@ public:
 
 	void DrawHeaderGameObject();
 
+	bool DeleteGameObject(int key);
+
 private:
 	int focusedId;
 	GameObject* focusedGameObject;
