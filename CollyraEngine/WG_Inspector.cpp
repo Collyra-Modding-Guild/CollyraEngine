@@ -279,6 +279,39 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* m
 		char materialName[100];
 		strcpy_s(materialName, 100, material->GetMaterialName().c_str());
 
+		ImGui::Text("Material Color:          ");
+		ImGui::SameLine();
+		ImGui::TextColored({ 0 , 255 , 255 , 100 }, materialName);
+
+		Color myColor = material->GetColor();
+		myColor.r *= 255;
+		myColor.g *= 255;
+		myColor.b *= 255;
+		myColor.a *= 255;
+
+		ImGui::Text("R");
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(60.0f);
+		ImGui::DragFloat("##colorR", &(myColor.r));
+
+		ImGui::SameLine();
+		ImGui::Text("G");
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(60.0f);
+		ImGui::DragFloat("##colorG", &myColor.g);
+
+		ImGui::SameLine();
+		ImGui::Text("B");
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(60.0f);
+		ImGui::DragFloat("##colorB", &myColor.b);
+
+		ImGui::SameLine();
+		ImGui::Text("A");
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(60.0f);
+		ImGui::DragFloat("##colorA", &myColor.a);
+
 		ImGui::Text("Texture          ");
 		ImGui::SameLine();
 		ImGui::TextColored({ 0 , 255 , 255 , 100 }, materialName);
