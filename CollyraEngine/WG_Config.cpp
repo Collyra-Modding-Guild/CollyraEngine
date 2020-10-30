@@ -124,11 +124,6 @@ updateStatus WG_Config::Update()
 
 	}
 
-	if (ImGui::CollapsingHeader("File System"))
-	{
-		ImGui::Text("In work process . . .");
-	}
-
 	if (ImGui::CollapsingHeader("Input"))
 	{
 		M_Input* inputModule = (M_Input*)App->GetModulePointer(M_INPUT);

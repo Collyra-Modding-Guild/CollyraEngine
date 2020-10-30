@@ -41,6 +41,11 @@ public:
 	int				GetFocusedGameObjectId() const;
 	void			OnWindowResize() const;
 
+	void SetupSmoothImGuiStyle(bool volumeEffect);
+
+	void SetupDarkImGuiStyle(float alpha);
+	void SetupLightImGuiStyle();
+
 private:
 
 	//Functions for the editor menus-----------
