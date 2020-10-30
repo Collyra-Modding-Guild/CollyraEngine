@@ -40,6 +40,11 @@ public:
 	void            SetFocusedGameObject(uint id);
 	int				GetFocusedGameObjectId() const;
 
+	void SetupSmoothImGuiStyle(bool volumeEffect);
+
+	void SetupDarkImGuiStyle(float alpha);
+	void SetupLightImGuiStyle();
+
 private:
 
 	//Functions for the editor menus-----------
