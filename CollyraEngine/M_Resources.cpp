@@ -81,10 +81,12 @@ void M_Resources::ImportResourceInternal(const char* path)
 			cMaterial->SetTexture(TextureLoader::Load(relativePath.c_str()));
 			cMaterial->SetTextureNameAndPath(std::string(name + "." + extension).c_str(), relativePath.c_str());
 		}
+		else
+			LOG("No Game Object selected to load the Texture into!!");
 
 	}
 	else
-		LOG("No Game Object selected to load the Texture into!!");
+		LOG("File type unsupported %s", extension.c_str());
 }
 
 

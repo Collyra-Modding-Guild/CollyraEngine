@@ -331,9 +331,9 @@ updateStatus WG_Config::Update()
 		}
 
 
-		ImGui::BulletText("Draw:");
+		ImGui::BulletText("Draw Modes:");
 
-		ImGui::Checkbox("Wire Draw)", &drawFlags[WIRE]);
+		ImGui::Checkbox("Wire Draw", &drawFlags[WIRE]);
 		ImGui::SameLine();
 		ImGui::Checkbox("Draw Faces", &drawFlags[FACES]);
 
