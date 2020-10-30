@@ -31,18 +31,16 @@ updateStatus WG_Inspector::Update()
 		C_Mesh* mesh = focusedGameObject->GetComponent<C_Mesh>();
 		C_Material* material = focusedGameObject->GetComponent<C_Material>();
 
-		//Delete the selected item------------
-		if (App->input->GetKey(SDL_SCANCODE_DELETE) == KEY_DOWN)
-		{
-			App->scene->DeleteGameObject(focusedGameObject);
-			ImGui::End();
+		//Delete the selected item - - - - - - - - - - - -
+		if(DeleteGameObject(SDL_SCANCODE_DELETE))
 			return UPDATE_CONTINUE;
-		}
+
+
+		// Draw Inspector Structure  - - - - - - - - - - - -
 
 		DrawHeaderGameObject();
 
 		DrawTransformComponent(ImGuiTreeNodeFlags_DefaultOpen);
-
 
 		if (mesh != nullptr)
 			DrawMeshComponent(ImGuiTreeNodeFlags_DefaultOpen, mesh);
@@ -119,19 +117,19 @@ void WG_Inspector::DrawTransformComponent(ImGuiTreeNodeFlags_ flag)
 		ImGui::Text("X");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##posX", &selectedPosition.x, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
+		ImGui::DragFloat("##posX", &selectedPosition.x);
 
 		ImGui::SameLine();
 		ImGui::Text("Y");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##posY", &selectedPosition.y, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
+		ImGui::DragFloat("##posY", &selectedPosition.y);
 
 		ImGui::SameLine();
 		ImGui::Text("Z");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##posZ", &selectedPosition.z, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
+		ImGui::DragFloat("##posZ", &selectedPosition.z);
 
 		// ROTATION - - - - - - - - - - - - - - - - - - - - - - 
 		ImGui::Spacing();
@@ -142,19 +140,19 @@ void WG_Inspector::DrawTransformComponent(ImGuiTreeNodeFlags_ flag)
 		ImGui::Text("X");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##rotX", &selectedRotation.x, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
+		ImGui::DragFloat("##rotX", &selectedRotation.x);
 
 		ImGui::SameLine();
 		ImGui::Text("Y");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##rotY", &selectedRotation.y, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
+		ImGui::DragFloat("##rotY", &selectedRotation.y);
 
 		ImGui::SameLine();
 		ImGui::Text("Z");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##rotZ", &selectedRotation.z, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
+		ImGui::DragFloat("##rotZ", &selectedRotation.z);
 
 
 		// SCALE  - - - - - - - - - - - - - - - - - - - - - - 
@@ -166,19 +164,19 @@ void WG_Inspector::DrawTransformComponent(ImGuiTreeNodeFlags_ flag)
 		ImGui::Text("X");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##scaX", &selectedScale.x, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
+		ImGui::DragFloat("##scaX", &selectedScale.x);
 
 		ImGui::SameLine();
 		ImGui::Text("Y");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##scaY", &selectedScale.y, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
+		ImGui::DragFloat("##scaY", &selectedScale.y);
 
 		ImGui::SameLine();
 		ImGui::Text("Z");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##scaZ", &selectedScale.z, 1.0f, 0.0f, 0.0f, "%f", 1.0f);
+		ImGui::DragFloat("##scaZ", &selectedScale.z);
 
 		ImGui::Spacing();
 	}
@@ -186,9 +184,6 @@ void WG_Inspector::DrawTransformComponent(ImGuiTreeNodeFlags_ flag)
 	ImGui::Spacing();
 	ImGui::Separator();
 	ImGui::Spacing();
-
-
-
 }
 
 void WG_Inspector::DrawMeshComponent(ImGuiTreeNodeFlags_ flag, C_Mesh* mesh)
@@ -202,15 +197,15 @@ void WG_Inspector::DrawMeshComponent(ImGuiTreeNodeFlags_ flag, C_Mesh* mesh)
 	if (ImGui::CollapsingHeader("Mesh", flag))
 	{
 
-		char meshName[80];
-		strcpy_s(meshName, 80, mesh->GetMeshName().c_str());
+		char meshName[100];
+		strcpy_s(meshName, 100, mesh->GetMeshName().c_str());
 
 		ImGui::Text("Mesh          ");
 		ImGui::SameLine();
 		ImGui::TextColored({ 0 , 255 , 255 , 100 }, meshName);
 
-		char meshPath[80];
-		strcpy_s(meshPath, 80, mesh->GetMeshPath().c_str());
+		char meshPath[100];
+		strcpy_s(meshPath, 100, mesh->GetMeshPath().c_str());
 
 		ImGui::Text("Mesh Path     ");
 		ImGui::SameLine();
@@ -236,28 +231,30 @@ void WG_Inspector::DrawMeshComponent(ImGuiTreeNodeFlags_ flag, C_Mesh* mesh)
 
 		ImGui::Text("Vertex Normals");
 		ImGui::SameLine();
-		bool drawNormalV = mesh->GetDrawingNormVertices();
+		bool drawNormalV = mesh->GetDrawingNormVertices(); // DRAW NORMAL VERTICES
 		ImGui::Checkbox("##drawNormV", &drawNormalV);
 		mesh->SetDrawingNormVertices(drawNormalV);
 
 		ImGui::SameLine();
+
 		ImGui::Text("Face Normals");
 		ImGui::SameLine();
-		bool drawNormalF = mesh->GetDrawingNormFaces();
+		bool drawNormalF = mesh->GetDrawingNormFaces(); // DRAW NORMAL FACES
 		ImGui::Checkbox("##drawNormF", &drawNormalF);
 		mesh->SetDrawingNormFaces(drawNormalF);
 
 		ImGui::Text("Wire Draw");
 		ImGui::SameLine();
 		bool drawWire = mesh->GetDrawingWire();
-		ImGui::Checkbox("##drawWire", &drawWire);
+		ImGui::Checkbox("##drawWire", &drawWire); // DRAW WIRE
 		mesh->SetDrawingWire(drawWire);
+
 		ImGui::SameLine();
 
 		ImGui::Text("Face Draw");
 		ImGui::SameLine();
 		bool drawFaces = mesh->GetDrawingFaces();
-		ImGui::Checkbox("##drawFaces", &drawFaces);
+		ImGui::Checkbox("##drawFaces", &drawFaces); // DRAW FACES
 		mesh->SetDrawingFaces(drawFaces);
 
 	}
@@ -279,15 +276,15 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* m
 
 	if (ImGui::CollapsingHeader("Material", flag))
 	{
-		char materialName[80];
-		strcpy_s(materialName, 80, material->GetMaterialName().c_str());
+		char materialName[100];
+		strcpy_s(materialName, 100, material->GetMaterialName().c_str());
 
 		ImGui::Text("Texture          ");
 		ImGui::SameLine();
 		ImGui::TextColored({ 0 , 255 , 255 , 100 }, materialName);
 
-		char materialPath[80];
-		strcpy_s(materialPath, 80, material->GetMaterialPath().c_str());
+		char materialPath[100];
+		strcpy_s(materialPath, 100, material->GetMaterialPath().c_str());
 
 		ImGui::Text("Texture Path     ");
 		ImGui::SameLine();
@@ -296,22 +293,20 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* m
 		ImGui::Spacing();
 		ImGui::Spacing();
 
-		ImVec2 imgPreview = ImVec2(200, 200);
-
-		// We Flip the UVs
-		ImVec2 uvMin = ImVec2(0.0f, 1.0f);                 // Top-left
-		ImVec2 uvMax = ImVec2(1.0f, 0.0f);                 // Lower-right
-
 		ImGui::Text("Set Default Texture");
 		ImGui::SameLine();
-
 		bool usingDefaultTexture = material->GetDefaultTextureUsage();
 		ImGui::Checkbox("##defaultTex", &usingDefaultTexture);
-
 		material->SetUseDefaultTexture(usingDefaultTexture);
 
 		ImGui::Spacing();
 		ImGui::Spacing();
+
+		ImVec2 imgPreview = ImVec2(200, 200); // TEXTURE PREVIEW SIZE
+
+		// We Flip the UVs
+		ImVec2 uvMin = ImVec2(0.0f, 1.0f);                 // Top-left
+		ImVec2 uvMax = ImVec2(1.0f, 0.0f);                 // Lower-right
 
 		ImGui::Text("Albedo");
 		ImGui::Spacing();
@@ -346,12 +341,11 @@ void WG_Inspector::DrawHeaderGameObject()
 
 	ImGui::Spacing();
 
-
 	ImGui::Text("Tag");
 	ImGui::SameLine();
 
 	ImGui::SetNextItemWidth(110.0f);
-	if (ImGui::BeginCombo("##tags", currentTag))
+	if (ImGui::BeginCombo("##tags", currentTag)) // Check TAGS list and selected Tag
 	{
 		for (int n = 0; n < TAGS_NUM; n++)
 		{
@@ -365,11 +359,12 @@ void WG_Inspector::DrawHeaderGameObject()
 	}
 
 	ImGui::SameLine();
+
 	ImGui::Text("Layer");
 	ImGui::SameLine();
 
 	ImGui::SetNextItemWidth(110.0f);
-	if (ImGui::BeginCombo("##layers", currentLayer))
+	if (ImGui::BeginCombo("##layers", currentLayer)) // Check LAYERS list and selected Layer
 	{
 		for (int n = 0; n < LAYERS_NUM; n++)
 		{
@@ -387,4 +382,16 @@ void WG_Inspector::DrawHeaderGameObject()
 	ImGui::Spacing();
 
 	ImGui::Separator();
+}
+
+bool WG_Inspector::DeleteGameObject(int key)
+{
+	if (App->input->GetKey(key) == KEY_DOWN)
+	{
+		App->scene->DeleteGameObject(focusedGameObject);
+		ImGui::End();
+		return true;
+	}
+
+	return false;
 }

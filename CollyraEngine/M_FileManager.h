@@ -44,8 +44,8 @@ public:
 	//Path Manipulations Utils--------------
 	std::string NormalizePath(const char* path) const;
 	std::string LowerCaseString(const char* path) const;
-	void SplitFilePath(const char* full_path, std::string* projectPath, std::string* path, std::string* file = nullptr, std::string* extension = nullptr) const;
 	//Gets a path to a file in the project folder & a relative path from that file & returns the combination relative to the project
+	void SplitFilePath(const char* full_path, std::string* projectPath, std::string* path, std::string* file = nullptr, std::string* extension = nullptr) const;
 	std::string GetProjectPathFromInternalRelative(std::string& projectPath, std::string& pathInternalRelative) const;
 
 	// Open for Read/Write
@@ -55,8 +55,8 @@ public:
 	bool ImportFile(const char* file, std::string& relativePath);
 	bool DuplicateFile(const char* srcFile, const char* dstFile);
 
-	unsigned int Save(const char* file, const void* buffer, unsigned int size, bool append = false) const;
-	bool Remove(const char* file);
+	unsigned int	Save(const char* file, const void* buffer, unsigned int size, bool append = false) const;
+	bool			Remove(const char* file);
 
 
 	// GET - - -

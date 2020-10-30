@@ -22,20 +22,23 @@ public:
 
 	virtual void Cleanup();
 
-	void SetGameObject(uint focusedGameObject);
-	int GetFocusedGameObjectId() const;
-	void SetGameObject(GameObject* focusedGameObject);
+	void		SetGameObject(uint focusedGameObject);
+	void		SetGameObject(GameObject* focusedGameObject);
+
+	int			GetFocusedGameObjectId() const;
 	GameObject* GetGameObject() const;
-	void OnDestroyedId(uint destroyedGameObject);
 
-	void DrawTransformComponent (ImGuiTreeNodeFlags_ flag);
-	void DrawMeshComponent(ImGuiTreeNodeFlags_ flag, C_Mesh* mesh);
-	void DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* material);
+	void		OnDestroyedId(uint destroyedGameObject);
 
-	void DrawHeaderGameObject();
+	void		DrawHeaderGameObject();
+	void		DrawTransformComponent (ImGuiTreeNodeFlags_ flag);
+	void		DrawMeshComponent(ImGuiTreeNodeFlags_ flag, C_Mesh* mesh);
+	void		DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* material);
+
+	bool		DeleteGameObject(int key);
 
 private:
-	int focusedId;
+	int			focusedId;
 	GameObject* focusedGameObject;
 
 	const char* tags[TAGS_NUM] = { "Default", "Player", " ... " };

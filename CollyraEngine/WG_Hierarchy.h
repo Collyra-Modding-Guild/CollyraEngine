@@ -25,10 +25,10 @@ private:
 	void SetTreeNodeFlags(const GameObject* parent);
 
 private:
-	ImGuiTreeNodeFlags flag;
-	int selected;
+	ImGuiTreeNodeFlags	flag;
+	int					selected;
 
-	const GameObject* rootPointer;
+	const GameObject*	rootPointer;
 
 };
 

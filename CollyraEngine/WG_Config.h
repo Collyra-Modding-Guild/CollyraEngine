@@ -20,20 +20,18 @@ public:
 
 	virtual void Cleanup();
 
-	void NewLogInput(const char* newInputLog);
-
-	void NewLogFramerate(float newMs, float newFps);
-
-	bool* GetDrawFlags();
+	void	NewLogInput(const char* newInputLog);
+	void	NewLogFramerate(float newMs, float newFps);
+	bool*	GetDrawFlags();
 
 private:
-	std::vector<float> fpsLog;
-	std::vector<float> msLog;
+	std::vector<float>	fpsLog;
+	std::vector<float>	msLog;
 
-	ImGuiTextBuffer logInputs;
-	bool			newInput;
+	ImGuiTextBuffer		logInputs;
+	bool				newInput;
 
-	bool			drawFlags[MAX_FLAGS];
+	bool				drawFlags[MAX_FLAGS];
 
 };
 

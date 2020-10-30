@@ -59,8 +59,8 @@ public:
 
 private:
 	//Bool controllers for the editor menus-----------
-	bool showDemoWindow;
-	bool showConfigMenu;
+	bool			showDemoWindow;
+	bool			showConfigMenu;
 
 };
 
