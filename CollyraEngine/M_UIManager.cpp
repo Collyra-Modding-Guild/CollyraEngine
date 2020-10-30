@@ -217,6 +217,10 @@ bool M_UIManager::ShowMainMenuBar()
 
 			if (ImGui::BeginMenu("Create Primitives"))
 			{
+				if (ImGui::Button("Empty", buttonSize))
+				{
+					GameObject* empty = App->scene->CreateGameObject("GameObject");
+				}
 				if (ImGui::Button("Cube", buttonSize))
 				{
 					GameObject* cube = App->scene->CreateGameObject("Cube");
