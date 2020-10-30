@@ -24,6 +24,7 @@ public:
 	void SetFullscreenDesktop(bool enabled);
 	void SetBorderless(bool enabled);
 
+	void OnResize();
 
 public:
 	//The window we'll be rendering to

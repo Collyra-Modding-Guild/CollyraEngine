@@ -16,6 +16,7 @@ public:
 	WG_Config(bool isActive);
 	virtual ~WG_Config();
 
+	virtual updateStatus Start();
 	virtual updateStatus Update();
 
 	virtual void Cleanup();
@@ -23,6 +24,8 @@ public:
 	void	NewLogInput(const char* newInputLog);
 	void	NewLogFramerate(float newMs, float newFps);
 	bool*	GetDrawFlags();
+
+	void OnWindowResize();
 
 private:
 	std::vector<float>	fpsLog;
@@ -32,6 +35,8 @@ private:
 	bool				newInput;
 
 	bool				drawFlags[MAX_FLAGS];
+	int buffWinH;
+	int buffWinW;
 
 };
 

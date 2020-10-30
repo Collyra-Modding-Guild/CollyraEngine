@@ -19,15 +19,22 @@
 #include "Devil/include/il.h"
 
 WG_Config::WG_Config(bool isActive) : WindowGroup(WG_CONFIG, isActive),
-fpsLog(FRAMERATE_LOG_SIZE), msLog(FRAMERATE_LOG_SIZE), newInput(false), drawFlags{true, false, false, false}
+fpsLog(FRAMERATE_LOG_SIZE), msLog(FRAMERATE_LOG_SIZE), newInput(false), drawFlags{true, false, false, false},
+buffWinW(0), buffWinH(0)
 {}
 
 WG_Config::~WG_Config()
 {}
 
+updateStatus WG_Config::Start()
+{
+	OnWindowResize();
+
+	return UPDATE_CONTINUE;
+}
+
 updateStatus WG_Config::Update()
 {
-
 	ImGuiIO& io = ImGui::GetIO();
 
 	ImGui::Begin("Configuration");
@@ -80,12 +87,23 @@ updateStatus WG_Config::Update()
 		if (ImGui::SliderFloat("Brightness", &App->window->brightness, 0.0f, 1.0f))
 			SDL_SetWindowBrightness(App->window->window, App->window->brightness);
 
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
 		// - - - - - - - - Screen Surface - - - - - - - - - -
-		if (ImGui::SliderInt("Width", &App->window->screenWidth, 0, 1920))
-			SDL_SetWindowSize(App->window->window, App->window->screenWidth, App->window->screenHeight);
+		ImGui::SliderInt("Width", &buffWinW, 0, 1920);
+		ImGui::SliderInt("Height", &buffWinH, 0, 1080);
+		ImGui::Spacing();
 
-		if (ImGui::SliderInt("Height", &App->window->screenHeight, 0, 1080))
-			SDL_SetWindowSize(App->window->window, App->window->screenWidth, App->window->screenHeight);
+		if (ImGui::Button("Set new Window Size"))
+		{
+			SDL_SetWindowSize(App->window->window, buffWinW, buffWinH);
+			App->window->OnResize();
+		}
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
 
 		// - - - - - - - - Display Modes - - - - - - - - - -
 		if (ImGui::Checkbox("Fullscreen", &App->window->fullscreen))
@@ -390,4 +408,10 @@ void WG_Config::NewLogFramerate(float newMs, float newFps)
 bool* WG_Config::GetDrawFlags()
 {
 	return drawFlags;
+}
+
+void WG_Config::OnWindowResize()
+{
+	buffWinW = App->window->screenWidth;
+	buffWinH = App->window->screenHeight;
 }

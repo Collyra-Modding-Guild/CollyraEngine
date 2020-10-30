@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "M_UIManager.h"
 #include "M_Window.h"
+#include "Globals.h"
 
 #include "SDL/include/SDL_video.h"
 
@@ -82,6 +83,8 @@ bool M_Window::Awake()
 			//Get window surface
 			screen_surface = SDL_GetWindowSurface(window);
 		}
+
+		OnResize();
 	}
 
 	return ret;
@@ -130,4 +133,10 @@ void M_Window::SetFullscreenDesktop(bool enabled)
 void M_Window::SetBorderless(bool enabled)
 {
 	SDL_SetWindowBordered(window, (SDL_bool)!enabled);
+}
+
+void M_Window::OnResize()
+{
+	SDL_GetWindowSize(window, &screenWidth, &screenHeight);
+
 }

@@ -31,7 +31,6 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "SDL/include/SDL.h"
 
-
 M_UIManager::M_UIManager(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), showDemoWindow(false), showConfigMenu(false),
 configWindow(nullptr), consoleWindow(nullptr), sceneWindow(nullptr), hierarchyWindow(nullptr), inspectorWindow(nullptr)
 {}
@@ -63,7 +62,6 @@ bool M_UIManager::Start()
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
-
 
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
@@ -459,4 +457,13 @@ int M_UIManager::GetFocusedGameObjectId() const
 		return inspector->GetFocusedGameObjectId();
 	}
 	return -1;
+}
+
+void M_UIManager::OnWindowResize() const
+{
+	if (configWindow != nullptr)
+	{
+		WG_Config* config = (WG_Config*)configWindow;
+		return config->OnWindowResize();
+	}
 }

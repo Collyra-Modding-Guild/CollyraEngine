@@ -39,6 +39,7 @@ public:
 	void			GameObjectDestroyed(uint id);
 	void            SetFocusedGameObject(uint id);
 	int				GetFocusedGameObjectId() const;
+	void			OnWindowResize() const;
 
 private:
 

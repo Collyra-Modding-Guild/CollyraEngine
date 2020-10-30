@@ -3,6 +3,7 @@
 #include "M_UIManager.h"
 #include "M_Renderer3D.h"
 #include "M_Resources.h"
+#include "M_Window.h"
 
 #include "MeshLoader.h"
 
@@ -136,6 +137,15 @@ updateStatus M_Input::PreUpdate(float dt)
 			break;
 
 			case SDL_WINDOWEVENT:
+			{
+				if (e.window.event == SDL_WINDOWEVENT_RESIZED)
+				{
+					App->window->OnResize();
+					App->uiManager->OnWindowResize();
+
+				}
+
+			}
 				break;
 
 			case SDL_DROPFILE: 
