@@ -27,20 +27,20 @@ public:
 
 public:
 	//The window we'll be rendering to
-	SDL_Window* window;
+	SDL_Window*	window;
 
-	int screenWidth;
-	int screenHeight;
+	int			screenWidth;
+	int			screenHeight;
 
-	float brightness;
+	float		brightness;
 
-	char* winTitle;
-	char* orgTitle;
+	char*		winTitle;
+	char*		orgTitle;
 
-	bool fullscreen;
-	bool resizable;
-	bool borderless;
-	bool fullscreenDesktop;
+	bool		fullscreen;
+	bool		resizable;
+	bool		borderless;
+	bool		fullscreenDesktop;
 
 	//The surface contained by the window
 	SDL_Surface* screen_surface;

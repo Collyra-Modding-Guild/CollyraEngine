@@ -17,8 +17,6 @@ public:
 
 	virtual void Cleanup();
 
-private:
-
 };
 
 #endif // __WG_ABOUT_H__

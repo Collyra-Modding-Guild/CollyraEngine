@@ -34,12 +34,15 @@ public:
 
 public:
 
-	Light lights[MAX_LIGHTS];
-	SDL_GLContext context;
-	mat3x3 NormalMatrix;
-	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
+	Light			lights[MAX_LIGHTS];
+	SDL_GLContext	context;
 
-	SDL_Renderer* renderer;
+	mat3x3			NormalMatrix;
+	mat4x4			ModelMatrix;
+	mat4x4			ViewMatrix;
+	mat4x4			ProjectionMatrix;
+
+	SDL_Renderer*	renderer;
 
 private:
 

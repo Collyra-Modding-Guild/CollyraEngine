@@ -31,7 +31,6 @@ updateStatus WG_About::Update()
 	ImGui::TextColored({ 255 , 255 , 0 , 100 }, "Alex Melenchon & Aaron Guerrero");
 
 	ImGui::Spacing();
-
 	ImGui::Spacing();
 
 	if(ImGui::Button("Engine GitHub Page"))
@@ -40,9 +39,7 @@ updateStatus WG_About::Update()
 	}
 
 	ImGui::Spacing();
-
 	ImGui::Separator();
-
 	ImGui::Spacing();
 
 	ImGui::Text("Engine License:");
@@ -52,9 +49,6 @@ updateStatus WG_About::Update()
 	ImGui::Spacing();
 
 	ImGui::Text("Copyright (c) 2020 Collyra");
-
-
-
 
 	ImGui::End();
 

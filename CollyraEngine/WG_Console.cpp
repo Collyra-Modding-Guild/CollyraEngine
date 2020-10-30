@@ -3,6 +3,7 @@
 WG_Console::WG_Console(bool isActive) : WindowGroup(WG_CONSOLE, isActive)
 {
 	ClearLog();
+
 	memset(InputBuf, 0, sizeof(InputBuf));
 	HistoryPos = -1;
 
@@ -11,10 +12,10 @@ WG_Console::WG_Console(bool isActive) : WindowGroup(WG_CONSOLE, isActive)
 	Commands.push_back("HISTORY");
 	Commands.push_back("CLEAR");
 	Commands.push_back("CLASSIFY");
+
 	AutoScroll = true;
 	ScrollToBottom = false;
 	AddLog("Welcome to Dear ImGui!");
-
 }
 
 WG_Console::~WG_Console()
@@ -99,6 +100,7 @@ void WG_Console::Draw(const char* title, bool* p_open)
 		ImGui::OpenPopup("Options");
 	ImGui::SameLine();
 	Filter.Draw("Filter (\"incl,-excl\") (\"error\")", 180);
+
 	ImGui::Separator();
 
 	// Reserve enough left-over height for 1 separator + 1 input text
@@ -114,6 +116,7 @@ void WG_Console::Draw(const char* title, bool* p_open)
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
 	if (copy_to_clipboard)
 		ImGui::LogToClipboard();
+
 	for (int i = 0; i < Items.size(); i++)
 	{
 		const char* item = Items[i];
@@ -124,11 +127,15 @@ void WG_Console::Draw(const char* title, bool* p_open)
 		// (e.g. make Items[] an array of structure, store color/type etc.)
 		ImVec4 color;
 		bool has_color = false;
+
 		if (strstr(item, "[error]")) { color = ImVec4(1.0f, 0.4f, 0.4f, 1.0f); has_color = true; }
 		else if (strncmp(item, "# ", 2) == 0) { color = ImVec4(1.0f, 0.8f, 0.6f, 1.0f); has_color = true; }
+
 		if (has_color)
 			ImGui::PushStyleColor(ImGuiCol_Text, color);
+
 		ImGui::TextUnformatted(item);
+
 		if (has_color)
 			ImGui::PopStyleColor();
 	}
@@ -137,6 +144,7 @@ void WG_Console::Draw(const char* title, bool* p_open)
 
 	if (ScrollToBottom || (AutoScroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY()))
 		ImGui::SetScrollHereY(1.0f);
+
 	ScrollToBottom = false;
 
 	ImGui::PopStyleVar();
@@ -150,14 +158,17 @@ void WG_Console::Draw(const char* title, bool* p_open)
 	{
 		char* s = InputBuf;
 		Strtrim(s);
+
 		if (s[0])
 			ExecCommand(s);
+
 		strcpy(s, "");
 		reclaim_focus = true;
 	}
 
 	// Auto-focus on window apparition
 	ImGui::SetItemDefaultFocus();
+
 	if (reclaim_focus)
 		ImGui::SetKeyboardFocusHere(-1); // Auto focus previous widget
 
@@ -178,6 +189,7 @@ void WG_Console::ExecCommand(const char* command_line)
 			History.erase(History.begin() + i);
 			break;
 		}
+
 	History.push_back(Strdup(command_line));
 
 	// Process command
@@ -209,11 +221,11 @@ void WG_Console::ExecCommand(const char* command_line)
 int WG_Console::TextEditCallbackStub(ImGuiInputTextCallbackData* data)
 {
 	WG_Console* console = (WG_Console*)data->UserData;
+
 	return console->TextEditCallback(data);
 }
 
 int WG_Console::TextEditCallback(ImGuiInputTextCallbackData* data)
-
 {
 	//AddLog("cursor: %d, selection: %d-%d", data->CursorPos, data->SelectionStart, data->SelectionEnd);
 	switch (data->EventFlag)
@@ -228,8 +240,10 @@ int WG_Console::TextEditCallback(ImGuiInputTextCallbackData* data)
 		while (word_start > data->Buf)
 		{
 			const char c = word_start[-1];
+
 			if (c == ' ' || c == '\t' || c == ',' || c == ';')
 				break;
+
 			word_start--;
 		}
 
@@ -260,13 +274,16 @@ int WG_Console::TextEditCallback(ImGuiInputTextCallbackData* data)
 			{
 				int c = 0;
 				bool all_candidates_matches = true;
+
 				for (int i = 0; i < candidates.Size && all_candidates_matches; i++)
 					if (i == 0)
 						c = toupper(candidates[i][match_len]);
 					else if (c == 0 || c != toupper(candidates[i][match_len]))
 						all_candidates_matches = false;
+
 				if (!all_candidates_matches)
 					break;
+
 				match_len++;
 			}
 
@@ -278,6 +295,7 @@ int WG_Console::TextEditCallback(ImGuiInputTextCallbackData* data)
 
 			// List matches
 			AddLog("Possible matches:\n");
+
 			for (int i = 0; i < candidates.Size; i++)
 				AddLog("- %s\n", candidates[i]);
 		}

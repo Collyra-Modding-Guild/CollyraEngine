@@ -22,6 +22,7 @@ private:
 	// Portable helpers
 	int   Stricmp(const char* s1, const char* s2) { int d; while ((d = toupper(*s2) - toupper(*s1)) == 0 && *s1) { s1++; s2++; } return d; }
 	int   Strnicmp(const char* s1, const char* s2, int n) { int d = 0; while (n > 0 && (d = toupper(*s2) - toupper(*s1)) == 0 && *s1) { s1++; s2++; n--; } return d; }
+
 	char* Strdup(const char* s)
 	{
 		size_t len = strlen(s) + 1;
@@ -29,26 +30,31 @@ private:
 		IM_ASSERT(buf);
 		return (char*)memcpy(buf, (const void*)s, len);
 	}
-	void  Strtrim(char* s) { char* str_end = s + strlen(s); while (str_end > s && str_end[-1] == ' ') str_end--; *str_end = 0; }
 
-	void    ClearLog();
-	void    AddLog(const char* fmt, ...);
-	void    Draw(const char* title, bool* p_open);
-	void    ExecCommand(const char* command_line);
-	static int TextEditCallbackStub(ImGuiInputTextCallbackData* data);
-	int     TextEditCallback(ImGuiInputTextCallbackData* data);
+	void		Strtrim(char* s) { char* str_end = s + strlen(s); while (str_end > s && str_end[-1] == ' ') str_end--; *str_end = 0; }
+
+	void		ClearLog();
+	void		AddLog(const char* fmt, ...);
+	void		Draw(const char* title, bool* p_open);
+	void		ExecCommand(const char* command_line);
+	static int	TextEditCallbackStub(ImGuiInputTextCallbackData* data);
+	int			TextEditCallback(ImGuiInputTextCallbackData* data);
 
 
 private:
 	//Console Vars---
-	char                  InputBuf[256];
-	std::vector<char*>       Items;
-	std::vector<const char*> Commands;
-	std::vector<char*>       History;
-	int                   HistoryPos;
-	ImGuiTextFilter       Filter;
-	bool                  AutoScroll;
-	bool                  ScrollToBottom;
+	char						InputBuf[256];
+
+	std::vector<char*>			Items;
+	std::vector<const char*>	Commands;
+	std::vector<char*>			History;
+
+	int							HistoryPos;
+
+	ImGuiTextFilter				Filter;
+
+	bool						AutoScroll;
+	bool					 	ScrollToBottom;
 
 };
 

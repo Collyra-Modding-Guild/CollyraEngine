@@ -28,27 +28,22 @@ public:
 
 private:
 	void CalculateViewMatrix();
-
 	void CameraMovement(float dt);
-
 	void CameraPlanePan(vec3& newPos);
-
 	void OrbitArroundReference(vec3& reference, vec3&pos, vec3 speed);
-
 	void ResetReference();
-
 	vec3 CameraZoom(float dt);
 
 public:
 	
-	vec3 X, Y, Z, Position, Reference, orbitalReference;
+	vec3		X, Y, Z, Position, Reference, orbitalReference;
 
-	mat3x3 rotation;
+	mat3x3		rotation;
 
-	bool focusingObject;
-	float spdMultiplier;
+	bool		focusingObject;
+	float		spdMultiplier;
 
 private:
-	M_Input* inputModule;
-	mat4x4 ViewMatrix, ViewMatrixInverse;
+	M_Input*	inputModule;
+	mat4x4		ViewMatrix, ViewMatrixInverse;
 };
