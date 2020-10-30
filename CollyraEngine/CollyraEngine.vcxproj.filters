@@ -354,6 +354,7 @@
     <ClInclude Include="glmath.h">
       <Filter>Sources\Helpers</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="log.cpp">
@@ -580,5 +581,11 @@
     <None Include="MathGeoLib\include\Math\Matrix.inl">
       <Filter>Sources\Helpers\MathGeoLib\Math</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Collyra Engine.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Engine\icon.ico" />
   </ItemGroup>
 </Project>
