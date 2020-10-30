@@ -44,4 +44,4 @@ enum DRAW_FLAGS
 #define WIN_BORDERLESS false
 #define WIN_FULLSCREEN_DESKTOP false
 #define VSYNC true
-#define TITLE "Collyra Engine - 0.0.1"
+#define TITLE "Collyra Engine - 0.1.0"

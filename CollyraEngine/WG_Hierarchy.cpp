@@ -7,9 +7,8 @@
 #include "C_Transform.h"
 #include "Component.h"
 
-WG_Hierarchy::WG_Hierarchy(bool isActive) : WindowGroup(WG_HIERARCHY, isActive), rootPointer(nullptr), 
-flag(ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth), 
-selected(-1)
+WG_Hierarchy::WG_Hierarchy(bool isActive) : WindowGroup(WG_HIERARCHY, isActive), rootPointer(nullptr),
+flag(ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth), selected(-1)
 {}
 
 WG_Hierarchy::~WG_Hierarchy()
@@ -23,8 +22,6 @@ updateStatus WG_Hierarchy::Start()
 
 updateStatus WG_Hierarchy::Update()
 {
-	ImGuiIO& io = ImGui::GetIO();
-
 	ImGui::Begin("Hierarchy");
 
 	CreateHierarchy(rootPointer);
@@ -61,11 +58,12 @@ void WG_Hierarchy::CreateHierarchy(const GameObject* gameObject)
 	{
 		for (int i = 0; i < gameObject->children.size(); i++)
 		{
-			CreateHierarchy(gameObject->children[i]);			
+			CreateHierarchy(gameObject->children[i]);
 		}
 
 		ImGui::TreePop();
 	}
+
 }
 
 void WG_Hierarchy::SetTreeNodeFlags(const GameObject* gameObject)

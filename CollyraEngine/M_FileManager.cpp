@@ -2,6 +2,10 @@
 #include "M_FileManager.h"
 #include "PathNode.h"
 
+#include "PhysFS/include/physfs.h"
+
+#pragma comment( lib, "PhysFS/libx86/physfs.lib" )
+
 #include <fstream>
 #include <filesystem>
 
@@ -59,31 +63,6 @@ void M_FileManager::CreateFolderDirs()
 		CreateDir(dirs[i]);
 	}
 }
-
-SDL_RWops* M_FileManager::Load(const char* path)
-{
-	char* buffer;
-	SDL_RWops* ret;
-	uint bytes;
-	int check;
-
-	check = CheckPath(path);
-	if (check == -1)
-	{
-		bytes = Load(path, &buffer);
-		ret = SDL_RWFromConstMem(buffer, bytes);
-
-		bufferVector.push_back(buffer);
-		bytesVector.push_back(bytes);
-	}
-	else
-	{
-		ret = SDL_RWFromConstMem(bufferVector[check], bytesVector[check]);
-	}
-
-	return ret;
-}
-
 
 uint M_FileManager::Load(const char* path, char** buffer) const
 {

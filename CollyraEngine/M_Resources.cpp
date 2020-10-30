@@ -8,7 +8,7 @@
 #include "TextureLoader.h"
 #include "C_Material.h"
 
-M_Resources::M_Resources(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled)
+M_Resources::M_Resources(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), defaultTextureId(-1)
 {}
 
 M_Resources::~M_Resources()

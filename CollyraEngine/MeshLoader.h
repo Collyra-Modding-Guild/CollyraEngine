@@ -4,7 +4,6 @@
 #include <vector>
 #include "Globals.h"
 #include "MathGeoLib/include/MathGeoLib.h"
-#include "C_Mesh.h"
 
 class aiMesh;
 class aiScene;

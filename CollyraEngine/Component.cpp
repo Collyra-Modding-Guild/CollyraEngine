@@ -5,7 +5,9 @@ Component::Component(COMPONENT_TYPE type, bool active) :
 {}
 
 Component::~Component()
-{}
+{
+	myGameObject = nullptr;
+}
 
 void Component::Start()
 {}

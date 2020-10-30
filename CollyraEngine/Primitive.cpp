@@ -243,12 +243,12 @@ void CCube::GenerateCubeIndices()
 
 
 // SPHERE ============================================
-SSphere::SSphere() : Primitive(), radius(1.0f)
+SSphere::SSphere() : Primitive(), radius(1.0f), sectorCount(0), smooth(false), stackCount(0), interleavedStride(0)
 {
 	type = PrimitiveTypes::Primitive_Sphere;
 }
 
-SSphere::SSphere(float radius) : Primitive(), radius(radius)
+SSphere::SSphere(float radius) : Primitive(), radius(radius), sectorCount(0), smooth(false), stackCount(0), interleavedStride(0)
 {
 	type = PrimitiveTypes::Primitive_Sphere;
 }
@@ -343,12 +343,14 @@ void SSphere::GenerateSphereIndices(int sectors, int stacks)
 
 
 // CYLINDER ============================================
-CCylinder::CCylinder() : Primitive(), radius(1.0f), height(1.0f)
+CCylinder::CCylinder() : Primitive(), radius(1.0f), height(1.0f), baseCenterIndex(0), topCenterIndex(0), interleavedStride(0),
+sectors(0), smooth(false), stackCount(0)
 {
 	type = PrimitiveTypes::Primitive_Cylinder;
 }
 
-CCylinder::CCylinder(float radius, float height) : Primitive(), radius(radius), height(height)
+CCylinder::CCylinder(float radius, float height) : Primitive(), radius(radius), height(height), baseCenterIndex(0), topCenterIndex(0), interleavedStride(0),
+sectors(0), smooth(false), stackCount(0)
 {
 	type = PrimitiveTypes::Primitive_Cylinder;
 }

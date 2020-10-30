@@ -33,7 +33,7 @@
 
 
 M_UIManager::M_UIManager(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), showDemoWindow(false), showConfigMenu(false),
-configWindow(nullptr), consoleWindow(nullptr), sceneWindow()
+configWindow(nullptr), consoleWindow(nullptr), sceneWindow(nullptr), hierarchyWindow(nullptr), inspectorWindow(nullptr)
 {}
 
 // Destructor
@@ -49,7 +49,7 @@ bool M_UIManager::Awake()
 	windowGroups.push_back(sceneWindow = new WG_Scene(true));
 	windowGroups.push_back(hierarchyWindow = new WG_Hierarchy(true));
 	windowGroups.push_back(inspectorWindow = new WG_Inspector(true));
-	windowGroups.push_back(aboutWindow = new WG_About(true));
+	windowGroups.push_back(aboutWindow = new WG_About(false));
 
 	return true;
 }

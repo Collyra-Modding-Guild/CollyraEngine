@@ -3,17 +3,8 @@
 
 #include "Module.h"
 
-#include "PhysFS/include/physfs.h"
-#include "SDL/include/SDL.h"
-
-#pragma comment( lib, "PhysFS/libx86/physfs.lib" )
-
 #include <vector>
 #include <string>
-
-struct SDL_RWops;
-
-struct aiFileIO;
 
 class Config;
 struct PathNode;
@@ -39,9 +30,6 @@ public:
 
 	// Return the bytes of a PhysFS filehandle
 	//uint Load(const char* path, char** buffer) const;
-
-	// Allows you to use pointers to memory instead of files or things such as images or samples
-	SDL_RWops* Load(const char* path);
 
 	// Utility functions
 	bool AddPath(const char* path_or_zip);

@@ -53,6 +53,7 @@ private:
 
 };
 
+//Unity Style Yeah----------------
 template<typename T>
 T* GameObject::GetComponent()
 {
