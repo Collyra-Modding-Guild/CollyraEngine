@@ -28,6 +28,8 @@ public:
 	float3		GetScale() const;
 	float3		GetGlobalScale() const;
 
+	bool hasUpdated;
+
 private:
 	void GenerateEulerFromRot();
 

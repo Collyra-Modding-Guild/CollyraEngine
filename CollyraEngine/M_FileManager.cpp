@@ -326,13 +326,20 @@ void M_FileManager::SplitFilePath(const char* full_path, std::string* projectPat
 	{
 		std::string full(full_path);
 		size_t pos_separator = full.find_last_of("\\/");
-		size_t projectSeparator = full.find("CollyraEngine/Engine");
+		size_t projectSeparator = full.find("CollyraEngine/");
+		size_t projectSeparator2 = full.find("CollyraEngine/Engine");
 		size_t pos_dot = full.find_last_of(".");
 
 		if (projectPath != nullptr)
 		{
 			if (projectSeparator < full.length())
-				*projectPath = full.substr(projectSeparator + 21);
+			{
+				if (projectSeparator2 < full.length())
+					*projectPath = full.substr(projectSeparator2 + 21);
+				else
+					*projectPath = full.substr(projectSeparator + 14);
+
+			}
 			else
 				projectPath->clear();
 		}

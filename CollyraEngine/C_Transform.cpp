@@ -2,19 +2,20 @@
 #include "Globals.h"
 
 C_Transform::C_Transform() : Component(COMPONENT_TYPE::TRANSFORM, true), localTransform(float4x4::identity), globalTransform(float4x4::identity),
-position(0, 0, 0), rotation(Quat::identity), scale(1, 1, 1), tGlobalTransform(float4x4::identity)
+position(0, 0, 0), rotation(Quat::identity), scale(1, 1, 1), tGlobalTransform(float4x4::identity), hasUpdated(false)
 {
 	GenerateEulerFromRot();
 }
 
 C_Transform::C_Transform(float4x4 parentTransform, float3 pos, Quat rotation, float3 scale) : Component(COMPONENT_TYPE::TRANSFORM, true),
-position(pos), rotation(rotation), scale(scale)
+position(pos), rotation(rotation), scale(scale), hasUpdated(false)
 {
 	SetLocalTransformation(position, rotation, scale);
 	GenerateGlobalTransformationFrom(parentTransform);
 }
 
-C_Transform::C_Transform(float4x4 parentTransform, float4x4 localTransform) : Component(COMPONENT_TYPE::TRANSFORM, true), localTransform(localTransform), globalTransform(float4x4::identity)
+C_Transform::C_Transform(float4x4 parentTransform, float4x4 localTransform) : Component(COMPONENT_TYPE::TRANSFORM, true), localTransform(localTransform), globalTransform(float4x4::identity),
+hasUpdated(false)
 {
 	SetLocalTransformation(localTransform);
 	GenerateGlobalTransformationFrom(parentTransform);
@@ -26,6 +27,7 @@ C_Transform::~C_Transform()
 void C_Transform::SetLocalTransformation(float4x4 transform)
 {
 	transform.Decompose(position, rotation, scale);
+	localTransform = transform;
 	GenerateEulerFromRot();
 }
 
@@ -35,6 +37,7 @@ void C_Transform::SetLocalTransformation(float3 pos, Quat rot, float3 scl)
 	this->rotation = rot;
 	this->scale = scl;
 	localTransform = float4x4::FromTRS(position, rotation, scale);
+	hasUpdated = true;
 	GenerateEulerFromRot();
 }
 

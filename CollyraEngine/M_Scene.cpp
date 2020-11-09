@@ -20,6 +20,7 @@ M_Scene::~M_Scene()
 bool M_Scene::Awake()
 {
 	root = new GameObject("Scene");
+	root->CreateComponent(COMPONENT_TYPE::TRANSFORM);
 	root->SetId(GenerateId());
 
 	return true;
@@ -46,6 +47,41 @@ updateStatus M_Scene::Update(float dt)
 		if (currNode != nullptr)
 		{
 			currNode->Update(dt);
+		}
+		else
+			continue;
+
+		int childNum = currNode->children.size();
+		for (int i = 0; i < childNum; i++)
+		{
+			stack.push(currNode->children[i]);
+		}
+	}
+
+	return UPDATE_CONTINUE;
+}
+
+updateStatus M_Scene::PostUpdate(float dt)
+{
+	std::stack<GameObject*> stack;
+	GameObject* currNode = nullptr;
+
+	if (root == nullptr)
+	{
+		LOG("Root node did not exist!");
+		return UPDATE_STOP;
+	}
+
+	stack.push(root);
+
+	while (!stack.empty())
+	{
+		currNode = stack.top();
+		stack.pop();
+
+		if (currNode != nullptr)
+		{
+			currNode->PostUpdate(dt);
 		}
 		else
 			continue;

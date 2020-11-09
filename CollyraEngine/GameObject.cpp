@@ -49,6 +49,25 @@ void GameObject::Update(float dt)
 	}
 }
 
+void GameObject::PostUpdate(float dt)
+{
+	C_Transform* transform = this->GetComponent<C_Transform>();
+	if (transform->hasUpdated == true)
+	{
+		transform->hasUpdated = false;
+		transform->GenerateGlobalTransformationFrom(this->parent->GetComponent<C_Transform>()->GetLocalTransform());;
+		
+		for (int i = 0; i < children.size(); i++)
+		{
+			C_Transform* transform = children[i]->GetComponent<C_Transform>();
+			if (transform != nullptr)
+			{
+				transform->hasUpdated = true;
+			}
+		}
+	}
+}
+
 Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 {
 	Component* newComponent = nullptr;

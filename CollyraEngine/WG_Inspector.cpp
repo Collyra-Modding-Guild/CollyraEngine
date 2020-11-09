@@ -32,7 +32,7 @@ updateStatus WG_Inspector::Update()
 		C_Material* material = focusedGameObject->GetComponent<C_Material>();
 
 		//Delete the selected item - - - - - - - - - - - -
-		if(DeleteGameObject(SDL_SCANCODE_DELETE))
+		if (DeleteGameObject(SDL_SCANCODE_DELETE))
 			return UPDATE_CONTINUE;
 
 
@@ -101,12 +101,15 @@ void WG_Inspector::DrawTransformComponent(ImGuiTreeNodeFlags_ flag)
 {
 	float3 selectedPosition = focusedGameObject->GetComponent<C_Transform>()->GetPosition();
 	float3 selectedRotation = focusedGameObject->GetComponent<C_Transform>()->GetRotationEuler();
+	Quat rotQuat = focusedGameObject->GetComponent<C_Transform>()->GetRotation();
 	float3 selectedScale = focusedGameObject->GetComponent<C_Transform>()->GetScale();
 
 	ImGui::SameLine();
 
 	if (ImGui::CollapsingHeader("Transform", flag))
 	{
+		bool anyTransformPerformed = false;
+		bool transformUpdate = false;
 
 		// POSITION - - - - - - - - - - - - - - - - - - - - - - 
 		ImGui::Spacing();
@@ -117,22 +120,29 @@ void WG_Inspector::DrawTransformComponent(ImGuiTreeNodeFlags_ flag)
 		ImGui::Text("X");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##posX", &selectedPosition.x);
+		transformUpdate = ImGui::DragFloat("##posX", &selectedPosition.x);
+		anyTransformPerformed ? transformUpdate : anyTransformPerformed = transformUpdate;
+
 
 		ImGui::SameLine();
 		ImGui::Text("Y");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##posY", &selectedPosition.y);
+		transformUpdate = ImGui::DragFloat("##posY", &selectedPosition.y);
+		anyTransformPerformed ? transformUpdate : anyTransformPerformed = transformUpdate;
 
 		ImGui::SameLine();
 		ImGui::Text("Z");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##posZ", &selectedPosition.z);
+		transformUpdate = ImGui::DragFloat("##posZ", &selectedPosition.z);
+		anyTransformPerformed ? transformUpdate : anyTransformPerformed = transformUpdate;
+
 
 		// ROTATION - - - - - - - - - - - - - - - - - - - - - - 
 		ImGui::Spacing();
+
+		bool rotationUpdate = false;
 
 		ImGui::Text("Rotation   ");
 		ImGui::SameLine();
@@ -140,19 +150,26 @@ void WG_Inspector::DrawTransformComponent(ImGuiTreeNodeFlags_ flag)
 		ImGui::Text("X");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##rotX", &selectedRotation.x);
+		transformUpdate = ImGui::DragFloat("##rotX", &selectedRotation.x);
+		anyTransformPerformed ? transformUpdate : anyTransformPerformed = transformUpdate;
+		rotationUpdate ? transformUpdate : rotationUpdate = transformUpdate;
+
 
 		ImGui::SameLine();
 		ImGui::Text("Y");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##rotY", &selectedRotation.y);
+		transformUpdate = ImGui::DragFloat("##rotY", &selectedRotation.y);
+		anyTransformPerformed ? transformUpdate : anyTransformPerformed = transformUpdate;
+		rotationUpdate ? transformUpdate : rotationUpdate = transformUpdate;
 
 		ImGui::SameLine();
 		ImGui::Text("Z");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##rotZ", &selectedRotation.z);
+		transformUpdate = ImGui::DragFloat("##rotZ", &selectedRotation.z);
+		anyTransformPerformed ? transformUpdate : anyTransformPerformed = transformUpdate;
+		rotationUpdate ? transformUpdate : rotationUpdate = transformUpdate;
 
 
 		// SCALE  - - - - - - - - - - - - - - - - - - - - - - 
@@ -164,19 +181,33 @@ void WG_Inspector::DrawTransformComponent(ImGuiTreeNodeFlags_ flag)
 		ImGui::Text("X");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##scaX", &selectedScale.x);
+		transformUpdate = ImGui::DragFloat("##scaX", &selectedScale.x);
+		anyTransformPerformed ? transformUpdate : anyTransformPerformed = transformUpdate;
 
 		ImGui::SameLine();
 		ImGui::Text("Y");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##scaY", &selectedScale.y);
+		transformUpdate = ImGui::DragFloat("##scaY", &selectedScale.y);
+		anyTransformPerformed ? transformUpdate : anyTransformPerformed = transformUpdate;
 
 		ImGui::SameLine();
 		ImGui::Text("Z");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##scaZ", &selectedScale.z);
+		transformUpdate = ImGui::DragFloat("##scaZ", &selectedScale.z);
+		anyTransformPerformed ? transformUpdate : anyTransformPerformed = transformUpdate;
+
+		if (anyTransformPerformed)
+		{
+			if (rotationUpdate)
+			{
+				selectedRotation *= DEGTORAD;
+				rotQuat = rotQuat.FromEulerXYZ(selectedRotation.x, selectedRotation.y , selectedRotation.z);
+			}
+
+			focusedGameObject->GetComponent<C_Transform>()->SetLocalTransformation(selectedPosition, rotQuat, selectedScale);;
+		}
 
 		ImGui::Spacing();
 	}
@@ -279,7 +310,7 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* m
 		char materialName[100];
 		strcpy_s(materialName, 100, material->GetMaterialName().c_str());
 
-		ImGui::Spacing();	
+		ImGui::Spacing();
 
 		ImGui::Text("Texture          ");
 		ImGui::SameLine();

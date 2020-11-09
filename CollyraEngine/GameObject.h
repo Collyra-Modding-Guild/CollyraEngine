@@ -22,6 +22,7 @@ public:
 
 	void Start();
 	void Update(float dt);
+	void PostUpdate(float dt);
 
 	Component* CreateComponent(COMPONENT_TYPE type);
 

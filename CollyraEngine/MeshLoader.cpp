@@ -96,17 +96,15 @@ bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const 
 		GameObject* newGameObject = App->scene->CreateGameObject(node->mName.C_Str(), parent);
 
 		//Transform Load------
-
 		newGameObject->GetComponent<C_Transform>()->SetLocalTransformation(pos, rot, scale);
-		parent->GetComponent<C_Transform>()->SetLocalTransformation(transform);
 		newGameObject->GetComponent<C_Transform>()->GenerateGlobalTransformationFrom(transform);
+		parent->GetComponent<C_Transform>()->SetLocalTransformation(transform);
 
 		//Mesh Load---------
 		int meshSize = node->mNumMeshes;
 		for (int i = 0; i < node->mNumMeshes; i++)
 		{
 			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-
 
 			std::vector<float3> vertices;
 			std::vector<float3> normals;
