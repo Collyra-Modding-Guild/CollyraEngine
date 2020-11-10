@@ -101,7 +101,7 @@ void WG_Inspector::DrawTransformComponent(ImGuiTreeNodeFlags_ flag)
 {
 	float3 selectedPosition = focusedGameObject->GetComponent<C_Transform>()->GetPosition();
 	float3 selectedRotation = focusedGameObject->GetComponent<C_Transform>()->GetRotationEuler();
-	Quat rotQuat = focusedGameObject->GetComponent<C_Transform>()->GetRotation();
+	float3 initialRot = selectedRotation;
 	float3 selectedScale = focusedGameObject->GetComponent<C_Transform>()->GetScale();
 
 	ImGui::SameLine();
@@ -200,13 +200,18 @@ void WG_Inspector::DrawTransformComponent(ImGuiTreeNodeFlags_ flag)
 
 		if (anyTransformPerformed)
 		{
+			Quat qObjectInitialRot = focusedGameObject->GetComponent<C_Transform>()->GetRotation();
+
 			if (rotationUpdate)
 			{
-				selectedRotation *= DEGTORAD;
-				rotQuat = rotQuat.FromEulerXYZ(selectedRotation.x, selectedRotation.y , selectedRotation.z);
+				float3 rotIncrement = selectedRotation - initialRot;
+				rotIncrement *= DEGTORAD;
+
+				Quat qRotIncrement = qRotIncrement.FromEulerXYZ(rotIncrement.x, rotIncrement.y, rotIncrement.z);
+				qObjectInitialRot = qObjectInitialRot * qRotIncrement;
 			}
 
-			focusedGameObject->GetComponent<C_Transform>()->SetLocalTransformation(selectedPosition, rotQuat, selectedScale);;
+			focusedGameObject->GetComponent<C_Transform>()->SetLocalTransformation(selectedPosition, qObjectInitialRot, selectedScale);;
 		}
 
 		ImGui::Spacing();

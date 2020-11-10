@@ -97,8 +97,8 @@ bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const 
 
 		//Transform Load------
 		newGameObject->GetComponent<C_Transform>()->SetLocalTransformation(pos, rot, scale);
-		newGameObject->GetComponent<C_Transform>()->GenerateGlobalTransformationFrom(transform);
 		parent->GetComponent<C_Transform>()->SetLocalTransformation(transform);
+		newGameObject->GetComponent<C_Transform>()->GenerateGlobalTransformationFrom(transform);
 
 		//Mesh Load---------
 		int meshSize = node->mNumMeshes;
