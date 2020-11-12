@@ -17,6 +17,7 @@ public:
 	void SetLocalTransformation(float3 pos, Quat rotation, float3 scale);
 	void GenerateGlobalTransformationFrom(float4x4 parentTransform);
 	void SetGlobalTransformation(float4x4 globalTransform);
+	void UpdateLocalTransformMaintingGlobalToFit(float4x4 newParentTransform);
 
 	//Getters-------------------
 	float4x4	GetLocalTransform() const;

@@ -30,7 +30,7 @@ public:
 
 	unsigned int GenerateId();
 
-	const GameObject* GetRoot();	
+	GameObject* GetRoot();	
 
 private:
 	void CheckSiblingsName(GameObject* parent, std::string& myName);

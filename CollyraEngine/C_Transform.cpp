@@ -29,6 +29,7 @@ void C_Transform::SetLocalTransformation(float4x4 transform)
 	transform.Decompose(position, rotation, scale);
 	localTransform = transform;
 	GenerateEulerFromRot();
+	hasUpdated = true;
 }
 
 void C_Transform::SetLocalTransformation(float3 pos, Quat rot, float3 scl)
@@ -51,6 +52,13 @@ void C_Transform::GenerateGlobalTransformationFrom(float4x4 parentTransform)
 void C_Transform::SetGlobalTransformation(float4x4 transform)
 {
 	globalTransform = transform;
+}
+
+void C_Transform::UpdateLocalTransformMaintingGlobalToFit(float4x4 newParentTransform)
+{
+	SetLocalTransformation(newParentTransform.Inverted() * globalTransform);
+	GenerateGlobalTransformationFrom(newParentTransform);
+	hasUpdated = true;
 }
 
 float4x4 C_Transform::GetLocalTransform() const

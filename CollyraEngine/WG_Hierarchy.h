@@ -21,14 +21,17 @@ public:
 	virtual void Cleanup();
 
 private:
-	void CreateHierarchy(const GameObject* parent);
-	void SetTreeNodeFlags(const GameObject* parent);
+	void CreateHierarchy(GameObject* parent);
+	void SetTreeNodeFlags(GameObject* parent);
+	void HandleDragAndDrop(GameObject* currentGo);
+
+	void DrpGameObject(GameObject* from, GameObject* to);
 
 private:
 	ImGuiTreeNodeFlags	flag;
 	int					selected;
 
-	const GameObject*	rootPointer;
+	GameObject*	rootPointer;
 
 };
 

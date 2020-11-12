@@ -29,6 +29,7 @@ bool M_Resources::Start()
 	defaultTextureId = TextureLoader::LoadDefaultTexture();
 
 	CreateMeshesInternal("Assets/Meshes/house.fbx");
+	CreateMeshesInternal("Assets/Meshes/house.fbx");
 
 
 	return true;

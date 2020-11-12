@@ -51,18 +51,18 @@ void GameObject::Update(float dt)
 
 void GameObject::PostUpdate(float dt)
 {
-	C_Transform* transform = this->GetComponent<C_Transform>();
+	C_Transform* transform = GetComponent<C_Transform>();
 	if (transform->hasUpdated == true)
 	{
 		transform->hasUpdated = false;
-		transform->GenerateGlobalTransformationFrom(this->parent->GetComponent<C_Transform>()->GetLocalTransform());;
+		transform->GenerateGlobalTransformationFrom(parent->GetComponent<C_Transform>()->GetGlobalTransform());;
 		
 		for (int i = 0; i < children.size(); i++)
 		{
-			C_Transform* transform = children[i]->GetComponent<C_Transform>();
-			if (transform != nullptr)
+			C_Transform* childTransform = children[i]->GetComponent<C_Transform>();
+			if (childTransform != nullptr)
 			{
-				transform->hasUpdated = true;
+				childTransform->hasUpdated = true;
 			}
 		}
 	}
@@ -133,6 +133,28 @@ void GameObject::SetName(std::string newName)
 	name = newName;
 }
 
+void GameObject::SetParent(GameObject* newParent)
+{
+	if (newParent == nullptr)
+	{
+		LOG("An GameObject Parent Cannot be NULL");
+		return;
+	}
+
+	GameObject* prevParent = parent;
+	parent = newParent;
+
+	if (prevParent != parent && prevParent != nullptr)
+	{
+		GetComponent<C_Transform>()->UpdateLocalTransformMaintingGlobalToFit(parent->GetComponent<C_Transform>()->GetGlobalTransform());
+	}
+}
+
+GameObject* GameObject::GetParent() const
+{
+	return parent;
+}
+
 void GameObject::NotifyChildDeath(GameObject* deadChild)
 {
 	for (int i = 0; i < children.size(); i++)
@@ -142,6 +164,23 @@ void GameObject::NotifyChildDeath(GameObject* deadChild)
 			children.erase(children.begin() + i);
 		}
 	}
+}
+
+void GameObject::AddChildren(GameObject* newChild)
+{
+	children.push_back(newChild);
+}
+
+GameObject* GameObject::GetChild(int id) const
+{
+	for (int i = 0; i < children.size(); i++)
+	{
+		if (children[i]->GetId() == id)
+		{
+			return children[i];
+		}
+	}
+	return nullptr;
 }
 
 Component* GameObject::AddComponent(Component* c)

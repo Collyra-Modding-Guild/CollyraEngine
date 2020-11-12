@@ -36,7 +36,7 @@ void WG_Hierarchy::Cleanup()
 	rootPointer = nullptr;
 }
 
-void WG_Hierarchy::CreateHierarchy(const GameObject* gameObject)
+void WG_Hierarchy::CreateHierarchy(GameObject* gameObject)
 {
 	//Reset the Flags
 	SetTreeNodeFlags(gameObject);
@@ -53,6 +53,8 @@ void WG_Hierarchy::CreateHierarchy(const GameObject* gameObject)
 		}
 	}
 
+	HandleDragAndDrop(gameObject);
+
 	//If the Node is opened, display the childs
 	if (isNodeOpened)
 	{
@@ -66,9 +68,9 @@ void WG_Hierarchy::CreateHierarchy(const GameObject* gameObject)
 
 }
 
-void WG_Hierarchy::SetTreeNodeFlags(const GameObject* gameObject)
+void WG_Hierarchy::SetTreeNodeFlags(GameObject* gameObject)
 {
-	flag = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+	flag = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_FramePadding;
 
 	if (gameObject->GetId() == ROOT)
 		flag |= ImGuiTreeNodeFlags_DefaultOpen;
@@ -78,4 +80,48 @@ void WG_Hierarchy::SetTreeNodeFlags(const GameObject* gameObject)
 
 	if (gameObject->GetId() == selected)
 		flag |= ImGuiTreeNodeFlags_Selected;
+}
+
+void WG_Hierarchy::HandleDragAndDrop(GameObject* currentGo)
+{
+	//Drop on Target--------------
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("GameObject"))
+		{
+			GameObject* gameObjectBuffer = (GameObject*)(payload->Data);
+			if (gameObjectBuffer != nullptr)
+			{
+				GameObject* transportedGameObject = App->scene->GetGameObject(gameObjectBuffer->GetId());
+				if (transportedGameObject != nullptr)
+				{
+					DrpGameObject(transportedGameObject, currentGo);
+				}
+			}
+
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+	//Get Source-----------------
+	if (ImGui::BeginDragDropSource())
+	{
+		ImGui::SetDragDropPayload("GameObject", currentGo, sizeof(GameObject));
+		ImGui::EndDragDropSource();
+	}
+}
+
+void WG_Hierarchy::DrpGameObject(GameObject* moved, GameObject* objective)
+{
+	//If the moved is already child of the objective OR the objective is child of Moved
+	if (moved->GetParent() == objective || objective->GetParent() == moved)
+	{
+		return;
+	}
+
+	moved->GetParent()->NotifyChildDeath(moved);
+
+	objective->AddChildren(moved);
+
+	moved->SetParent(objective);
 }

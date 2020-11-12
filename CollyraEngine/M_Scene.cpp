@@ -150,7 +150,7 @@ GameObject* M_Scene::CreateGameObject(std::string name, GameObject* parent)
 	GameObject* newGameObject = new GameObject(name);
 
 	parent->children.push_back(newGameObject);
-	newGameObject->parent = parent;
+	newGameObject->SetParent(parent);
 	newGameObject->SetId(GenerateId());
 
 	newGameObject->CreateComponent(COMPONENT_TYPE::TRANSFORM);
@@ -163,7 +163,7 @@ uint M_Scene::GenerateId()
 	return globalId++;
 }
 
-const GameObject* M_Scene::GetRoot()
+GameObject* M_Scene::GetRoot()
 {
 	return root;
 }
@@ -323,8 +323,8 @@ bool M_Scene::DeleteGameObject(GameObject* gameObject)
 	App->uiManager->GameObjectDestroyed(gameObject->GetId());
 
 	//Notify the Parent that his child is going to die-----------
-	if (gameObject->parent != nullptr)
-		gameObject->parent->NotifyChildDeath(gameObject);
+	if (gameObject->GetParent() != nullptr)
+		gameObject->GetParent()->NotifyChildDeath(gameObject);
 
 	RELEASE(gameObject);
 

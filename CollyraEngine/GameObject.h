@@ -36,20 +36,24 @@ public:
 	void SetId(unsigned int newId);
 
 	std::string GetName() const;
-
 	void SetName(std::string newName);
 
+	void SetParent(GameObject* newParent);
+	GameObject* GetParent() const;
+
 	void NotifyChildDeath(GameObject* deadChild);
+	void AddChildren(GameObject* newChild);
+	GameObject* GetChild(int id) const;
 
 public:
 	std::vector<Component*> components;
-	GameObject* parent;
 	std::vector<GameObject*> children;
 
 	bool active;
 
 private:
 	std::string name;
+	GameObject* parent;
 	unsigned int id;
 
 };
