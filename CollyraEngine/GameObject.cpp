@@ -66,6 +66,8 @@ void GameObject::PostUpdate(float dt)
 			}
 		}
 	}
+
+	BoundingBoxUpdate();
 }
 
 Component* GameObject::CreateComponent(COMPONENT_TYPE type)
@@ -166,6 +168,7 @@ void GameObject::NotifyChildDeath(GameObject* deadChild)
 	}
 }
 
+
 void GameObject::AddChildren(GameObject* newChild)
 {
 	children.push_back(newChild);
@@ -181,6 +184,35 @@ GameObject* GameObject::GetChild(int id) const
 		}
 	}
 	return nullptr;
+}
+
+const AABB GameObject::GetGameObjectAABB()
+{
+	return aabb;
+}
+
+void GameObject::BoundingBoxUpdate()
+{
+	C_Mesh* check = GetComponent<C_Mesh>();
+
+	if (check) 
+	{
+		// Generate global OBB
+		obb = GetComponent<C_Mesh>()->GetAABB();
+		obb.Transform(GetComponent<C_Transform>()->GetGlobalTransform());
+
+		// Generate global AABB
+		aabb.SetNegativeInfinity();
+		aabb.Enclose(obb);
+	}
+	else
+	{
+		obb.Transform(GetComponent<C_Transform>()->GetGlobalTransform());
+		
+		aabb.SetNegativeInfinity();
+		aabb.SetFromCenterAndSize(obb.CenterPoint(), float3(1, 1, 1));
+		obb = aabb;
+	}
 }
 
 Component* GameObject::AddComponent(Component* c)

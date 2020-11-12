@@ -13,6 +13,10 @@ public:
 	C_Mesh(std::vector<float3> vertices, std::vector<uint> indices, std::vector<float3> normals, std::vector<float2> textureCoords, bool active = true);
 	~C_Mesh();
 
+
+	AABB GetAABB() const;
+	void SetAABB();
+
 	void GenerateMesh(const char* meshName, const char* meshPath,std::vector<float3> vertices, std::vector<uint> indices, std::vector<float3> normals, std::vector<float2> textureCoords);
 	void SetNameAndPath(const char* meshName, const char* meshPath);
 
@@ -41,6 +45,7 @@ public:
 	float3 GetSize() const;
 
 private:
+
 	void GenerateBuffers();
 	void GenerateWireColor();
 	void GenerateSize(float3 scale);
@@ -51,6 +56,7 @@ private:
 
 	uint idVertex;
 	std::vector<float3> vertices;
+	const float3 verticesPoint;
 
 	uint idIndex;
 	std::vector<uint> indices;
@@ -68,4 +74,6 @@ private:
 	std::string path;
 
 	float3 meshSize;
+
+	AABB aabb;
 };

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "MathGeoLib/include/MathGeoLib.h"
+
 #include <string>
 #include <vector>
 
@@ -45,6 +47,13 @@ public:
 	void AddChildren(GameObject* newChild);
 	GameObject* GetChild(int id) const;
 
+	const AABB GetGameObjectAABB();	
+
+private:
+
+	void BoundingBoxUpdate();
+
+
 public:
 	std::vector<Component*> components;
 	std::vector<GameObject*> children;
@@ -55,6 +64,9 @@ private:
 	std::string name;
 	GameObject* parent;
 	unsigned int id;
+
+	AABB aabb;
+	OBB	obb;
 
 };
 
