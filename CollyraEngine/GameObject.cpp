@@ -146,6 +146,11 @@ void GameObject::NotifyChildDeath(GameObject* deadChild)
 	}
 }
 
+const AABB GameObject::GetGameObjectAABB()
+{
+	return aabb;
+}
+
 void GameObject::BoundingBoxUpdate()
 {
 	C_Mesh* check = GetComponent<C_Mesh>();

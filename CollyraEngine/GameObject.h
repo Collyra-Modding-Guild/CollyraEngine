@@ -43,6 +43,7 @@ public:
 
 	void NotifyChildDeath(GameObject* deadChild);
 
+	const AABB GetGameObjectAABB();	
 
 private:
 
@@ -56,13 +57,12 @@ public:
 
 	bool active;
 
-
-	AABB						aabb;
-	OBB							obb;
-
 private:
 	std::string name;
 	unsigned int id;
+
+	AABB aabb;
+	OBB	obb;
 
 };
 

@@ -199,15 +199,15 @@ void M_Scene::DrawGameObject(GameObject* gameObject, bool* drawState)
 	{
 		if (material != nullptr && material->IsActive() == true)
 		{
-			mesh->Render(drawState,transform->GetTGlobalTransform(), (int)material->GetTexture(), material->GetColor());
+			mesh->Render(drawState, transform->GetTGlobalTransform(), (int)material->GetTexture(), material->GetColor());
 		}
 		else
 		{
-			mesh->Render(drawState,transform->GetTGlobalTransform());
+			mesh->Render(drawState, transform->GetTGlobalTransform());
 		}
 	}
-	
-	if(transform != nullptr)
+
+	if (transform != nullptr && drawState[BOUNDING_BOX])
 		DrawBoundingBox(gameObject);
 }
 
@@ -219,10 +219,15 @@ void M_Scene::DrawBoundingBox(GameObject* gameObject)
 	glLineWidth(2.0f);
 	glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
 
-	for (uint i = 0; i < gameObject->aabb.NumEdges(); i++)
+	for (uint i = 0; i < gameObject->GetGameObjectAABB().NumEdges(); i++)
 	{
-		glVertex3f(gameObject->aabb.Edge(i).a.x, gameObject->aabb.Edge(i).a.y, gameObject->aabb.Edge(i).a.z);
-		glVertex3f(gameObject->aabb.Edge(i).b.x, gameObject->aabb.Edge(i).b.y, gameObject->aabb.Edge(i).b.z);
+		glVertex3f(gameObject->GetGameObjectAABB().Edge(i).a.x, 
+			gameObject->GetGameObjectAABB().Edge(i).a.y, 
+			gameObject->GetGameObjectAABB().Edge(i).a.z);
+
+		glVertex3f(gameObject->GetGameObjectAABB().Edge(i).b.x, 
+			gameObject->GetGameObjectAABB().Edge(i).b.y, 
+			gameObject->GetGameObjectAABB().Edge(i).b.z);
 	}
 
 	glEnd();
