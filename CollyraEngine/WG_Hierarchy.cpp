@@ -55,6 +55,7 @@ void WG_Hierarchy::CreateHierarchy(GameObject* gameObject)
 
 	HandleDragAndDrop(gameObject);
 
+
 	//If the Node is opened, display the childs
 	if (isNodeOpened)
 	{
@@ -98,17 +99,29 @@ void WG_Hierarchy::HandleDragAndDrop(GameObject* currentGo)
 					DrpGameObject(transportedGameObject, currentGo);
 				}
 			}
-
 		}
 		ImGui::EndDragDropTarget();
 	}
 
-	//Get Source-----------------
-	if (ImGui::BeginDragDropSource())
+	if (currentGo->GetId() != ROOT)
 	{
-		ImGui::SetDragDropPayload("GameObject", currentGo, sizeof(GameObject));
-		ImGui::EndDragDropSource();
+		//Get Source-----------------
+		if (ImGui::BeginDragDropSource())
+		{
+			ImGui::SetDragDropPayload("GameObject", currentGo, sizeof(GameObject));
+			if (currentGo->children.size() > 0)
+			{
+				ImGui::Text("%s (+ %i...)", currentGo->GetName().c_str(), currentGo->children.size());
+			}
+			else
+			{
+				ImGui::Text("%s", currentGo->GetName().c_str());
+			}
+			ImGui::EndDragDropSource();
+		}
 	}
+
+
 }
 
 void WG_Hierarchy::DrpGameObject(GameObject* moved, GameObject* objective)
