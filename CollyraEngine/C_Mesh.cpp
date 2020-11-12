@@ -20,6 +20,17 @@ C_Mesh::~C_Mesh()
 	ClearMesh();
 }
 
+AABB C_Mesh::GetAABB() const
+{
+	return aabb;
+}
+
+void C_Mesh::SetAABB()
+{
+	aabb.SetNegativeInfinity();
+	aabb.Enclose(&vertices[0], (uint)vertices.size());
+}
+
 void C_Mesh::GenerateMesh(const char* meshName, const char* meshPath, std::vector<float3> vertices, std::vector<uint> indices, std::vector<float3> normals, std::vector<float2> textureCoords)
 {
 	this->vertices = vertices;

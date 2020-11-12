@@ -1,5 +1,7 @@
 #pragma once
 
+#include "MathGeoLib/include/MathGeoLib.h"
+
 #include <string>
 #include <vector>
 
@@ -41,6 +43,12 @@ public:
 
 	void NotifyChildDeath(GameObject* deadChild);
 
+
+private:
+
+	void BoundingBoxUpdate();
+
+
 public:
 	std::vector<Component*> components;
 	GameObject* parent;
@@ -52,6 +60,8 @@ private:
 	std::string name;
 	unsigned int id;
 
+	AABB						aabb;
+	OBB							obb;
 };
 
 //Unity Style Yeah----------------

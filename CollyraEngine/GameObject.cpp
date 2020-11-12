@@ -66,6 +66,8 @@ void GameObject::PostUpdate(float dt)
 			}
 		}
 	}
+
+	BoundingBoxUpdate();
 }
 
 Component* GameObject::CreateComponent(COMPONENT_TYPE type)
@@ -141,6 +143,22 @@ void GameObject::NotifyChildDeath(GameObject* deadChild)
 		{
 			children.erase(children.begin() + i);
 		}
+	}
+}
+
+void GameObject::BoundingBoxUpdate()
+{
+	C_Mesh* check = GetComponent<C_Mesh>();
+
+	if (check) 
+	{
+		// Generate global OBB
+		obb = GetComponent<C_Mesh>()->GetAABB();
+		obb.Transform(GetComponent<C_Transform>()->GetGlobalTransform());
+
+		// Generate global AABB
+		aabb.SetNegativeInfinity();
+		aabb.Enclose(obb);
 	}
 }
 
