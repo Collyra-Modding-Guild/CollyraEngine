@@ -160,6 +160,14 @@ void GameObject::BoundingBoxUpdate()
 		aabb.SetNegativeInfinity();
 		aabb.Enclose(obb);
 	}
+	else
+	{
+		obb.Transform(GetComponent<C_Transform>()->GetGlobalTransform());
+		
+		aabb.SetNegativeInfinity();
+		aabb.SetFromCenterAndSize(obb.CenterPoint(), float3(1, 1, 1));
+		obb = aabb;
+	}
 }
 
 Component* GameObject::AddComponent(Component* c)

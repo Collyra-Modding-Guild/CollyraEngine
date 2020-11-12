@@ -38,6 +38,8 @@ void C_Mesh::GenerateMesh(const char* meshName, const char* meshPath, std::vecto
 	this->normals = normals;
 	this->textureCoords = textureCoords;
 
+	SetAABB();
+
 	GenerateBuffers();
 	GenerateWireColor();
 	SetNameAndPath(meshName, meshPath);

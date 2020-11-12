@@ -11,6 +11,8 @@
 #include "Application.h"
 #include "M_UIManager.h"
 
+#include "OpenGL.h"
+
 M_Scene::M_Scene(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), root(nullptr), globalId(0), focusedGameObject(nullptr)
 {}
 
@@ -204,6 +206,27 @@ void M_Scene::DrawGameObject(GameObject* gameObject, bool* drawState)
 			mesh->Render(drawState,transform->GetTGlobalTransform());
 		}
 	}
+	
+	if(transform != nullptr)
+		DrawBoundingBox(gameObject);
+}
+
+void M_Scene::DrawBoundingBox(GameObject* gameObject)
+{
+	glDisable(GL_LIGHTING);
+	glBegin(GL_LINES);
+
+	glLineWidth(2.0f);
+	glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
+
+	for (uint i = 0; i < gameObject->aabb.NumEdges(); i++)
+	{
+		glVertex3f(gameObject->aabb.Edge(i).a.x, gameObject->aabb.Edge(i).a.y, gameObject->aabb.Edge(i).a.z);
+		glVertex3f(gameObject->aabb.Edge(i).b.x, gameObject->aabb.Edge(i).b.y, gameObject->aabb.Edge(i).b.z);
+	}
+
+	glEnd();
+	glEnable(GL_LIGHTING);
 }
 
 GameObject* M_Scene::GetGameObject(unsigned int id)

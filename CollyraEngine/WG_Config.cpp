@@ -19,7 +19,7 @@
 #include "Devil/include/il.h"
 
 WG_Config::WG_Config(bool isActive) : WindowGroup(WG_CONFIG, isActive),
-fpsLog(FRAMERATE_LOG_SIZE), msLog(FRAMERATE_LOG_SIZE), newInput(false), drawFlags{true, false, false, false},
+fpsLog(FRAMERATE_LOG_SIZE), msLog(FRAMERATE_LOG_SIZE), newInput(false), drawFlags{true, false, false, false, false},
 buffWinW(0), buffWinH(0)
 {}
 
@@ -355,6 +355,11 @@ updateStatus WG_Config::Update()
 		ImGui::Checkbox("Vertex Normals", &drawFlags[NORMAL_V]);
 		ImGui::SameLine();
 		ImGui::Checkbox("Face Normals", &drawFlags[NORMAL_F]);
+
+
+		ImGui::BulletText("Others:");
+
+		ImGui::Checkbox("Bounding Box", &drawFlags[BOUNDING_BOX]);
 
 	}
 

@@ -56,12 +56,14 @@ public:
 
 	bool active;
 
+
+	AABB						aabb;
+	OBB							obb;
+
 private:
 	std::string name;
 	unsigned int id;
 
-	AABB						aabb;
-	OBB							obb;
 };
 
 //Unity Style Yeah----------------
