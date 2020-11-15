@@ -5,6 +5,7 @@
 #include "C_Transform.h"
 #include "C_Material.h"
 #include "C_Mesh.h"
+#include "C_Camera.h"
 
 GameObject::GameObject(std::string name) : parent(nullptr), id(0), name(name), active(true)
 {}
@@ -52,6 +53,8 @@ void GameObject::Update(float dt)
 void GameObject::PostUpdate(float dt)
 {
 	C_Transform* transform = GetComponent<C_Transform>();
+	C_Camera* camera = GetComponent<C_Camera>();
+
 	if (transform->hasUpdated == true)
 	{
 		transform->hasUpdated = false;
@@ -68,6 +71,9 @@ void GameObject::PostUpdate(float dt)
 	}
 
 	BoundingBoxUpdate();
+
+	if(camera != nullptr)
+		camera->UpdateFrustum(transform->GetGlobalTransform());
 }
 
 Component* GameObject::CreateComponent(COMPONENT_TYPE type)
@@ -89,6 +95,11 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 	case COMPONENT_TYPE::MATERIAL:
 	{
 		newComponent = new C_Material();
+	}
+	break;
+	case COMPONENT_TYPE::CAMERA:
+	{
+		newComponent = new C_Camera();
 	}
 	break;
 	default:
@@ -236,7 +247,9 @@ Component* GameObject::AddComponent(Component* c)
 	case COMPONENT_TYPE::MESH: {}
 							 break;
 	case COMPONENT_TYPE::MATERIAL: {}
-								 break;
+							 break;
+	case COMPONENT_TYPE::CAMERA: {}
+							 break;
 	default:
 		break;
 	}

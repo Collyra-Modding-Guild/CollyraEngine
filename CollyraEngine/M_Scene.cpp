@@ -7,6 +7,7 @@
 #include "C_Mesh.h"
 #include "C_Transform.h"
 #include "C_Material.h"
+#include "C_Camera.h"
 
 #include "Application.h"
 #include "M_UIManager.h"
@@ -194,6 +195,7 @@ void M_Scene::DrawGameObject(GameObject* gameObject, bool* drawState)
 	C_Mesh* mesh = gameObject->GetComponent<C_Mesh>();
 	C_Transform* transform = gameObject->GetComponent<C_Transform>();
 	C_Material* material = gameObject->GetComponent<C_Material>();
+	C_Camera* camera = gameObject->GetComponent<C_Camera>();
 
 	if ((mesh != nullptr && mesh->IsActive() == true) && transform != nullptr)
 	{
@@ -209,6 +211,9 @@ void M_Scene::DrawGameObject(GameObject* gameObject, bool* drawState)
 
 	if (transform != nullptr && drawState[BOUNDING_BOX])
 		DrawBoundingBox(gameObject);
+
+	if (camera != nullptr && drawState[FRUSTUM])
+		DrawFrustum(gameObject);
 }
 
 void M_Scene::DrawBoundingBox(GameObject* gameObject)
@@ -232,6 +237,34 @@ void M_Scene::DrawBoundingBox(GameObject* gameObject)
 
 	glEnd();
 	glEnable(GL_LIGHTING);
+}
+
+void M_Scene::DrawFrustum(GameObject* gameObject)
+{
+
+	glDisable(GL_LIGHTING);
+	glBegin(GL_LINES);
+
+	glLineWidth(2.0f);
+	glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+
+	Frustum frustum = gameObject->GetComponent<C_Camera>()->frustum;
+
+	for (uint i = 0; i < frustum.NumEdges(); i++)
+	{
+		
+		glVertex3f(frustum.Edge(i).a.x,
+				   frustum.Edge(i).a.y,
+			       frustum.Edge(i).a.z);
+
+		glVertex3f(frustum.Edge(i).b.x,
+			       frustum.Edge(i).b.y,
+			       frustum.Edge(i).b.z);
+	}
+
+	glEnd();
+	glEnable(GL_LIGHTING);
+
 }
 
 GameObject* M_Scene::GetGameObject(unsigned int id)

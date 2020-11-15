@@ -213,6 +213,11 @@ bool M_UIManager::ShowMainMenuBar()
 				{
 					GameObject* empty = App->scene->CreateGameObject("GameObject");
 				}
+				if (ImGui::Button("Camera", buttonSize))
+				{
+					GameObject* camera = App->scene->CreateGameObject("Camera");
+					camera->CreateComponent(COMPONENT_TYPE::CAMERA);
+				}
 				if (ImGui::Button("Cube", buttonSize))
 				{
 					GameObject* cube = App->scene->CreateGameObject("Cube");

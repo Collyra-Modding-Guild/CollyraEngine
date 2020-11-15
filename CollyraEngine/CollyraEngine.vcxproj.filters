@@ -355,8 +355,8 @@
       <Filter>Sources\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
-    <ClInclude Include="MaterialLoader.h">
-      <Filter>Sources\Helpers\Loaders</Filter>
+    <ClInclude Include="C_Camera.h">
+      <Filter>Sources\Game Objects\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -570,8 +570,8 @@
     <ClCompile Include="glmath.cpp">
       <Filter>Sources\Helpers</Filter>
     </ClCompile>
-    <ClCompile Include="MaterialLoader.cpp">
-      <Filter>Sources\Helpers\Loaders</Filter>
+    <ClCompile Include="C_Camera.cpp">
+      <Filter>Sources\Game Objects\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

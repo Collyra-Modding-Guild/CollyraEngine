@@ -254,6 +254,7 @@ void M_Renderer3D::BeginDrawMode()
 	CPlane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
+
 }
 
 void M_Renderer3D::EndDrawMode()

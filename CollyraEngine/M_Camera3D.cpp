@@ -317,3 +317,4 @@ vec3 M_Camera3D::GetCameraPosition()
 {
 	return Position;
 }
+
