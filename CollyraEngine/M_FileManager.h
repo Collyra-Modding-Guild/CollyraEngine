@@ -10,8 +10,16 @@ class Config;
 struct PathNode;
 
 #define ASSETS_FOLDER "/Assets"
-#define MESHES_PATH "/Assets/Meshes"
-#define TEXTYRES_PATH "/Assets/Textures"
+#define ASSETS_MESHES_PATH "/Assets/Meshes"
+#define ASSETS_TEXTYRES_PATH "/Assets/Textures"
+
+#define LIBRARY_PATH "/Library"
+#define LIBRARY_MESHES "/Library/Meshes/"
+#define LIBRARY_TEXTURES "/Library/Textures/"
+#define LIBRARY_SCENES "/Library/Scenes/"
+#define LIBRARY_MODELS "/Library/Models/"
+#define LIBRARY_MATERIALS "/Library/Materials/"
+
 
 class M_FileManager : public Module
 {

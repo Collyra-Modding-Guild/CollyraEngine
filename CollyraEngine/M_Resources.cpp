@@ -29,8 +29,6 @@ bool M_Resources::Start()
 	defaultTextureId = TextureLoader::LoadDefaultTexture();
 
 	CreateMeshesInternal("Assets/Meshes/house.fbx");
-	CreateMeshesInternal("Assets/Meshes/house.fbx");
-
 
 	return true;
 }
@@ -55,6 +53,7 @@ void M_Resources::ImportResourceInternal(const char* path)
 
 	if (relativePath == "")
 	{
+		//TODO: EXTERNAL FILE -> COPY TO ASSETS & TRY To IMPORT AGAIN
 		LOG("Invalid Path!!! We only load assets from the project folder for now :P");
 		return;
 	}
@@ -65,8 +64,34 @@ void M_Resources::ImportResourceInternal(const char* path)
 	{
 		CreateMeshesInternal(relativePath.c_str());
 	}
-	else if (extension == "png" || extension == "dds")
+	else if (extension == "png" || extension == "dds" || extension == "jpg")
 	{
+		//TODO: Check if the texture has already been imported here
+		char* compressedTextureBuffer = nullptr;
+		std::string texturePath = LIBRARY_TEXTURES;
+		uint compressedTextureSize;
+		uint newTextureId = TextureLoader::Import(relativePath.c_str());
+
+		if (newTextureId > 0)
+		{
+			compressedTextureSize = TextureLoader::Save(&compressedTextureBuffer, newTextureId);
+			if (compressedTextureSize > 0)
+			{
+				texturePath.append(name);
+				App->physFS->Save(texturePath.c_str(), compressedTextureBuffer, compressedTextureSize);
+			}
+			else
+			{
+				LOG("Texture %s could not be compressed!", relativePath.c_str());
+				return;
+			}
+		}
+		else
+		{
+			LOG("Texture %s could not be loaded!", relativePath.c_str());
+			return;
+		}
+
 		int gameObjectTarget = App->uiManager->GetFocusedGameObjectId();
 		if (gameObjectTarget != -1)
 		{
@@ -79,18 +104,18 @@ void M_Resources::ImportResourceInternal(const char* path)
 				cMaterial = (C_Material*)focusedObject->CreateComponent(COMPONENT_TYPE::MATERIAL);
 			}
 
-			cMaterial->SetTexture(TextureLoader::Load(relativePath.c_str()));
-			cMaterial->SetTextureNameAndPath(std::string(name + "." + extension).c_str(), relativePath.c_str());
+			cMaterial->SetTexture(TextureLoader::Load(compressedTextureBuffer, compressedTextureSize));
+			cMaterial->SetTextureNameAndPath(std::string(name + "." + "dds").c_str(), texturePath.c_str());
+
+			LOG("Texture loaded into focused Game Object!!");
 		}
 		else
-			LOG("No Game Object selected to load the Texture into!!");
+			RELEASE_ARRAY(compressedTextureBuffer);
 
 	}
 	else
-		LOG("File type unsupported %s", extension.c_str());
+		LOG("Ignored: %s | File type unsupported %s", path, extension.c_str());
 }
-
-
 
 //void M_Resources::CreateMeshesExternal(const char* path)
 //{

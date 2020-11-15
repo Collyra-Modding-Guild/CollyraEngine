@@ -66,20 +66,80 @@ uint TextureLoader::LoadDefaultTexture()
 	return texID;
 }
 
-uint TextureLoader::Load(const char* path)
+uint TextureLoader::Import(const char* path)
 {
 	char* buffer = nullptr;
 
 	uint bytesFile = App->physFS->Load(path, &buffer);
 
-	if(bytesFile == 0)
-		return 0;
+	if (bytesFile == 0)
+		return bytesFile;
+
+	ILuint ImageName = 0;
+	ilGenImages(1, &ImageName);
+	ilBindImage(ImageName);
 
 	ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, bytesFile);
+
+	RELEASE_ARRAY(buffer);
+
+	return ImageName;
+}
+
+uint TextureLoader::Save(char** compressedBuffer, uint newTextureId)
+{
+	ilEnable(IL_FILE_OVERWRITE);
+
+	ILuint size = 0;
+	ILubyte* data;
+
+	ilSetInteger(IL_DXTC_FORMAT, IL_DXT5);// To pick a specific DXT compression use
+	size = ilSaveL(IL_DDS, nullptr, 0); // Get the size of the data buffer
+
+	if (size > 0)
+	{
+		data = new ILubyte[size]; // allocate data buffer
+		if (ilSaveL(IL_DDS, data, size) > 0) // Save to buffer with the ilSaveIL function
+		{
+			*compressedBuffer = (char*)data;
+		}
+
+		//RELEASE_ARRAY(data);
+	}
+
+	ilDeleteImages(1, &newTextureId);
+	return size;
+}
+
+uint TextureLoader::Load(char* buffer, uint bufferSize)
+{
+	ILuint ImageName;
+	ilGenImages(1, &ImageName);
+	ilBindImage(ImageName);
+
+	ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, bufferSize);
 	uint ret = ilutGLBindTexImage();
-	
+
+	ilDeleteImages(1, &ImageName);
+
 	RELEASE_ARRAY(buffer);
 
 	return ret;
 }
 
+//uint TextureLoader::Load(const char* path)
+//{
+//	char* buffer = nullptr;
+//
+//	uint bytesFile = App->physFS->Load(path, &buffer);
+//
+//	if (bytesFile == 0)
+//		return 0;
+//
+//	ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, bytesFile);
+//	uint ret = ilutGLBindTexImage();
+//
+//	RELEASE_ARRAY(buffer);
+//
+//	return ret;
+//}
