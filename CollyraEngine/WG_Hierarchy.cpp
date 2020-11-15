@@ -55,7 +55,6 @@ void WG_Hierarchy::CreateHierarchy(GameObject* gameObject)
 
 	HandleDragAndDrop(gameObject);
 
-
 	//If the Node is opened, display the childs
 	if (isNodeOpened)
 	{

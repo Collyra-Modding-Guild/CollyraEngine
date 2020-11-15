@@ -54,7 +54,8 @@ bool M_FileManager::CleanUp()
 void M_FileManager::CreateFolderDirs()
 {
 	// If the standard folders do not exist, create them
-	std::vector<const char*> dirs = { ASSETS_FOLDER, MESHES_PATH, TEXTYRES_PATH };
+	std::vector<const char*> dirs = { ASSETS_FOLDER, ASSETS_MESHES_PATH, ASSETS_TEXTYRES_PATH,
+		LIBRARY_PATH,LIBRARY_MESHES,LIBRARY_TEXTURES,LIBRARY_SCENES,LIBRARY_MODELS, LIBRARY_MATERIALS };
 
 	for (uint i = 0; i < dirs.size(); ++i)
 	{
@@ -490,11 +491,11 @@ std::string M_FileManager::GetExtensionFolder(const char* fileExtension)
 
 	if (extension == "fbx")
 	{
-		return MESHES_PATH;
+		return ASSETS_MESHES_PATH;
 	}
 	else if (extension == "png")
 	{
-		return TEXTYRES_PATH;
+		return ASSETS_TEXTYRES_PATH;
 	}
 
 	return std::string("unknown");

@@ -9,10 +9,9 @@
 #include "C_Material.h"
 
 #include "TextureLoader.h"
+#include "MaterialLoader.h"
 
 #include "p2Defs.h"
-#include "MathGeoLib/include/Math/float3.h"
-#include "MathGeoLib/include/Math/float2.h"
 
 #include "Assimp/include/cimport.h"
 #include "Assimp/include/scene.h"
@@ -28,7 +27,6 @@ void MeshLoader::Init()
 	struct aiLogStream stream;
 	stream = aiGetPredefinedLogStream(aiDefaultLogStream_DEBUGGER, nullptr);
 	aiAttachLogStream(&stream);
-
 }
 
 void MeshLoader::CleanUp()
@@ -59,7 +57,7 @@ void MeshLoader::Load(const char* path)
 		App->physFS->SplitFilePath(path, nullptr, nullptr, &fbxName, nullptr);
 		GameObject* sceneRoot = App->scene->CreateGameObject(fbxName.c_str(), nullptr);
 
-		LoadSceneMeshes(scene, scene->mRootNode, path, sceneRoot);
+		Private::LoadAiSceneMeshes(scene, scene->mRootNode, path, sceneRoot);
 
 		aiReleaseImport(scene);
 	}
@@ -70,7 +68,45 @@ void MeshLoader::Load(const char* path)
 
 }
 
-bool MeshLoader::LoadSceneMeshes(const aiScene* scene, const aiNode* parent, const char* filePath, GameObject* gbParent, float4x4 transform)
+void MeshLoader::Import(const char* path)
+{
+	char* buffer = nullptr;
+
+	uint bytesFile = App->physFS->Load(path, &buffer);
+
+	if (bytesFile == 0)
+	{
+		return;
+	}
+
+	const aiScene* scene = aiImportFileFromMemory(buffer, bytesFile, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
+
+	RELEASE_ARRAY(buffer);
+
+	if (scene)
+	{
+		LOG("FileÑ: %s Succesfully Imported!! Trying to convert to own format. . .", path);
+		Save(scene, path);
+	}
+	else
+	{
+		LOG("Error importing aiScene %s", path);
+	}
+}
+
+void MeshLoader::Save(const aiScene* scene, const char* path)
+{
+	std::string fbxName = "";
+	App->physFS->SplitFilePath(path, nullptr, nullptr, &fbxName, nullptr);
+
+	GameObject* sceneRoot = App->scene->CreateGameObject(fbxName.c_str(), nullptr);
+
+	Private::LoadAiSceneMeshes(scene, scene->mRootNode, path, sceneRoot);
+
+	aiReleaseImport(scene);
+}
+
+bool MeshLoader::Private::LoadAiSceneMeshes(const aiScene* scene, const aiNode* parent, const char* filePath, GameObject* gbParent, float4x4 transform)
 {
 	for (int i = 0; i < parent->mNumChildren; i++)
 	{
@@ -80,7 +116,7 @@ bool MeshLoader::LoadSceneMeshes(const aiScene* scene, const aiNode* parent, con
 	return true;
 }
 
-bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const char* filePath, GameObject* parent, float4x4 transform)
+bool MeshLoader::Private::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const char* filePath, GameObject* parent, float4x4 transform)
 {
 	GameObject* newGameObject = nullptr;
 
@@ -93,12 +129,7 @@ bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const 
 
 	if (node->mNumMeshes > 0)
 	{
-		GameObject* newGameObject = App->scene->CreateGameObject(node->mName.C_Str(), parent);
-
-		//Transform Load------
-		newGameObject->GetComponent<C_Transform>()->SetLocalTransformation(pos, rot, scale);
-		parent->GetComponent<C_Transform>()->SetLocalTransformation(transform);
-		newGameObject->GetComponent<C_Transform>()->GenerateGlobalTransformationFrom(parent->GetComponent<C_Transform>()->GetGlobalTransform());
+		newGameObject = App->scene->CreateGameObject(node->mName.C_Str(), parent);
 
 		//Mesh Load---------
 		int meshSize = node->mNumMeshes;
@@ -112,9 +143,9 @@ bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const 
 			std::vector<uint> indices;
 
 			vertices.reserve(mesh->mNumVertices);
+			textureCoords.reserve(mesh->mNumVertices);
 			if (mesh->HasNormals())
 				normals.reserve(mesh->mNumVertices);
-			textureCoords.reserve(mesh->mNumVertices);
 
 			LoadVertices(mesh, vertices, normals, textureCoords);
 			if (vertices.size() == 0)
@@ -132,97 +163,58 @@ bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const 
 			}
 			LOG("New mesh with %i vertices & %i indices", vertices.size(), indices.size());
 
-			C_Mesh* newMesh = (C_Mesh*)newGameObject->CreateComponent(COMPONENT_TYPE::MESH);
+			//TODO: This should be a Mesh Resource
+			//MESH IMPORT & SAVE ----------------------------------------
+			C_Mesh* newMesh = new C_Mesh();
 
 			std::string path = "";
 			std::string meshName = "";
 			std::string meshExtension = "";
 			App->physFS->SplitFilePath(filePath, nullptr, &path, &meshName, &meshExtension);
-
 			newMesh->GenerateMesh(std::string(meshName + "." + meshExtension).c_str(), filePath, vertices, indices, normals, textureCoords);
 
-			//Materials Load------------
+			SaveMesh(newMesh, std::string(LIBRARY_MESHES + meshName + "_" + node->mName.C_Str() + ".mesh").c_str());
+			RELEASE(newMesh);
+
+			//MATERIAL IMPORT & SAVE----------------------------------------
 			if (scene->HasMaterials())
 			{
+				C_Material* newMaterial = new C_Material();
+
 				aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-				if (material != nullptr)
-					LoadMaterialFromMesh(material, newGameObject, filePath);
+				MaterialLoader::IImport(material, newMaterial, filePath);
+				std::string savedPath = MaterialLoader::Save(newMaterial);
+				RELEASE(newMaterial);
+				C_Material* loadedmaterial = new C_Material();
+				MaterialLoader::Load(loadedmaterial, savedPath.c_str());
+				newGameObject->AddComponent(loadedmaterial);
+
 			}
 
-		}
+			//LOAD--------------------
+			C_Mesh* myNewMesh = new C_Mesh();
+			LoadMesh(myNewMesh, std::string(LIBRARY_MESHES + meshName + "_" + node->mName.C_Str() + ".mesh").c_str());
+			newGameObject->AddComponent(myNewMesh);
 
+			//Transform Load------
+			newGameObject->GetComponent<C_Transform>()->SetLocalTransformation(pos, rot, scale);
+			parent->GetComponent<C_Transform>()->SetLocalTransformation(transform);
+			newGameObject->GetComponent<C_Transform>()->GenerateGlobalTransformationFrom(parent->GetComponent<C_Transform>()->GetGlobalTransform());
+		}
 	}
 
 	//We calculate the transform & send it to the recursive interaction
 	// Because we avoid the "empty" TRS parents that assimp generates but we want to keep the Transformation
 	transform = transform * float4x4::FromTRS(pos, rot, scale);
 
-	LoadSceneMeshes(scene, node, filePath, newGameObject == nullptr ? parent : newGameObject, transform);
+	LoadAiSceneMeshes(scene, node, filePath, newGameObject == nullptr ? parent : newGameObject, transform);
 
 	return true;
 }
 
-void MeshLoader::LoadMaterialFromMesh(const aiMaterial* mat, GameObject* newGameObject, const char* meshPath)
-{
-	aiString path;
-	mat->GetTexture(aiTextureType_DIFFUSE, 0, &path);
 
-	C_Material* newMaterial = nullptr;
-	aiColor4D materialColor;
-	if (aiGetMaterialColor(mat, AI_MATKEY_COLOR_DIFFUSE, &materialColor) == aiReturn_SUCCESS)
-	{
-		newMaterial = (C_Material*)newGameObject->CreateComponent(COMPONENT_TYPE::MATERIAL);
-		newMaterial->SetColor(Color{ materialColor.r, materialColor.g, materialColor.b, materialColor.a });
-	}
-
-	if (path.length > 0)
-	{
-		std::string loadedPath = "";
-
-		std::string pathRelativeToFbx = path.C_Str();
-		std::string relativePath = "";
-		App->physFS->SplitFilePath(meshPath, nullptr, &relativePath, nullptr, nullptr);
-		pathRelativeToFbx = App->physFS->GetProjectPathFromInternalRelative(relativePath, pathRelativeToFbx);
-		loadedPath = pathRelativeToFbx;
-
-		uint loadTexture = TextureLoader::Load(pathRelativeToFbx.c_str());
-		if (loadTexture == 0)
-		{
-			LOG("Checking if texture exists in Textures Folder....");
-			std::string textureName = "";
-			std::string textureExtension = "";
-			App->physFS->SplitFilePath(path.C_Str(), nullptr, nullptr, &textureName, &textureExtension);
-			std::string defaultPath = TEXTYRES_PATH;
-			defaultPath += "/" + textureName + "." + textureExtension;
-			loadTexture = TextureLoader::Load(defaultPath.c_str());
-			loadedPath = defaultPath;
-		}
-
-		if (loadTexture != 0)
-		{
-			LOG("Texture loaded! ID: %i", loadTexture);
-
-			if (newMaterial == nullptr)
-				newMaterial = (C_Material*)newGameObject->CreateComponent(COMPONENT_TYPE::MATERIAL);
-
-			std::string materialName = "";
-			std::string materialExtension = "";
-			App->physFS->SplitFilePath(loadedPath.c_str(), nullptr, nullptr, &materialName, &materialExtension);
-
-			newMaterial->SetTexture(loadTexture);
-			newMaterial->SetTextureNameAndPath(std::string(materialName + "." + materialExtension).c_str(), loadedPath.c_str());
-
-		}
-		else
-		{
-			LOG("Material found but could not be loaded. Texture not found in path given by scene: %s", pathRelativeToFbx.c_str());
-		}
-	}
-}
-
-
-void MeshLoader::LoadVertices(aiMesh* mesh, std::vector<float3>& vertices, std::vector<float3>& normals, std::vector<float2>& textureCoords)
+void MeshLoader::Private::LoadVertices(aiMesh* mesh, std::vector<float3>& vertices, std::vector<float3>& normals, std::vector<float2>& textureCoords)
 {
 	for (uint i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -256,7 +248,7 @@ void MeshLoader::LoadVertices(aiMesh* mesh, std::vector<float3>& vertices, std::
 	}
 }
 
-bool MeshLoader::LoadIndices(aiMesh* mesh, std::vector<uint>& indices)
+bool MeshLoader::Private::LoadIndices(aiMesh* mesh, std::vector<uint>& indices)
 {
 	for (uint i = 0; i < mesh->mNumFaces; i++)
 	{
@@ -272,5 +264,97 @@ bool MeshLoader::LoadIndices(aiMesh* mesh, std::vector<uint>& indices)
 	}
 
 	return true;
+}
+
+void MeshLoader::Private::SaveMesh(C_Mesh* mesh, const char* path)
+{
+	// amount of indices / vertices /  normals / texture_coords / AABB
+	uint ranges[4] = { mesh->GetIndicesSize(), mesh->GetVerticesSize(), mesh->GetNormalsSize(), mesh->GetTextureCoordsSize() };
+	uint size = sizeof(ranges) + sizeof(uint) * mesh->GetIndicesSize() + sizeof(float3) * mesh->GetVerticesSize()
+		+ sizeof(float3) * mesh->GetNormalsSize() + sizeof(float2) * mesh->GetNormalsSize();
+
+	char* fileBuffer = new char[size]; // Allocate
+	char* cursor = fileBuffer;
+	uint bytes = sizeof(ranges); // First store ranges
+	memcpy(cursor, ranges, bytes);
+	cursor += bytes;
+
+	// Store indices
+	bytes = sizeof(uint) * mesh->GetIndicesSize();
+	memcpy(cursor, mesh->GetIndicesIndex(), bytes);
+	cursor += bytes;
+
+	// Store vertices
+	bytes = sizeof(float3) * mesh->GetVerticesSize();
+	memcpy(cursor, mesh->GetVerticesIndex(), bytes);
+	cursor += bytes;
+
+	// Store normals
+	bytes = sizeof(float3) * mesh->GetNormalsSize();
+	memcpy(cursor, mesh->GetNormalsIndex(), bytes);
+	cursor += bytes;
+
+	// Store textureCoords
+	bytes = sizeof(float2) * mesh->GetTextureCoordsSize();
+	memcpy(cursor, mesh->GetTextureCoordsIndex(), bytes);
+	cursor += bytes;
+
+	App->physFS->Save(path, fileBuffer, size);
+
+	RELEASE_ARRAY(fileBuffer);
+}
+
+void MeshLoader::Private::LoadMesh(C_Mesh* myNewMesh, const char* path)
+{
+	char* buffer = nullptr;
+	App->physFS->Load(path, &buffer);
+
+	if (buffer != nullptr)
+	{
+		char* cursor = buffer;
+		// amount of indices / vertices / normals / texture_coords / AABB
+		uint ranges[4];
+		uint bytes = sizeof(ranges);
+		memcpy(ranges, cursor, bytes);
+		cursor += bytes;
+
+		// Load indices
+		bytes = sizeof(uint) * ranges[0];
+		myNewMesh->GetIndices()->resize(ranges[0]);
+		memcpy(myNewMesh->GetIndicesIndex(), cursor, bytes);
+		cursor += bytes;
+
+		// Load vertices
+		bytes = sizeof(float3) * ranges[1];
+		myNewMesh->GetVertices()->resize(ranges[1]);
+		memcpy(myNewMesh->GetVerticesIndex(), cursor, bytes);
+		cursor += bytes;
+
+		// Load Normals
+		bytes = sizeof(float3) * ranges[2];
+		myNewMesh->GetNormals()->resize(ranges[2]);
+		memcpy(myNewMesh->GetNormalsIndex(), cursor, bytes);
+		cursor += bytes;
+
+		// Load Texture Coords
+		bytes = sizeof(float2) * ranges[3];
+		myNewMesh->GetTextCoords()->resize(ranges[3]);
+		memcpy(myNewMesh->GetTextureCoordsIndex(), cursor, bytes);
+		cursor += bytes;
+
+		//TODO: When the resources are implemented, this has to fly away¬¬
+		std::string meshName = "";
+		App->physFS->SplitFilePath(path, nullptr, nullptr, &meshName, nullptr);
+
+		myNewMesh->SetAABB();
+		myNewMesh->GenerateMesh(meshName.c_str(), path);
+
+		RELEASE_ARRAY(buffer);
+	}
+	else
+	{
+		LOG("Coudn't load mesh from internal library...");
+	}
+
 }
 

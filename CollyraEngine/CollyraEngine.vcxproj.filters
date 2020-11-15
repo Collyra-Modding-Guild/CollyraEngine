@@ -355,6 +355,9 @@
       <Filter>Sources\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="MaterialLoader.h">
+      <Filter>Sources\Helpers\Loaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="log.cpp">
@@ -566,6 +569,9 @@
     </ClCompile>
     <ClCompile Include="glmath.cpp">
       <Filter>Sources\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialLoader.cpp">
+      <Filter>Sources\Helpers\Loaders</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -16,7 +16,12 @@ namespace TextureLoader
 	void CleanUp();
 
 	uint LoadDefaultTexture();
-	uint Load(const char* path);
+
+	uint Import(const char* path);
+	uint Save(char** compressedBuffer, uint newTextureId);
+	uint Load(char* buffer, uint bufferSize);
+
+	//uint Load(const char* path);
 
 }
 

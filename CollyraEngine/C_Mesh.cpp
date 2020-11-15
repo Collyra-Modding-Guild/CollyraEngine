@@ -6,7 +6,7 @@
 #include "OpenGL.h"
 
 C_Mesh::C_Mesh(bool active) : Component(COMPONENT_TYPE::MESH, active), idIndex(-1), idVertex(-1), idNormals(-1), idTextureCoords(-1),
-drawWire(false), drawNormVertices(false), drawNormFaces(false), drawFaces(true)
+drawWire(false), drawNormVertices(false), drawNormFaces(false), drawFaces(true), vertices{}, indices{}, normals{}, textureCoords{}
 {}
 
 C_Mesh::C_Mesh(std::vector<float3> vertices, std::vector<uint> indices, std::vector<float3> normals, std::vector<float2> textureCoords, bool active) :
@@ -33,10 +33,14 @@ void C_Mesh::SetAABB()
 
 void C_Mesh::GenerateMesh(const char* meshName, const char* meshPath, std::vector<float3> vertices, std::vector<uint> indices, std::vector<float3> normals, std::vector<float2> textureCoords)
 {
-	this->vertices = vertices;
-	this->indices = indices;
-	this->normals = normals;
-	this->textureCoords = textureCoords;
+	if (vertices.size() > 0)
+		this->vertices = vertices;
+	if (indices.size() > 0)
+		this->indices = indices;
+	if (normals.size() > 0)
+		this->normals = normals;
+	if (textureCoords.size() > 0)
+		this->textureCoords = textureCoords;
 
 	SetAABB();
 
@@ -59,7 +63,8 @@ void C_Mesh::GenerateBuffers()
 		glBindBuffer(GL_ARRAY_BUFFER, idVertex);
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float3), &vertices[0], GL_STATIC_DRAW);
 
-		GenerateSize(this->myGameObject->GetComponent<C_Transform>()->GetGlobalScale());
+		if (myGameObject != nullptr)
+			GenerateSize(this->myGameObject->GetComponent<C_Transform>()->GetGlobalScale());
 
 		glGenBuffers(1, (GLuint*)&(idIndex));
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndex);
@@ -241,7 +246,7 @@ void C_Mesh::DrawNormals(bool* drawState) const
 		for (uint i = 0, j = 0; i < vertices.size(); i++)
 		{
 			//Draw Vertex Normals-----------------------
-			if (drawNormVertices == true|| drawState[NORMAL_V])
+			if (drawNormVertices == true || drawState[NORMAL_V])
 			{
 				glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
 
@@ -290,9 +295,34 @@ uint C_Mesh::GetVerticesSize() const
 	return vertices.size();
 }
 
+std::vector<float3>* C_Mesh::GetVertices()
+{
+	return &vertices;
+}
+
+float3* C_Mesh::GetVerticesIndex()
+{
+	return &vertices[0];
+}
+
+std::vector<uint>* C_Mesh::GetIndices()
+{
+	return &indices;
+}
+
 uint C_Mesh::GetIndicesSize() const
 {
 	return indices.size();
+}
+
+uint* C_Mesh::GetIndicesIndex()
+{
+	return &indices[0];
+}
+
+std::vector<float3>* C_Mesh::GetNormals()
+{
+	return &normals;
 }
 
 uint C_Mesh::GetNormalsSize() const
@@ -300,9 +330,24 @@ uint C_Mesh::GetNormalsSize() const
 	return normals.size();
 }
 
+float3* C_Mesh::GetNormalsIndex()
+{
+	return &normals[0];
+}
+
+std::vector<float2>* C_Mesh::GetTextCoords()
+{
+	return &textureCoords;
+}
+
 uint C_Mesh::GetTextureCoordsSize() const
 {
 	return textureCoords.size();
+}
+
+float2* C_Mesh::GetTextureCoordsIndex()
+{
+	return &textureCoords[0];
 }
 
 bool C_Mesh::GetDrawingWire() const

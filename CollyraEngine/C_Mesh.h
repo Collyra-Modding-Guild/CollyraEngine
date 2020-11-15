@@ -17,7 +17,7 @@ public:
 	AABB GetAABB() const;
 	void SetAABB();
 
-	void GenerateMesh(const char* meshName, const char* meshPath,std::vector<float3> vertices, std::vector<uint> indices, std::vector<float3> normals, std::vector<float2> textureCoords);
+	void GenerateMesh(const char* meshName, const char* meshPath, std::vector<float3> vertices = {}, std::vector<uint> indices = {}, std::vector<float3> normals = {}, std::vector<float2> textureCoords = {});
 	void SetNameAndPath(const char* meshName, const char* meshPath);
 
 	void Render(bool* drawState,float4x4 transform = float4x4::identity, int textureID = -1, Color color = Grey) const;
@@ -28,10 +28,22 @@ public:
 	std::string GetMeshName() const;
 	std::string GetMeshPath() const;
 
+
 	uint GetVerticesSize() const;
+	std::vector<float3>* GetVertices();
+	float3* GetVerticesIndex();
+
+	std::vector<uint>* GetIndices();
 	uint GetIndicesSize() const;
+	uint* GetIndicesIndex();
+
+	std::vector<float3>* GetNormals();
 	uint GetNormalsSize() const;
+	float3* GetNormalsIndex();
+
+	std::vector<float2>* GetTextCoords();
 	uint GetTextureCoordsSize() const;
+	float2* GetTextureCoordsIndex();
 
 	bool GetDrawingWire() const;
 	void SetDrawingWire(bool newState);
@@ -51,6 +63,7 @@ private:
 	void GenerateSize(float3 scale);
 
 	void ClearMesh();
+
 
 private:
 
