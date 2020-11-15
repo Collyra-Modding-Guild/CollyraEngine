@@ -10,6 +10,7 @@
 #include "C_Material.h"
 #include "C_Mesh.h"
 #include "C_Transform.h"
+#include "C_Camera.h"
 
 
 WG_Inspector::WG_Inspector(bool isActive) : WindowGroup(WG_INSPECTOR, isActive), focusedGameObject(nullptr),
@@ -30,6 +31,7 @@ updateStatus WG_Inspector::Update()
 	{
 		C_Mesh* mesh = focusedGameObject->GetComponent<C_Mesh>();
 		C_Material* material = focusedGameObject->GetComponent<C_Material>();
+		C_Camera* camera = focusedGameObject->GetComponent<C_Camera>();
 
 		//Delete the selected item - - - - - - - - - - - -
 		if (DeleteGameObject(SDL_SCANCODE_DELETE))
@@ -47,6 +49,9 @@ updateStatus WG_Inspector::Update()
 
 		if (material != nullptr)
 			DrawMaterialComponent(ImGuiTreeNodeFlags_DefaultOpen, material);
+
+		if (camera != nullptr)
+			DrawCameraComponent(ImGuiTreeNodeFlags_DefaultOpen, camera);
 
 	}
 
@@ -395,6 +400,28 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* m
 	ImGui::Spacing();
 	ImGui::Separator();
 	ImGui::Spacing();
+}
+
+void WG_Inspector::DrawCameraComponent(ImGuiTreeNodeFlags_ flag, C_Camera* camera)
+{
+
+	bool cameraActive = camera->IsActive();
+	if (ImGui::Checkbox("##CameraActive", &cameraActive))
+		camera->SetActive(cameraActive);
+
+	ImGui::SameLine();
+
+	if (ImGui::CollapsingHeader("Camera", flag))
+	{
+
+	
+
+	}
+
+	ImGui::Spacing();
+	ImGui::Separator();
+	ImGui::Spacing();
+
 }
 
 void WG_Inspector::DrawHeaderGameObject()
