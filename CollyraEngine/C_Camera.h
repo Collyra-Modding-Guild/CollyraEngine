@@ -19,8 +19,11 @@ public:
 
 private:
 
+	void HOR(uint aspectWidth, uint aspectHeight);
 
 public:
 
 	Frustum frustum;
+
+	float verticalFOV, horizontalFOV;
 };
