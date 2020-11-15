@@ -2,6 +2,9 @@
 #include "Component.h"
 #include "p2Defs.h"
 
+#include "Application.h"
+#include "M_Scene.h"
+
 #include "C_Transform.h"
 #include "C_Material.h"
 #include "C_Mesh.h"
@@ -22,6 +25,9 @@ GameObject::~GameObject()
 
 	for (int i = 0; i < components.size(); i++)
 	{
+		if (components[i]->GetType() == COMPONENT_TYPE::CAMERA) 
+			App->scene->DeleteCamera(components[i]);
+		
 		RELEASE(components[i]);
 	}
 	components.clear();
@@ -100,6 +106,7 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 	case COMPONENT_TYPE::CAMERA:
 	{
 		newComponent = new C_Camera();
+		App->scene->cameras.push_back((C_Camera*)newComponent);
 	}
 	break;
 	default:

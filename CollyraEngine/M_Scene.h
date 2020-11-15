@@ -7,6 +7,7 @@
 
 class GameObject;
 class Component;
+class C_Camera;
 
 class M_Scene : public Module
 {
@@ -27,6 +28,7 @@ public:
 	GameObject* GetGameObject(unsigned int id);
 	GameObject* GetGameObject(std::string name);
 	bool		DeleteGameObject(GameObject* gameObject);
+	void		DeleteCamera(Component* component);
 
 	unsigned int GenerateId();
 
@@ -38,8 +40,13 @@ private:
 	void DrawBoundingBox(GameObject* gameObject);
 	void DrawFrustum(GameObject* gameObject);
 
+	
+
 public:
 	GameObject* focusedGameObject;
+
+	std::vector<C_Camera*> cameras;
+
 
 private:
 	GameObject* root;

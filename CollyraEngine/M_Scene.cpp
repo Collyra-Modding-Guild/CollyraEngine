@@ -94,6 +94,15 @@ updateStatus M_Scene::PostUpdate(float dt)
 		{
 			stack.push(currNode->children[i]);
 		}
+
+
+		for (int i = 0; i < cameras.size(); i++)
+		{
+			if (cameras[i]->frustum.Contains(currNode->GetGameObjectAABB()) && currNode->GetComponent<C_Mesh>() != nullptr)
+				currNode->GetComponent<C_Mesh>()->SetActive(true);
+			else if(currNode->GetComponent<C_Mesh>() != nullptr)
+				currNode->GetComponent<C_Mesh>()->SetActive(false);
+		}
 	}
 
 	return UPDATE_CONTINUE;
@@ -390,4 +399,15 @@ bool M_Scene::DeleteGameObject(GameObject* gameObject)
 	RELEASE(gameObject);
 
 	return true;
+}
+
+void M_Scene::DeleteCamera(Component* component)
+{
+	for (int i = 0; i < cameras.size(); i++)
+	{
+		if (cameras[i] == component)
+		{
+			cameras.erase(cameras.begin() + i);
+		}
+	}
 }

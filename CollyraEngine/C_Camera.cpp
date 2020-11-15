@@ -1,9 +1,8 @@
 #include "C_Camera.h"
 #include "GameObject.h"
 
-C_Camera::C_Camera(bool active) : Component(COMPONENT_TYPE::MESH, active), verticalFOV(0.0f), horizontalFOV(90.0f)
+C_Camera::C_Camera(bool active) : Component(COMPONENT_TYPE::CAMERA, active), verticalFOV(0.0f), horizontalFOV(90.0f)
 { 
-
 	frustum.type = FrustumType::PerspectiveFrustum;
 
 	frustum.pos = float3(0, 0, 0);
@@ -15,7 +14,6 @@ C_Camera::C_Camera(bool active) : Component(COMPONENT_TYPE::MESH, active), verti
 
 	frustum.horizontalFov = DEGTORAD * horizontalFOV;
 	HOR(16, 9);
-
 }
 
 C_Camera::~C_Camera()
