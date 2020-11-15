@@ -53,6 +53,8 @@ void GameObject::Update(float dt)
 void GameObject::PostUpdate(float dt)
 {
 	C_Transform* transform = GetComponent<C_Transform>();
+	C_Camera* camera = GetComponent<C_Camera>();
+
 	if (transform->hasUpdated == true)
 	{
 		transform->hasUpdated = false;
@@ -69,6 +71,9 @@ void GameObject::PostUpdate(float dt)
 	}
 
 	BoundingBoxUpdate();
+
+	if(camera != nullptr)
+		camera->UpdateFrustum(transform->GetGlobalTransform());
 }
 
 Component* GameObject::CreateComponent(COMPONENT_TYPE type)

@@ -19,7 +19,7 @@
 #include "Devil/include/il.h"
 
 WG_Config::WG_Config(bool isActive) : WindowGroup(WG_CONFIG, isActive),
-fpsLog(FRAMERATE_LOG_SIZE), msLog(FRAMERATE_LOG_SIZE), newInput(false), drawFlags{true, false, false, false, false},
+fpsLog(FRAMERATE_LOG_SIZE), msLog(FRAMERATE_LOG_SIZE), newInput(false), drawFlags{true, false, false, false, false, true},
 buffWinW(0), buffWinH(0)
 {}
 
@@ -360,6 +360,8 @@ updateStatus WG_Config::Update()
 		ImGui::BulletText("Others:");
 
 		ImGui::Checkbox("Bounding Box", &drawFlags[BOUNDING_BOX]);
+		ImGui::SameLine();
+		ImGui::Checkbox("Frustum", &drawFlags[FRUSTUM]);
 
 	}
 

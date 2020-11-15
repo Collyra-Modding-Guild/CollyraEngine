@@ -26,6 +26,7 @@ public:
 	float* GetViewMatrix();
 	vec3 GetCameraPosition();
 
+
 private:
 	void CalculateViewMatrix();
 	void CameraMovement(float dt);
@@ -46,4 +47,5 @@ public:
 private:
 	M_Input*	inputModule;
 	mat4x4		ViewMatrix, ViewMatrixInverse;
+
 };

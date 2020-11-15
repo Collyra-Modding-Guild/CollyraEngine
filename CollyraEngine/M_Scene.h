@@ -36,6 +36,7 @@ private:
 	void CheckSiblingsName(GameObject* parent, std::string& myName);
 	void DrawGameObject(GameObject* gameObject, bool* drawState);
 	void DrawBoundingBox(GameObject* gameObject);
+	void DrawFrustum(GameObject* gameObject);
 
 public:
 	GameObject* focusedGameObject;
