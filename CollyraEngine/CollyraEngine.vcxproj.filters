@@ -49,6 +49,9 @@
     <Filter Include="Sources\Helpers\Loaders">
       <UniqueIdentifier>{981fd667-df83-439a-ad8e-25756afac357}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Helpers\Json Parser">
+      <UniqueIdentifier>{25fb4be5-0f64-40a5-888b-f9a5fb18711e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Module.h">
@@ -358,6 +361,10 @@
     <ClInclude Include="C_Camera.h">
       <Filter>Sources\Game Objects\Components</Filter>
     </ClInclude>
+    <ClInclude Include="MaterialLoader.h" />
+    <ClInclude Include="parson.h">
+      <Filter>Sources\Helpers\Json Parser</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="log.cpp">
@@ -572,6 +579,10 @@
     </ClCompile>
     <ClCompile Include="C_Camera.cpp">
       <Filter>Sources\Game Objects\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialLoader.cpp" />
+    <ClCompile Include="parson.c">
+      <Filter>Sources\Helpers\Json Parser</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -183,9 +183,11 @@ bool MeshLoader::Private::LoadNodeMeshes(const aiScene* scene, const aiNode* nod
 
 				aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
+				//IMPORT & SAVE
 				MaterialLoader::IImport(material, newMaterial, filePath);
 				std::string savedPath = MaterialLoader::Save(newMaterial);
 				RELEASE(newMaterial);
+				//LOAD MATERIAL-----
 				C_Material* loadedmaterial = new C_Material();
 				MaterialLoader::Load(loadedmaterial, savedPath.c_str());
 				newGameObject->AddComponent(loadedmaterial);

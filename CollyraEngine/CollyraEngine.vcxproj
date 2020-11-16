@@ -164,6 +164,7 @@
     <ClInclude Include="M_Input.h" />
     <ClInclude Include="M_Window.h" />
     <ClInclude Include="OpenGL.h" />
+    <ClInclude Include="parson.h" />
     <ClInclude Include="PathNode.h" />
     <ClInclude Include="PerfTimer.h" />
     <ClInclude Include="Primitive.h" />
@@ -240,6 +241,7 @@
     <ClCompile Include="M_UIManager.cpp" />
     <ClCompile Include="M_Window.cpp" />
     <ClCompile Include="p2Defs.h" />
+    <ClCompile Include="parson.c" />
     <ClCompile Include="PerfTimer.cpp" />
     <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="TextureLoader.cpp" />

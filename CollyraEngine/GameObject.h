@@ -4,6 +4,7 @@
 
 #include <string>
 #include <vector>
+#include "p2Defs.h"
 
 enum class COMPONENT_TYPE
 {
@@ -35,8 +36,8 @@ public:
 	template<typename T>
 	T* GetComponent();
 
-	unsigned int GetId() const;
-	void SetId(unsigned int newId);
+	uint32 GetId() const;
+	void SetId(uint32 newId);
 
 	std::string GetName() const;
 	void SetName(std::string newName);
@@ -64,7 +65,7 @@ public:
 private:
 	std::string name;
 	GameObject* parent;
-	unsigned int id;
+	uint32 uid;
 
 	AABB aabb;
 	OBB	obb;

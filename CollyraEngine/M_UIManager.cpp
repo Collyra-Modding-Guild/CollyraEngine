@@ -189,7 +189,6 @@ bool M_UIManager::ShowMainMenuBar()
 	{
 		if (ImGui::BeginMenu("App"))
 		{		
-
 			if (ImGui::MenuItem("Exit", NULL))
 			{
 				ret = false;
@@ -199,7 +198,16 @@ bool M_UIManager::ShowMainMenuBar()
 		}
 		if (ImGui::BeginMenu("Editor"))
 		{
-			ImGui::MenuItem("WIP", NULL, nullptr, false);
+			if (ImGui::MenuItem("Load Scene", NULL))
+			{
+				//LOAD SCENE
+			}
+
+			if (ImGui::MenuItem("Save Scene", NULL))
+			{
+				//SAVE SCENE
+			}
+
 			ImGui::EndMenu();
 		}
 

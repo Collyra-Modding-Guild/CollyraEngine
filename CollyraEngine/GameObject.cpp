@@ -10,7 +10,7 @@
 #include "C_Mesh.h"
 #include "C_Camera.h"
 
-GameObject::GameObject(std::string name) : parent(nullptr), id(0), name(name), active(true)
+GameObject::GameObject(std::string name) : parent(nullptr), uid(0), name(name), active(true)
 {}
 
 GameObject::~GameObject()
@@ -133,14 +133,14 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 	return newComponent;
 }
 
-unsigned int GameObject::GetId() const
+uint32 GameObject::GetId() const
 {
-	return id;
+	return uid;
 }
 
-void GameObject::SetId(unsigned int newId)
+void GameObject::SetId(uint32 newId)
 {
-	this->id = newId;
+	this->uid = newId;
 }
 
 std::string GameObject::GetName() const
