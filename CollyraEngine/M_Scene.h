@@ -4,6 +4,8 @@
 #include "Module.h"
 #include <vector>
 #include <string>
+#include "p2Defs.h"
+#include "MathGeoLib/include/Algorithm/Random/LCG.h"
 
 class GameObject;
 class Component;
@@ -30,7 +32,7 @@ public:
 	bool		DeleteGameObject(GameObject* gameObject);
 	void		DeleteCamera(Component* component);
 
-	unsigned int GenerateId();
+	uint32 GenerateId();
 
 	GameObject* GetRoot();	
 
@@ -40,17 +42,13 @@ private:
 	void DrawBoundingBox(GameObject* gameObject);
 	void DrawFrustum(GameObject* gameObject);
 
-	
-
 public:
 	GameObject* focusedGameObject;
-
 	std::vector<C_Camera*> cameras;
-
+	LCG randomGenerator;
 
 private:
 	GameObject* root;
-	unsigned int globalId;
 
 };
 

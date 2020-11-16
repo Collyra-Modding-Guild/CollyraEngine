@@ -119,8 +119,6 @@ void WG_Hierarchy::HandleDragAndDrop(GameObject* currentGo)
 			ImGui::EndDragDropSource();
 		}
 	}
-
-
 }
 
 void WG_Hierarchy::DrpGameObject(GameObject* moved, GameObject* objective)

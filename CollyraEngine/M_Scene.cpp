@@ -14,7 +14,7 @@
 
 #include "OpenGL.h"
 
-M_Scene::M_Scene(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), root(nullptr), globalId(0), focusedGameObject(nullptr)
+M_Scene::M_Scene(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), root(nullptr), focusedGameObject(nullptr)
 {}
 
 M_Scene::~M_Scene()
@@ -24,7 +24,7 @@ bool M_Scene::Awake()
 {
 	root = new GameObject("Scene");
 	root->CreateComponent(COMPONENT_TYPE::TRANSFORM);
-	root->SetId(GenerateId());
+	root->SetId(0);
 
 	return true;
 }
@@ -100,7 +100,7 @@ updateStatus M_Scene::PostUpdate(float dt)
 		{
 			if (cameras[i]->frustum.Contains(currNode->GetGameObjectAABB()) && currNode->GetComponent<C_Mesh>() != nullptr)
 				currNode->GetComponent<C_Mesh>()->SetActive(true);
-			else if(currNode->GetComponent<C_Mesh>() != nullptr)
+			else if (currNode->GetComponent<C_Mesh>() != nullptr)
 				currNode->GetComponent<C_Mesh>()->SetActive(false);
 		}
 	}
@@ -170,9 +170,9 @@ GameObject* M_Scene::CreateGameObject(std::string name, GameObject* parent)
 	return newGameObject;
 }
 
-uint M_Scene::GenerateId()
+uint32 M_Scene::GenerateId()
 {
-	return globalId++;
+	return randomGenerator.Int();
 }
 
 GameObject* M_Scene::GetRoot()
@@ -235,12 +235,12 @@ void M_Scene::DrawBoundingBox(GameObject* gameObject)
 
 	for (uint i = 0; i < gameObject->GetGameObjectAABB().NumEdges(); i++)
 	{
-		glVertex3f(gameObject->GetGameObjectAABB().Edge(i).a.x, 
-			gameObject->GetGameObjectAABB().Edge(i).a.y, 
+		glVertex3f(gameObject->GetGameObjectAABB().Edge(i).a.x,
+			gameObject->GetGameObjectAABB().Edge(i).a.y,
 			gameObject->GetGameObjectAABB().Edge(i).a.z);
 
-		glVertex3f(gameObject->GetGameObjectAABB().Edge(i).b.x, 
-			gameObject->GetGameObjectAABB().Edge(i).b.y, 
+		glVertex3f(gameObject->GetGameObjectAABB().Edge(i).b.x,
+			gameObject->GetGameObjectAABB().Edge(i).b.y,
 			gameObject->GetGameObjectAABB().Edge(i).b.z);
 	}
 
@@ -261,14 +261,14 @@ void M_Scene::DrawFrustum(GameObject* gameObject)
 
 	for (uint i = 0; i < frustum.NumEdges(); i++)
 	{
-		
+
 		glVertex3f(frustum.Edge(i).a.x,
-				   frustum.Edge(i).a.y,
-			       frustum.Edge(i).a.z);
+			frustum.Edge(i).a.y,
+			frustum.Edge(i).a.z);
 
 		glVertex3f(frustum.Edge(i).b.x,
-			       frustum.Edge(i).b.y,
-			       frustum.Edge(i).b.z);
+			frustum.Edge(i).b.y,
+			frustum.Edge(i).b.z);
 	}
 
 	glEnd();
