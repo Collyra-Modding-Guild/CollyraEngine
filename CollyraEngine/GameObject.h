@@ -35,9 +35,10 @@ public:
 
 	template<typename T>
 	T* GetComponent();
+	const std::vector<Component*>* GetAllComponents() const;
 
-	uint32 GetId() const;
-	void SetId(uint32 newId);
+	uint32 GetUid() const;
+	void SetUid(uint32 newId);
 
 	std::string GetName() const;
 	void SetName(std::string newName);
@@ -48,8 +49,9 @@ public:
 	void NotifyChildDeath(GameObject* deadChild);
 	void AddChildren(GameObject* newChild);
 	GameObject* GetChild(int id) const;
+	std::vector<GameObject*> GetChilds() const;
 
-	const AABB GetGameObjectAABB();	
+	const AABB GetGameObjectAABB() const;	
 
 private:
 

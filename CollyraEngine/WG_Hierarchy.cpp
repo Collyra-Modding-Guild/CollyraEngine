@@ -46,10 +46,10 @@ void WG_Hierarchy::CreateHierarchy(GameObject* gameObject)
 	//Check Clicked
 	if (ImGui::IsItemClicked())
 	{
-		if (gameObject->GetId() != ROOT)
+		if (gameObject->GetUid() != ROOT_ID)
 		{
-			App->uiManager->SetFocusedGameObject(gameObject->GetId());
-			selected = gameObject->GetId();
+			App->uiManager->SetFocusedGameObject(gameObject->GetUid());
+			selected = gameObject->GetUid();
 		}
 	}
 
@@ -72,13 +72,13 @@ void WG_Hierarchy::SetTreeNodeFlags(GameObject* gameObject)
 {
 	flag = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_FramePadding;
 
-	if (gameObject->GetId() == ROOT)
+	if (gameObject->GetUid() == ROOT_ID)
 		flag |= ImGuiTreeNodeFlags_DefaultOpen;
 
 	if (gameObject->children.size() == 0)
 		flag |= ImGuiTreeNodeFlags_Leaf;
 
-	if (gameObject->GetId() == selected)
+	if (gameObject->GetUid() == selected)
 		flag |= ImGuiTreeNodeFlags_Selected;
 }
 
@@ -92,7 +92,7 @@ void WG_Hierarchy::HandleDragAndDrop(GameObject* currentGo)
 			GameObject* gameObjectBuffer = (GameObject*)(payload->Data);
 			if (gameObjectBuffer != nullptr)
 			{
-				GameObject* transportedGameObject = App->scene->GetGameObject(gameObjectBuffer->GetId());
+				GameObject* transportedGameObject = App->scene->GetGameObject(gameObjectBuffer->GetUid());
 				if (transportedGameObject != nullptr)
 				{
 					DrpGameObject(transportedGameObject, currentGo);
@@ -102,7 +102,7 @@ void WG_Hierarchy::HandleDragAndDrop(GameObject* currentGo)
 		ImGui::EndDragDropTarget();
 	}
 
-	if (currentGo->GetId() != ROOT)
+	if (currentGo->GetUid() != ROOT_ID)
 	{
 		//Get Source-----------------
 		if (ImGui::BeginDragDropSource())

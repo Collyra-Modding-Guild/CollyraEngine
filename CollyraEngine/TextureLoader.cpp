@@ -113,7 +113,7 @@ uint TextureLoader::Save(char** compressedBuffer, uint newTextureId)
 
 uint TextureLoader::Load(char* buffer, uint bufferSize)
 {
-	ILuint ImageName;
+	ILuint ImageName = 0;
 	ilGenImages(1, &ImageName);
 	ilBindImage(ImageName);
 

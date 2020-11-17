@@ -6,8 +6,6 @@
 
 class GameObject;
 
-#define ROOT 0
-
 class WG_Hierarchy : public WindowGroup
 {
 public:

@@ -13,6 +13,7 @@ public:
 
 	void SetTexture(uint idTexture);
 	void SetTextureNameAndPath(const char* name, const char* path);
+	void SetNameAndPath(const char* name, const char* path);
 	void SetColor(Color color);
 	void SetUseDefaultTexture(bool defaultTextureOn);
 	bool GetDefaultTextureUsage() const;
@@ -22,6 +23,8 @@ public:
 
 	std::string GetMaterialName() const;
 	std::string GetMaterialPath() const;
+	std::string GetTextureName() const;
+	std::string GetTexturePath() const;
 
 private:
 
@@ -33,6 +36,8 @@ private:
 	Color color;
 	std::string name;
 	std::string path;
+	std::string textureName;
+	std::string texturePath;
 
 	bool useDefaultTexture;
 	uint defaultTextureId;

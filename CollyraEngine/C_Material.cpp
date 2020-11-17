@@ -24,6 +24,12 @@ void C_Material::SetTexture(uint idTexture)
 
 void C_Material::SetTextureNameAndPath(const char* name, const char* path)
 {
+	this->textureName = name;
+	this->texturePath = path;
+}
+
+void C_Material::SetNameAndPath(const char* name, const char* path)
+{
 	this->name = name;
 	this->path = path;
 }
@@ -71,6 +77,16 @@ std::string C_Material::GetMaterialPath() const
 		return "Default";
 
 	return path;
+}
+
+std::string C_Material::GetTextureName() const
+{
+	return textureName;
+}
+
+std::string C_Material::GetTexturePath() const
+{
+	return texturePath;
 }
 
 void C_Material::ClearTexture()

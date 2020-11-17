@@ -1,0 +1,340 @@
+{
+    "GameObjects": [
+        {
+            "UID": 8312591,
+            "Name": "house",
+            "Active": true,
+            "ParentUID": 0,
+            "Components": [
+                {
+                    "Type": 0,
+                    "Active": true,
+                    "Translation": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "Rotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "Scale": [
+                        7.8399858474731445,
+                        7.8399848937988281,
+                        7.8399848937988281
+                    ]
+                }
+            ]
+        },
+        {
+            "UID": 1057796968,
+            "Name": "Chimney",
+            "Active": true,
+            "ParentUID": 8312591,
+            "Components": [
+                {
+                    "Type": 0,
+                    "Active": true,
+                    "Translation": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "Rotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "Scale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Active": true,
+                    "MatName": "Chimney",
+                    "MatPath": "\/Library\/Materials\/Chimney.collmat",
+                    "TextName": "house",
+                    "TextPath": "\/Library\/Textures\/house.dds"
+                },
+                {
+                    "Type": 1,
+                    "Active": true,
+                    "Name": "house_Chimney",
+                    "Path": "\/Library\/Meshes\/house_Chimney.mesh"
+                }
+            ]
+        },
+        {
+            "UID": 1226002557,
+            "Name": "Baker_house",
+            "Active": true,
+            "ParentUID": 8312591,
+            "Components": [
+                {
+                    "Type": 0,
+                    "Active": true,
+                    "Translation": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "Rotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "Scale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Active": true,
+                    "MatName": "Baker_house",
+                    "MatPath": "\/Library\/Materials\/Baker_house.collmat",
+                    "TextName": "house",
+                    "TextPath": "\/Library\/Textures\/house.dds"
+                },
+                {
+                    "Type": 1,
+                    "Active": true,
+                    "Name": "house_Baker_house",
+                    "Path": "\/Library\/Meshes\/house_Baker_house.mesh"
+                }
+            ]
+        },
+        {
+            "UID": 1638987235,
+            "Name": "house (1)",
+            "Active": true,
+            "ParentUID": 0,
+            "Components": [
+                {
+                    "Type": 0,
+                    "Active": true,
+                    "Translation": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "Rotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "Scale": [
+                        7.8399858474731445,
+                        7.8399848937988281,
+                        7.8399848937988281
+                    ]
+                }
+            ]
+        },
+        {
+            "UID": 1386704590,
+            "Name": "Chimney",
+            "Active": true,
+            "ParentUID": 1638987235,
+            "Components": [
+                {
+                    "Type": 0,
+                    "Active": true,
+                    "Translation": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "Rotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "Scale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Active": true,
+                    "MatName": "Chimney",
+                    "MatPath": "\/Library\/Materials\/Chimney.collmat",
+                    "TextName": "house",
+                    "TextPath": "\/Library\/Textures\/house.dds"
+                },
+                {
+                    "Type": 1,
+                    "Active": true,
+                    "Name": "house_Chimney",
+                    "Path": "\/Library\/Meshes\/house_Chimney.mesh"
+                }
+            ]
+        },
+        {
+            "UID": 1485425858,
+            "Name": "Baker_house",
+            "Active": true,
+            "ParentUID": 1638987235,
+            "Components": [
+                {
+                    "Type": 0,
+                    "Active": true,
+                    "Translation": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "Rotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "Scale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Active": true,
+                    "MatName": "Baker_house",
+                    "MatPath": "\/Library\/Materials\/Baker_house.collmat",
+                    "TextName": "house",
+                    "TextPath": "\/Library\/Textures\/house.dds"
+                },
+                {
+                    "Type": 1,
+                    "Active": true,
+                    "Name": "house_Baker_house",
+                    "Path": "\/Library\/Meshes\/house_Baker_house.mesh"
+                }
+            ]
+        },
+        {
+            "UID": 463671239,
+            "Name": "house (2)",
+            "Active": true,
+            "ParentUID": 0,
+            "Components": [
+                {
+                    "Type": 0,
+                    "Active": true,
+                    "Translation": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "Rotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "Scale": [
+                        7.8399858474731445,
+                        7.8399848937988281,
+                        7.8399848937988281
+                    ]
+                }
+            ]
+        },
+        {
+            "UID": 281148715,
+            "Name": "Chimney",
+            "Active": true,
+            "ParentUID": 463671239,
+            "Components": [
+                {
+                    "Type": 0,
+                    "Active": true,
+                    "Translation": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "Rotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "Scale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Active": true,
+                    "MatName": "Chimney",
+                    "MatPath": "\/Library\/Materials\/Chimney.collmat",
+                    "TextName": "house",
+                    "TextPath": "\/Library\/Textures\/house.dds"
+                },
+                {
+                    "Type": 1,
+                    "Active": true,
+                    "Name": "house_Chimney",
+                    "Path": "\/Library\/Meshes\/house_Chimney.mesh"
+                }
+            ]
+        },
+        {
+            "UID": 1688728257,
+            "Name": "Baker_house",
+            "Active": true,
+            "ParentUID": 463671239,
+            "Components": [
+                {
+                    "Type": 0,
+                    "Active": true,
+                    "Translation": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "Rotation": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ],
+                    "Scale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "Type": 2,
+                    "Active": true,
+                    "MatName": "Baker_house",
+                    "MatPath": "\/Library\/Materials\/Baker_house.collmat",
+                    "TextName": "house",
+                    "TextPath": "\/Library\/Textures\/house.dds"
+                },
+                {
+                    "Type": 1,
+                    "Active": true,
+                    "Name": "house_Baker_house",
+                    "Path": "\/Library\/Meshes\/house_Baker_house.mesh"
+                }
+            ]
+        }
+    ]
+} 

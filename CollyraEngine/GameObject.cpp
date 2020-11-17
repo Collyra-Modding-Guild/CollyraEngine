@@ -133,12 +133,17 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 	return newComponent;
 }
 
-uint32 GameObject::GetId() const
+const std::vector<Component*>* GameObject::GetAllComponents() const
+{
+	return &components;
+}
+
+uint32 GameObject::GetUid() const
 {
 	return uid;
 }
 
-void GameObject::SetId(uint32 newId)
+void GameObject::SetUid(uint32 newId)
 {
 	this->uid = newId;
 }
@@ -196,7 +201,7 @@ GameObject* GameObject::GetChild(int id) const
 {
 	for (int i = 0; i < children.size(); i++)
 	{
-		if (children[i]->GetId() == id)
+		if (children[i]->GetUid() == id)
 		{
 			return children[i];
 		}
@@ -204,7 +209,12 @@ GameObject* GameObject::GetChild(int id) const
 	return nullptr;
 }
 
-const AABB GameObject::GetGameObjectAABB()
+std::vector<GameObject*> GameObject::GetChilds() const
+{
+	return children;
+}
+
+const AABB GameObject::GetGameObjectAABB() const
 {
 	return aabb;
 }

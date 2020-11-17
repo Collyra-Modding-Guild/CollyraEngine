@@ -17,13 +17,20 @@ public:
 
 	void UpdateFrustum(const float4x4& globalPosition);
 
+	float GetHorizontalFov() const;
+	float GetNearPlane() const;
+	float GetFarPlane() const;
+
 private:
 
 	void HOR(uint aspectWidth, uint aspectHeight);
 
 public:
-
 	Frustum frustum;
+
+
+private:
+
 
 	float verticalFOV, horizontalFOV;
 };

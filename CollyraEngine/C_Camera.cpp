@@ -30,6 +30,21 @@ void C_Camera::UpdateFrustum(const float4x4& globalPosition)
 	frustum.pos = position;
 }
 
+float C_Camera::GetHorizontalFov() const
+{
+	return horizontalFOV;
+}
+
+float C_Camera::GetNearPlane() const
+{
+	return frustum.nearPlaneDistance;
+}
+
+float C_Camera::GetFarPlane() const
+{
+	return frustum.farPlaneDistance;
+}
+
 void C_Camera::HOR(uint aspectWidth, uint aspectHeight)
 {
 	frustum.verticalFov = 2 * atanf(tanf(frustum.horizontalFov / 2) * ((float)aspectHeight / (float)aspectWidth));

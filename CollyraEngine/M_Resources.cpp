@@ -29,6 +29,8 @@ bool M_Resources::Start()
 	defaultTextureId = TextureLoader::LoadDefaultTexture();
 
 	CreateMeshesInternal("Assets/Meshes/house.fbx");
+	CreateMeshesInternal("Assets/Meshes/house.fbx");
+	CreateMeshesInternal("Assets/Meshes/house.fbx");
 
 	return true;
 }
@@ -97,6 +99,7 @@ void M_Resources::ImportResourceInternal(const char* path)
 		{
 			GameObject* focusedObject = App->scene->GetGameObject(gameObjectTarget);
 
+			//TODO: This has to go the Save & Load Pipeline for materials!!!
 			C_Material* cMaterial = focusedObject->GetComponent<C_Material>();
 
 			if (cMaterial == nullptr)

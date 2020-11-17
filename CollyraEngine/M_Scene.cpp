@@ -14,7 +14,7 @@
 
 #include "OpenGL.h"
 
-M_Scene::M_Scene(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), root(nullptr), focusedGameObject(nullptr)
+M_Scene::M_Scene(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), root(nullptr), focusedGameObject(nullptr), sceneName("")
 {}
 
 M_Scene::~M_Scene()
@@ -22,9 +22,10 @@ M_Scene::~M_Scene()
 
 bool M_Scene::Awake()
 {
-	root = new GameObject("Scene");
+	sceneName = "Default Scene";
+	root = new GameObject(sceneName.c_str());
 	root->CreateComponent(COMPONENT_TYPE::TRANSFORM);
-	root->SetId(0);
+	root->SetUid(0);
 
 	return true;
 }
@@ -163,7 +164,7 @@ GameObject* M_Scene::CreateGameObject(std::string name, GameObject* parent)
 
 	parent->children.push_back(newGameObject);
 	newGameObject->SetParent(parent);
-	newGameObject->SetId(GenerateId());
+	newGameObject->SetUid(GenerateId());
 
 	newGameObject->CreateComponent(COMPONENT_TYPE::TRANSFORM);
 
@@ -178,6 +179,16 @@ uint32 M_Scene::GenerateId()
 GameObject* M_Scene::GetRoot()
 {
 	return root;
+}
+
+std::string M_Scene::GetSceneName() const
+{
+	return sceneName;
+}
+
+void M_Scene::SetSceneName(const char* newName)
+{
+	sceneName = newName;
 }
 
 void M_Scene::CheckSiblingsName(GameObject* parent, std::string& myName)
@@ -294,7 +305,7 @@ GameObject* M_Scene::GetGameObject(unsigned int id)
 		currNode = stack.top();
 		stack.pop();
 
-		if (currNode->GetId() == id)
+		if (currNode->GetUid() == id)
 		{
 			return currNode;
 		}
@@ -362,7 +373,7 @@ bool M_Scene::DeleteGameObject(unsigned int id)
 		currNode = stack.top();
 		stack.pop();
 
-		if (currNode->GetId() == id)
+		if (currNode->GetUid() == id)
 		{
 			toDelete = currNode;
 			break;
@@ -390,7 +401,7 @@ bool M_Scene::DeleteGameObject(GameObject* gameObject)
 		return false;
 
 	//Notify the UI that a GameObject has been destroyed---------
-	App->uiManager->GameObjectDestroyed(gameObject->GetId());
+	App->uiManager->GameObjectDestroyed(gameObject->GetUid());
 
 	//Notify the Parent that his child is going to die-----------
 	if (gameObject->GetParent() != nullptr)

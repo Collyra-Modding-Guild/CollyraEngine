@@ -361,9 +361,17 @@
     <ClInclude Include="C_Camera.h">
       <Filter>Sources\Game Objects\Components</Filter>
     </ClInclude>
-    <ClInclude Include="MaterialLoader.h" />
-    <ClInclude Include="parson.h">
+    <ClInclude Include="SceneLoader.h">
+      <Filter>Sources\Helpers\Loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonConfig.h">
       <Filter>Sources\Helpers\Json Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Parson\parson.h">
+      <Filter>Sources\Helpers\Json Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialLoader.h">
+      <Filter>Sources\Helpers\Loaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -580,9 +588,17 @@
     <ClCompile Include="C_Camera.cpp">
       <Filter>Sources\Game Objects\Components</Filter>
     </ClCompile>
-    <ClCompile Include="MaterialLoader.cpp" />
-    <ClCompile Include="parson.c">
+    <ClCompile Include="SceneLoader.cpp">
+      <Filter>Sources\Helpers\Loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonConfig.cpp">
       <Filter>Sources\Helpers\Json Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="Parson\parson.c">
+      <Filter>Sources\Helpers\Json Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialLoader.cpp">
+      <Filter>Sources\Helpers\Loaders</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

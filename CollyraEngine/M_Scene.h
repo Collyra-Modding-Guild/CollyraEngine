@@ -7,6 +7,8 @@
 #include "p2Defs.h"
 #include "MathGeoLib/include/Algorithm/Random/LCG.h"
 
+#define ROOT_ID 0
+
 class GameObject;
 class Component;
 class C_Camera;
@@ -36,6 +38,9 @@ public:
 
 	GameObject* GetRoot();	
 
+	std::string GetSceneName() const;
+	void SetSceneName(const char* newName);
+
 private:
 	void CheckSiblingsName(GameObject* parent, std::string& myName);
 	void DrawGameObject(GameObject* gameObject, bool* drawState);
@@ -49,6 +54,7 @@ public:
 
 private:
 	GameObject* root;
+	std::string sceneName;
 
 };
 

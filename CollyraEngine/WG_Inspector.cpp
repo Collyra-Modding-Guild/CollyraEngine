@@ -84,7 +84,7 @@ void WG_Inspector::SetGameObject(GameObject* focusedGameObject)
 	if (focusedGameObject != nullptr)
 	{
 		this->focusedGameObject = focusedGameObject;
-		focusedId = focusedGameObject->GetId();
+		focusedId = focusedGameObject->GetUid();
 	}
 }
 

@@ -5,6 +5,10 @@
 #include "M_Window.h"
 #include "M_Scene.h"
 
+//TODO: This has to go away when Module Resources
+#include "M_FileManager.h"
+#include "SceneLoader.h"
+
 #include "GameObject.h"
 #include "Component.h"
 #include "C_Material.h"
@@ -200,12 +204,16 @@ bool M_UIManager::ShowMainMenuBar()
 		{
 			if (ImGui::MenuItem("Load Scene", NULL))
 			{
-				//LOAD SCENE
+
 			}
 
 			if (ImGui::MenuItem("Save Scene", NULL))
 			{
-				//SAVE SCENE
+				//TODO: This has to go to resouce manager
+				char* buffer = nullptr;
+				uint size = SceneLoader::Save(App->scene->GetRoot(), &buffer);
+				App->physFS->Save(std::string(LIBRARY_SCENES).append("myScene.collScene").c_str(), buffer,size);
+				RELEASE(buffer);
 			}
 
 			ImGui::EndMenu();
