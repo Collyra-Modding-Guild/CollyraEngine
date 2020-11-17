@@ -99,7 +99,7 @@ updateStatus M_Scene::PostUpdate(float dt)
 
 		for (int i = 0; i < cameras.size(); i++)
 		{
-			if (cameras[i]->frustum.Contains(currNode->GetGameObjectAABB()) && currNode->GetComponent<C_Mesh>() != nullptr)
+			if (currNode->GetComponent<C_Mesh>() != nullptr && cameras[i]->frustum.ContainsAABBVertices(currNode->GetGameObjectAABB()))
 				currNode->GetComponent<C_Mesh>()->SetActive(true);
 			else if (currNode->GetComponent<C_Mesh>() != nullptr)
 				currNode->GetComponent<C_Mesh>()->SetActive(false);
