@@ -1,7 +1,7 @@
 {
     "GameObjects": [
         {
-            "UID": 8312591,
+            "UID": 2024154093,
             "Name": "house",
             "Active": true,
             "ParentUID": 0,
@@ -29,10 +29,10 @@
             ]
         },
         {
-            "UID": 1057796968,
+            "UID": 1460225319,
             "Name": "Chimney",
             "Active": true,
-            "ParentUID": 8312591,
+            "ParentUID": 2024154093,
             "Components": [
                 {
                     "Type": 0,
@@ -71,10 +71,10 @@
             ]
         },
         {
-            "UID": 1226002557,
+            "UID": 471085119,
             "Name": "Baker_house",
             "Active": true,
-            "ParentUID": 8312591,
+            "ParentUID": 2024154093,
             "Components": [
                 {
                     "Type": 0,
@@ -113,7 +113,7 @@
             ]
         },
         {
-            "UID": 1638987235,
+            "UID": 1046812915,
             "Name": "house (1)",
             "Active": true,
             "ParentUID": 0,
@@ -122,7 +122,7 @@
                     "Type": 0,
                     "Active": true,
                     "Translation": [
-                        0,
+                        -35,
                         0,
                         0
                     ],
@@ -141,10 +141,10 @@
             ]
         },
         {
-            "UID": 1386704590,
+            "UID": 1009426976,
             "Name": "Chimney",
             "Active": true,
-            "ParentUID": 1638987235,
+            "ParentUID": 1046812915,
             "Components": [
                 {
                     "Type": 0,
@@ -183,10 +183,10 @@
             ]
         },
         {
-            "UID": 1485425858,
+            "UID": 913148021,
             "Name": "Baker_house",
             "Active": true,
-            "ParentUID": 1638987235,
+            "ParentUID": 1046812915,
             "Components": [
                 {
                     "Type": 0,
@@ -225,7 +225,7 @@
             ]
         },
         {
-            "UID": 463671239,
+            "UID": 172484253,
             "Name": "house (2)",
             "Active": true,
             "ParentUID": 0,
@@ -234,7 +234,7 @@
                     "Type": 0,
                     "Active": true,
                     "Translation": [
-                        0,
+                        17,
                         0,
                         0
                     ],
@@ -246,17 +246,17 @@
                     ],
                     "Scale": [
                         7.8399858474731445,
-                        7.8399848937988281,
+                        29.840000152587891,
                         7.8399848937988281
                     ]
                 }
             ]
         },
         {
-            "UID": 281148715,
+            "UID": 1945107736,
             "Name": "Chimney",
             "Active": true,
-            "ParentUID": 463671239,
+            "ParentUID": 172484253,
             "Components": [
                 {
                     "Type": 0,
@@ -295,10 +295,10 @@
             ]
         },
         {
-            "UID": 1688728257,
+            "UID": 26908236,
             "Name": "Baker_house",
             "Active": true,
-            "ParentUID": 463671239,
+            "ParentUID": 172484253,
             "Components": [
                 {
                     "Type": 0,

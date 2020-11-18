@@ -18,11 +18,13 @@ M_Scene::M_Scene(MODULE_TYPE type, bool startEnabled) : Module(type, startEnable
 {}
 
 M_Scene::~M_Scene()
-{}
+{
+	RELEASE(root);
+}
 
 bool M_Scene::Awake()
 {
-	sceneName = "Default Scene";
+	sceneName = DEFAULT_SCENE_NAME;
 	root = new GameObject(sceneName.c_str());
 	root->CreateComponent(COMPONENT_TYPE::TRANSFORM);
 	root->SetUid(0);
@@ -169,6 +171,19 @@ GameObject* M_Scene::CreateGameObject(std::string name, GameObject* parent)
 	newGameObject->CreateComponent(COMPONENT_TYPE::TRANSFORM);
 
 	return newGameObject;
+}
+
+void M_Scene::ResetScene()
+{
+	sceneName = DEFAULT_SCENE_NAME;
+	root->SetName(DEFAULT_SCENE_NAME);
+
+	for (uint i = 0; i < root->children.size(); i++)
+	{
+		App->uiManager->GameObjectDestroyed(root->children[i]->GetUid());
+		RELEASE(root->children[i]);
+	}
+	root->children.clear();
 }
 
 uint32 M_Scene::GenerateId()

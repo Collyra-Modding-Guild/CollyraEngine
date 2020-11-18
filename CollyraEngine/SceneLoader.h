@@ -15,12 +15,16 @@ namespace SceneLoader
 {
 	uint Import(const char* path);
 	uint Save(const GameObject* hierarchyParent, char** buffer);
-	uint Load(char* buffer, uint bufferSize);
+	bool Load(const char* scenePath);
 
 	namespace Private
 	{
 		void SaveGameObject(const GameObject* gameObject, JsonConfig saveTo, JsonArray* gameObjectsArray);
 		void SaveComponent(const Component* component, JsonConfig saveTo);
+
+		void LoadGameObjects(JsonArray& gameObjectsArr);
+		void LoadComponents(JsonArray& components, GameObject* gameObject);
+		void LoadComponent(JsonConfig& componentInfo, Component* component);
 	}
 }
 

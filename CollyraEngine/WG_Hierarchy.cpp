@@ -129,9 +129,5 @@ void WG_Hierarchy::DrpGameObject(GameObject* moved, GameObject* objective)
 		return;
 	}
 
-	moved->GetParent()->NotifyChildDeath(moved);
-
-	objective->AddChildren(moved);
-
 	moved->SetParent(objective);
 }

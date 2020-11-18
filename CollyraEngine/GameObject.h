@@ -43,6 +43,8 @@ public:
 	std::string GetName() const;
 	void SetName(std::string newName);
 
+	void SetActive(bool newState);
+
 	void SetParent(GameObject* newParent);
 	GameObject* GetParent() const;
 

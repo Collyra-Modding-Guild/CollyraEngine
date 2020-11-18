@@ -8,6 +8,7 @@
 #include "MathGeoLib/include/Algorithm/Random/LCG.h"
 
 #define ROOT_ID 0
+#define DEFAULT_SCENE_NAME "DefaultScene"
 
 class GameObject;
 class Component;
@@ -33,6 +34,9 @@ public:
 	GameObject* GetGameObject(std::string name);
 	bool		DeleteGameObject(GameObject* gameObject);
 	void		DeleteCamera(Component* component);
+
+	//Delete all GameObjects, Components, cameras, reset Name,....
+	void		ResetScene();
 
 	uint32 GenerateId();
 

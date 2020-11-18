@@ -96,6 +96,7 @@ void C_Mesh::GenerateWireColor()
 	wireColor = Color((float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f);
 }
 
+//TODO: This should be substituted by AABB, right?
 void C_Mesh::GenerateSize(float3 scale)
 {
 	float maxY = 0, maxX = 0, maxZ = 0;

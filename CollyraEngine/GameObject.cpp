@@ -25,9 +25,9 @@ GameObject::~GameObject()
 
 	for (int i = 0; i < components.size(); i++)
 	{
-		if (components[i]->GetType() == COMPONENT_TYPE::CAMERA) 
+		if (components[i]->GetType() == COMPONENT_TYPE::CAMERA)
 			App->scene->DeleteCamera(components[i]);
-		
+
 		RELEASE(components[i]);
 	}
 	components.clear();
@@ -65,7 +65,7 @@ void GameObject::PostUpdate(float dt)
 	{
 		transform->hasUpdated = false;
 		transform->GenerateGlobalTransformationFrom(parent->GetComponent<C_Transform>()->GetGlobalTransform());;
-		
+
 		for (int i = 0; i < children.size(); i++)
 		{
 			C_Transform* childTransform = children[i]->GetComponent<C_Transform>();
@@ -78,7 +78,7 @@ void GameObject::PostUpdate(float dt)
 
 	BoundingBoxUpdate();
 
-	if(camera != nullptr)
+	if (camera != nullptr)
 		camera->UpdateFrustum(transform->GetGlobalTransform());
 }
 
@@ -110,6 +110,7 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 	}
 	break;
 	default:
+		return nullptr;
 		break;
 	}
 
@@ -158,6 +159,12 @@ void GameObject::SetName(std::string newName)
 	name = newName;
 }
 
+void GameObject::SetActive(bool newState)
+{
+	if (newState != active)
+		active = !active;
+}
+
 void GameObject::SetParent(GameObject* newParent)
 {
 	if (newParent == nullptr)
@@ -169,10 +176,18 @@ void GameObject::SetParent(GameObject* newParent)
 	GameObject* prevParent = parent;
 	parent = newParent;
 
-	if (prevParent != parent && prevParent != nullptr)
+	if (prevParent != parent)
 	{
-		GetComponent<C_Transform>()->UpdateLocalTransformMaintingGlobalToFit(parent->GetComponent<C_Transform>()->GetGlobalTransform());
+		parent->AddChildren(this);
+
+		if (prevParent != nullptr)
+		{
+			prevParent->NotifyChildDeath(this);
+			GetComponent<C_Transform>()->UpdateLocalTransformMaintingGlobalToFit(parent->GetComponent<C_Transform>()->GetGlobalTransform());
+		}
+
 	}
+
 }
 
 GameObject* GameObject::GetParent() const
@@ -194,6 +209,14 @@ void GameObject::NotifyChildDeath(GameObject* deadChild)
 
 void GameObject::AddChildren(GameObject* newChild)
 {
+	for (int i = 0; i < children.size(); i++)
+	{
+		if (children[i] == newChild)
+		{
+			return;
+		}
+	}
+
 	children.push_back(newChild);
 }
 
@@ -223,7 +246,7 @@ void GameObject::BoundingBoxUpdate()
 {
 	C_Mesh* check = GetComponent<C_Mesh>();
 
-	if (check) 
+	if (check)
 	{
 		// Generate global OBB
 		obb = GetComponent<C_Mesh>()->GetAABB();
@@ -236,7 +259,7 @@ void GameObject::BoundingBoxUpdate()
 	else
 	{
 		obb.Transform(GetComponent<C_Transform>()->GetGlobalTransform());
-		
+
 		aabb.SetNegativeInfinity();
 		aabb.SetFromCenterAndSize(obb.CenterPoint(), float3(1, 1, 1));
 		obb = aabb;
@@ -264,9 +287,9 @@ Component* GameObject::AddComponent(Component* c)
 	case COMPONENT_TYPE::MESH: {}
 							 break;
 	case COMPONENT_TYPE::MATERIAL: {}
-							 break;
+								 break;
 	case COMPONENT_TYPE::CAMERA: {}
-							 break;
+							   break;
 	default:
 		break;
 	}

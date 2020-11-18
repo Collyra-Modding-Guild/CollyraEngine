@@ -2,7 +2,7 @@
 #include "GameObject.h"
 
 C_Camera::C_Camera(bool active) : Component(COMPONENT_TYPE::CAMERA, active), verticalFOV(0.0f), horizontalFOV(90.0f)
-{ 
+{
 	frustum.type = FrustumType::PerspectiveFrustum;
 
 	frustum.pos = float3(0, 0, 0);
@@ -35,14 +35,30 @@ float C_Camera::GetHorizontalFov() const
 	return horizontalFOV;
 }
 
+void C_Camera::SetHorizontalFov(float horizontalFov)
+{
+	horizontalFOV = horizontalFov;
+	HOR(16, 9);
+}
+
 float C_Camera::GetNearPlane() const
 {
 	return frustum.nearPlaneDistance;
 }
 
+void C_Camera::SetNearPlane(float nearPlane)
+{
+	frustum.nearPlaneDistance = nearPlane;
+}
+
 float C_Camera::GetFarPlane() const
 {
 	return frustum.farPlaneDistance;
+}
+
+void C_Camera::SetFarPlane(float farPlane)
+{
+	frustum.farPlaneDistance = farPlane;
 }
 
 void C_Camera::HOR(uint aspectWidth, uint aspectHeight)

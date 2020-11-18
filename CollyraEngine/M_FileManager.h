@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 
-class Config;
+class JsonConfig;
 struct PathNode;
 
 #define ASSETS_FOLDER "/Assets"

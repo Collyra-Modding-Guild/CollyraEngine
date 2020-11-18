@@ -18,8 +18,11 @@ public:
 	void UpdateFrustum(const float4x4& globalPosition);
 
 	float GetHorizontalFov() const;
+	void SetHorizontalFov(float horizontalFov);
 	float GetNearPlane() const;
+	void SetNearPlane(float nearPlane);
 	float GetFarPlane() const;
+	void SetFarPlane(float farPlane);
 
 private:
 

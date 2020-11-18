@@ -9,10 +9,22 @@ JsonConfig::JsonConfig() : rootValue(nullptr), rootObject(nullptr)
 JsonConfig::JsonConfig(JSON_Object* jObj) : rootValue(nullptr), rootObject(jObj)
 {}
 
+JsonConfig::JsonConfig(const char* buffer)
+{
+	rootValue = json_parse_string(buffer);
+	if (rootValue)
+	{
+		rootObject = json_value_get_object(rootValue);
+	}
+	else
+	{
+		LOG("Error creating Json file from buffer");
+		rootObject = nullptr;
+	}
+}
+
 JsonConfig::~JsonConfig()
 {
-
-
 	if (rootValue)
 	{
 		json_value_free(rootValue);
@@ -56,6 +68,52 @@ void JsonConfig::AddString(const char* tag, const char* value)
 	json_object_set_string(rootObject, tag, value);
 }
 
+double JsonConfig::GetNumber(const char* tag)
+{
+	if (json_object_has_value_of_type(rootObject, tag, JSONNumber))
+	{
+		return json_object_get_number(rootObject, tag);
+	}
+
+	return NULL;
+}
+
+bool JsonConfig::GetBool(const char* tag)
+{
+	if (json_object_has_value_of_type(rootObject, tag, JSONBoolean))
+	{
+		return json_object_get_boolean(rootObject, tag);
+	}
+
+	return NULL;
+}
+
+std::string JsonConfig::GetString(const char* tag)
+{
+	if (json_object_has_value_of_type(rootObject, tag, JSONString))
+	{
+		return json_object_get_string(rootObject, tag);
+	}
+
+	return "";
+}
+
+JsonArray JsonConfig::GetArray(const char* name)
+{
+	if (json_object_has_value_of_type(rootObject, name, JSONArray))
+		return JsonArray(json_object_get_array(rootObject, name));
+	else
+	{
+		LOG("Array with tag %s not found!", name);
+		return JsonArray();
+	}
+}
+
+bool JsonConfig::IsInitialized()
+{
+	return (rootObject);
+}
+
 
 // Json Array------------------------------------------
 JsonArray::JsonArray() : elementArray(nullptr), size(0)
@@ -77,6 +135,11 @@ JsonConfig JsonArray::AddValue()
 	json_array_append_value(elementArray, json_value_init_object());
 	size++;
 	return JsonConfig(json_array_get_object(elementArray, size - 1));
+}
+
+bool JsonArray::IsInitialized()
+{
+	return (elementArray);
 }
 
 void JsonArray::AddNumber(double value)
@@ -112,4 +175,48 @@ void JsonArray::AddQuat(Quat value)
 	json_array_append_number(elementArray, value.z);
 	json_array_append_number(elementArray, value.w);
 	size += 4;
+}
+
+float3 JsonArray::GetFloat3(uint index)
+{
+	float3 ret = { 0,0,0 };
+	ret.x = GetNumber(index);
+	ret.y = GetNumber(index + 1);
+	ret.z = GetNumber(index + 2);
+
+	return ret;
+}
+
+Quat JsonArray::GetQuaternion(uint index)
+{
+	Quat ret = Quat::identity;
+	ret.x = GetNumber(index);
+	ret.y = GetNumber(index + 1);
+	ret.z = GetNumber(index + 2);
+	ret.w = GetNumber(index + 3);
+
+	return ret;
+}
+
+double JsonArray::GetNumber(uint index)
+{
+	if (index < size)
+	{
+		return json_array_get_number(elementArray, index);
+	}
+	else
+	{
+		LOG("Error loading number from array at index %i", index);
+		return NULL;
+	}
+}
+
+uint JsonArray::Size() const
+{
+	return size;
+}
+
+JsonConfig JsonArray::GetNode(uint index) const
+{
+	return JsonConfig(json_array_get_object(elementArray, index));
 }
