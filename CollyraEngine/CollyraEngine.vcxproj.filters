@@ -373,6 +373,9 @@
     <ClInclude Include="MaterialLoader.h">
       <Filter>Sources\Helpers\Loaders</Filter>
     </ClInclude>
+    <ClInclude Include="WG_Playbar.h">
+      <Filter>Sources\WindowGroup</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="log.cpp">
@@ -599,6 +602,9 @@
     </ClCompile>
     <ClCompile Include="MaterialLoader.cpp">
       <Filter>Sources\Helpers\Loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="WG_Playbar.cpp">
+      <Filter>Sources\WindowGroup</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

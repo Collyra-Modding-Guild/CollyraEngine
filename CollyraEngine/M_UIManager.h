@@ -12,6 +12,7 @@ class WG_Scene;
 class WG_Hierarchy;
 class WG_Inspector;
 class WG_About;
+class WG_Playbar;
 
 class M_UIManager : public Module
 {
@@ -62,6 +63,7 @@ public:
 	WG_Hierarchy*	hierarchyWindow;
 	WG_Inspector*	inspectorWindow;
 	WG_About*		aboutWindow;
+	WG_Playbar*		playWindow;
 
 private:
 	//Bool controllers for the editor menus-----------

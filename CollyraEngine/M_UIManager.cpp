@@ -25,6 +25,7 @@
 #include "WG_Hierarchy.h"
 #include "WG_Inspector.h"
 #include "WG_About.h"
+#include "WG_Playbar.h"
 
 //OpenGL
 #include "OpenGL.h"
@@ -53,6 +54,7 @@ bool M_UIManager::Awake()
 	windowGroups.push_back(hierarchyWindow = new WG_Hierarchy(true));
 	windowGroups.push_back(inspectorWindow = new WG_Inspector(true));
 	windowGroups.push_back(aboutWindow = new WG_About(false));
+	windowGroups.push_back(playWindow = new WG_Playbar(true));
 
 	return true;
 }
@@ -162,6 +164,7 @@ bool M_UIManager::CleanUp()
 	inspectorWindow = nullptr;
 	hierarchyWindow = nullptr;
 	aboutWindow = nullptr;
+	playWindow = nullptr;
 
 	return true;
 }
