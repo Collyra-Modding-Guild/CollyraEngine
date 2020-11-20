@@ -207,7 +207,10 @@ bool M_UIManager::ShowMainMenuBar()
 		{
 			if (ImGui::MenuItem("Load Scene", NULL))
 			{
-
+				std::string path(LIBRARY_SCENES);
+				path.append("myScene.collScene");
+				App->scene->ResetScene();
+				SceneLoader::Load(path.c_str());
 			}
 
 			if (ImGui::MenuItem("Save Scene", NULL))
