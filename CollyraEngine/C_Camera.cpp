@@ -3,17 +3,16 @@
 
 C_Camera::C_Camera(bool active) : Component(COMPONENT_TYPE::CAMERA, active), verticalFOV(0.0f), horizontalFOV(90.0f)
 {
-	frustum.type = FrustumType::PerspectiveFrustum;
 
-	frustum.pos = float3(0, 0, 0);
-	frustum.front = float3::unitZ;
-	frustum.up = float3::unitY;
+	frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
+	frustum.SetPos(float3(0, 0, 0));
+	frustum.SetFront(float3::unitZ);
+	frustum.SetUp(float3::unitY);
 
-	frustum.nearPlaneDistance = 1.0f;
-	frustum.farPlaneDistance = 150.0f;
+	frustum.SetViewPlaneDistances(0.1f, 150.0f);
+	frustum.SetHorizontalFovAndAspectRatio(DEGTORAD * horizontalFOV, 16.f / 9.f);
 
-	frustum.horizontalFov = DEGTORAD * horizontalFOV;
-	HOR(16, 9);
+	//HOR(16, 9);
 }
 
 C_Camera::~C_Camera()
@@ -27,7 +26,7 @@ void C_Camera::UpdateFrustum(const float4x4& globalPosition)
 
 	globalPosition.Decompose(position, quat, scale);
 
-	frustum.pos = position;
+	frustum.SetPos(position);
 }
 
 float C_Camera::GetHorizontalFov() const
@@ -43,25 +42,25 @@ void C_Camera::SetHorizontalFov(float horizontalFov)
 
 float C_Camera::GetNearPlane() const
 {
-	return frustum.nearPlaneDistance;
+	return 1.0f;
 }
 
 void C_Camera::SetNearPlane(float nearPlane)
 {
-	frustum.nearPlaneDistance = nearPlane;
+	//frustum.nearPlaneDistance = nearPlane;
 }
 
 float C_Camera::GetFarPlane() const
 {
-	return frustum.farPlaneDistance;
+	return 1.0f;
 }
 
 void C_Camera::SetFarPlane(float farPlane)
 {
-	frustum.farPlaneDistance = farPlane;
+	//frustum.Set = farPlane;
 }
 
 void C_Camera::HOR(uint aspectWidth, uint aspectHeight)
 {
-	frustum.verticalFov = 2 * atanf(tanf(frustum.horizontalFov / 2) * ((float)aspectHeight / (float)aspectWidth));
+	//frustum.verticalFov = 2 * atanf(tanf(frustum.horizontalFov / 2) * ((float)aspectHeight / (float)aspectWidth));
 }

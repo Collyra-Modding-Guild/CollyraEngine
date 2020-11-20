@@ -28,6 +28,7 @@ M_Scene::~M_Scene()
 bool M_Scene::Awake()
 {
 	sceneName = DEFAULT_SCENE_NAME;
+	randomGenerator = LCG::LCG();
 	root = new GameObject(sceneName.c_str());
 	root->CreateComponent(COMPONENT_TYPE::TRANSFORM);
 	root->SetUid(0);
@@ -104,7 +105,7 @@ updateStatus M_Scene::PostUpdate(float dt)
 
 		for (int i = 0; i < cameras.size(); i++)
 		{
-			if (currNode->GetComponent<C_Mesh>() != nullptr && cameras[i]->frustum.ContainsAABBVertices(currNode->GetGameObjectAABB()))
+			if (currNode->GetComponent<C_Mesh>() != nullptr && cameras[i]->frustum.Contains(currNode->GetGameObjectAABB()))
 				currNode->GetComponent<C_Mesh>()->SetActive(true);
 			else if (currNode->GetComponent<C_Mesh>() != nullptr)
 				currNode->GetComponent<C_Mesh>()->SetActive(false);

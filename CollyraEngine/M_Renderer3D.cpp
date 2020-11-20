@@ -174,8 +174,8 @@ updateStatus M_Renderer3D::PreUpdate(float dt)
 	}
 
 	glLoadMatrixf(cameraModule->GetViewMatrix());
-
-	lights[0].SetPos(cameraModule->Position.x, cameraModule->Position.y, cameraModule->Position.z);
+	float3 Position = cameraModule->GetCameraPosition();
+	lights[0].SetPos(Position.x, Position.y, Position.z);
 
 	for (uint i = 0; i < MAX_LIGHTS; ++i)
 		lights[i].Render();
