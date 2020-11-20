@@ -22,9 +22,9 @@ Application::Application(int argc, char* args[]) : argc(argc), args(args)
 	resources = new M_Resources(M_RESOURCES,true);
 	scene = new M_Scene(M_SCENE,true);
 
-	engineTimer = new Timer();
 	gamePerfTimer = new PerfTimer();
 	lastSecFrames = new Timer();
+	gameClock = new Timer(false);
 
 	// The order of calls is very important!
 	// Modules will Awake() Start() and Update in this order
@@ -84,11 +84,18 @@ void Application::PrepareUpdate()
 	frameCount++;
 	lastSecondFrameCount++;
 
+
 	//Controls pause of the game
-	if (!pause)
-		dt = lastFrameTimer.ReadSec();
+	if (gameClock->running)
+		gameDT = lastFrameTimer.ReadSec();
 	else
-		dt = 0.0f;
+		gameDT = 0.0f;
+
+	//Controls pause of the engine
+	if (!pause)
+		engineDT = lastFrameTimer.ReadSec();
+	else
+		engineDT = 0.0f;
 
 	lastFrameTimer.Start();
 }
@@ -133,19 +140,19 @@ updateStatus Application::Update()
 
 	for (int i = 0; i < numModules && ret == UPDATE_CONTINUE; i++)
 	{
-		ret = moduleList[i]->PreUpdate(dt);
+		ret = moduleList[i]->PreUpdate(engineDT);
 	}
 
 	//Update
 	for (int i = 0; i < numModules && ret == UPDATE_CONTINUE; i++)
 	{
-		ret = moduleList[i]->Update(dt);
+		ret = moduleList[i]->Update(engineDT);
 	}
 
 	//PostUpdate
 	for (int i = 0; i < numModules && ret == UPDATE_CONTINUE; i++)
 	{
-		ret = moduleList[i]->PostUpdate(dt);
+		ret = moduleList[i]->PostUpdate(engineDT);
 	}
 
 	FinishUpdate();
@@ -190,7 +197,7 @@ updateStatus Application::Draw2D()
 
 	for (int i = 0; i < numModules && ret == UPDATE_CONTINUE; i++)
 	{
-		ret = moduleList[i]->Draw2D(dt);
+		ret = moduleList[i]->Draw2D(engineDT);
 	}
 
 	return ret;
@@ -218,7 +225,7 @@ updateStatus Application::DebugDraw()
 
 	for (int i = 0; i < numModules && ret == UPDATE_CONTINUE; i++)
 	{
-		ret = moduleList[i]->DebugDraw(dt);
+		ret = moduleList[i]->DebugDraw(engineDT);
 	}
 
 	return ret;
@@ -300,6 +307,16 @@ void Application::NewConsoleLog(const char* newLog)
 	{
 		uiManager->NewConsoleLog(newLog);
 	}
+}
+
+float Application::GetEngineDeltaTime()
+{
+	return engineDT;
+}
+
+float Application::GetGameDeltaTime()
+{
+	return gameDT;
 }
 
 void Application::AddModule(Module* mod)

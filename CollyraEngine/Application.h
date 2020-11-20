@@ -37,11 +37,14 @@ public:
 	
 	float capTime = 0;
 
+	Timer* gameClock = nullptr;
+
 	//The amount of frames calculated in the last second
 	uint64 framesOnLastUpdate = 0u;
 
 	//The amount of time spended calculating the last frame
 	uint64 lastFrameMs = 0u;
+
 
 private:
 
@@ -49,11 +52,13 @@ private:
 	char**				args;
 
 	Timer				ms_timer;
-	float				dt;
+
+	float				 gameDT;
+	float				 engineDT;
+
 	std::vector<Module*> moduleList;
 
 	//Timers of the game
-	Timer* engineTimer = nullptr;
 	PerfTimer* gamePerfTimer = nullptr;
 
 	//Calculates the amount of frames rendered in the last second
@@ -96,6 +101,8 @@ public:
 	void NewInputLog(uint key, uint state, bool isMouse = false);
 	void NewConsoleLog(const char* newLog);
 
+	float GetEngineDeltaTime();
+	float GetGameDeltaTime();
 
 private:
 

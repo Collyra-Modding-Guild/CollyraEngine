@@ -6,11 +6,16 @@
 #include "Timer.h"
 
 // ---------------------------------------------
-Timer::Timer()
+Timer::Timer(bool isRunning) : tick(false)
 {
-	running = true;
-	Start();
+	running = isRunning;
+
+	if(running)
+		Start();
 }
+
+Timer::~Timer()
+{ }
 
 // ---------------------------------------------
 void Timer::Start()
@@ -28,14 +33,28 @@ void Timer::StartFrom(uint time)
 void Timer::Stop()
 {
 	running = false;
-	stopped_at = SDL_GetTicks();
 }
 
 // ---------------------------------------------
-void Timer::ReStart()
+void Timer::Resume()
 {
 	running = true;
 }
+
+void Timer::Tick(bool step)
+{
+	tick = step;
+	running = step;
+}
+
+
+// ---------------------------------------------
+void Timer::Pause()
+{
+	running = false;
+	stopped_at = SDL_GetTicks();
+}
+
 
 // ---------------------------------------------
 Uint32 Timer::Read()

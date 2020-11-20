@@ -35,6 +35,14 @@ public:
 	bool		DeleteGameObject(GameObject* gameObject);
 	void		DeleteCamera(Component* component);
 
+	// Game State
+	void Play();
+	void Stop();
+	void Pause();
+	void Resume();
+	void Tick();
+
+
 	//Delete all GameObjects, Components, cameras, reset Name,....
 	void		ResetScene();
 

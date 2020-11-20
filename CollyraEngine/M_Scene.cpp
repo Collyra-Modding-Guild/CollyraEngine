@@ -11,6 +11,9 @@
 
 #include "Application.h"
 #include "M_UIManager.h"
+#include "SceneLoader.h"
+#include "M_FileManager.h"
+#include "Timer.h"
 
 #include "OpenGL.h"
 
@@ -436,4 +439,39 @@ void M_Scene::DeleteCamera(Component* component)
 			cameras.erase(cameras.begin() + i);
 		}
 	}
+}
+
+void M_Scene::Play()
+{
+	char* buffer = nullptr;
+	uint size = SceneLoader::Save(GetRoot(), &buffer);
+	App->physFS->Save(std::string(LIBRARY_SCENES).append("myScene.collScene").c_str(), buffer, size);
+	RELEASE(buffer);
+
+	App->gameClock->Start();
+}
+
+void M_Scene::Stop()
+{
+	std::string path(LIBRARY_SCENES);
+	path.append("myScene.collScene");
+	App->scene->ResetScene();
+	SceneLoader::Load(path.c_str());
+
+	App->gameClock->Stop();
+}
+
+void M_Scene::Pause()
+{
+	App->gameClock->Pause();
+}
+
+void M_Scene::Resume()
+{
+	App->gameClock->Resume();
+}
+
+void M_Scene::Tick()
+{
+	App->gameClock->Tick(true);
 }

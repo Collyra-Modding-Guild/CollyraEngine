@@ -172,6 +172,7 @@ void SceneLoader::Private::LoadGameObjects(JsonArray& gameObjectsArr)
 				LOG("Error in scene load! Could not load Components of %s GameObject!", newGameObject->GetName().c_str());
 			}
 		}
+		else
 		{
 			LOG("Error in scene load! Could not load GameObject in index %i", i);
 		}
