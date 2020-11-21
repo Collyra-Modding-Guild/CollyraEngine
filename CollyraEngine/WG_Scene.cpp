@@ -20,6 +20,7 @@ updateStatus WG_Scene::Update()
 		ImGui::BeginChild("GameRender");
 
 		ImVec2 winSize = ImGui::GetWindowSize();
+		windowPos = ImGui::GetWindowPos();
 
 		if (winSize.x != windowSize.x || winSize.y != windowSize.y)
 			OnResize(winSize);
@@ -53,5 +54,11 @@ void WG_Scene::GetWindowSize(float& w, float& h)
 {
 	w = windowSize.x;
 	h = windowSize.y;
+}
+
+void WG_Scene::GetWindowPosition(float& x, float& y)
+{
+	x = windowPos.x;
+	y = windowPos.y;
 }
 

@@ -10,6 +10,7 @@
 #include "C_Camera.h"
 
 #include "Application.h"
+#include "M_Camera3D.h"
 #include "M_UIManager.h"
 #include "SceneLoader.h"
 #include "M_FileManager.h"
@@ -253,6 +254,10 @@ void M_Scene::DrawGameObject(GameObject* gameObject, bool* drawState)
 
 	if (camera != nullptr && drawState[FRUSTUM])
 		DrawFrustum(gameObject);
+
+	if(drawState[MOUSE_RAY])
+		DrawMouseRay(&App->camera->ray);
+
 }
 
 void M_Scene::DrawBoundingBox(GameObject* gameObject)
@@ -304,6 +309,21 @@ void M_Scene::DrawFrustum(GameObject* gameObject)
 	glEnd();
 	glEnable(GL_LIGHTING);
 
+}
+
+void M_Scene::DrawMouseRay(LineSegment* mouseRay)
+{
+	glDisable(GL_LIGHTING);
+	glBegin(GL_LINES);
+
+	glLineWidth(2.0f);
+	glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
+
+	glVertex3f(mouseRay->a.x, mouseRay->a.y, mouseRay->a.z);
+	glVertex3f(mouseRay->b.x, mouseRay->b.x, mouseRay->b.z );
+	
+	glEnd();
+	glEnable(GL_LIGHTING);
 }
 
 GameObject* M_Scene::GetGameObject(unsigned int id)
@@ -440,6 +460,38 @@ void M_Scene::DeleteCamera(Component* component)
 			cameras.erase(cameras.begin() + i);
 		}
 	}
+}
+
+void M_Scene::OnClickFocusGameObject(const LineSegment& mouseRay)
+{
+	std::stack<GameObject*> stack;
+	GameObject* currNode = nullptr;
+
+	if (root == nullptr)
+	{
+		LOG("Root node did not exist!");
+		return;
+	}
+
+	stack.push(root);
+
+	while (!stack.empty())
+	{
+		currNode = stack.top();
+		stack.pop();
+
+		if (mouseRay.Intersects(currNode->GetGameObjectAABB()))
+		{
+			App->uiManager->SetFocusedGameObject(currNode->GetUid());
+		}
+
+		int childNum = currNode->children.size();
+		for (int i = 0; i < childNum; i++)
+		{
+			stack.push(currNode->children[i]);
+		}
+	}
+	
 }
 
 void M_Scene::Play()

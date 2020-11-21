@@ -5,6 +5,9 @@
 #include <string>
 #include <vector>
 
+#include "MathGeoLib/include/MathGeoLibFwd.h"
+
+
 class WindowGroup;
 class WG_Config;
 class WG_Console;
@@ -13,6 +16,8 @@ class WG_Hierarchy;
 class WG_Inspector;
 class WG_About;
 class WG_Playbar;
+
+
 
 class M_UIManager : public Module
 {
@@ -41,6 +46,9 @@ public:
 	void            SetFocusedGameObject(uint id);
 	int				GetFocusedGameObjectId() const;
 	void			OnWindowResize() const;
+
+	float2			GetSceneWindowSize() const;
+	float2			GetSceneWindowPosition() const;
 
 	void SetupSmoothImGuiStyle(bool volumeEffect);
 

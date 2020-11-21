@@ -3,6 +3,7 @@
 #include "M_Window.h"
 #include "M_Input.h"
 #include "M_Scene.h"
+#include "M_UIManager.h"
 
 #include "GameObject.h"
 #include "C_Transform.h"
@@ -10,6 +11,8 @@
 #include "C_Camera.h"
 
 #include "MathGeoLib/include/MathGeoLib.h"
+#include "MathGeoLib/include/Math/float2.h"
+
 
 M_Camera3D::M_Camera3D(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), spdMultiplier(2.0f), focusingObject(true), sceneCamera(nullptr)
 {
@@ -61,6 +64,11 @@ updateStatus M_Camera3D::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
 	{
 		FocusGameObject(App->scene->focusedGameObject);
+	}
+
+	if (inputModule->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
+	{
+		ShootRay({(float)App->input->GetMouseX(), (float)App->input->GetMouseY()});
 	}
 
 	// Recalculate matrix -------------
@@ -323,5 +331,14 @@ void M_Camera3D::CalculateViewMatrix()
 float3 M_Camera3D::GetCameraPosition()
 {
 	return sceneCamera->frustum.Pos();
+}
+
+void M_Camera3D::ShootRay(float2 mousePosition)
+{
+	mousePosition.x /= (App->uiManager->GetSceneWindowSize().x * 0.5) - 1.0f;
+	mousePosition.y /= (App->uiManager->GetSceneWindowSize().y * 0.5) - 1.0f;
+
+	ray = sceneCamera->frustum.UnProjectLineSegment(mousePosition.x, mousePosition.y);
+	App->scene->OnClickFocusGameObject(ray);
 }
 

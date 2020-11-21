@@ -5,7 +5,9 @@
 #include <vector>
 #include <string>
 #include "p2Defs.h"
+
 #include "MathGeoLib/include/Algorithm/Random/LCG.h"
+#include "MathGeoLib/include/Geometry/LineSegment.h"
 
 #define ROOT_ID 0
 #define DEFAULT_SCENE_NAME "DefaultScene"
@@ -35,6 +37,9 @@ public:
 	bool		DeleteGameObject(GameObject* gameObject);
 	void		DeleteCamera(Component* component);
 
+	void		OnClickFocusGameObject(const LineSegment& mouseRay);
+
+
 	// Game State
 	void Play();
 	void Stop();
@@ -58,6 +63,7 @@ private:
 	void DrawGameObject(GameObject* gameObject, bool* drawState);
 	void DrawBoundingBox(GameObject* gameObject);
 	void DrawFrustum(GameObject* gameObject);
+	void DrawMouseRay(LineSegment* mouseRay);
 
 public:
 	GameObject* focusedGameObject;

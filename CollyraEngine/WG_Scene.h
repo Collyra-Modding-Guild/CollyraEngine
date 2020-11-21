@@ -19,8 +19,10 @@ public:
 	void OnResize(ImVec2 newWindowSize);
 
 	void GetWindowSize(float& w, float& h);
+	void GetWindowPosition(float& x, float& y);
 
 private:
+	ImVec2 windowPos;
 	ImVec2 windowSize;
 	ImVec2 imageSize;
 
