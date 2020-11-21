@@ -25,6 +25,8 @@ private:
 
 	void DrpGameObject(GameObject* from, GameObject* to);
 
+	void NewFocusedGameObject(int id);
+
 private:
 	ImGuiTreeNodeFlags	flag;
 	int					selected;

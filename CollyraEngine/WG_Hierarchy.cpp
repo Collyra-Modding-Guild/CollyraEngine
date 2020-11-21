@@ -49,7 +49,6 @@ void WG_Hierarchy::CreateHierarchy(GameObject* gameObject)
 		if (gameObject->GetUid() != ROOT_ID)
 		{
 			App->uiManager->SetFocusedGameObject(gameObject->GetUid());
-			selected = gameObject->GetUid();
 		}
 	}
 
@@ -130,4 +129,9 @@ void WG_Hierarchy::DrpGameObject(GameObject* moved, GameObject* objective)
 	}
 
 	moved->SetParent(objective);
+}
+
+void WG_Hierarchy::NewFocusedGameObject(int id)
+{
+	selected = id;
 }
