@@ -497,6 +497,12 @@ void M_UIManager::SetFocusedGameObject(uint id)
 		WG_Inspector* inspector = (WG_Inspector*)inspectorWindow;
 		inspector->SetGameObject(id);
 	}
+
+	if (hierarchyWindow != nullptr)
+	{
+		WG_Hierarchy* hierarchy = (WG_Hierarchy*)hierarchyWindow;
+		hierarchy->NewFocusedGameObject(id);
+	}
 }
 
 int M_UIManager::GetFocusedGameObjectId() const

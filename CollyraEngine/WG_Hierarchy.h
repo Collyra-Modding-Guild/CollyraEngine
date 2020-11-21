@@ -18,12 +18,15 @@ public:
 
 	virtual void Cleanup();
 
+	void NewFocusedGameObject(int id);
+
 private:
 	void CreateHierarchy(GameObject* parent);
 	void SetTreeNodeFlags(GameObject* parent);
 	void HandleDragAndDrop(GameObject* currentGo);
 
 	void DrpGameObject(GameObject* from, GameObject* to);
+
 
 private:
 	ImGuiTreeNodeFlags	flag;
