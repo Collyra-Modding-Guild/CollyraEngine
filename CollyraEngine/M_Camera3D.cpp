@@ -333,12 +333,19 @@ float3 M_Camera3D::GetCameraPosition()
 	return sceneCamera->frustum.Pos();
 }
 
+// -----------------------------------------------------------------
 void M_Camera3D::ShootRay(float2 mousePosition)
 {
-	mousePosition.x /= (App->uiManager->GetSceneWindowSize().x * 0.5) - 1.0f;
-	mousePosition.y /= (App->uiManager->GetSceneWindowSize().y * 0.5) - 1.0f;
+	float mouseNormX = (mousePosition.x + App->uiManager->GetSceneWindowPosition().x)/ App->uiManager->GetSceneWindowSize().x;
+	//TODO: quick fix, mouse click is inverting Y
+	float mouseNormY = (mousePosition.y + App->uiManager->GetSceneWindowPosition().y) / App->uiManager->GetSceneWindowSize().y;
 
-	ray = sceneCamera->frustum.UnProjectLineSegment(mousePosition.x, mousePosition.y);
+	//Normalizing mouse position in range of -1 / 1 // -1, -1 being at the bottom left corner
+	mouseNormX = (mouseNormX - 0.5) / 0.5;
+	mouseNormY = (mouseNormY - 0.5) / 0.5;
+
+
+	ray = sceneCamera->frustum.UnProjectLineSegment(mouseNormX, mouseNormY);
 	App->scene->OnClickFocusGameObject(ray);
 }
 

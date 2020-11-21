@@ -684,6 +684,36 @@ bool Frustum::Contains(const Polyhedron &polyhedron) const
 	return true;
 }
 
+bool Frustum::ContainsAABBVertices(const AABB& AABB) const
+{
+	float3 vCorner[8];
+	int iTotalIn = 0;
+	AABB.GetCornerPoints(vCorner);
+
+	for (int p = 0; p < 6; p++)
+	{
+			int iInCount = 8;
+			int iPtIn = 1;
+
+			for (int i = 0; i < 8; i++)
+			{
+				if (this->Contains(vCorner[i]))
+				{
+					iPtIn = 0;
+					--iInCount;
+				}
+			}
+
+			if (iInCount == 8)
+				return false;
+
+			iTotalIn += iPtIn;
+	}
+
+	if (iTotalIn > 0)
+		return true;
+}
+
 vec Frustum::ClosestPoint(const vec &point) const
 {
 	if (type == OrthographicFrustum)
