@@ -25,6 +25,7 @@ Application::Application(int argc, char* args[]) : argc(argc), args(args)
 	gamePerfTimer = new PerfTimer();
 	lastSecFrames = new Timer();
 	gameClock = new Timer(false);
+	timeMultiplier = 1.0f;
 
 	// The order of calls is very important!
 	// Modules will Awake() Start() and Update in this order
@@ -87,7 +88,7 @@ void Application::PrepareUpdate()
 
 	//Controls pause of the game
 	if (gameClock->running)
-		gameDT = lastFrameTimer.ReadSec();
+		gameDT = lastFrameTimer.ReadSec() * timeMultiplier;
 	else
 		gameDT = 0.0f;
 
@@ -317,6 +318,16 @@ float Application::GetEngineDeltaTime()
 float Application::GetGameDeltaTime()
 {
 	return gameDT;
+}
+
+float Application::GetTimeMultiplier() const
+{
+	return timeMultiplier;
+}
+
+void Application::SetTimeMultiplier(float newMultiplier)
+{
+	timeMultiplier = newMultiplier;
 }
 
 void Application::AddModule(Module* mod)

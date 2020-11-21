@@ -15,6 +15,9 @@ public:
 
 	virtual void Cleanup();
 
+private:
+	void ShowTimeMultiplier();
+
 };
 
 #endif // __WG_PLAYBAR_H__

@@ -103,7 +103,6 @@ updateStatus M_Scene::PostUpdate(float dt)
 			stack.push(currNode->children[i]);
 		}
 
-
 		for (int i = 0; i < cameras.size(); i++)
 		{
 			if (currNode->GetComponent<C_Mesh>() != nullptr && cameras[i]->frustum.Contains(currNode->GetGameObjectAABB()))

@@ -75,6 +75,8 @@ private:
 
 	float avgFps = 0.0f;
 
+	float timeMultiplier;
+
 	//Controls if the frame cap is activated or not
 	bool frameCap = true;
 
@@ -103,6 +105,9 @@ public:
 
 	float GetEngineDeltaTime();
 	float GetGameDeltaTime();
+
+	float GetTimeMultiplier() const;
+	void SetTimeMultiplier(float newMultiplier);
 
 private:
 

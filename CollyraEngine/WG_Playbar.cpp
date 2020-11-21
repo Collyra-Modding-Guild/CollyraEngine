@@ -19,7 +19,7 @@ updateStatus WG_Playbar::Update()
 	ImGui::Begin("Play Bar", &active);
 
 	std::string playButtonText = App->gameClock->running ? "Stop" : "Play";
-		
+
 	if (ImGui::Button(playButtonText.c_str()))
 		App->gameClock->running ? App->scene->Stop() : App->scene->Play();
 
@@ -34,13 +34,15 @@ updateStatus WG_Playbar::Update()
 
 	std::string tickButtonText = "Advance";
 
-	if (App->gameClock->tick) 
+	if (App->gameClock->tick)
 	{
 		App->gameClock->Tick(false);
-	}	
+	}
 
 	if (ImGui::Button(tickButtonText.c_str()))
 		App->scene->Tick();
+
+	ShowTimeMultiplier();
 
 
 	ImGui::End();
@@ -50,3 +52,18 @@ updateStatus WG_Playbar::Update()
 
 void WG_Playbar::Cleanup()
 {}
+
+void WG_Playbar::ShowTimeMultiplier()
+{
+	float currTimeMultiplier = App->GetTimeMultiplier();
+
+	ImGui::SameLine();
+	ImGui::Text(" | Time Mult.");
+	ImGui::SameLine();
+	ImGui::PushItemWidth(120);
+	if (ImGui::InputFloat("##timeMultiplier", &currTimeMultiplier, 0.1, 0.2, "%.2f"))
+	{
+		App->SetTimeMultiplier(currTimeMultiplier);
+	}
+
+}
