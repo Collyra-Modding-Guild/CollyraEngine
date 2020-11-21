@@ -537,6 +537,19 @@ float2 M_UIManager::GetSceneWindowSize() const
 	return float2({w,h});
 }
 
+float2 M_UIManager::GetSceneWindowPosition() const
+{
+	float x, y;
+
+	if (sceneWindow != nullptr)
+	{
+		WG_Scene* scene = (WG_Scene*)sceneWindow;
+		scene->GetWindowPosition(x, y);
+	}
+
+	return float2({ x,y });
+}
+
 
 void M_UIManager::SetupSmoothImGuiStyle(bool volumeEffect)
 {
