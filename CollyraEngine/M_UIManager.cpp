@@ -17,6 +17,8 @@
 
 #include "Primitive.h"
 
+#include "MathGeoLib/include/Math/float2.h"
+
 // All UI Windows
 #include "WindowGroup.h"
 #include "WG_Config.h"
@@ -515,6 +517,20 @@ void M_UIManager::OnWindowResize() const
 		return config->OnWindowResize();
 	}
 }
+
+float2 M_UIManager::GetSceneWindowSize() const
+{
+	float w, h;
+
+	if (sceneWindow != nullptr)
+	{
+		WG_Scene* scene = (WG_Scene*)sceneWindow;
+		scene->GetWindowSize(w, h);
+	}
+
+	return float2({w,h});
+}
+
 
 void M_UIManager::SetupSmoothImGuiStyle(bool volumeEffect)
 {

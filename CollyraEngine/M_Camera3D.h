@@ -27,6 +27,8 @@ public:
 	float* GetViewMatrix();
 	float3 GetCameraPosition();
 
+	void ShootRay(float2 mousePosition);
+
 
 private:
 	void CalculateViewMatrix();
@@ -43,9 +45,14 @@ public:
 	bool		focusingObject;
 	float		spdMultiplier;
 
+	LineSegment ray;
+
 private:
+
 	M_Input*	inputModule;
 	float4		ViewMatrix, ViewMatrixInverse;
-	C_Camera* sceneCamera;
+	C_Camera*	sceneCamera;
+
+	
 
 };
