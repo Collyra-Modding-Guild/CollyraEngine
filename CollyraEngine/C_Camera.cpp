@@ -8,8 +8,8 @@ C_Camera::C_Camera(bool active) : Component(COMPONENT_TYPE::CAMERA, active), ver
 	frustum.SetFront(float3::unitZ);
 	frustum.SetUp(float3::unitY);
 
-	frustum.SetViewPlaneDistances(0.1f, 75.0f);
-	frustum.SetHorizontalFovAndAspectRatio(DEGTORAD * horizontalFOV, 16.f / 9.f);
+	frustum.SetViewPlaneDistances(0.1f, 512.0f);
+	frustum.SetHorizontalFovAndAspectRatio(DEGTORAD * horizontalFOV, 1231 / 819);
 
 	//HOR(16, 9);
 }

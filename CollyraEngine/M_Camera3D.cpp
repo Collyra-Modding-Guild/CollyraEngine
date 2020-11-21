@@ -313,10 +313,27 @@ float* M_Camera3D::GetViewMatrix()
 	return (float*)&m;
 }
 
+float* M_Camera3D::GetProjectionMatrix()
+{
+	static float4x4 m;
+
+	m = sceneCamera->frustum.ProjectionMatrix();
+
+	m.Transpose();
+
+	return (float*)&m;
+}
+
 // -----------------------------------------------------------------
 float3 M_Camera3D::GetCameraPosition()
 {
 	return sceneCamera->frustum.Pos();
+}
+
+void M_Camera3D::SetAspectRatio(float newAspect)
+{
+	float horizontalFov = sceneCamera->frustum.HorizontalFov();
+	sceneCamera->frustum.SetHorizontalFovAndAspectRatio(horizontalFov, newAspect);
 }
 
 // -----------------------------------------------------------------

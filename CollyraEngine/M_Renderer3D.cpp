@@ -233,9 +233,8 @@ void M_Renderer3D::OnResize(float width, float height)
 	//Calculate OpenGl projection matrix -----------------
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	ProjectionMatrix = perspective(60.0f, width / height, 0.125f, 512.0f);
-	glLoadMatrixf(&ProjectionMatrix);
-
+	App->camera->SetAspectRatio(width / height);
+	glLoadMatrixf((GLfloat*)App->camera->GetProjectionMatrix());
 	glViewport(0, 0, width, height);
 
 	glMatrixMode(GL_MODELVIEW);

@@ -25,7 +25,9 @@ public:
 	void FocusGameObject(GameObject* focused, float multiplier = 1.0f);
 
 	float* GetViewMatrix();
+	float* GetProjectionMatrix();
 	float3 GetCameraPosition();
+	void SetAspectRatio(float newAspect);
 
 	void ShootRay(float2 mousePosition);
 
