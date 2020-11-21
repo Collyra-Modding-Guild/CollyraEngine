@@ -550,6 +550,11 @@ float2 M_UIManager::GetSceneWindowPosition() const
 	return float2({ x,y });
 }
 
+float2 M_UIManager::GetImGuiMousePosition() const
+{
+	return float2(ImGui::GetMousePos().x, ImGui::GetMousePos().y);
+}
+
 
 void M_UIManager::SetupSmoothImGuiStyle(bool volumeEffect)
 {
