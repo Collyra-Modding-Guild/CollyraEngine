@@ -29,9 +29,10 @@ public:
 
 	void ShootRay(float2 mousePosition);
 
+	C_Camera* GetCamera() const;
+	bool GetSceneCameraCuling() const;
 
 private:
-	void CalculateViewMatrix();
 	void CameraMovement(float dt);
 	void CameraPlanePan(float3& newPos);
 	void OrbitArroundReference(float3& reference, float3&pos, float speed);
@@ -53,6 +54,5 @@ private:
 	float4		ViewMatrix, ViewMatrixInverse;
 	C_Camera*	sceneCamera;
 
-	
-
+	bool		sceneCameraCuling;
 };

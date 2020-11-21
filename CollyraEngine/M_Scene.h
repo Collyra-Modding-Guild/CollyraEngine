@@ -39,6 +39,7 @@ public:
 
 	void		OnClickFocusGameObject(const LineSegment& mouseRay);
 
+	void		CameraCuling(GameObject* current, C_Camera* myCam);
 
 	// Game State
 	void Play();

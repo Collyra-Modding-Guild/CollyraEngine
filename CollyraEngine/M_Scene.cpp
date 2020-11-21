@@ -105,11 +105,13 @@ updateStatus M_Scene::PostUpdate(float dt)
 
 		for (int i = 0; i < cameras.size(); i++)
 		{
-			if (currNode->GetComponent<C_Mesh>() != nullptr && cameras[i]->frustum.ContainsAABBVertices(currNode->GetGameObjectAABB()))
-				currNode->GetComponent<C_Mesh>()->SetActive(true);
-			else if (currNode->GetComponent<C_Mesh>() != nullptr)
-				currNode->GetComponent<C_Mesh>()->SetActive(false);
+			CameraCuling(currNode, cameras[i]);
 		}
+		if (App->camera->GetCamera() && App->camera->GetSceneCameraCuling())
+		{
+			CameraCuling(currNode, App->camera->GetCamera());
+		}
+
 	}
 
 	return UPDATE_CONTINUE;
@@ -491,6 +493,19 @@ void M_Scene::OnClickFocusGameObject(const LineSegment& mouseRay)
 		}
 	}
 	
+}
+
+void M_Scene::CameraCuling(GameObject* current, C_Camera* myCam)
+{
+	if (current->GetComponent<C_Mesh>() != nullptr && myCam->frustum.ContainsAABBVertices(current->GetGameObjectAABB()))
+	{
+		current->GetComponent<C_Mesh>()->SetActive(true);
+
+	}
+	else if (current->GetComponent<C_Mesh>() != nullptr)
+	{
+		current->GetComponent<C_Mesh>()->SetActive(false);
+	}
 }
 
 void M_Scene::Play()

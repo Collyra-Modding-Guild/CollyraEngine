@@ -14,10 +14,9 @@
 #include "MathGeoLib/include/Math/float2.h"
 
 
-M_Camera3D::M_Camera3D(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), spdMultiplier(2.0f), focusingObject(true), sceneCamera(nullptr)
+M_Camera3D::M_Camera3D(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), spdMultiplier(2.0f), focusingObject(true), sceneCamera(nullptr), inputModule(nullptr),
+sceneCameraCuling(true)
 {
-	CalculateViewMatrix();
-
 	Reference = float3(0.0f, 0.0f, 0.0f);
 	orbitalReference = float3(0.0f, 0.0f, -15.0f);
 
@@ -44,6 +43,7 @@ bool M_Camera3D::CleanUp()
 	LOG("Cleaning camera");
 
 	RELEASE(sceneCamera);
+	inputModule = nullptr;
 
 	return true;
 }
@@ -71,8 +71,6 @@ updateStatus M_Camera3D::Update(float dt)
 		ShootRay({(float)App->input->GetMouseX(), (float)App->input->GetMouseY()});
 	}
 
-	// Recalculate matrix -------------
-	CalculateViewMatrix();
 
 	return UPDATE_CONTINUE;
 }
@@ -224,7 +222,6 @@ void M_Camera3D::Look(const float3& Position, const float3& Reference, bool Rota
 	this->orbitalReference = sceneCamera->frustum.Pos();
 	this->orbitalReference += sceneCamera->frustum.Front() * 20;
 
-	CalculateViewMatrix();
 }
 
 void M_Camera3D::OrbitalLook(const float3& Position, const float3& Reference, bool RotateAroundReference)
@@ -250,7 +247,6 @@ void M_Camera3D::OrbitalLook(const float3& Position, const float3& Reference, bo
 	this->Reference = sceneCamera->frustum.Pos();
 	this->Reference += sceneCamera->frustum.Front() * 5;
 
-	CalculateViewMatrix();
 }
 
 // -----------------------------------------------------------------
@@ -263,7 +259,6 @@ void M_Camera3D::LookAt(const float3& Spot)
 	X = float3(0.0f, 1.0f, 0.0f).Cross(sceneCamera->frustum.Front()).Normalized();
 	sceneCamera->frustum.SetUp(sceneCamera->frustum.Front().Cross(X));
 
-	CalculateViewMatrix();
 }
 
 // -----------------------------------------------------------------
@@ -277,7 +272,6 @@ void M_Camera3D::Move(const float3& Movement, bool changeReference)
 		orbitalReference += Movement;
 	}
 
-	CalculateViewMatrix();
 }
 
 // -----------------------------------------------------------------
@@ -320,14 +314,6 @@ float* M_Camera3D::GetViewMatrix()
 }
 
 // -----------------------------------------------------------------
-void M_Camera3D::CalculateViewMatrix()
-{
-	//sceneCamera->frustum.view
-	//ViewMatrix = mat4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -dot(X, Position), -dot(Y, Position), -dot(Z, Position), 1.0f);
-	//ViewMatrixInverse = inverse(ViewMatrix);
-}
-
-// -----------------------------------------------------------------
 float3 M_Camera3D::GetCameraPosition()
 {
 	return sceneCamera->frustum.Pos();
@@ -336,16 +322,29 @@ float3 M_Camera3D::GetCameraPosition()
 // -----------------------------------------------------------------
 void M_Camera3D::ShootRay(float2 mousePosition)
 {
-	float mouseNormX = (mousePosition.x + App->uiManager->GetSceneWindowPosition().x)/ App->uiManager->GetSceneWindowSize().x;
+	float mouseNormX = mousePosition.x / (App->window->screenWidth* App->uiManager->GetSceneWindowSize().x);
 	//TODO: quick fix, mouse click is inverting Y
-	float mouseNormY = (mousePosition.y + App->uiManager->GetSceneWindowPosition().y) / App->uiManager->GetSceneWindowSize().y;
+	float mouseNormY = mousePosition.y / (App->window->screenHeight * App->uiManager->GetSceneWindowSize().y);
+
+	mouseNormX = (mouseNormX - App->uiManager->GetSceneWindowPosition().x) / App->uiManager->GetSceneWindowSize().x;
+	mouseNormY = (mouseNormY - App->uiManager->GetSceneWindowPosition().y) / App->uiManager->GetSceneWindowSize().y;
 
 	//Normalizing mouse position in range of -1 / 1 // -1, -1 being at the bottom left corner
 	mouseNormX = (mouseNormX - 0.5) / 0.5;
 	mouseNormY = (mouseNormY - 0.5) / 0.5;
 
 
-	ray = sceneCamera->frustum.UnProjectLineSegment(mouseNormX, mouseNormY);
+	ray = sceneCamera->frustum.UnProjectLineSegment(mouseNormX, -mouseNormY);
 	App->scene->OnClickFocusGameObject(ray);
+}
+
+C_Camera* M_Camera3D::GetCamera() const
+{
+	return sceneCamera;
+}
+
+bool M_Camera3D::GetSceneCameraCuling() const
+{
+	return sceneCameraCuling;
 }
 
