@@ -49,6 +49,7 @@ public:
 
 	float2			GetSceneWindowSize() const;
 	float2			GetSceneWindowPosition() const;
+	float2			GetImGuiMousePosition() const;
 
 	void SetupSmoothImGuiStyle(bool volumeEffect);
 
@@ -77,7 +78,6 @@ private:
 	//Bool controllers for the editor menus-----------
 	bool			showDemoWindow;
 	bool			showConfigMenu;
-
 };
 
 #endif // __ModuleAudio_H__
