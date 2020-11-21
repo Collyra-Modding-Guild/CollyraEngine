@@ -18,6 +18,8 @@ public:
 
 	virtual void Cleanup();
 
+	void NewFocusedGameObject(int id);
+
 private:
 	void CreateHierarchy(GameObject* parent);
 	void SetTreeNodeFlags(GameObject* parent);
@@ -25,7 +27,6 @@ private:
 
 	void DrpGameObject(GameObject* from, GameObject* to);
 
-	void NewFocusedGameObject(int id);
 
 private:
 	ImGuiTreeNodeFlags	flag;

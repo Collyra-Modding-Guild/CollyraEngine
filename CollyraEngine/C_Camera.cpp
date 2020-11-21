@@ -3,13 +3,12 @@
 
 C_Camera::C_Camera(bool active) : Component(COMPONENT_TYPE::CAMERA, active), verticalFOV(0.0f), horizontalFOV(90.0f)
 {
-
 	frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
 	frustum.SetPos(float3(0, 0, 0));
 	frustum.SetFront(float3::unitZ);
 	frustum.SetUp(float3::unitY);
 
-	frustum.SetViewPlaneDistances(0.1f, 150.0f);
+	frustum.SetViewPlaneDistances(0.1f, 75.0f);
 	frustum.SetHorizontalFovAndAspectRatio(DEGTORAD * horizontalFOV, 16.f / 9.f);
 
 	//HOR(16, 9);
@@ -27,6 +26,8 @@ void C_Camera::UpdateFrustum(const float4x4& globalPosition)
 	globalPosition.Decompose(position, quat, scale);
 
 	frustum.SetPos(position);
+	frustum.SetFront(globalPosition.WorldZ());
+	frustum.SetUp(globalPosition.WorldY());
 }
 
 float C_Camera::GetHorizontalFov() const
