@@ -157,8 +157,12 @@ void C_Mesh::ClearMesh()
 // ------------------------------------------------------------
 void C_Mesh::Render(bool* drawState, float4x4 transform, int textureID, Color color) const
 {
+
 	glPushMatrix();
 	glMultMatrixf((float*)&transform);
+
+	if (drawState[OUTLINE])
+		DrawOutline(drawState);
 
 	if (drawWire || drawState[WIRE] == true)
 	{
@@ -183,12 +187,18 @@ void C_Mesh::Render(bool* drawState, float4x4 transform, int textureID, Color co
 		DrawNormals(drawState);
 
 	glPopMatrix();
+
+
 }
 
 // ------------------------------------------------------------
 void C_Mesh::InnerRender(int textureID) const
 {
+
 	glEnableClientState(GL_VERTEX_ARRAY);
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glEnable(GL_POLYGON_OFFSET_FILL);
 
 	if (idNormals != -1)
 		glEnableClientState(GL_NORMAL_ARRAY);
@@ -289,6 +299,42 @@ void C_Mesh::DrawNormals(bool* drawState) const
 	glEnd();
 
 	glLineWidth(1.0f);
+}
+
+void C_Mesh::DrawOutline(bool* drawState) const
+{
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+	glDisable(GL_LIGHTING);
+
+	glEnable(GL_DEPTH_TEST);
+	glColor3f(1, 1, 0);
+	glStencilFunc(GL_NOTEQUAL, 1, -1);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	glStencilMask(0xFF);
+
+	glLineWidth(10);
+
+	// - - - - - - - - - -
+	glPolygonMode(GL_FRONT, GL_LINE);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, idVertex);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndex);
+	glVertexPointer(3, GL_FLOAT, 0, 0);
+	glDrawElements(GL_TRIANGLES, indices.size() * 3, GL_UNSIGNED_INT, 0);
+	glDisable(GL_POLYGON_OFFSET_FILL);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glEnable(GL_LIGHTING);
+	// - - - - - - - - - -
+
+	glDisable(GL_DEPTH_TEST);
+
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	glStencilMask(0xFF);
+	
 }
 
 uint C_Mesh::GetVerticesSize() const

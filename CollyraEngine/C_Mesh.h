@@ -25,6 +25,8 @@ public:
 
 	void DrawNormals(bool* drawState) const;
 
+	void DrawOutline(bool* drawState) const;
+
 	std::string GetMeshName() const;
 	std::string GetMeshPath() const;
 
@@ -53,6 +55,8 @@ public:
 	void SetDrawingNormVertices(bool newState);
 	bool GetDrawingNormFaces() const;
 	void SetDrawingNormFaces(bool newState);
+
+	
 
 	float3 GetSize() const;
 

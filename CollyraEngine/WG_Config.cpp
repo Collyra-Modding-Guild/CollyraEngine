@@ -19,7 +19,7 @@
 #include "Devil/include/il.h"
 
 WG_Config::WG_Config(bool isActive) : WindowGroup(WG_CONFIG, isActive),
-fpsLog(FRAMERATE_LOG_SIZE), msLog(FRAMERATE_LOG_SIZE), newInput(false), drawFlags{true, false, false, false, false, true, false},
+fpsLog(FRAMERATE_LOG_SIZE), msLog(FRAMERATE_LOG_SIZE), newInput(false), drawFlags{true, false, false, false, false, true, false, false},
 buffWinW(0), buffWinH(0)
 {}
 
@@ -364,6 +364,8 @@ updateStatus WG_Config::Update()
 		ImGui::Checkbox("Frustum", &drawFlags[FRUSTUM]);
 
 		ImGui::Checkbox("Mouse Ray", &drawFlags[MOUSE_RAY]);
+		ImGui::SameLine();
+		ImGui::Checkbox("Outline", &drawFlags[OUTLINE]);
 
 	}
 
