@@ -348,8 +348,12 @@ void M_Camera3D::ShootRay(float2 mousePosition)
 					/ (App->uiManager->GetSceneWindowSize().y * 0.5) - 1.0f;
 
 
-	ray = sceneCamera->frustum.UnProjectLineSegment(normalized.x, -normalized.y);
-	App->scene->OnClickFocusGameObject(ray);
+	// Check if the mouse is inside scene window.
+	if (Abs(normalized.x) < 1.0f && Abs(normalized.y) < 1.0f)
+	{
+		ray = sceneCamera->frustum.UnProjectLineSegment(normalized.x, -normalized.y);
+		App->scene->OnClickFocusGameObject(ray);
+	}		
 }
 
 C_Camera* M_Camera3D::GetCamera() const

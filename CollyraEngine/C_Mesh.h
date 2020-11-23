@@ -69,7 +69,7 @@ private:
 	void ClearMesh();
 
 
-private:
+public:
 
 	uint idVertex;
 	std::vector<float3> vertices;
@@ -77,6 +77,8 @@ private:
 
 	uint idIndex;
 	std::vector<uint> indices;
+
+private:
 
 	uint idNormals;
 	std::vector<float3> normals;

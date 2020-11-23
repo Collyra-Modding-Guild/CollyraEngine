@@ -15,6 +15,7 @@
 #include "SceneLoader.h"
 #include "M_FileManager.h"
 #include "Timer.h"
+#include <map>
 
 #include "OpenGL.h"
 
@@ -526,6 +527,8 @@ void M_Scene::DeleteCamera(Component* component)
 void M_Scene::OnClickFocusGameObject(const LineSegment& mouseRay)
 {
 	std::stack<GameObject*> stack;
+	std::map<float, GameObject*> inRay;
+
 	GameObject* currNode = nullptr;
 
 	if (root == nullptr)
@@ -541,9 +544,12 @@ void M_Scene::OnClickFocusGameObject(const LineSegment& mouseRay)
 		currNode = stack.top();
 		stack.pop();
 
-		if (mouseRay.Intersects(currNode->GetGameObjectAABB()))
+		float nearHit = 0.0f;
+		float farHit = 0.0f;
+
+		if (mouseRay.Intersects(currNode->GetGameObjectAABB(), nearHit, farHit))
 		{
-			App->uiManager->SetFocusedGameObject(currNode->GetUid());
+			inRay.insert({ nearHit, currNode });
 		}
 
 		int childNum = currNode->children.size();
@@ -552,7 +558,50 @@ void M_Scene::OnClickFocusGameObject(const LineSegment& mouseRay)
 			stack.push(currNode->children[i]);
 		}
 	}
+	
+	std::map<float, GameObject*>::iterator iterator = inRay.begin();
 
+	for (int i = 0; i < inRay.size(); i++)
+	{
+		const C_Mesh* mesh = iterator->second->GetComponent<C_Mesh>();
+
+		if (mesh != nullptr)
+		{
+
+			C_Transform* transform = iterator->second->GetComponent<C_Transform>();
+			LineSegment localRay = mouseRay;
+
+			localRay.Transform(transform->GetGlobalTransform().Inverted());
+
+			for (uint j = 0; j < mesh->GetIndicesSize() - 2; j++)
+			{				
+				uint index_A = mesh->indices[j];
+				uint index_B = mesh->indices[j + 1];
+				uint index_C = mesh->indices[j + 2];
+
+				vec vertice_A(mesh->vertices[index_A]);
+				vec vertice_B(mesh->vertices[index_B]);	
+				vec vertice_C(mesh->vertices[index_C]);
+
+				Triangle meshTriangle(vertice_A, vertice_B, vertice_C);
+
+				if (localRay.Intersects(meshTriangle, nullptr, nullptr))
+				{
+					App->uiManager->SetFocusedGameObject(iterator->second->GetUid());
+					return;
+				}
+			}
+		}
+		else 
+		{
+			App->uiManager->SetFocusedGameObject(iterator->second->GetUid());
+			return;
+		}
+
+		iterator++;
+	}
+
+	App->uiManager->SetFocusedGameObject(-1);
 }
 
 void M_Scene::CameraCuling(GameObject* current, C_Camera* myCam)

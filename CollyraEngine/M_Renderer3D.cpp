@@ -205,11 +205,9 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 	if (drawState == nullptr)
 		return UPDATE_STOP;
 
-
 	BeginStencilMode();
 	App->PreDraw(drawState);
 	EndStencilMode();
-
 
 	App->Draw(drawState);
 

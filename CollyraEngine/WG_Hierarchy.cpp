@@ -77,8 +77,10 @@ void WG_Hierarchy::SetTreeNodeFlags(GameObject* gameObject)
 	if (gameObject->children.size() == 0)
 		flag |= ImGuiTreeNodeFlags_Leaf;
 
-	if (gameObject->GetUid() == selected)
+
+	if (gameObject->GetUid() == selected) 
 		flag |= ImGuiTreeNodeFlags_Selected;
+
 }
 
 void WG_Hierarchy::HandleDragAndDrop(GameObject* currentGo)
