@@ -4,6 +4,7 @@
 #include "M_Camera3D.h"
 #include "M_UIManager.h"
 #include "M_Window.h"
+#include "M_Scene.h"
 #include "M_Resources.h"
 
 #include "Primitive.h"
@@ -92,6 +93,10 @@ bool M_Renderer3D::Awake()
 
 		//OpenGl Additional Enables----------
 		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_STENCIL_TEST);
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_LIGHTING);
 		glEnable(GL_COLOR_MATERIAL);
@@ -162,10 +167,14 @@ uint M_Renderer3D::GetTextureBuffer()
 // PreUpdate: clear buffer
 updateStatus M_Renderer3D::PreUpdate(float dt)
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	glLoadIdentity();
 
 	glMatrixMode(GL_MODELVIEW);
+	//glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	glStencilMask(0x00);
 
 	M_Camera3D* cameraModule = (M_Camera3D*)App->GetModulePointer(M_CAMERA3D);
 	if (cameraModule == nullptr)
@@ -198,7 +207,18 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 
 	App->Draw(drawState);
 
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilMask(0x00);
+	glDisable(GL_DEPTH_TEST);
+	//glColor3f(1, 1, 0);
+	//Stencil Draw
+
+	App->scene->DrawStencil();
+
+	glStencilMask(0xFF);
+	glStencilFunc(GL_ALWAYS, 0, 0xFF);
 	EndDrawMode();
+
 
 	//UI Render
 	ret = App->Draw2D();
@@ -246,8 +266,11 @@ void M_Renderer3D::OnResize(float width, float height)
 void M_Renderer3D::BeginDrawMode()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-	glClear(GL_COLOR_BUFFER_BIT);
-	glClear(GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	glStencilMask(0xFF);
+	glEnable(GL_DEPTH_TEST);
 
 	//Grind + Axis
 	CPlane p(0, 1, 0, 0);

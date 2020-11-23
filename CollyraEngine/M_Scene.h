@@ -59,6 +59,8 @@ public:
 	std::string GetSceneName() const;
 	void SetSceneName(const char* newName);
 
+	void DrawStencil();
+
 private:
 	void CheckSiblingsName(GameObject* parent, std::string& myName);
 	void DrawGameObject(GameObject* gameObject, bool* drawState);

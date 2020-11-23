@@ -212,6 +212,52 @@ void M_Scene::SetSceneName(const char* newName)
 	sceneName = newName;
 }
 
+void M_Scene::DrawStencil()
+{
+	std::stack<GameObject*> stack;
+	GameObject* currNode = nullptr;
+
+	if (root == nullptr)
+	{
+		LOG("Root node did not exist!");
+		return;
+	}
+
+	stack.push(root);
+
+	while (!stack.empty())
+	{
+		currNode = stack.top();
+		stack.pop();
+
+		if (currNode != nullptr && currNode->active)
+		{
+			C_Mesh* mesh = currNode->GetComponent<C_Mesh>();
+			C_Transform* transform = currNode->GetComponent<C_Transform>();
+			C_Material* material = currNode->GetComponent<C_Material>();
+
+
+			if ((mesh != nullptr && mesh->IsActive() == true) && transform != nullptr)
+			{
+				if (material != nullptr && material->IsActive() == true)
+				{
+					bool hola[8] = { false, false, false, false, false, false, false, true };
+					mesh->Render(hola, transform->GetTGlobalTransform(), (int)material->GetTexture(), material->GetColor());
+				}
+
+			}
+		}
+		else
+			continue;
+
+		int childNum = currNode->children.size();
+		for (int i = 0; i < childNum; i++)
+		{
+			stack.push(currNode->children[i]);
+		}
+	}
+}
+
 void M_Scene::CheckSiblingsName(GameObject* parent, std::string& myName)
 {
 	uint siblingSameName = 0;
