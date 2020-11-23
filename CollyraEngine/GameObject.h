@@ -40,6 +40,9 @@ public:
 	uint32 GetUid() const;
 	void SetUid(uint32 newId);
 
+	bool IsSelected() const;
+	void SetSelected(bool newId);
+
 	std::string GetName() const;
 	void SetName(std::string newName);
 
@@ -73,6 +76,8 @@ private:
 
 	AABB aabb;
 	OBB	obb;
+
+	bool selected;
 
 };
 

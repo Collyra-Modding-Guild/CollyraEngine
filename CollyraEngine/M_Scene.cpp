@@ -497,6 +497,9 @@ bool M_Scene::DeleteGameObject(GameObject* gameObject)
 	if (gameObject == nullptr)
 		return false;
 
+	if (focusedGameObject == gameObject)
+		focusedGameObject = nullptr;
+
 	//Notify the UI that a GameObject has been destroyed---------
 	App->uiManager->GameObjectDestroyed(gameObject->GetUid());
 

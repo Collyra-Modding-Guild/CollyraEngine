@@ -10,7 +10,8 @@
 #include "C_Mesh.h"
 #include "C_Camera.h"
 
-GameObject::GameObject(std::string name) : parent(nullptr), uid(0), name(name), active(true)
+GameObject::GameObject(std::string name) : parent(nullptr), uid(0), name(name), active(true),
+selected(false)
 {}
 
 GameObject::~GameObject()
@@ -147,6 +148,17 @@ uint32 GameObject::GetUid() const
 void GameObject::SetUid(uint32 newId)
 {
 	this->uid = newId;
+}
+
+bool GameObject::IsSelected() const
+{
+	return selected;
+}
+
+void GameObject::SetSelected(bool newId)
+{
+	if (newId != selected)
+		selected = !selected;
 }
 
 std::string GameObject::GetName() const
