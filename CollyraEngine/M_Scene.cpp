@@ -150,6 +150,63 @@ updateStatus M_Scene::Draw(bool* drawState)
 	}
 }
 
+updateStatus M_Scene::PreDraw(bool* drawState)
+{
+	if (drawState[OUTLINE] == false)
+	{
+		if (focusedGameObject != nullptr)
+		{
+			C_Mesh* mesh = focusedGameObject->GetComponent<C_Mesh>();
+			C_Transform* transform = focusedGameObject->GetComponent<C_Transform>();
+
+			if ((mesh != nullptr && mesh->IsActive() == true) && transform != nullptr)
+			{
+				mesh->DrawOutline(transform->GetTGlobalTransform());
+			}
+		}
+	}
+	else
+	{
+		std::stack<GameObject*> stack;
+		GameObject* currNode = nullptr;
+
+		if (root == nullptr)
+		{
+			LOG("Root node did not exist!");
+			return UPDATE_STOP;
+		}
+
+		stack.push(root);
+
+		while (!stack.empty())
+		{
+			currNode = stack.top();
+			stack.pop();
+
+			if (currNode != nullptr && currNode->active)
+			{
+				C_Mesh* mesh = currNode->GetComponent<C_Mesh>();
+				C_Transform* transform = currNode->GetComponent<C_Transform>();
+
+				if ((mesh != nullptr && mesh->IsActive() == true) && transform != nullptr)
+				{
+					mesh->DrawOutline(transform->GetTGlobalTransform());
+				}
+			}
+			else
+				continue;
+
+			int childNum = currNode->children.size();
+			for (int i = 0; i < childNum; i++)
+			{
+				stack.push(currNode->children[i]);
+			}
+		}
+	}
+
+	return UPDATE_CONTINUE;
+}
+
 bool M_Scene::CleanUp()
 {
 	RELEASE(root);
@@ -212,52 +269,6 @@ void M_Scene::SetSceneName(const char* newName)
 	sceneName = newName;
 }
 
-void M_Scene::DrawStencil()
-{
-	std::stack<GameObject*> stack;
-	GameObject* currNode = nullptr;
-
-	if (root == nullptr)
-	{
-		LOG("Root node did not exist!");
-		return;
-	}
-
-	stack.push(root);
-
-	while (!stack.empty())
-	{
-		currNode = stack.top();
-		stack.pop();
-
-		if (currNode != nullptr && currNode->active)
-		{
-			C_Mesh* mesh = currNode->GetComponent<C_Mesh>();
-			C_Transform* transform = currNode->GetComponent<C_Transform>();
-			C_Material* material = currNode->GetComponent<C_Material>();
-
-
-			if ((mesh != nullptr && mesh->IsActive() == true) && transform != nullptr)
-			{
-				if (material != nullptr && material->IsActive() == true)
-				{
-					bool hola[8] = { false, false, false, false, false, false, false, true };
-					mesh->Render(hola, transform->GetTGlobalTransform(), (int)material->GetTexture(), material->GetColor());
-				}
-
-			}
-		}
-		else
-			continue;
-
-		int childNum = currNode->children.size();
-		for (int i = 0; i < childNum; i++)
-		{
-			stack.push(currNode->children[i]);
-		}
-	}
-}
-
 void M_Scene::CheckSiblingsName(GameObject* parent, std::string& myName)
 {
 	uint siblingSameName = 0;
@@ -302,7 +313,7 @@ void M_Scene::DrawGameObject(GameObject* gameObject, bool* drawState)
 	if (camera != nullptr && drawState[FRUSTUM])
 		DrawFrustum(gameObject);
 
-	if(drawState[MOUSE_RAY])
+	if (drawState[MOUSE_RAY])
 		DrawMouseRay(&App->camera->ray);
 
 }
@@ -367,8 +378,8 @@ void M_Scene::DrawMouseRay(LineSegment* mouseRay)
 	glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
 
 	glVertex3f(mouseRay->a.x, mouseRay->a.y, mouseRay->a.z);
-	glVertex3f(mouseRay->b.x, mouseRay->b.x, mouseRay->b.z );
-	
+	glVertex3f(mouseRay->b.x, mouseRay->b.x, mouseRay->b.z);
+
 	glEnd();
 	glEnable(GL_LIGHTING);
 }
@@ -538,7 +549,7 @@ void M_Scene::OnClickFocusGameObject(const LineSegment& mouseRay)
 			stack.push(currNode->children[i]);
 		}
 	}
-	
+
 }
 
 void M_Scene::CameraCuling(GameObject* current, C_Camera* myCam)

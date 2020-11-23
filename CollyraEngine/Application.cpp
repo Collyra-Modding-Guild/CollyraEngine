@@ -218,7 +218,7 @@ updateStatus Application::Draw(bool* drawFlags)
 	return ret;
 }
 
-updateStatus Application::DebugDraw()
+updateStatus Application::PreDraw(bool* drawFlags)
 {
 	updateStatus ret = UPDATE_CONTINUE;
 
@@ -226,7 +226,7 @@ updateStatus Application::DebugDraw()
 
 	for (int i = 0; i < numModules && ret == UPDATE_CONTINUE; i++)
 	{
-		ret = moduleList[i]->DebugDraw(engineDT);
+		ret = moduleList[i]->PreDraw(drawFlags);
 	}
 
 	return ret;

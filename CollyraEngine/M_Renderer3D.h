@@ -29,6 +29,9 @@ public:
 	void BeginDrawMode();
 	void EndDrawMode();
 
+	void BeginStencilMode();
+	void EndStencilMode();
+
 	bool GetVSync();
 	void SetVSync(bool newState);
 

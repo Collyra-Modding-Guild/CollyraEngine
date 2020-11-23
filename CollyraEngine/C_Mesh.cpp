@@ -179,15 +179,10 @@ void C_Mesh::Render(bool* drawState, float4x4 transform, int textureID, Color co
 		InnerRender(textureID);
 	}
 
-	if (drawState[OUTLINE])
-		DrawOutline(drawState);
-
 	if (drawNormVertices || drawNormFaces || drawState[NORMAL_V] == true || drawState[NORMAL_F] == true)
 		DrawNormals(drawState);
 
 	glPopMatrix();
-
-
 }
 
 // ------------------------------------------------------------
@@ -300,12 +295,14 @@ void C_Mesh::DrawNormals(bool* drawState) const
 	glLineWidth(1.0f);
 }
 
-void C_Mesh::DrawOutline(bool* drawState) const
+void C_Mesh::DrawOutline(float4x4& transform) const
 {
+	glPushMatrix();
+	glMultMatrixf((float*)&transform);
+
 	glDisable(GL_LIGHTING);
 
 	glLineWidth(10.f);
-	glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
 
 	// - - - - - - - - - -
 	glPolygonMode(GL_FRONT, GL_LINE);
@@ -316,10 +313,14 @@ void C_Mesh::DrawOutline(bool* drawState) const
 	glDrawElements(GL_TRIANGLES, indices.size() * 3, GL_UNSIGNED_INT, 0);
 	glDisable(GL_POLYGON_OFFSET_FILL);
 	glDisableClientState(GL_VERTEX_ARRAY);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	// - - - - - - - - - -
 	glLineWidth(1.0f);
 
 	glEnable(GL_LIGHTING);
+	glPopMatrix();
 }
 
 uint C_Mesh::GetVerticesSize() const

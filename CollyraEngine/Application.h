@@ -96,7 +96,7 @@ public:
 
 	updateStatus Draw2D();
 	updateStatus Draw(bool* drawFlags);
-	updateStatus DebugDraw();
+	updateStatus PreDraw(bool* drawFlags);
 	bool* GetDrawFlags();
 
 	Module* GetModulePointer(MODULE_TYPE type);

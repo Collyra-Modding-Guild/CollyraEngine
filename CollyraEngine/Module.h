@@ -91,7 +91,7 @@ public:
 
 	virtual updateStatus Draw2D(float dt) { return UPDATE_CONTINUE; }
 	virtual updateStatus Draw(bool* drawState) { return UPDATE_CONTINUE; }
-	virtual updateStatus DebugDraw(float dt) { return UPDATE_CONTINUE; }
+	virtual updateStatus PreDraw(bool* drawState) { return UPDATE_CONTINUE; }
 
 	MODULE_TYPE GetType() { return type; }
 

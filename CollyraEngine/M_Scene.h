@@ -26,7 +26,8 @@ public:
 	bool Awake() override;
 	updateStatus Update(float dt) override;
 	updateStatus PostUpdate(float dt) override;
-	updateStatus Draw(bool* drawState);
+	updateStatus Draw(bool* drawState) override;
+	updateStatus PreDraw(bool* drawState) override;
 
 	bool CleanUp() override;
 
@@ -58,8 +59,6 @@ public:
 
 	std::string GetSceneName() const;
 	void SetSceneName(const char* newName);
-
-	void DrawStencil();
 
 private:
 	void CheckSiblingsName(GameObject* parent, std::string& myName);

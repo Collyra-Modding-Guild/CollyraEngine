@@ -25,7 +25,7 @@ public:
 
 	void DrawNormals(bool* drawState) const;
 
-	void DrawOutline(bool* drawState) const;
+	void DrawOutline(float4x4& transform) const;
 
 	std::string GetMeshName() const;
 	std::string GetMeshPath() const;

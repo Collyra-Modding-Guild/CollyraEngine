@@ -4,7 +4,6 @@
 #include "M_Camera3D.h"
 #include "M_UIManager.h"
 #include "M_Window.h"
-#include "M_Scene.h"
 #include "M_Resources.h"
 
 #include "Primitive.h"
@@ -206,26 +205,15 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 	if (drawState == nullptr)
 		return UPDATE_STOP;
 
-	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-	glStencilMask(0x00);
-	glDisable(GL_DEPTH_TEST);
-	//glColor3f(1, 1, 0);
-	//Stencil Draw
 
-	App->scene->DrawStencil();
+	BeginStencilMode();
+	App->PreDraw(drawState);
+	EndStencilMode();
 
-	glStencilMask(0xFF);
-	glStencilFunc(GL_ALWAYS, 0, 0xFF);
-	glEnable(GL_DEPTH_TEST);
-	
-
-	glStencilFunc(GL_ALWAYS, 1, 0xFF);
-	glStencilMask(0xFF);
 
 	App->Draw(drawState);
 
 	EndDrawMode();
-
 
 	//UI Render
 	ret = App->Draw2D();
@@ -277,7 +265,6 @@ void M_Renderer3D::BeginDrawMode()
 
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);
 	glStencilMask(0xFF);
-	glEnable(GL_DEPTH_TEST);
 
 	//Grind + Axis
 	CPlane p(0, 1, 0, 0);
@@ -289,6 +276,25 @@ void M_Renderer3D::BeginDrawMode()
 void M_Renderer3D::EndDrawMode()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void M_Renderer3D::BeginStencilMode()
+{
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilMask(0x00);
+	glDisable(GL_DEPTH_TEST);
+	glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+}
+
+void M_Renderer3D::EndStencilMode()
+{
+	glStencilMask(0xFF);
+	glStencilFunc(GL_ALWAYS, 0, 0xFF);
+	glEnable(GL_DEPTH_TEST);
+
+
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	glStencilMask(0xFF);
 }
 
 bool M_Renderer3D::GetVSync()
