@@ -302,8 +302,10 @@ void C_Mesh::DrawNormals(bool* drawState) const
 
 void C_Mesh::DrawOutline(bool* drawState) const
 {
+	glDisable(GL_LIGHTING);
 
 	glLineWidth(10.f);
+	glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
 
 	// - - - - - - - - - -
 	glPolygonMode(GL_FRONT, GL_LINE);
@@ -316,6 +318,8 @@ void C_Mesh::DrawOutline(bool* drawState) const
 	glDisableClientState(GL_VERTEX_ARRAY);
 	// - - - - - - - - - -
 	glLineWidth(1.0f);
+
+	glEnable(GL_LIGHTING);
 }
 
 uint C_Mesh::GetVerticesSize() const

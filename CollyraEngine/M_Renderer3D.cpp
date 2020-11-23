@@ -167,6 +167,7 @@ uint M_Renderer3D::GetTextureBuffer()
 // PreUpdate: clear buffer
 updateStatus M_Renderer3D::PreUpdate(float dt)
 {
+	glEnable(GL_DEPTH_TEST);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -205,8 +206,6 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 	if (drawState == nullptr)
 		return UPDATE_STOP;
 
-	App->Draw(drawState);
-
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilMask(0x00);
 	glDisable(GL_DEPTH_TEST);
@@ -217,6 +216,14 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 
 	glStencilMask(0xFF);
 	glStencilFunc(GL_ALWAYS, 0, 0xFF);
+	glEnable(GL_DEPTH_TEST);
+	
+
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	glStencilMask(0xFF);
+
+	App->Draw(drawState);
+
 	EndDrawMode();
 
 
