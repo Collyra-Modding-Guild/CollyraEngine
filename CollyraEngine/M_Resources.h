@@ -3,8 +3,11 @@
 
 #include "Module.h"
 #include <vector>
+#include <map>
+#include <string>
 
 class Mesh;
+class Resource;
 
 class M_Resources : public Module
 {
@@ -22,10 +25,13 @@ public:
 
 private:
 	void CreateMeshesInternal(const char* path);
+	std::string DuplicateFile(const char* path);
 
 public: 
 	int defaultTextureId;
 
+private:
+	std::map<uint, Resource*> resourceMap;
 };
 
 #endif // __ModuleResources_H__

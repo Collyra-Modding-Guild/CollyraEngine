@@ -45,7 +45,7 @@ void MaterialLoader::Import(const aiMaterial* material, C_Material* myNewMateria
 			std::string textureName = "";
 			std::string textureExtension = "";
 			App->physFS->SplitFilePath(path.C_Str(), nullptr, nullptr, &textureName, &textureExtension);
-			std::string defaultPath = ASSETS_TEXTYRES_PATH;
+			std::string defaultPath = ASSETS_TEXTURES_PATH;
 			defaultPath += "/" + textureName + "." + textureExtension;
 			loadTexture = TextureLoader::Import(defaultPath.c_str());
 		}

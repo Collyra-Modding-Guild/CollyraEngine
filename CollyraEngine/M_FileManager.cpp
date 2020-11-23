@@ -54,8 +54,8 @@ bool M_FileManager::CleanUp()
 void M_FileManager::CreateFolderDirs()
 {
 	// If the standard folders do not exist, create them
-	std::vector<const char*> dirs = { ASSETS_FOLDER, ASSETS_MESHES_PATH, ASSETS_TEXTYRES_PATH,
-		LIBRARY_PATH,LIBRARY_MESHES,LIBRARY_TEXTURES,LIBRARY_SCENES,LIBRARY_MODELS, LIBRARY_MATERIALS };
+	std::vector<const char*> dirs = { ASSETS_FOLDER, ASSETS_MESHES_PATH, ASSETS_TEXTURES_PATH,
+		LIBRARY_PATH,LIBRARY_MESHES,LIBRARY_TEXTURES,LIBRARY_SCENES,LIBRARY_MODELS, LIBRARY_MATERIALS, ASSETS_MODELS_PATH };
 
 	for (uint i = 0; i < dirs.size(); ++i)
 	{
@@ -449,7 +449,7 @@ unsigned int M_FileManager::Load(const char* path, const char* file, char** buff
 bool M_FileManager::ImportFile(const char* file, std::string& relativePath)
 {
 	std::string fileStr, extensionStr;
-	SplitFilePath(file, nullptr, &fileStr, &extensionStr);
+	SplitFilePath(file, nullptr,nullptr, &fileStr, &extensionStr);
 	std::string extensionFolder = GetExtensionFolder(extensionStr.c_str()) + ("/");
 
 	relativePath = relativePath.append(extensionFolder + fileStr.append(".") + extensionStr);
@@ -491,11 +491,11 @@ std::string M_FileManager::GetExtensionFolder(const char* fileExtension)
 
 	if (extension == "fbx")
 	{
-		return ASSETS_MESHES_PATH;
+		return ASSETS_MODELS_PATH;
 	}
-	else if (extension == "png")
+	else if (extension == "png" || extension == "jpg" || extension == "dds")
 	{
-		return ASSETS_TEXTYRES_PATH;
+		return ASSETS_TEXTURES_PATH;
 	}
 
 	return std::string("unknown");

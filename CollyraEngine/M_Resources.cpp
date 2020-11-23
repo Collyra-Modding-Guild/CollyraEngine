@@ -8,6 +8,9 @@
 #include "TextureLoader.h"
 #include "C_Material.h"
 
+//Resources ----
+#include "R_Resource.h"
+
 M_Resources::M_Resources(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), defaultTextureId(-1)
 {}
 
@@ -28,8 +31,6 @@ bool M_Resources::Start()
 	//Load from Start Demo-------
 	defaultTextureId = TextureLoader::LoadDefaultTexture();
 
-	CreateMeshesInternal("Assets/Meshes/house.fbx");
-	CreateMeshesInternal("Assets/Meshes/house.fbx");
 	CreateMeshesInternal("Assets/Meshes/house.fbx");
 
 	return true;
@@ -55,9 +56,15 @@ void M_Resources::ImportResourceInternal(const char* path)
 
 	if (relativePath == "")
 	{
-		//TODO: EXTERNAL FILE -> COPY TO ASSETS & TRY To IMPORT AGAIN
-		LOG("Invalid Path!!! We only load assets from the project folder for now :P");
-		return;
+		LOG("Importing Resource is not located in Assets/... Searching in the disk...")
+		relativePath = DuplicateFile(normalizedPath.c_str());
+
+		if (relativePath == "")
+		{
+			LOG("Invalid Path!!! Could not load from %s", path);
+			return;
+		}
+
 	}
 
 	extension = App->physFS->LowerCaseString(extension.c_str());
@@ -120,18 +127,19 @@ void M_Resources::ImportResourceInternal(const char* path)
 		LOG("Ignored: %s | File type unsupported %s", path, extension.c_str());
 }
 
-//void M_Resources::CreateMeshesExternal(const char* path)
-//{
-//	std::string normalizedPath = App->physFS->NormalizePath(path);
-//
-//	std::string finalPath;
-//
-//	//TODO: Check if the current file is already loaded
-//	if (App->physFS->ImportFile(normalizedPath.c_str(), finalPath))
-//	{
-//		CreateMeshesInternal(finalPath.c_str());
-//	}
-//}
+std::string M_Resources::DuplicateFile(const char* path)
+{
+	std::string normalizedPath = App->physFS->NormalizePath(path);
+
+	std::string finalPath;
+
+	if (App->physFS->ImportFile(normalizedPath.c_str(), finalPath))
+	{
+		return finalPath;
+	}
+	else
+		return "";
+}
 
 void M_Resources::CreateMeshesInternal(const char* path)
 {
