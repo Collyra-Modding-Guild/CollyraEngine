@@ -10,6 +10,8 @@
 #include "C_Mesh.h"
 #include "C_Camera.h"
 
+#include "WG_Scene.h"
+
 #include "MathGeoLib/include/MathGeoLib.h"
 #include "MathGeoLib/include/Math/float2.h"
 
@@ -67,8 +69,8 @@ updateStatus M_Camera3D::Update(float dt)
 	}
 
 	if (inputModule->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
-	{
-		ShootRay({App->uiManager->GetImGuiMousePosition().x, App->uiManager->GetImGuiMousePosition().y});
+	{	
+		ShootRay({ App->uiManager->GetImGuiMousePosition().x, App->uiManager->GetImGuiMousePosition().y });	
 	}
 
 
@@ -350,9 +352,11 @@ void M_Camera3D::ShootRay(float2 mousePosition)
 
 	// Check if the mouse is inside scene window.
 	if (Abs(normalized.x) < 1.0f && Abs(normalized.y) < 1.0f)
-	{
+	{		
 		ray = sceneCamera->frustum.UnProjectLineSegment(normalized.x, -normalized.y);
-		App->scene->OnClickFocusGameObject(ray);
+
+		if (!App->uiManager->sceneWindow->usingGizmo)
+			App->scene->OnClickFocusGameObject(ray);
 	}		
 }
 

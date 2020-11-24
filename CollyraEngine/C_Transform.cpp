@@ -49,9 +49,10 @@ void C_Transform::GenerateGlobalTransformationFrom(float4x4 parentTransform)
 	tGlobalTransform = globalTransform.Transposed();
 }
 
-void C_Transform::SetGlobalTransformation(float4x4 transform)
+void C_Transform::UpdateGuizmoTransformation(float4x4 transform, float4x4 parentTransform)
 {
-	globalTransform = transform;
+	SetLocalTransformation(parentTransform.Inverted() * transform);
+	hasUpdated = true;
 }
 
 void C_Transform::UpdateLocalTransformMaintingGlobalToFit(float4x4 newParentTransform)

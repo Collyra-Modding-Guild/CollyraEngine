@@ -52,6 +52,9 @@
     <Filter Include="Sources\Helpers\Json Parser">
       <UniqueIdentifier>{25fb4be5-0f64-40a5-888b-f9a5fb18711e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Helpers\ImGuizmo">
+      <UniqueIdentifier>{c9c6b87f-1d3d-407b-9588-1035560a1324}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Module.h">
@@ -385,6 +388,9 @@
     <ClInclude Include="glmath.h">
       <Filter>Sources\Helpers</Filter>
     </ClInclude>
+    <ClInclude Include="ImGuizmo\ImGuizmo.h">
+      <Filter>Sources\Helpers\ImGuizmo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="log.cpp">
@@ -626,6 +632,9 @@
     </ClCompile>
     <ClCompile Include="glmath.cpp">
       <Filter>Sources\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuizmo\ImGuizmo.cpp">
+      <Filter>Sources\Helpers\ImGuizmo</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

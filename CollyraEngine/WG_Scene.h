@@ -6,6 +6,7 @@
 //ImGui
 #include "imgui/imgui.h"
 
+
 class WG_Scene : public WindowGroup
 {
 public:
@@ -20,6 +21,12 @@ public:
 
 	void GetWindowSize(float& w, float& h);
 	void GetWindowPosition(float& x, float& y);
+
+	void HandleGuizmo();
+
+
+public:
+	bool usingGizmo;
 
 private:
 	ImVec2 windowPos;

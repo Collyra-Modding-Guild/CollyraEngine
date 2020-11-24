@@ -31,7 +31,7 @@ public:
 	int defaultTextureId;
 
 private:
-	std::map<uint, Resource*> resourceMap;
+	//std::map<uint, Resource*> resourceMap;
 };
 
 #endif // __ModuleResources_H__

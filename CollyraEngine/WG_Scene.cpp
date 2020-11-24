@@ -3,8 +3,21 @@
 #include "M_Window.h"
 #include "M_Renderer3D.h"
 
-WG_Scene::WG_Scene(bool isActive) : WindowGroup(WG_CONFIG, isActive)
-{}
+#include "M_Scene.h"
+#include "M_Camera3D.h"
+
+#include "GameObject.h"
+#include "C_Transform.h"
+
+#include "MathGeoLib/include/Math/float4x4.h"
+#include "ImGuizmo/ImGuizmo.h"
+
+
+
+WG_Scene::WG_Scene(bool isActive) : WindowGroup(WG_CONFIG, isActive), usingGizmo(false)
+{
+	ImGuizmo::Enable(true);
+}
 
 WG_Scene::~WG_Scene()
 {}
@@ -30,6 +43,10 @@ updateStatus WG_Scene::Update()
 		ImVec2 uvMax = ImVec2(1.0f, 0.0f);                 // Lower-right
 
 		ImGui::Image((ImTextureID)App->renderer3D->GetTextureBuffer(), winSize, uvMin, uvMax);
+
+
+		HandleGuizmo();
+
 
 		ImGui::EndChild();
 	}
@@ -60,5 +77,39 @@ void WG_Scene::GetWindowPosition(float& x, float& y)
 {
 	x = windowPos.x;
 	y = windowPos.y;
+}
+
+void WG_Scene::HandleGuizmo()
+{
+	float4x4 viewMatrix;
+	float4x4 projectionMatrix;
+
+	GameObject* selected = App->scene->focusedGameObject;
+
+	usingGizmo = ImGuizmo::IsOver();
+
+	if (selected != nullptr) 
+	{
+		C_Transform* transformSelected = selected->GetComponent<C_Transform>();
+		float4x4 transformMat = transformSelected->GetTGlobalTransform();
+		float4x4 parentGlobalMat = selected->GetParent()->GetComponent<C_Transform>()->GetGlobalTransform();
+
+		viewMatrix.Set(App->camera->GetViewMatrix());
+		projectionMatrix.Set(App->camera->GetProjectionMatrix());
+		
+		ImGuizmo::SetDrawlist();
+
+		float w, h;
+		GetWindowSize(w, h);
+
+		ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, w, h);
+
+		ImGuizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::MODE::LOCAL, transformMat.ptr());
+
+		if (ImGuizmo::IsUsing()) 
+		{
+			transformSelected->UpdateGuizmoTransformation(transformMat.Transposed(), parentGlobalMat);
+		}
+	}
 }
 
