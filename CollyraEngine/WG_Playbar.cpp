@@ -25,19 +25,20 @@ updateStatus WG_Playbar::Update()
 
 	ImGui::SameLine();
 
-	std::string pauseButtonText = App->gameClock->running ? "Pause" : "Resume";
+	std::string pauseButtonText = App->gameClock->pause ? "Resume" : "Pause";
 
-	if (ImGui::Button(pauseButtonText.c_str()))
-		App->gameClock->running ? App->scene->Pause() : App->scene->Resume();
+	if (ImGui::Button(pauseButtonText.c_str()) && App->gameClock->running)
+		App->gameClock->pause ? App->scene->Resume() : App->scene->Pause();
+	else if(!App->gameClock->running)
+		App->scene->Pause();
+
 
 	ImGui::SameLine();
 
 	std::string tickButtonText = "Advance";
 
 	if (App->gameClock->tick)
-	{
 		App->gameClock->Tick(false);
-	}
 
 	if (ImGui::Button(tickButtonText.c_str()))
 		App->scene->Tick();
