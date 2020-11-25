@@ -5,16 +5,17 @@
 
 #include "M_Scene.h"
 #include "M_Camera3D.h"
+#include "M_Input.h"
 
 #include "GameObject.h"
 #include "C_Transform.h"
 
 #include "MathGeoLib/include/Math/float4x4.h"
-#include "ImGuizmo/ImGuizmo.h"
 
 
 
-WG_Scene::WG_Scene(bool isActive) : WindowGroup(WG_CONFIG, isActive), usingGizmo(false)
+WG_Scene::WG_Scene(bool isActive) : WindowGroup(WG_CONFIG, isActive), usingGizmo(false), gizOperation(ImGuizmo::OPERATION::TRANSLATE),
+																						 gizMode(ImGuizmo::MODE::LOCAL)
 {
 	ImGuizmo::Enable(true);
 }
@@ -101,10 +102,23 @@ void WG_Scene::HandleGuizmo()
 
 		float w, h;
 		GetWindowSize(w, h);
-
 		ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, w, h);
 
-		ImGuizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::MODE::LOCAL, transformMat.ptr());
+		if(App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
+			gizOperation = ImGuizmo::OPERATION::TRANSLATE;
+
+		if (App->input->GetKey(SDL_SCANCODE_E) == KEY_DOWN)
+			gizOperation = ImGuizmo::OPERATION::ROTATE;
+
+		if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
+			gizOperation = ImGuizmo::OPERATION::SCALE;
+
+		if (gizOperation == ImGuizmo::OPERATION::SCALE)
+			gizMode = ImGuizmo::MODE::LOCAL;
+		else
+			gizMode = ImGuizmo::MODE::WORLD;
+
+		ImGuizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), gizOperation, gizMode, transformMat.ptr());
 
 		if (ImGuizmo::IsUsing()) 
 		{
