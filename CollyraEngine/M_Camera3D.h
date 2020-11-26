@@ -33,6 +33,7 @@ public:
 
 	C_Camera* GetCamera() const;
 	bool GetSceneCameraCuling() const;
+	void SetCameraSceneCulling(bool newCullingState);
 
 
 private:
@@ -48,7 +49,6 @@ public:
 
 	bool		focusingObject;
 	float		spdMultiplier;
-	bool		sceneCameraCuling;
 
 	LineSegment ray;
 

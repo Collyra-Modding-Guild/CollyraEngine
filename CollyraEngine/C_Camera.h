@@ -29,15 +29,18 @@ public:
 	float GetFarPlane() const;
 	void SetFarPlane(float newFarPlane);
 
+	bool IsCulling() const;
+	void SetCulling(bool newCulling);
+
 public:
 
 	Frustum frustum;
-
 
 private:
 
 	float nearPlane, farPlane;
 	float verticalFOV, horizontalFOV;
+	bool culling;
 
 
 };

@@ -2,7 +2,7 @@
 #include "GameObject.h"
 
 C_Camera::C_Camera(bool active) : Component(COMPONENT_TYPE::CAMERA, active), verticalFOV(0.0f), horizontalFOV(90.0f), nearPlane(NEAR_PLANE),
-farPlane(FAR_PLANE)
+farPlane(FAR_PLANE), culling(true)
 {
 	frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
 	frustum.SetPos(float3(0, 0, 0));
@@ -61,6 +61,19 @@ void C_Camera::SetFarPlane(float newFarPlane)
 {
 	frustum.SetViewPlaneDistances(frustum.NearPlaneDistance(), newFarPlane);
 	farPlane = newFarPlane;
+}
+
+bool C_Camera::IsCulling() const
+{
+	return culling;
+}
+
+void C_Camera::SetCulling(bool newCulling)
+{
+	if (newCulling != culling)
+	{
+		culling = !culling;
+	}
 }
 
 

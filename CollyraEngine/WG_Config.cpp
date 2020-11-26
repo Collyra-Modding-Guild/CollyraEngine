@@ -377,9 +377,13 @@ updateStatus WG_Config::Update()
 	{
 		ImGui::Spacing();
 
-		//  - - - - - - Culing - - - - - - 
+		//  - - - - - - Culling - - - - - - 
 		ImGui::BulletText("Main Scene Camera:");
-		ImGui::Checkbox("Camera Culing", &App->camera->sceneCameraCuling);
+		bool check = App->camera->GetSceneCameraCuling();
+		if (ImGui::Checkbox("Camera Culling", &check))
+		{
+			App->camera->SetCameraSceneCulling(check);
+		}
 
 		ImGui::Spacing();
 		ImGui::Spacing();
@@ -389,12 +393,7 @@ updateStatus WG_Config::Update()
 		ImGui::SameLine();
 		float currentFoV = App->camera->GetCamera()->GetHorizontalFov();
 
-		if (currentFoV > 120)
-			currentFoV = 120;
-		else if (currentFoV < 60)
-			currentFoV = 60;
-
-		if (ImGui::DragFloat("##main_fov", &currentFoV))
+		if (ImGui::SliderFloat("##fov", &currentFoV, 30.f, 170.f))
 		{
 			App->camera->GetCamera()->SetHorizontalFov(currentFoV);
 			App->renderer3D->RefreshCamera();
@@ -409,13 +408,8 @@ updateStatus WG_Config::Update()
 		ImGui::SameLine();
 
 
-		if (ImGui::DragFloat("##main_nearplane", &currentNearPlane))
+		if (ImGui::DragFloat("##main_nearplane", &currentNearPlane, 1.0f, 0.1f, currentFarPlane))
 		{
-			if (currentNearPlane > currentFarPlane)
-				currentNearPlane = currentFarPlane;
-			else if (currentNearPlane < 0.01f)
-				currentNearPlane = 0.01f;
-
 			App->camera->GetCamera()->SetNearPlane(currentNearPlane);
 			App->renderer3D->RefreshCamera();
 		}
@@ -425,13 +419,8 @@ updateStatus WG_Config::Update()
 		ImGui::Text("Far Plane");
 		ImGui::SameLine();
 
-		if (ImGui::DragFloat("##main_farplane", &currentFarPlane))
+		if (ImGui::DragFloat("##main_farplane", &currentFarPlane, 1.0f, currentNearPlane, 1000.f))
 		{
-			if (currentFarPlane > 10000)
-				currentFarPlane = 10000;
-			else if (currentFarPlane < currentNearPlane)
-				currentFarPlane = currentNearPlane;
-
 			App->camera->GetCamera()->SetFarPlane(currentFarPlane);
 			App->renderer3D->RefreshCamera();
 		}

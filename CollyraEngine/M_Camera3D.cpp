@@ -16,8 +16,7 @@
 #include "MathGeoLib/include/Math/float2.h"
 
 
-M_Camera3D::M_Camera3D(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), spdMultiplier(2.0f), focusingObject(true), sceneCamera(nullptr), inputModule(nullptr),
-sceneCameraCuling(false)
+M_Camera3D::M_Camera3D(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), spdMultiplier(2.0f), focusingObject(true), sceneCamera(nullptr), inputModule(nullptr)
 {
 	Reference = float3(0.0f, 0.0f, 0.0f);
 	orbitalReference = float3(0.0f, 0.0f, -15.0f);
@@ -367,6 +366,12 @@ C_Camera* M_Camera3D::GetCamera() const
 
 bool M_Camera3D::GetSceneCameraCuling() const
 {
-	return sceneCameraCuling;
+	return sceneCamera->IsCulling();
+}
+
+void M_Camera3D::SetCameraSceneCulling(bool newCullingState)
+{
+	sceneCamera->SetCulling(newCullingState);
+
 }
 

@@ -423,23 +423,21 @@ void WG_Inspector::DrawCameraComponent(ImGuiTreeNodeFlags_ flag, C_Camera* camer
 
 	if (ImGui::CollapsingHeader("Camera", flag))
 	{
+		bool check = camera->IsCulling();
+		if (ImGui::Checkbox("Camera Culling", &check))
+		{
+			camera->SetCulling(check);
+		}
 
 		ImGui::Spacing();
 		ImGui::Text("Field of View");
 		ImGui::SameLine();
 		float currentFoV = camera->GetHorizontalFov();
 
-		if (currentFoV > 120) 
-			currentFoV = 120;
-		else if (currentFoV < 60) 
-			currentFoV = 60;
-
-		if(ImGui::DragFloat("##fov", &currentFoV))
+		if (ImGui::SliderFloat("##fov", &currentFoV, 30.f, 170.f))
 		{
 			camera->SetHorizontalFov(currentFoV);
 		}
-
-
 
 		float currentNearPlane = camera->GetNearPlane();
 		float currentFarPlane = camera->GetFarPlane();
@@ -450,13 +448,8 @@ void WG_Inspector::DrawCameraComponent(ImGuiTreeNodeFlags_ flag, C_Camera* camer
 
 	
 
-		if (ImGui::DragFloat("##nearplane", &currentNearPlane))
+		if (ImGui::DragFloat("##nearplane", &currentNearPlane, 1.0f, 0.1f, currentFarPlane))
 		{
-			if (currentNearPlane > currentFarPlane)
-				currentNearPlane = currentFarPlane;
-			else if (currentNearPlane < 0.01f)
-				currentNearPlane = 0.01f;
-
 			camera->SetNearPlane(currentNearPlane);
 		}
 
@@ -465,19 +458,10 @@ void WG_Inspector::DrawCameraComponent(ImGuiTreeNodeFlags_ flag, C_Camera* camer
 		ImGui::Text("Far Plane");
 		ImGui::SameLine();
 
-		if (ImGui::DragFloat("##farplane", &currentFarPlane))
+		if (ImGui::DragFloat("##farplane", &currentFarPlane, 1.0f, currentNearPlane, 1000.f))
 		{
-			if (currentFarPlane > 10000)
-				currentFarPlane = 10000;
-			else if (currentFarPlane < currentNearPlane)
-				currentFarPlane = currentNearPlane;
-
 			camera->SetFarPlane(currentFarPlane);
 		}
-
-
-
-
 
 	}
 
