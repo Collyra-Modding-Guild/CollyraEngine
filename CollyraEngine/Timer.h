@@ -25,6 +25,7 @@ public:
 	float ReadSec() const;
 
 	bool	running;
+	bool	pause;
 	bool    tick;
 
 private:

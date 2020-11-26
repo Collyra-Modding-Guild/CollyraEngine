@@ -238,6 +238,16 @@ bool M_UIManager::ShowMainMenuBar()
 				{
 					GameObject* empty = App->scene->CreateGameObject("GameObject");
 				}
+				if (ImGui::Button("Child", buttonSize))
+				{			
+					if (App->scene->focusedGameObject != nullptr) 
+					{
+						GameObject* child = App->scene->CreateGameObject("Child");
+						child->SetParent(App->scene->focusedGameObject);
+					}
+					else
+						LOG("First you should select a GameObject.")					
+				}
 				if (ImGui::Button("Camera", buttonSize))
 				{
 					GameObject* camera = App->scene->CreateGameObject("Camera");

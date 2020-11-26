@@ -58,6 +58,7 @@ public:
 private:
 	std::map<uint, Resource*> resourceMap;
 	LCG randomGen;
+
 };
 
 #endif // __ModuleResources_H__

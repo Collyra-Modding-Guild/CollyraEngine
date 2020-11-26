@@ -5,6 +5,9 @@
 #include "M_UIManager.h"
 #include "M_Window.h"
 #include "M_Resources.h"
+#include "M_UIManager.h"
+
+#include "WG_Scene.h"
 
 #include "Primitive.h"
 #include "TextureLoader.h"
@@ -237,8 +240,15 @@ bool M_Renderer3D::CleanUp()
 	return true;
 }
 
+void M_Renderer3D::RefreshCamera()
+{
+	float w, h;
+	App->uiManager->sceneWindow->GetWindowSize(w, h);
+	UpdateCamera(w, h);
+}
+
 //Called when a window is alterated
-void M_Renderer3D::OnResize(float width, float height)
+void M_Renderer3D::UpdateCamera(float width, float height)
 {
 	if (width == 0 || height == 0)
 		return;

@@ -34,6 +34,7 @@ public:
 	C_Camera* GetCamera() const;
 	bool GetSceneCameraCuling() const;
 
+
 private:
 	void CameraMovement(float dt);
 	void CameraPlanePan(float3& newPos);
@@ -47,6 +48,7 @@ public:
 
 	bool		focusingObject;
 	float		spdMultiplier;
+	bool		sceneCameraCuling;
 
 	LineSegment ray;
 
@@ -56,5 +58,5 @@ private:
 	float4		ViewMatrix, ViewMatrixInverse;
 	C_Camera*	sceneCamera;
 
-	bool		sceneCameraCuling;
+	
 };

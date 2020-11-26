@@ -10,12 +10,14 @@
 #include "C_Mesh.h"
 #include "C_Camera.h"
 
+#include "WG_Scene.h"
+
 #include "MathGeoLib/include/MathGeoLib.h"
 #include "MathGeoLib/include/Math/float2.h"
 
 
 M_Camera3D::M_Camera3D(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), spdMultiplier(2.0f), focusingObject(true), sceneCamera(nullptr), inputModule(nullptr),
-sceneCameraCuling(true)
+sceneCameraCuling(false)
 {
 	Reference = float3(0.0f, 0.0f, 0.0f);
 	orbitalReference = float3(0.0f, 0.0f, -15.0f);
@@ -42,7 +44,7 @@ bool M_Camera3D::CleanUp()
 {
 	LOG("Cleaning Scene Camera");
 
-	RELEASE(sceneCamera);
+	//RELEASE(sceneCamera);
 	inputModule = nullptr;
 
 	return true;
@@ -67,8 +69,8 @@ updateStatus M_Camera3D::Update(float dt)
 	}
 
 	if (inputModule->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
-	{
-		ShootRay({App->uiManager->GetImGuiMousePosition().x, App->uiManager->GetImGuiMousePosition().y});
+	{	
+		ShootRay({ App->uiManager->GetImGuiMousePosition().x, App->uiManager->GetImGuiMousePosition().y });	
 	}
 
 
@@ -350,9 +352,11 @@ void M_Camera3D::ShootRay(float2 mousePosition)
 
 	// Check if the mouse is inside scene window.
 	if (Abs(normalized.x) < 1.0f && Abs(normalized.y) < 1.0f)
-	{
+	{		
 		ray = sceneCamera->frustum.UnProjectLineSegment(normalized.x, -normalized.y);
-		App->scene->OnClickFocusGameObject(ray);
+
+		if (!App->uiManager->sceneWindow->usingGizmo)
+			App->scene->OnClickFocusGameObject(ray);
 	}		
 }
 

@@ -3,6 +3,9 @@
 #include "M_Window.h"
 #include "M_Renderer3D.h"
 #include "M_Input.h"
+#include "M_Camera3D.h"
+
+#include "C_Camera.h"
 
 #include "p2Defs.h"
 
@@ -367,6 +370,72 @@ updateStatus WG_Config::Update()
 		ImGui::SameLine();
 		ImGui::Checkbox("Outline", &drawFlags[OUTLINE]);
 
+	}
+
+	//  - - - - - - Main Camera Customization - - - - - - 
+	if (ImGui::CollapsingHeader("Scene Camera Options"))
+	{
+		ImGui::Spacing();
+
+		//  - - - - - - Culing - - - - - - 
+		ImGui::BulletText("Main Scene Camera:");
+		ImGui::Checkbox("Camera Culing", &App->camera->sceneCameraCuling);
+
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		//  - - - - - - FOV - - - - - - 
+		ImGui::Text("Field of View");
+		ImGui::SameLine();
+		float currentFoV = App->camera->GetCamera()->GetHorizontalFov();
+
+		if (currentFoV > 120)
+			currentFoV = 120;
+		else if (currentFoV < 60)
+			currentFoV = 60;
+
+		if (ImGui::DragFloat("##main_fov", &currentFoV))
+		{
+			App->camera->GetCamera()->SetHorizontalFov(currentFoV);
+			App->renderer3D->RefreshCamera();
+		}
+
+		float currentNearPlane = App->camera->GetCamera()->GetNearPlane();
+		float currentFarPlane = App->camera->GetCamera()->GetFarPlane();
+
+		//  - - - - - - Near Plane - - - - - - 
+		ImGui::Spacing();
+		ImGui::Text("Near Plane");
+		ImGui::SameLine();
+
+
+		if (ImGui::DragFloat("##main_nearplane", &currentNearPlane))
+		{
+			if (currentNearPlane > currentFarPlane)
+				currentNearPlane = currentFarPlane;
+			else if (currentNearPlane < 0.01f)
+				currentNearPlane = 0.01f;
+
+			App->camera->GetCamera()->SetNearPlane(currentNearPlane);
+			App->renderer3D->RefreshCamera();
+		}
+
+		//  - - - - - - Far Plane - - - - - - 
+		ImGui::Spacing();
+		ImGui::Text("Far Plane");
+		ImGui::SameLine();
+
+		if (ImGui::DragFloat("##main_farplane", &currentFarPlane))
+		{
+			if (currentFarPlane > 10000)
+				currentFarPlane = 10000;
+			else if (currentFarPlane < currentNearPlane)
+				currentFarPlane = currentNearPlane;
+
+			App->camera->GetCamera()->SetFarPlane(currentFarPlane);
+			App->renderer3D->RefreshCamera();
+		}
+		
 	}
 
 	ImGui::End();

@@ -3,8 +3,9 @@
 
 #include "WindowGroup.h"
 
-//ImGui
 #include "imgui/imgui.h"
+#include "ImGuizmo/ImGuizmo.h"
+
 
 class WG_Scene : public WindowGroup
 {
@@ -21,11 +22,19 @@ public:
 	void GetWindowSize(float& w, float& h);
 	void GetWindowPosition(float& x, float& y);
 
+	void HandleGuizmo();
+
+
+public:
+	bool usingGizmo;
+
 private:
 	ImVec2 windowPos;
 	ImVec2 windowSize;
 	ImVec2 imageSize;
 
+	ImGuizmo::OPERATION gizOperation;
+	ImGuizmo::MODE gizMode;
 };
 
 #endif // __WG_SCENE_H__
