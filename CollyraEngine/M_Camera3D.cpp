@@ -17,7 +17,7 @@
 
 
 M_Camera3D::M_Camera3D(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), spdMultiplier(2.0f), focusingObject(true), sceneCamera(nullptr), inputModule(nullptr),
-sceneCameraCuling(true)
+sceneCameraCuling(false)
 {
 	Reference = float3(0.0f, 0.0f, 0.0f);
 	orbitalReference = float3(0.0f, 0.0f, -15.0f);
@@ -44,7 +44,7 @@ bool M_Camera3D::CleanUp()
 {
 	LOG("Cleaning camera");
 
-	RELEASE(sceneCamera);
+	//RELEASE(sceneCamera);
 	inputModule = nullptr;
 
 	return true;

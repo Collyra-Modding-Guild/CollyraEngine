@@ -8,6 +8,9 @@
 
 struct GameObject;
 
+#define NEAR_PLANE 0.1f
+#define FAR_PLANE 150.f
+
 class C_Camera : public Component
 {
 public:
@@ -18,22 +21,23 @@ public:
 	void UpdateFrustum(const float4x4& globalPosition);
 
 	float GetHorizontalFov() const;
-	void SetHorizontalFov(float horizontalFov);
+	void SetHorizontalFov(float newHorizontalFov);
+
 	float GetNearPlane() const;
-	void SetNearPlane(float nearPlane);
+	void SetNearPlane(float newNearPlane);
+
 	float GetFarPlane() const;
-	void SetFarPlane(float farPlane);
-
-private:
-
-	void HOR(uint aspectWidth, uint aspectHeight);
+	void SetFarPlane(float newFarPlane);
 
 public:
+
 	Frustum frustum;
 
 
 private:
 
-
+	float nearPlane, farPlane;
 	float verticalFOV, horizontalFOV;
+
+
 };

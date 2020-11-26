@@ -21,7 +21,8 @@ public:
 	updateStatus PostUpdate(float dt);
 	bool CleanUp();
 
-	void OnResize(float width, float height);
+	void RefreshCamera();
+	void UpdateCamera(float width, float height);
 
 	void GenerateFrameBuffers(int width, int height);
 	uint GetTextureBuffer();
