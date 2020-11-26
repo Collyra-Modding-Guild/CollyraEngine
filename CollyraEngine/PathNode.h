@@ -30,6 +30,9 @@ struct PathNode
 	{
 		return path == node.path;
 	}
+
+
+
 };
 
 #endif

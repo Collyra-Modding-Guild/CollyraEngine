@@ -30,7 +30,6 @@ public:
 	std::string GetMeshName() const;
 	std::string GetMeshPath() const;
 
-
 	uint GetVerticesSize() const;
 	std::vector<float3>* GetVertices();
 	float3* GetVerticesIndex();
@@ -56,6 +55,8 @@ public:
 	bool GetDrawingNormFaces() const;
 	void SetDrawingNormFaces(bool newState);
 
+	void SetResourceId(uint newId);
+	int GetResourceId() const;
 	
 
 	float3 GetSize() const;
@@ -95,4 +96,6 @@ private:
 	float3 meshSize;
 
 	AABB aabb;
+
+	int rMesh;
 };

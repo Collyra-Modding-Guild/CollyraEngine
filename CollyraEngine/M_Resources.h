@@ -5,9 +5,14 @@
 #include <vector>
 #include <map>
 #include <string>
+#include "p2Defs.h"
+
+#include "MathGeoLib/include/Algorithm/Random/LCG.h"
 
 class Mesh;
 class Resource;
+enum class R_TYPE;
+class R_Model;
 
 class M_Resources : public Module
 {
@@ -21,10 +26,30 @@ public:
 
 	bool CleanUp();
 
-	void ImportResourceInternal(const char* path);
+	//Resource------------
+	//Import
+	uint ImportResource(const char* path);
+
+	//Load & Request
+	Resource* RequestResource(uint id);
+	Resource* LoadResource(const char* path, uint id);
+
+	//Creation
+	Resource* CreateResource(R_TYPE rType);
+
+	//Save
+	bool SaveResource(Resource* toSave, std::string assetsPath, bool saveMeta = true);
+	bool SaveMeta(Resource* toSave, std::string assetsPath);
+
+	//Destruction
+	bool UnloadResource(uint32 idToDestroy);
+
+	//Helpers
+	R_TYPE GetResourceTypeFromExtension(const char* rPath);
+	uint32 GenerateId();
 
 private:
-	void CreateMeshesInternal(const char* path);
+	void ImportModel(const char* path, char** buffer, unsigned int bufferSize, R_Model* resourceModel);
 	std::string DuplicateFile(const char* path);
 
 public: 
@@ -32,6 +57,7 @@ public:
 
 private:
 	std::map<uint, Resource*> resourceMap;
+	LCG randomGen;
 };
 
 #endif // __ModuleResources_H__

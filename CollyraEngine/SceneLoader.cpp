@@ -22,12 +22,6 @@ uint SceneLoader::Save(const GameObject* hierarchyParent, char** buffer)
 
 	const std::vector<GameObject*> gameObjects = hierarchyParent->GetChilds();
 
-	//If we're not saving the scene, we include the hierarchy parent
-	if (hierarchyParent->GetUid() != ROOT_ID)
-	{
-		Private::SaveGameObject(hierarchyParent, gameObjectsArr.AddValue(), &gameObjectsArr);
-	}
-
 	for (uint i = 0; i < gameObjects.size(); ++i)
 	{
 		Private::SaveGameObject(gameObjects[i], gameObjectsArr.AddValue(), &gameObjectsArr);
@@ -235,7 +229,7 @@ void SceneLoader::Private::LoadComponent(JsonConfig& componentInfo, Component* c
 		compToSave->SetNameAndPath(componentInfo.GetString("Name").c_str(), componentInfo.GetString("Path").c_str());
 
 		//TODO: Private is obv a nono <- Resource Manager :)
-		MeshLoader::Private::LoadMesh(compToSave, compToSave->GetMeshPath().c_str());
+		//MeshLoader::Private::LoadMesh(compToSave, compToSave->GetMeshPath().c_str());
 	}
 	break;
 	case COMPONENT_TYPE::MATERIAL:
@@ -244,7 +238,7 @@ void SceneLoader::Private::LoadComponent(JsonConfig& componentInfo, Component* c
 		compToSave->SetNameAndPath(componentInfo.GetString("MatName").c_str(), componentInfo.GetString("MatPath").c_str());
 		compToSave->SetTextureNameAndPath(componentInfo.GetString("TextName").c_str(), componentInfo.GetString("TextPath").c_str());
 
-		MaterialLoader::Load(compToSave, compToSave->GetMaterialPath().c_str());
+		//MaterialLoader::Load(compToSave, compToSave->GetMaterialPath().c_str());
 	}
 	break;
 	case COMPONENT_TYPE::CAMERA:

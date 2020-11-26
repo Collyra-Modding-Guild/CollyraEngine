@@ -158,6 +158,7 @@
     <ClInclude Include="MathGeoLib\include\Math\TransformOps.h" />
     <ClInclude Include="MathGeoLib\include\Time\Clock.h" />
     <ClInclude Include="MeshLoader.h" />
+    <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="M_Camera3D.h" />
     <ClInclude Include="M_FileManager.h" />
     <ClInclude Include="M_Renderer3D.h" />
@@ -173,6 +174,12 @@
     <ClInclude Include="PerfTimer.h" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="R_Material.h" />
+    <ClInclude Include="R_Mesh.h" />
+    <ClInclude Include="R_Model.h" />
+    <ClInclude Include="R_Resource.h" />
+    <ClInclude Include="R_Scene.h" />
+    <ClInclude Include="R_Texture.h" />
     <ClInclude Include="SceneLoader.h" />
     <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="Timer.h" />
@@ -243,6 +250,7 @@
     <ClCompile Include="MathGeoLib\include\Math\TransformOps.cpp" />
     <ClCompile Include="MathGeoLib\include\Time\Clock.cpp" />
     <ClCompile Include="MeshLoader.cpp" />
+    <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="M_Camera3D.cpp" />
     <ClCompile Include="M_FileManager.cpp" />
     <ClCompile Include="M_Input.cpp" />
@@ -255,6 +263,12 @@
     <ClCompile Include="Parson\parson.c" />
     <ClCompile Include="PerfTimer.cpp" />
     <ClCompile Include="Primitive.cpp" />
+    <ClCompile Include="R_Material.cpp" />
+    <ClCompile Include="R_Mesh.cpp" />
+    <ClCompile Include="R_Model.cpp" />
+    <ClCompile Include="R_Resource.cpp" />
+    <ClCompile Include="R_Scene.cpp" />
+    <ClCompile Include="R_Texture.cpp" />
     <ClCompile Include="SceneLoader.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="Timer.cpp" />

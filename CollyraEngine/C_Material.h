@@ -26,6 +26,9 @@ public:
 	std::string GetTextureName() const;
 	std::string GetTexturePath() const;
 
+	void SetResourceId(uint newId);
+	int GetResourceId() const;
+
 private:
 
 	void ClearTexture();
@@ -41,5 +44,7 @@ private:
 
 	bool useDefaultTexture;
 	uint defaultTextureId;
+
+	int resourceId;
 
 };

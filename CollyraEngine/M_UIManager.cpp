@@ -39,7 +39,8 @@
 #include "SDL/include/SDL.h"
 
 M_UIManager::M_UIManager(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), showDemoWindow(false), showConfigMenu(false),
-configWindow(nullptr), consoleWindow(nullptr), sceneWindow(nullptr), hierarchyWindow(nullptr), inspectorWindow(nullptr)
+configWindow(nullptr), consoleWindow(nullptr), sceneWindow(nullptr), hierarchyWindow(nullptr), inspectorWindow(nullptr),
+playWindow(nullptr), aboutWindow(nullptr)
 {}
 
 // Destructor

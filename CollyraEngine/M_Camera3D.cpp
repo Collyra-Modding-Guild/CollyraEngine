@@ -40,7 +40,7 @@ bool M_Camera3D::Start()
 // -----------------------------------------------------------------
 bool M_Camera3D::CleanUp()
 {
-	LOG("Cleaning camera");
+	LOG("Cleaning Scene Camera");
 
 	RELEASE(sceneCamera);
 	inputModule = nullptr;

@@ -3,7 +3,8 @@
 
 #include "Application.h"
 #include "M_FileManager.h"
-#include "C_Material.h"
+#include "R_Material.h"
+#include "M_Resources.h"
 
 #include "Color.h"
 
@@ -11,7 +12,7 @@
 #include "Assimp/include/scene.h"
 #include "Assimp/include/postprocess.h"
 
-void MaterialLoader::Import(const aiMaterial* material, C_Material* myNewMaterial,const char* matName, const char* meshPath)
+void MaterialLoader::Import(const aiMaterial* material, R_Material* myNewMaterial, const char* matName, const char* meshPath)
 {
 	//Color----
 	aiColor4D materialColor;
@@ -37,7 +38,7 @@ void MaterialLoader::Import(const aiMaterial* material, C_Material* myNewMateria
 		char* compressedTextureBuffer = nullptr;
 		std::string texturePath = LIBRARY_TEXTURES;
 		uint compressedTextureSize;
-		uint loadTexture = TextureLoader::Import(pathRelativeToFbx.c_str());
+		uint loadTexture = App->resources->ImportResource(pathRelativeToFbx.c_str());
 
 		if (loadTexture == 0)
 		{
@@ -47,27 +48,14 @@ void MaterialLoader::Import(const aiMaterial* material, C_Material* myNewMateria
 			App->physFS->SplitFilePath(path.C_Str(), nullptr, nullptr, &textureName, &textureExtension);
 			std::string defaultPath = ASSETS_TEXTURES_PATH;
 			defaultPath += "/" + textureName + "." + textureExtension;
-			loadTexture = TextureLoader::Import(defaultPath.c_str());
-		}
-
-		//SAVE---
-		if (loadTexture > 0)
-		{
-			compressedTextureSize = TextureLoader::Save(&compressedTextureBuffer, loadTexture);
-			if (compressedTextureSize > 0)
-			{
-				texturePath.append(textureName).append(".dds");
-				App->physFS->Save(texturePath.c_str(), compressedTextureBuffer, compressedTextureSize);
-			}
+			loadTexture = App->resources->ImportResource(defaultPath.c_str());
 		}
 
 		//LOAD----
 		if (loadTexture != 0)
 		{
 			LOG("Texture loaded! ID: %i", loadTexture);
-
-			myNewMaterial->SetTexture(loadTexture);
-			myNewMaterial->SetTextureNameAndPath(textureName.c_str(), texturePath.c_str());
+			myNewMaterial->SetTextureResourceId(loadTexture);
 		}
 		else
 		{
@@ -76,20 +64,19 @@ void MaterialLoader::Import(const aiMaterial* material, C_Material* myNewMateria
 	}
 }
 
-std::string MaterialLoader::Save(const C_Material* ourMaterial)
+uint MaterialLoader::Save(const R_Material* ourMaterial, char** buffer)
 {
 	//Color - Text Name - Text Path - Name - Path
 	//TODO: Change material name + path -> UID
-	std::string path = LIBRARY_MATERIALS + ourMaterial->GetMaterialName() + ".collmat";
 
-	uint ranges[5] = { 4,ourMaterial->GetTextureName().length(),ourMaterial->GetTexturePath().length(),
-		ourMaterial->GetMaterialName().length(),path.length() };
-	uint size = sizeof(ranges) + sizeof(float) * 4 + 
-		ourMaterial->GetMaterialName().length() + path.length() +
-		ourMaterial->GetTextureName().length() +  ourMaterial->GetTexturePath().length();
+	uint ranges[4] = { 4, 1,
+		ourMaterial->GetName().length(),ourMaterial->GetPath().length() };
 
-	char* fileBuffer = new char[size]; // Allocate
-	char* cursor = fileBuffer;
+	uint size = sizeof(ranges) + sizeof(float) * 4 +
+		sizeof(int) + ourMaterial->GetName().length() + ourMaterial->GetPath().length();
+
+	*buffer = new char[size]; // Allocate
+	char* cursor = *buffer;
 	uint bytes = sizeof(ranges); // First store ranges
 	memcpy(cursor, ranges, bytes);
 	cursor += bytes;
@@ -99,100 +86,79 @@ std::string MaterialLoader::Save(const C_Material* ourMaterial)
 	memcpy(cursor, &ourMaterial->GetColor(), bytes);
 	cursor += bytes;
 
-	// Store Text. Name
-	bytes = sizeof(char) * ourMaterial->GetTextureName().length();
-	memcpy(cursor, ourMaterial->GetTextureName().c_str(), bytes);
-	cursor += bytes;
-
-	// Store Text. Path
-	bytes = sizeof(char) * ourMaterial->GetTexturePath().length();
-	memcpy(cursor, ourMaterial->GetTexturePath().c_str(), bytes);
+	// Store Text. Id
+	bytes = sizeof(int);
+	int textureId = ourMaterial->GetTextureId();
+	memcpy(cursor, &textureId, bytes);
 	cursor += bytes;
 
 	// Store Mat. Name
-	bytes = sizeof(char) * ourMaterial->GetMaterialName().length();
-	memcpy(cursor, ourMaterial->GetMaterialName().c_str(), bytes);
+	bytes = sizeof(char) * ourMaterial->GetName().length();
+	memcpy(cursor, ourMaterial->GetName().c_str(), bytes);
 	cursor += bytes;
 
 	// Store Mat. Path
-	bytes = sizeof(char) * path.length();
-	memcpy(cursor, path.c_str(), bytes);
+	bytes = sizeof(char) * ourMaterial->GetPath().length();
+	memcpy(cursor, ourMaterial->GetPath().c_str(), bytes);
 	cursor += bytes;
 
-	App->physFS->Save(path.c_str(), fileBuffer, size);
-	RELEASE_ARRAY(fileBuffer);
-
-	return path;
+	return size;
 }
 
-void MaterialLoader::Load(C_Material* myNewMaterial, const char* path)
+void MaterialLoader::Load(R_Material* myNewMaterial, char* buffer)
 {
-	char* buffer = nullptr;
-	App->physFS->Load(path, &buffer);
 
-	if (buffer != nullptr)
+	char* cursor = buffer;
+	// amount of indices / vertices / normals / texture_coords / AABB
+	uint ranges[4];
+	uint bytes = sizeof(ranges);
+	memcpy(ranges, cursor, bytes);
+	cursor += bytes;
+
+	// Load Color
+	bytes = sizeof(uint) * ranges[0];
+	Color* newMatColor = new Color();
+	memcpy(newMatColor, cursor, bytes);
+	cursor += bytes;
+
+	myNewMaterial->SetColor(*newMatColor);
+	RELEASE(newMatColor);
+
+	// Load Name
+	bytes = sizeof(uint);
+	int textureid = -1;
+	memcpy(&textureid, cursor, bytes);
+	cursor += bytes;
+
+	// Load Name
+	bytes = ranges[3] * sizeof(char);
+	std::string name;
+	name.resize(ranges[3]);
+	memcpy(&name.at(0), cursor, bytes);
+	cursor += bytes;
+
+	// Load Path
+	bytes = ranges[4];
+	std::string path;
+	path.resize(ranges[4]);
+	memcpy(&path.at(0), cursor, bytes);
+	cursor += bytes;
+
+	myNewMaterial->SetNameAndPath(name.c_str(), path.c_str());
+
+	//LoadTexture
+	if (textureid > -1)
 	{
-		char* cursor = buffer;
-		// amount of indices / vertices / normals / texture_coords / AABB
-		uint ranges[5];
-		uint bytes = sizeof(ranges);
-		memcpy(ranges, cursor, bytes);
-		cursor += bytes;
+		Resource* texture = App->resources->RequestResource(textureid);
 
-		// Load Color
-		bytes = sizeof(uint) * ranges[0];
-		Color* newMatColor = new Color();
-		memcpy(newMatColor, cursor, bytes);
-		cursor += bytes;
-
-		myNewMaterial->SetColor(*newMatColor);
-		RELEASE(newMatColor);
-
-		// Load Name
-		bytes = ranges[1] * sizeof(char);
-		std::string textName;
-		textName.resize(ranges[1]);
-		memcpy(&textName.at(0), cursor, bytes);
-		cursor += bytes;
-
-		// Load Path
-		bytes =  ranges[2];
-		std::string textPath;
-		textPath.resize(ranges[2]);
-		memcpy(&textPath.at(0), cursor, bytes);
-		cursor += bytes;
-
-		myNewMaterial->SetTextureNameAndPath(textName.c_str(), textPath.c_str());
-
-		// Load Name
-		bytes = ranges[3] * sizeof(char);
-		std::string name;
-		name.resize(ranges[3]);
-		memcpy(&name.at(0), cursor, bytes);
-		cursor += bytes;
-
-		// Load Path
-		bytes = ranges[4];
-		std::string path;
-		path.resize(ranges[4]);
-		memcpy(&path.at(0), cursor, bytes);
-		cursor += bytes;
-
-		myNewMaterial->SetNameAndPath(name.c_str(), path.c_str());
-
-		char* textureBuffer = nullptr;
-		uint textureSize = App->physFS->Load(myNewMaterial->GetTexturePath().c_str(), &textureBuffer);
-
-		//LoadTexture
-		if (textureSize > 0)
+		if (texture != nullptr)
 		{
-			myNewMaterial->SetTexture(TextureLoader::Load(textureBuffer, textureSize));
+			myNewMaterial->SetTextureId(texture->GetUid());
 		}
+		else
+		{
+			LOG("Could not load texture... resource id %i", textureid);
+		}
+	}
 
-		RELEASE_ARRAY(buffer);
-	}
-	else
-	{
-		LOG("Coudn't load mesh from internal library...");
-	}
 }

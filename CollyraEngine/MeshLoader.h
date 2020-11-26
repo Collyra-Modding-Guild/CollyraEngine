@@ -7,10 +7,12 @@
 
 class aiMesh;
 class aiScene;
+class R_Mesh;
 class C_Mesh;
 class aiNode;
 class GameObject;
 class aiMaterial;
+class R_Model;
 
 namespace MeshLoader
 {
@@ -18,19 +20,17 @@ namespace MeshLoader
 	void CleanUp();
 
 	void Import(const char* path);
-	void Save(const aiScene* scene, const char* path);
-	void Load(const char* path);
+	uint Save(R_Mesh* mesh, char** buffer);
 
 	namespace Private
 	{
-		bool LoadAiSceneMeshes(const aiScene* scene, const aiNode* root, const char* filePath, GameObject* parent = nullptr, float4x4 transform = float4x4::identity);
-		bool LoadNodeMeshes(const aiScene* scene, const aiNode* node, const char* filePath, GameObject* parent = nullptr, float4x4 transform = float4x4::identity);
+		bool LoadAiSceneMeshes(const aiScene* scene, const aiNode* root, const char* filePath, R_Model* myResource, unsigned int ID = INT_MAX, float4x4 transform = float4x4::identity);
+		bool LoadNodeMeshes(const aiScene* scene, const aiNode* node, const char* filePath, R_Model* myResource, unsigned int panretId = INT_MAX, float4x4 transform = float4x4::identity);
 		void LoadVertices(aiMesh* mesh, std::vector<float3>& vertices, std::vector<float3>& normals, std::vector<float2>& textureCoords);
 		bool LoadIndices(aiMesh* mesh, std::vector<uint>& indices);
 
-		void SaveMesh(C_Mesh* mesh, const char* path);
 
-		void LoadMesh(C_Mesh* myNewMesh, const char* path);
+		void LoadMesh(R_Mesh* myNewMesh, char** buffer, uint id);
 	}
 }
 

@@ -89,6 +89,16 @@ std::string C_Material::GetTexturePath() const
 	return texturePath;
 }
 
+void C_Material::SetResourceId(uint newId)
+{
+	resourceId = newId;
+}
+
+int C_Material::GetResourceId() const
+{
+	return resourceId;
+}
+
 void C_Material::ClearTexture()
 {
 	glDeleteTextures(1, &idTextureImage);
