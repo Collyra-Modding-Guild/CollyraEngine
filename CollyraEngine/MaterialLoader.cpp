@@ -38,7 +38,7 @@ void MaterialLoader::Import(const aiMaterial* material, R_Material* myNewMateria
 		char* compressedTextureBuffer = nullptr;
 		std::string texturePath = LIBRARY_TEXTURES;
 		uint compressedTextureSize;
-		uint loadTexture = App->resources->ImportResource(pathRelativeToFbx.c_str());
+		uint loadTexture = App->resources->ImportResourceFromAssets(pathRelativeToFbx.c_str());
 
 		if (loadTexture == 0)
 		{
@@ -48,7 +48,7 @@ void MaterialLoader::Import(const aiMaterial* material, R_Material* myNewMateria
 			App->physFS->SplitFilePath(path.C_Str(), nullptr, nullptr, &textureName, &textureExtension);
 			std::string defaultPath = ASSETS_TEXTURES_PATH;
 			defaultPath += "/" + textureName + "." + textureExtension;
-			loadTexture = App->resources->ImportResource(defaultPath.c_str());
+			loadTexture = App->resources->ImportResourceFromAssets(defaultPath.c_str());
 		}
 
 		//LOAD----

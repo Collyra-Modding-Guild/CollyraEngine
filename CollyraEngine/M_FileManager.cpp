@@ -257,9 +257,11 @@ std::string M_FileManager::FindInPathNode(const char* toFind, PathNode& searchIn
 {
 	for (int i = 0; i < searchIn.children.size(); i++)
 	{
-		if (searchIn.children[i].path.c_str() == toFind)
+		size_t findPos = searchIn.children[i].path.find(toFind);
+
+		if (findPos < searchIn.children[i].path.length())
 		{
-			return searchIn.children[i].path.c_str();
+			return searchIn.children[i].path;
 		}
 
 		std::string searchInChilds;

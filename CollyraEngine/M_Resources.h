@@ -6,6 +6,7 @@
 #include <map>
 #include <string>
 #include "p2Defs.h"
+#include "Globals.h"
 
 #include "MathGeoLib/include/Algorithm/Random/LCG.h"
 
@@ -28,14 +29,14 @@ public:
 
 	//Resource------------
 	//Import
-	uint ImportResource(const char* path);
-
+	uint ImportResourceFromAssets(const char* path);
+	 
 	//Load & Request
 	Resource* RequestResource(uint id);
-	Resource* LoadResource(const char* path, uint id);
+	Resource* LoadResource(uint id, const char* assetsPath = nullptr);
 
 	//Creation
-	Resource* CreateResource(R_TYPE rType);
+	Resource* CreateResource(R_TYPE rType, uint32 forceId = 0);
 
 	//Save
 	bool SaveResource(Resource* toSave, std::string assetsPath, bool saveMeta = true);
@@ -46,11 +47,14 @@ public:
 
 	//Helpers
 	R_TYPE GetResourceTypeFromExtension(const char* rPath);
+	bool GetInfoFromMeta(const char* metaPath, uint32* id = nullptr, uint32* modDate = nullptr, R_TYPE* type = nullptr, std::string* path = nullptr);
 	uint32 GenerateId();
 
 private:
 	void ImportModel(const char* path, char** buffer, unsigned int bufferSize, R_Model* resourceModel);
 	std::string DuplicateFile(const char* path);
+
+	uint32 ImportResource(std::string path, uint32 forceid = 0);
 
 public: 
 	int defaultTextureId;

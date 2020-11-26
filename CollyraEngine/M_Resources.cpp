@@ -57,7 +57,9 @@ bool M_Resources::Start()
 	//Load from Start Demo-------
 	defaultTextureId = TextureLoader::LoadDefaultTexture();
 
-	ImportResource("Assets/Meshes/house.fbx");
+	uint toLoad = ImportResourceFromAssets("Assets/Meshes/house.fbx");
+
+	RequestResource(toLoad);
 
 	return true;
 }
@@ -71,7 +73,7 @@ bool M_Resources::CleanUp()
 	return true;
 }
 
-uint M_Resources::ImportResource(const char* path)
+uint M_Resources::ImportResourceFromAssets(const char* path)
 {
 	//Paths set up------------------------
 	std::string normalizedPath = App->physFS->NormalizePath(path);
@@ -92,74 +94,46 @@ uint M_Resources::ImportResource(const char* path)
 	else
 		relativePath = normalizedPath;
 
-	R_TYPE resourceType = GetResourceTypeFromExtension(normalizedPath.c_str());
+	std::string metaFile = relativePath + ".meta";
 
-	if (resourceType != R_TYPE::NO_TYPE)
+	if (!App->physFS->Exists(metaFile.c_str()))
 	{
-		Resource* newResource = CreateResource(resourceType);
-
-		char* fileBuffer = nullptr;
-		uint64 fileSize = 0;
-		fileSize = App->physFS->Load(relativePath.c_str(), &fileBuffer);
-
-		switch (resourceType)
-		{
-		case (R_TYPE::TEXTURE):				TextureLoader::Import(normalizedPath.c_str(), &fileBuffer, fileSize); break;
-		case (R_TYPE::MODEL):				ImportModel(normalizedPath.c_str(), &fileBuffer, fileSize, (R_Model*)newResource); break;
-		}
-
-		SaveResource(newResource, path);
-
-		uint newResourceID = newResource->GetUid();
-		RELEASE_ARRAY(fileBuffer);
-		UnloadResource(newResource->GetUid());
-
-		return newResourceID;
-
-		/*
-		if (extension == "fbx")
-		{
-			CreateMeshesInternal(relativePath.c_str());
-		}
-		else if (extension == "png" || extension == "dds" || extension == "jpg")
-		{
-			//TODO: Check if the texture has already been imported here
-			char* compressedTextureBuffer = nullptr;
-			std::string texturePath = LIBRARY_TEXTURES;
-			uint compressedTextureSize;
-			uint newTextureId = TextureLoader::Import(relativePath.c_str());
-
-			if (newTextureId > 0)
-			{
-				compressedTextureSize = TextureLoader::Save(&compressedTextureBuffer, newTextureId);
-				if (compressedTextureSize > 0)
-				{
-					texturePath.append(name);
-					App->physFS->Save(texturePath.c_str(), compressedTextureBuffer, compressedTextureSize);
-				}
-				else
-				{
-					LOG("Texture %s could not be compressed!", relativePath.c_str());
-					return;
-				}
-			}
-			else
-			{
-				LOG("Texture %s could not be loaded!", relativePath.c_str());
-				return;
-			}
-
-		}
-		else
-			LOG("Ignored: %s | File type unsupported %s", path, extension.c_str());
-			*/
+		return ImportResource(relativePath);
 	}
 	else
 	{
-		LOG("Could not import %s! Extension unknown or file not found", path);
+		uint32 id = 0;
+		uint32 date = 0;
+		std::string path = "";
+		GetInfoFromMeta(metaFile.c_str(), &id, &date, nullptr, &path);
+
+		//Date changed, we need to update the lib file
+		if (date != App->physFS->GetCurrDate(relativePath.c_str()))
+		{
+			//If the asset is in mem, we re-import & load
+			// TODO: We need to find a way to "alert" components that are using that resource that has updated
+			std::map<uint32, Resource*>::iterator it = resourceMap.find(id);
+			if (it != resourceMap.end())
+			{
+				ImportResource(relativePath, id);
+				LoadResource(id);
+			}
+			else // If not, simple re-import
+			{
+				ImportResource(relativePath, id);
+			}
+		}
+		else // If nothing has changed, simple return the id
+		{
+			//If lib file doesn't exist, we try to re-import
+			if (!App->physFS->Exists(path.c_str()))
+			{
+				ImportResource(relativePath, id);
+			}
+
+		}
+		return id;
 	}
-
-
 }
 
 Resource* M_Resources::RequestResource(uint id)
@@ -179,33 +153,37 @@ Resource* M_Resources::RequestResource(uint id)
 	PathNode allFiles = App->physFS->GetAllFiles(LIBRARY_PATH, nullptr, nullptr);
 	std::string foundId = App->physFS->FindInPathNode(std::to_string(id).c_str(), allFiles);
 
-	if (foundId.c_str() == "")
+	if (foundId == "")
 	{
+		std::vector<std::string> searchFor;
+		searchFor.push_back(".meta");
+		PathNode allAssets = App->physFS->GetAllFiles(ASSETS_FOLDER, &searchFor, nullptr);
 		//TODO: Search in Assets .neta & try to find the id
+
 		RELEASE(resource);
 		return nullptr;
 	}
 	else
 	{
-		LoadResource(foundId.c_str(), id);
+		LoadResource(id, foundId.c_str());
 	}
 
 	return resource;
 }
 
-Resource* M_Resources::LoadResource(const char* path, uint id)
+Resource* M_Resources::LoadResource(uint id, const char* assetsPath)
 {
 	Resource* ret = nullptr;
 
 	char* buffer = nullptr;
-	uint size = App->physFS->Load(path, &buffer);
+	uint size = App->physFS->Load(assetsPath, &buffer);
 	if (size == 0)
 	{
 		return ret;
 	}
 
 	std::string extension;
-	App->physFS->SplitFilePath(path, nullptr, nullptr, nullptr, &extension);
+	App->physFS->SplitFilePath(assetsPath, nullptr, nullptr, nullptr, &extension);
 
 	R_TYPE resourceType = App->physFS->GetTypeFromExtension(extension.c_str());
 
@@ -248,13 +226,13 @@ Resource* M_Resources::LoadResource(const char* path, uint id)
 	return ret;
 }
 
-Resource* M_Resources::CreateResource(R_TYPE rType)
+Resource* M_Resources::CreateResource(R_TYPE rType, uint32 forceId)
 {
 	Resource* ret = nullptr;
 
 	//TODO: Check if the resource already exists, if it does, get his id & delete the old one
 	//TODO 2: Also, instances :)
-	uint32 uId = GenerateId();
+	uint32 uId = (forceId != 0 ? forceId : GenerateId());
 
 	switch (rType)
 	{
@@ -316,7 +294,7 @@ bool M_Resources::SaveMeta(Resource* toSave, std::string assetsPath)
 	config.AddNumber("Type", (int)toSave->GetType());
 
 	//TODO: This maybe isn't necessary (?)
-	config.AddString("Library file", toSave->GetLibraryPath().c_str());
+	config.AddString("LibraryFile", toSave->GetLibraryPath().c_str());
 
 	//DATE
 	uint64 currDate = App->physFS->GetCurrDate(assetsPath.c_str());
@@ -379,6 +357,54 @@ R_TYPE M_Resources::GetResourceTypeFromExtension(const char* rPath)
 	return R_TYPE::NO_TYPE;
 }
 
+bool M_Resources::GetInfoFromMeta(const char* metaPath, uint32* id, uint32* modDate, R_TYPE* type, std::string* path)
+{
+	if (id == nullptr && modDate == nullptr && type == nullptr && path == nullptr)
+	{
+		return false;
+	}
+
+	char* buffer = nullptr;
+	uint size = App->physFS->Load(metaPath, &buffer);
+	if (size > 0)
+	{
+		JsonConfig metaData(buffer);
+
+		if (metaData.IsInitialized())
+		{
+			if (id != nullptr)
+			{
+				*id = metaData.GetNumber("ID");
+			}
+			if (modDate != nullptr)
+			{
+				*modDate = metaData.GetNumber("Date");
+			}
+			if (type != nullptr)
+			{
+				*type = (R_TYPE)metaData.GetNumber("Type");
+			}
+			if (path != nullptr)
+			{
+				*path = metaData.GetString("LibraryFile");
+			}
+
+		}
+		else
+		{
+			LOG("Could not open the config from meta file %s ", metaPath);
+			return false;
+		}
+	}
+	else
+	{
+		LOG("Could not load meta file %s; did not exist or it's corrupted", metaPath);
+		return false;
+	}
+
+	return true;
+}
+
 uint32 M_Resources::GenerateId()
 {
 	return randomGen.Int();
@@ -396,6 +422,38 @@ std::string M_Resources::DuplicateFile(const char* path)
 	}
 	else
 		return "";
+}
+
+uint32 M_Resources::ImportResource(std::string path, uint32 forceid)
+{
+	R_TYPE resourceType = GetResourceTypeFromExtension(path.c_str());
+
+	if (resourceType != R_TYPE::NO_TYPE)
+	{
+		Resource* newResource = CreateResource(resourceType, forceid);
+
+		char* fileBuffer = nullptr;
+		uint64 fileSize = 0;
+		fileSize = App->physFS->Load(path.c_str(), &fileBuffer);
+
+		switch (resourceType)
+		{
+		case (R_TYPE::TEXTURE):				TextureLoader::Import(path.c_str(), &fileBuffer, fileSize); break;
+		case (R_TYPE::MODEL):				ImportModel(path.c_str(), &fileBuffer, fileSize, (R_Model*)newResource); break;
+		}
+
+		SaveResource(newResource, path);
+
+		uint newResourceID = newResource->GetUid();
+		RELEASE_ARRAY(fileBuffer);
+		UnloadResource(newResource->GetUid());
+
+		return newResourceID;
+	}
+	else
+	{
+		LOG("Could not import %s! Extension unknown or file not found", path);
+	}
 }
 
 void M_Resources::ImportModel(const char* path, char** buffer, unsigned int bufferSize, R_Model* resourceModel)

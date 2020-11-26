@@ -113,7 +113,7 @@ bool MeshLoader::Private::LoadAiSceneMeshes(const aiScene* scene, const aiNode* 
 bool MeshLoader::Private::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const char* filePath, R_Model* myResource, unsigned int panretId, float4x4 transform)
 {
 	//GameObject* newGameObject = nullptr;
-	unsigned int myID = INT_MAX;
+	unsigned int myID = panretId;
 
 	aiVector3D translation, scaling;
 	aiQuaternion rotation;
