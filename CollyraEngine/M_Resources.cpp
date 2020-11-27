@@ -514,7 +514,7 @@ bool M_Resources::GetInfoFromMeta(const char* metaPath, uint32* id, uint32* modD
 			}
 			if (type != nullptr)
 			{
-				*type = (R_TYPE)metaData.GetNumber("Type");
+				*type = (R_TYPE)(int)metaData.GetNumber("Type");
 			}
 			if (path != nullptr)
 			{

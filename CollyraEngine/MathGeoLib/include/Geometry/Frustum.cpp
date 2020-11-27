@@ -697,7 +697,7 @@ bool Frustum::ContainsAABBVertices(const AABB& AABB) const
 
 			for (int i = 0; i < 8; i++)
 			{
-				if (this->Contains(vCorner[i]))
+				if (this->planes[p].IsOnPositiveSide(vCorner[i]))
 				{
 					iPtIn = 0;
 					--iInCount;
