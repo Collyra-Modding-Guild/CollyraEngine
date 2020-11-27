@@ -57,8 +57,9 @@ bool M_Resources::Start()
 	//Load from Start Demo-------
 	defaultTextureId = TextureLoader::LoadDefaultTexture();
 
-	uint toLoad = ImportResourceFromAssets("Assets/Meshes/house.fbx");
+	ImportAllAssets();
 
+	uint toLoad = ImportResourceFromAssets("Assets/Meshes/house.fbx");
 	RequestResource(toLoad);
 
 	return true;
@@ -388,11 +389,13 @@ bool M_Resources::GetInfoFromMeta(const char* metaPath, uint32* id, uint32* modD
 			{
 				*path = metaData.GetString("LibraryFile");
 			}
+			RELEASE(buffer);
 
 		}
 		else
 		{
 			LOG("Could not open the config from meta file %s ", metaPath);
+			RELEASE(buffer);
 			return false;
 		}
 	}
@@ -401,6 +404,7 @@ bool M_Resources::GetInfoFromMeta(const char* metaPath, uint32* id, uint32* modD
 		LOG("Could not load meta file %s; did not exist or it's corrupted", metaPath);
 		return false;
 	}
+
 
 	return true;
 }
@@ -452,7 +456,7 @@ uint32 M_Resources::ImportResource(std::string path, uint32 forceid)
 	}
 	else
 	{
-		LOG("Could not import %s! Extension unknown or file not found", path);
+		LOG("Could not import %s! Extension unknown or file not found", path.c_str());
 	}
 }
 
@@ -475,5 +479,29 @@ void M_Resources::ImportModel(const char* path, char** buffer, unsigned int buff
 	else
 	{
 		LOG("Error loading aiScene %s", path);
+	}
+}
+
+void M_Resources::ImportAllAssets()
+{
+	std::vector<std::string> ignoreExt;
+	ignoreExt.push_back(".meta");
+	PathNode assetFiles = App->physFS->GetAllFiles(ASSETS_FOLDER, nullptr, &ignoreExt);
+	CheckAssetsImport(assetFiles);
+}
+
+void M_Resources::CheckAssetsImport(PathNode assetsFiles)
+{
+	if (assetsFiles.isFile)
+	{
+		ImportResourceFromAssets(assetsFiles.path.c_str());
+	}
+
+	if (!assetsFiles.isLeaf)
+	{
+		for (int i = 0; i < assetsFiles.children.size(); i++)
+		{
+			CheckAssetsImport(assetsFiles.children[i]);
+		}
 	}
 }

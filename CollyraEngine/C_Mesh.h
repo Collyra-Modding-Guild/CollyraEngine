@@ -10,7 +10,6 @@ class C_Mesh : public Component
 {
 public:
 	C_Mesh(bool active = true);
-	C_Mesh(std::vector<float3> vertices, std::vector<uint> indices, std::vector<float3> normals, std::vector<float2> textureCoords, bool active = true);
 	~C_Mesh();
 
 

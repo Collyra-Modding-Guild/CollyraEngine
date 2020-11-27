@@ -381,7 +381,7 @@ std::string M_FileManager::GetPathRelativeToAssets(const char* originalPath) con
 bool M_FileManager::HasExtension(const char* path) const
 {
 	std::string ext = "";
-	SplitFilePath(path, nullptr, nullptr, &ext);
+	SplitFilePath(path, nullptr, nullptr, nullptr, &ext);
 	return ext != "";
 }
 

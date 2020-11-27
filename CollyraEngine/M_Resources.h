@@ -14,6 +14,7 @@ class Mesh;
 class Resource;
 enum class R_TYPE;
 class R_Model;
+struct PathNode;
 
 class M_Resources : public Module
 {
@@ -52,6 +53,8 @@ public:
 
 private:
 	void ImportModel(const char* path, char** buffer, unsigned int bufferSize, R_Model* resourceModel);
+	void ImportAllAssets();
+	void CheckAssetsImport(PathNode assetsFiles);
 	std::string DuplicateFile(const char* path);
 
 	uint32 ImportResource(std::string path, uint32 forceid = 0);

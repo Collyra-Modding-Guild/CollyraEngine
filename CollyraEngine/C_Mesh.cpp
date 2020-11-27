@@ -9,13 +9,6 @@ C_Mesh::C_Mesh(bool active) : Component(COMPONENT_TYPE::MESH, active), idIndex(-
 drawWire(false), drawNormVertices(false), drawNormFaces(false), drawFaces(true), vertices{}, indices{}, normals{}, textureCoords{}, rMesh(-1)
 {}
 
-C_Mesh::C_Mesh(std::vector<float3> vertices, std::vector<uint> indices, std::vector<float3> normals, std::vector<float2> textureCoords, bool active) :
-	Component(COMPONENT_TYPE::MESH, active),
-	idIndex(-1), idVertex(-1), idNormals(-1), idTextureCoords(-1),
-	drawWire(false), drawNormVertices(false), drawNormFaces(false), drawFaces(true),
-	rMesh(-1)
-{}
-
 C_Mesh::~C_Mesh()
 {
 	ClearMesh();
