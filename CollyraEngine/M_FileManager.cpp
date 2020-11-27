@@ -55,7 +55,7 @@ bool M_FileManager::CleanUp()
 void M_FileManager::CreateFolderDirs()
 {
 	// If the standard folders do not exist, create them
-	std::vector<const char*> dirs = { ASSETS_FOLDER, ASSETS_MESHES_PATH, ASSETS_TEXTURES_PATH,
+	std::vector<const char*> dirs = { ASSETS_FOLDER, ASSETS_TEXTURES_PATH,
 		LIBRARY_PATH,LIBRARY_MESHES,LIBRARY_TEXTURES,LIBRARY_SCENES,LIBRARY_MODELS, LIBRARY_MATERIALS, ASSETS_MODELS_PATH };
 
 	for (uint i = 0; i < dirs.size(); ++i)

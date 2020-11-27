@@ -47,6 +47,7 @@ public:
 	//Destruction
 	bool DeleteResource(uint32 idToDestroy);
 	void UnloadResource(Resource* toUnload);
+	void UnloadResource(uint32 toUnloadId);
 
 	//Helpers
 	R_TYPE GetResourceTypeFromExtension(const char* rPath);

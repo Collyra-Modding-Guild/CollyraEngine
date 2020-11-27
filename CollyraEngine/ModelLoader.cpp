@@ -54,16 +54,16 @@ void ModelLoader::Load(R_Model* rModel, char* buffer)
 				float3 scale = modelNode.GetArray("Scale").GetFloat3();
 				newGameObject->GetComponent<C_Transform>()->SetLocalTransformation(translate, rot, scale);
 
-				uint32 meshID = modelNode.GetNumber("Mesh ID");
-				if (meshID  != -1)
+				uint32 meshID = modelNode.GetNumber("MeshID");
+				if (modelNode.GetNumber("MeshID") != -1)
 				{
 					C_Mesh* meshComponent = (C_Mesh*)newGameObject->CreateComponent(COMPONENT_TYPE::MESH);
 					//TODO: Set Resource should call the ResourceManager (Give me my Resource >:( )
 					meshComponent->SetResourceId(meshID);
 				}
 
-				uint32 materialID = modelNode.GetNumber("Mesh ID");
-				if (materialID != -1)
+				uint32 materialID = modelNode.GetNumber("MaterialID");
+				if (modelNode.GetNumber("MaterialID") != -1)
 				{
 					C_Material* materialComponent = (C_Material*)newGameObject->CreateComponent(COMPONENT_TYPE::MATERIAL);
 					materialComponent->SetResourceId(materialID);

@@ -195,7 +195,7 @@ Resource* M_Resources::RequestResource(uint id)
 	}
 	else
 	{
-		LoadResource(id, foundId.c_str());
+		resource = LoadResource(id, foundId.c_str());
 	}
 
 	return resource;
@@ -308,24 +308,50 @@ bool M_Resources::SaveResource(Resource* toSave, std::string assetsPath, bool sa
 {
 	char* buffer = nullptr;
 	uint size = 0;
+	std::string libraryPath;
 
 	switch (toSave->GetType())
 	{
-	case R_TYPE::MODEL:size = ModelLoader::Save((R_Model*)toSave, &buffer);	break;
+	case R_TYPE::MODEL:
+	{
+		R_Model* myModel = (R_Model*)toSave;
+		size = ModelLoader::Save(myModel, &buffer);
+		libraryPath = myModel->GetLibraryPath();
+	}
+		break;
 	case R_TYPE::SCENE:
 	{
 		R_Scene* myScene = (R_Scene*)toSave;
 		size = SceneLoader::Save(myScene->root, &buffer);
+		libraryPath = myScene->GetLibraryPath();
+	}
+	break;	
+	case R_TYPE::MESH:
+	{
+		R_Mesh* myMesh = (R_Mesh*)toSave;
+		size = MeshLoader::Save(myMesh, &buffer);
+		libraryPath = myMesh->GetLibraryPath();
 	}
 	break;
-	case R_TYPE::MESH: size = MeshLoader::Save((R_Mesh*)toSave, &buffer); break;
-	case R_TYPE::TEXTURE:size = TextureLoader::Save(&buffer); break;
-	case R_TYPE::MATERIAL: size = MaterialLoader::Save((R_Material*)toSave, &buffer); break;
+	case R_TYPE::TEXTURE:
+	{
+		R_Texture* myTexture = (R_Texture*)toSave;
+		size = TextureLoader::Save(&buffer);
+		libraryPath = myTexture->GetLibraryPath();
+	}
+	break;
+	case R_TYPE::MATERIAL:
+	{
+		R_Material* myMaterial = (R_Material*)toSave;
+		size = MaterialLoader::Save(myMaterial, &buffer);
+		libraryPath = myMaterial->GetLibraryPath();
+	}
+	break;
 	}
 
 	if (size > 0)
 	{
-		App->physFS->Save(toSave->GetLibraryPath().c_str(), buffer, size);
+		App->physFS->Save(libraryPath.c_str(), buffer, size);
 
 		if (saveMeta == true)
 			SaveMeta(toSave, assetsPath);
@@ -389,6 +415,20 @@ void M_Resources::UnloadResource(Resource* toUnload)
 	{
 		DeleteResource(toUnload->GetUid());
 	}
+}
+
+void M_Resources::UnloadResource(uint32 toUnloadId)
+{
+	std::map<uint, Resource*>::iterator it = resourceMap.find(toUnloadId);
+	if (it != resourceMap.end())
+	{
+		it->second->referenceCount--;
+		if (it->second->referenceCount <= 0)
+		{
+			DeleteResource(toUnloadId);
+		}
+	}
+
 }
 
 R_TYPE M_Resources::GetResourceTypeFromExtension(const char* rPath)

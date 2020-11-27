@@ -4,6 +4,8 @@
 #include "Globals.h"
 #include "Color.h"
 
+class R_Material;
+
 class C_Material : public Component
 {
 public:
@@ -11,10 +13,6 @@ public:
 	C_Material(bool active = true);
 	~C_Material();
 
-	void SetTexture(uint idTexture);
-	void SetTextureNameAndPath(const char* name, const char* path);
-	void SetNameAndPath(const char* name, const char* path);
-	void SetColor(Color color);
 	void SetUseDefaultTexture(bool defaultTextureOn);
 	bool GetDefaultTextureUsage() const;
 
@@ -31,20 +29,10 @@ public:
 
 private:
 
-	void ClearTexture();
-
-private:
-
-	uint idTextureImage;
-	Color color;
-	std::string name;
-	std::string path;
-	std::string textureName;
-	std::string texturePath;
-
 	bool useDefaultTexture;
 	uint defaultTextureId;
 
 	int resourceId;
+	R_Material* myResource;
 
 };

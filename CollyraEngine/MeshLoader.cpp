@@ -162,7 +162,6 @@ bool MeshLoader::Private::LoadNodeMeshes(const aiScene* scene, const aiNode* nod
 			}
 			LOG("New mesh with %i vertices & %i indices", vertices.size(), indices.size());
 
-			//TODO: This should be a Mesh Resource
 			//MESH IMPORT & SAVE ----------------------------------------
 			std::string path = "";
 			std::string meshName = "";
@@ -187,7 +186,7 @@ bool MeshLoader::Private::LoadNodeMeshes(const aiScene* scene, const aiNode* nod
 				//IMPORT & SAVE
 				MaterialLoader::Import(material, newMaterial, node->mName.C_Str(), filePath);
 				App->resources->SaveResource(newMaterial, filePath, false);
-				App->resources->DeleteResource(meshId);
+				App->resources->DeleteResource(materialId);
 			}
 
 			//LOAD--------------------

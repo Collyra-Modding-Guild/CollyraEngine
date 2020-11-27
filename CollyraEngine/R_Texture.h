@@ -10,6 +10,8 @@ public:
 	R_Texture(unsigned int uid);
 	virtual ~R_Texture();
 
+	uint GetTextureId();
+
 public:
 	uint textureId;
 

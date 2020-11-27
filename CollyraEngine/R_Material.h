@@ -5,6 +5,8 @@
 #include "Color.h"
 #include "Globals.h"
 
+class R_Texture;
+
 class R_Material : public Resource
 {
 public:
@@ -12,24 +14,21 @@ public:
 	virtual ~R_Material();
 
 	void SetColor(Color color);
-	void SetNameAndPath(const char* name, const char* path);
 
-	void SetTextureResourceId(uint rTexId);
-
-	std::string GetName() const;
-	std::string GetPath() const;
+	void SetTextureResourceId(uint rTexId, bool load = true);
 
 	Color GetColor() const;
+	int GetTextureResourceId() const;
 	int GetTextureId() const;
 	
-	void SetTextureId(int newId);
+	std::string GetTextureName() const;
+	std::string GetTexturePath() const;
 
 private:
 	int idTextureResource;
 	Color color;
-	std::string name;
-	std::string path;
 
+	R_Texture* myTexResource;
 };
 
 #endif //__Resource_Material_H__

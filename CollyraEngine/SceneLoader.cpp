@@ -189,7 +189,6 @@ void SceneLoader::Private::LoadComponents(JsonArray& components, GameObject* gam
 			LOG("Error loading components in %s! Could not load from JSON!", gameObject->GetName().c_str());
 		}
 
-
 	}
 }
 
@@ -222,8 +221,6 @@ void SceneLoader::Private::LoadComponent(JsonConfig& componentInfo, Component* c
 	case COMPONENT_TYPE::MATERIAL:
 	{
 		C_Material* compToSave = (C_Material*)component;
-		compToSave->SetNameAndPath(componentInfo.GetString("MatName").c_str(), componentInfo.GetString("MatPath").c_str());
-		compToSave->SetTextureNameAndPath(componentInfo.GetString("TextName").c_str(), componentInfo.GetString("TextPath").c_str());
 
 		//MaterialLoader::Load(compToSave, compToSave->GetMaterialPath().c_str());
 	}

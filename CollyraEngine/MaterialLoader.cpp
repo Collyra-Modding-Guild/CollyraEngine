@@ -20,7 +20,7 @@ void MaterialLoader::Import(const aiMaterial* material, R_Material* myNewMateria
 	{
 		myNewMaterial->SetColor(Color{ materialColor.r, materialColor.g, materialColor.b, materialColor.a });
 	}
-	myNewMaterial->SetNameAndPath(matName, "");
+	myNewMaterial->SetName(matName);
 
 	//Texture---
 	aiString path;
@@ -55,7 +55,7 @@ void MaterialLoader::Import(const aiMaterial* material, R_Material* myNewMateria
 		if (loadTexture != 0)
 		{
 			LOG("Texture loaded! ID: %i", loadTexture);
-			myNewMaterial->SetTextureResourceId(loadTexture);
+			myNewMaterial->SetTextureResourceId(loadTexture, false);
 		}
 		else
 		{
@@ -69,11 +69,10 @@ uint MaterialLoader::Save(const R_Material* ourMaterial, char** buffer)
 	//Color - Text Name - Text Path - Name - Path
 	//TODO: Change material name + path -> UID
 
-	uint ranges[4] = { 4, 1,
-		ourMaterial->GetName().length(),ourMaterial->GetPath().length() };
+	uint ranges[2] = { 4, 1 };
 
 	uint size = sizeof(ranges) + sizeof(float) * 4 +
-		sizeof(int) + ourMaterial->GetName().length() + ourMaterial->GetPath().length();
+		sizeof(int);
 
 	*buffer = new char[size]; // Allocate
 	char* cursor = *buffer;
@@ -88,19 +87,10 @@ uint MaterialLoader::Save(const R_Material* ourMaterial, char** buffer)
 
 	// Store Text. Id
 	bytes = sizeof(int);
-	int textureId = ourMaterial->GetTextureId();
+	int textureId = ourMaterial->GetTextureResourceId();
 	memcpy(cursor, &textureId, bytes);
 	cursor += bytes;
 
-	// Store Mat. Name
-	bytes = sizeof(char) * ourMaterial->GetName().length();
-	memcpy(cursor, ourMaterial->GetName().c_str(), bytes);
-	cursor += bytes;
-
-	// Store Mat. Path
-	bytes = sizeof(char) * ourMaterial->GetPath().length();
-	memcpy(cursor, ourMaterial->GetPath().c_str(), bytes);
-	cursor += bytes;
 
 	return size;
 }
@@ -110,7 +100,7 @@ void MaterialLoader::Load(R_Material* myNewMaterial, char* buffer)
 
 	char* cursor = buffer;
 	// amount of indices / vertices / normals / texture_coords / AABB
-	uint ranges[4];
+	uint ranges[2];
 	uint bytes = sizeof(ranges);
 	memcpy(ranges, cursor, bytes);
 	cursor += bytes;
@@ -124,34 +114,16 @@ void MaterialLoader::Load(R_Material* myNewMaterial, char* buffer)
 	myNewMaterial->SetColor(*newMatColor);
 	RELEASE(newMatColor);
 
-	// Load Name
-	bytes = sizeof(uint);
+	// Load TextureResourceId
+	bytes = sizeof(int);
 	int textureid = -1;
 	memcpy(&textureid, cursor, bytes);
 	cursor += bytes;
 
-	// Load Name
-	bytes = ranges[3] * sizeof(char);
-	std::string name;
-	name.resize(ranges[2]);
-	memcpy(&name.at(0), cursor, bytes);
-	cursor += bytes;
-
-	myNewMaterial->SetNameAndPath(name.c_str(), "");
-
 	//LoadTexture
 	if (textureid > -1)
 	{
-		Resource* texture = App->resources->RequestResource(textureid);
-
-		if (texture != nullptr)
-		{
-			myNewMaterial->SetTextureId(texture->GetUid());
-		}
-		else
-		{
-			LOG("Could not load texture... resource id %i", textureid);
-		}
+		myNewMaterial->SetTextureResourceId(textureid);
 	}
 
 }
