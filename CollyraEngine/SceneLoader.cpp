@@ -32,30 +32,17 @@ uint SceneLoader::Save(const GameObject* hierarchyParent, char** buffer)
 	return size;
 }
 
-bool SceneLoader::Load(const char* scenePath)
+bool SceneLoader::Load(char* buffer)
 {
-	char* sceneBuffer = nullptr;
-
-	uint size = App->physFS->Load(scenePath, &sceneBuffer);
-
-	if (size > 0)
+	JsonConfig jsonFile(buffer);
+	if (jsonFile.IsInitialized())
 	{
-		JsonConfig jsonFile(sceneBuffer);
-		if (jsonFile.IsInitialized())
+		JsonArray gameObjectsArr = jsonFile.GetArray("GameObjects");
+		if (gameObjectsArr.IsInitialized())
 		{
-			JsonArray gameObjectsArr = jsonFile.GetArray("GameObjects");
-			if (gameObjectsArr.IsInitialized())
-			{
-				Private::LoadGameObjects(gameObjectsArr);
-			}
+			Private::LoadGameObjects(gameObjectsArr);
 		}
 	}
-	else
-	{
-		LOG("Scene not found or could not be loaded: %s", scenePath);
-	}
-
-	RELEASE(sceneBuffer);
 
 	return true;
 }
@@ -75,7 +62,7 @@ void SceneLoader::Private::SaveGameObject(const GameObject* gameObject, JsonConf
 
 	for (uint i = 0; i < components->size(); i++)
 	{
-		SaveComponent(components->at(i),compConfig.AddValue());
+		SaveComponent(components->at(i), compConfig.AddValue());
 	}
 
 	//Save Children Recursive----
@@ -103,7 +90,7 @@ void SceneLoader::Private::SaveComponent(const Component* component, JsonConfig 
 		saveTo.CreateElementArray("Rotation").AddQuat(compToSave->GetRotation());
 		saveTo.CreateElementArray("Scale").AddFloat3(compToSave->GetScale());
 	}
-		break;
+	break;
 	case COMPONENT_TYPE::MESH:
 	{
 		C_Mesh* compToSave = (C_Mesh*)component;
@@ -112,7 +99,7 @@ void SceneLoader::Private::SaveComponent(const Component* component, JsonConfig 
 		saveTo.AddString("Path", compToSave->GetMeshPath().c_str());
 
 	}
-		break;
+	break;
 	case COMPONENT_TYPE::MATERIAL:
 	{
 		C_Material* compToSave = (C_Material*)component;
@@ -123,7 +110,7 @@ void SceneLoader::Private::SaveComponent(const Component* component, JsonConfig 
 		saveTo.AddString("TextName", compToSave->GetTextureName().c_str());
 		saveTo.AddString("TextPath", compToSave->GetTexturePath().c_str());
 	}
-		break;
+	break;
 	case COMPONENT_TYPE::CAMERA:
 	{
 		C_Camera* compToSave = (C_Camera*)component;
@@ -132,12 +119,12 @@ void SceneLoader::Private::SaveComponent(const Component* component, JsonConfig 
 		saveTo.AddNumber("Near Plane", compToSave->GetNearPlane());
 		saveTo.AddNumber("Far Plane", compToSave->GetFarPlane());
 	}
-		break;
+	break;
 	default:
 	{
 		LOG("Error saving component! Type not specified!")
 	}
-		break;
+	break;
 	}
 }
 

@@ -15,6 +15,7 @@
 class GameObject;
 class Component;
 class C_Camera;
+class R_Scene;
 
 class M_Scene : public Module
 {
@@ -49,7 +50,6 @@ public:
 	void Resume();
 	void Tick();
 
-
 	//Delete all GameObjects, Components, cameras, reset Name,....
 	void		ResetScene();
 
@@ -59,6 +59,7 @@ public:
 
 	std::string GetSceneName() const;
 	void SetSceneName(const char* newName);
+	R_Scene* GetSceneResource() const;
 
 private:
 	void CheckSiblingsName(GameObject* parent, std::string& myName);
@@ -73,8 +74,7 @@ public:
 	LCG randomGenerator;
 
 private:
-	GameObject* root;
-	std::string sceneName;
+	R_Scene* currentScene;
 
 };
 

@@ -3,12 +3,17 @@
 
 #include "R_Resource.h"
 
+
+class GameObject;
+
 class R_Scene : public Resource
 {
 public:
 	R_Scene(unsigned int uid);
 	virtual ~R_Scene();
 
+public:
+	GameObject* root;
 
 };
 

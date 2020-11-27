@@ -9,6 +9,7 @@
 #include "C_Material.h"
 
 #include "PathNode.h"
+#include "JsonConfig.h"
 
 #include "Assimp/include/cimport.h"
 #include "Assimp/include/scene.h"
@@ -32,7 +33,6 @@
 #include "MaterialLoader.h"
 #include "ModelLoader.h"
 
-#include "JsonConfig.h"
 
 M_Resources::M_Resources(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), defaultTextureId(-1)
 {}
@@ -58,7 +58,7 @@ bool M_Resources::Start()
 
 	ImportAllAssets();
 
-	uint toLoad = ImportResourceFromAssets("Assets/Meshes/house.fbx");
+	uint toLoad = ImportResourceFromAssets("Assets/Models/house.fbx");
 	RequestResource(toLoad);
 
 	updateAssetsTimer.Start();
@@ -117,13 +117,17 @@ uint M_Resources::ImportResourceFromAssets(const char* path)
 	}
 	else
 	{
-		uint32 id = 0;
-		uint32 date = 0;
+		uint32 id = 0, date = 0;
 		std::string path = "";
 		GetInfoFromMeta(metaFile.c_str(), &id, &date, nullptr, &path);
 
 		//Get the assets path
-		std::string assetsPath = relativePath.substr(0, relativePath.length() - 5);
+		std::string assetsPath = "";
+		if (App->physFS->IsMeta(relativePath))
+			assetsPath = relativePath.substr(0, relativePath.length() - 5);
+		else
+			assetsPath = relativePath;
+
 
 		if (!App->physFS->Exists(assetsPath.c_str())) //Assets has been removed!
 		{
@@ -134,19 +138,19 @@ uint M_Resources::ImportResourceFromAssets(const char* path)
 		}
 
 		//Date changed, we need to update the lib file
-		if (date != App->physFS->GetCurrDate(relativePath.c_str()))
+		if (date != App->physFS->GetCurrDate(assetsPath.c_str()))
 		{
 			//If the asset is in mem, we re-import & load
 			// TODO: We need to find a way to "alert" components that are using that resource that has updated
 			std::map<uint32, Resource*>::iterator it = resourceMap.find(id);
 			if (it != resourceMap.end())
 			{
-				ImportResource(relativePath, id);
+				ImportResource(assetsPath, id);
 				LoadResource(id);
 			}
 			else // If not, simple re-import
 			{
-				ImportResource(relativePath, id);
+				ImportResource(assetsPath, id);
 			}
 		}
 		else // If nothing has changed, simple return the id
@@ -154,7 +158,7 @@ uint M_Resources::ImportResourceFromAssets(const char* path)
 			//If lib file doesn't exist, we try to re-import
 			if (!App->physFS->Exists(path.c_str()))
 			{
-				ImportResource(relativePath, id);
+				ImportResource(assetsPath, id);
 			}
 
 		}
@@ -197,19 +201,32 @@ Resource* M_Resources::RequestResource(uint id)
 	return resource;
 }
 
-Resource* M_Resources::LoadResource(uint id, const char* assetsPath)
+Resource* M_Resources::LoadResource(uint id, const char* libPath)
 {
 	Resource* ret = nullptr;
+	std::string libPathStr;
+
+	if (libPath == nullptr)
+	{
+		std::string foundId = FindLibraryFile(id);
+		if (foundId != "")
+			libPathStr = foundId.c_str();
+		else
+			LOG("Could not find resource with id %u, load cancelled!", id);
+
+	}
+	else
+		libPathStr = libPath;
 
 	char* buffer = nullptr;
-	uint size = App->physFS->Load(assetsPath, &buffer);
+	uint size = App->physFS->Load(libPathStr.c_str(), &buffer);
 	if (size == 0)
 	{
 		return ret;
 	}
 
 	std::string extension;
-	App->physFS->SplitFilePath(assetsPath, nullptr, nullptr, nullptr, &extension);
+	App->physFS->SplitFilePath(libPathStr.c_str(), nullptr, nullptr, nullptr, &extension);
 
 	R_TYPE resourceType = App->physFS->GetTypeFromExtension(extension.c_str());
 
@@ -217,20 +234,20 @@ Resource* M_Resources::LoadResource(uint id, const char* assetsPath)
 	{
 	case (R_TYPE::MESH):
 	{
-		ret = new R_Mesh(id);
+		ret = CreateResource(R_TYPE::MESH, id);
 		MeshLoader::Private::LoadMesh((R_Mesh*)ret, &buffer, id);
 		break;
 	}
 	case (R_TYPE::TEXTURE):
 	{
-		ret = new R_Texture(id);
+		ret = CreateResource(R_TYPE::TEXTURE, id);
 		R_Texture* tmp = (R_Texture*)ret;
 		tmp->textureId = TextureLoader::Load(buffer, size, (R_Texture*)ret);
 		break;
 	}
 	case (R_TYPE::MATERIAL):
 	{
-		ret = new R_Material(id);
+		ret = CreateResource(R_TYPE::MATERIAL, id);
 		MaterialLoader::Load((R_Material*)ret, buffer);
 		break;
 	}
@@ -238,17 +255,22 @@ Resource* M_Resources::LoadResource(uint id, const char* assetsPath)
 	{
 		ret = new R_Model(id);
 		ModelLoader::Load((R_Model*)ret, buffer);
+		RELEASE(ret);
 		break;
 	}
 	case (R_TYPE::SCENE):
 	{
-		//Importer::Scenes::Load(buffer, (R_Scene*)resource);
+		ret = new R_Scene(id);
+		App->scene->ResetScene();
+		SceneLoader::Load(buffer);
 		break;
 	}
 	}
 
 	RELEASE_ARRAY(buffer);
-	ret->referenceCount++;
+	if (ret != nullptr)
+		ret->referenceCount++;
+
 	return ret;
 }
 
@@ -290,7 +312,12 @@ bool M_Resources::SaveResource(Resource* toSave, std::string assetsPath, bool sa
 	switch (toSave->GetType())
 	{
 	case R_TYPE::MODEL:size = ModelLoader::Save((R_Model*)toSave, &buffer);	break;
-		//case R_TYPE::SCENE:	ret = new R_Scene(uId); break;
+	case R_TYPE::SCENE:
+	{
+		R_Scene* myScene = (R_Scene*)toSave;
+		size = SceneLoader::Save(myScene->root, &buffer);
+	}
+	break;
 	case R_TYPE::MESH: size = MeshLoader::Save((R_Mesh*)toSave, &buffer); break;
 	case R_TYPE::TEXTURE:size = TextureLoader::Save(&buffer); break;
 	case R_TYPE::MATERIAL: size = MaterialLoader::Save((R_Material*)toSave, &buffer); break;
@@ -446,6 +473,14 @@ bool M_Resources::GetInfoFromMeta(const char* metaPath, uint32* id, uint32* modD
 uint32 M_Resources::GenerateId()
 {
 	return randomGen.Int();
+}
+
+std::string M_Resources::FindLibraryFile(uint id)
+{
+	PathNode allFiles = App->physFS->GetAllFiles(LIBRARY_PATH, nullptr, nullptr);
+	std::string foundId = App->physFS->FindInPathNode(std::to_string(id).c_str(), allFiles);
+
+	return foundId;
 }
 
 std::string M_Resources::DuplicateFile(const char* path)

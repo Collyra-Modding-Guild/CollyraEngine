@@ -4,10 +4,7 @@
 #include "M_Input.h"
 #include "M_Window.h"
 #include "M_Scene.h"
-
-//TODO: This has to go away when Module Resources
-#include "M_FileManager.h"
-#include "SceneLoader.h"
+#include "M_Resources.h"
 
 #include "GameObject.h"
 #include "Component.h"
@@ -16,6 +13,7 @@
 #include "C_Transform.h"
 
 #include "Primitive.h"
+#include "R_Scene.h"
 
 #include "MathGeoLib/include/Math/float2.h"
 
@@ -40,7 +38,7 @@
 
 M_UIManager::M_UIManager(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), showDemoWindow(false), showConfigMenu(false),
 configWindow(nullptr), consoleWindow(nullptr), sceneWindow(nullptr), hierarchyWindow(nullptr), inspectorWindow(nullptr),
-playWindow(nullptr), aboutWindow(nullptr)
+playWindow(nullptr), aboutWindow(nullptr), lastSavedId(0)
 {}
 
 // Destructor
@@ -198,7 +196,7 @@ bool M_UIManager::ShowMainMenuBar()
 	if (ImGui::BeginMainMenuBar())
 	{
 		if (ImGui::BeginMenu("App"))
-		{		
+		{
 			if (ImGui::MenuItem("Exit", NULL))
 			{
 				ret = false;
@@ -210,19 +208,13 @@ bool M_UIManager::ShowMainMenuBar()
 		{
 			if (ImGui::MenuItem("Load Scene", NULL))
 			{
-				std::string path(LIBRARY_SCENES);
-				path.append("myScene.collScene");
-				App->scene->ResetScene();
-				SceneLoader::Load(path.c_str());
+				LoadLastSavedScene();
+
 			}
 
 			if (ImGui::MenuItem("Save Scene", NULL))
 			{
-				//TODO: This has to go to resouce manager
-				char* buffer = nullptr;
-				uint size = SceneLoader::Save(App->scene->GetRoot(), &buffer);
-				App->physFS->Save(std::string(LIBRARY_SCENES).append("myScene.collScene").c_str(), buffer,size);
-				RELEASE(buffer);
+				SaveScene();
 			}
 
 			ImGui::EndMenu();
@@ -239,14 +231,14 @@ bool M_UIManager::ShowMainMenuBar()
 					GameObject* empty = App->scene->CreateGameObject("GameObject");
 				}
 				if (ImGui::Button("Child", buttonSize))
-				{			
-					if (App->scene->focusedGameObject != nullptr) 
+				{
+					if (App->scene->focusedGameObject != nullptr)
 					{
 						GameObject* child = App->scene->CreateGameObject("Child");
 						child->SetParent(App->scene->focusedGameObject);
 					}
 					else
-						LOG("First you should select a GameObject.")					
+						LOG("First you should select a GameObject.")
 				}
 				if (ImGui::Button("Camera", buttonSize))
 				{
@@ -545,7 +537,7 @@ float2 M_UIManager::GetSceneWindowSize() const
 		scene->GetWindowSize(w, h);
 	}
 
-	return float2({w,h});
+	return float2({ w,h });
 }
 
 float2 M_UIManager::GetSceneWindowPosition() const
@@ -714,6 +706,18 @@ void M_UIManager::SetupLightImGuiStyle()
 	style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
 
 
+}
+
+void M_UIManager::LoadLastSavedScene()
+{
+	if (lastSavedId != 0)
+		App->resources->LoadResource(lastSavedId);
+}
+
+void M_UIManager::SaveScene()
+{
+	App->resources->SaveResource((Resource*)App->scene->GetSceneResource(), "", false);
+	lastSavedId = App->scene->GetSceneResource()->GetUid();
 }
 
 void M_UIManager::SetupDarkImGuiStyle(float alpha)

@@ -15,7 +15,7 @@ namespace SceneLoader
 {
 	uint Import(const char* path);
 	uint Save(const GameObject* hierarchyParent, char** buffer);
-	bool Load(const char* scenePath);
+	bool Load(char* buffer);
 
 	namespace Private
 	{

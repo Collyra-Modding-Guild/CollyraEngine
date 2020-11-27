@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "p2Defs.h"
 #include <stack>
+#include <map>
 
 #include "Component.h"
 #include "C_Mesh.h"
@@ -14,26 +15,27 @@
 #include "M_UIManager.h"
 #include "SceneLoader.h"
 #include "M_FileManager.h"
+#include "M_Resources.h"
 #include "Timer.h"
-#include <map>
+#include "R_Scene.h"
 
 #include "OpenGL.h"
 
-M_Scene::M_Scene(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), root(nullptr), focusedGameObject(nullptr), sceneName("")
+M_Scene::M_Scene(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled),focusedGameObject(nullptr), currentScene(nullptr)
 {}
 
 M_Scene::~M_Scene()
-{
-	RELEASE(root);
-}
+{}
 
 bool M_Scene::Awake()
 {
-	sceneName = DEFAULT_SCENE_NAME;
 	randomGenerator = LCG::LCG();
-	root = new GameObject(sceneName.c_str());
-	root->CreateComponent(COMPONENT_TYPE::TRANSFORM);
-	root->SetUid(0);
+
+	currentScene = (R_Scene*)App->resources->CreateResource(R_TYPE::SCENE);
+
+	currentScene->root = new GameObject(DEFAULT_SCENE_NAME);
+	currentScene->root->CreateComponent(COMPONENT_TYPE::TRANSFORM);
+	currentScene->root->SetUid(0);
 
 	return true;
 }
@@ -43,13 +45,13 @@ updateStatus M_Scene::Update(float dt)
 	std::stack<GameObject*> stack;
 	GameObject* currNode = nullptr;
 
-	if (root == nullptr)
+	if (currentScene->root == nullptr)
 	{
 		LOG("Root node did not exist!");
 		return UPDATE_STOP;
 	}
 
-	stack.push(root);
+	stack.push(currentScene->root);
 
 	while (!stack.empty())
 	{
@@ -78,13 +80,13 @@ updateStatus M_Scene::PostUpdate(float dt)
 	std::stack<GameObject*> stack;
 	GameObject* currNode = nullptr;
 
-	if (root == nullptr)
+	if (currentScene->root == nullptr)
 	{
 		LOG("Root node did not exist!");
 		return UPDATE_STOP;
 	}
 
-	stack.push(root);
+	stack.push(currentScene->root);
 
 	while (!stack.empty())
 	{
@@ -123,13 +125,13 @@ updateStatus M_Scene::Draw(bool* drawState)
 	std::stack<GameObject*> stack;
 	GameObject* currNode = nullptr;
 
-	if (root == nullptr)
+	if (currentScene->root == nullptr)
 	{
 		LOG("Root node did not exist!");
 		return UPDATE_STOP;
 	}
 
-	stack.push(root);
+	stack.push(currentScene->root);
 
 	while (!stack.empty())
 	{
@@ -171,13 +173,13 @@ updateStatus M_Scene::PreDraw(bool* drawState)
 		std::stack<GameObject*> stack;
 		GameObject* currNode = nullptr;
 
-		if (root == nullptr)
+		if (currentScene->root == nullptr)
 		{
 			LOG("Root node did not exist!");
 			return UPDATE_STOP;
 		}
 
-		stack.push(root);
+		stack.push(currentScene->root);
 
 		while (!stack.empty())
 		{
@@ -210,14 +212,14 @@ updateStatus M_Scene::PreDraw(bool* drawState)
 
 bool M_Scene::CleanUp()
 {
-	RELEASE(root);
+	//RELEASE(currentScene->root);
 	return true;
 }
 
 GameObject* M_Scene::CreateGameObject(std::string name, GameObject* parent)
 {
 	if (parent == nullptr)
-		parent = root;
+		parent = currentScene->root;
 
 	if (name == "")
 	{
@@ -239,15 +241,16 @@ GameObject* M_Scene::CreateGameObject(std::string name, GameObject* parent)
 
 void M_Scene::ResetScene()
 {
-	sceneName = DEFAULT_SCENE_NAME;
-	root->SetName(DEFAULT_SCENE_NAME);
-
-	for (uint i = 0; i < root->children.size(); i++)
+	for (uint i = 0; i < currentScene->root->children.size(); i++)
 	{
-		App->uiManager->GameObjectDestroyed(root->children[i]->GetUid());
-		RELEASE(root->children[i]);
+		App->uiManager->GameObjectDestroyed(currentScene->root->children[i]->GetUid());
+		RELEASE(currentScene->root->children[i]);
 	}
-	root->children.clear();
+	currentScene->root->children.clear();
+	focusedGameObject = nullptr;
+
+	currentScene->root->SetName(DEFAULT_SCENE_NAME);
+
 }
 
 uint32 M_Scene::GenerateId()
@@ -257,17 +260,22 @@ uint32 M_Scene::GenerateId()
 
 GameObject* M_Scene::GetRoot()
 {
-	return root;
+	return currentScene->root;
 }
 
 std::string M_Scene::GetSceneName() const
 {
-	return sceneName;
+	return currentScene->root->GetName();
 }
 
 void M_Scene::SetSceneName(const char* newName)
 {
-	sceneName = newName;
+	currentScene->root->SetName(newName);
+}
+
+R_Scene* M_Scene::GetSceneResource() const
+{
+	return currentScene;
 }
 
 void M_Scene::CheckSiblingsName(GameObject* parent, std::string& myName)
@@ -390,13 +398,13 @@ GameObject* M_Scene::GetGameObject(unsigned int id)
 	std::stack<GameObject*> stack;
 	GameObject* currNode = nullptr;
 
-	if (root == nullptr)
+	if (currentScene->root == nullptr)
 	{
 		LOG("Root node did not exist!");
 		return nullptr;
 	}
 
-	stack.push(root);
+	stack.push(currentScene->root);
 
 	while (!stack.empty())
 	{
@@ -423,13 +431,13 @@ GameObject* M_Scene::GetGameObject(std::string name)
 	std::stack<GameObject*> stack;
 	GameObject* currNode = nullptr;
 
-	if (root == nullptr)
+	if (currentScene->root == nullptr)
 	{
 		LOG("Root node did not exist!");
 		return nullptr;
 	}
 
-	stack.push(root);
+	stack.push(currentScene->root);
 
 	while (!stack.empty())
 	{
@@ -458,13 +466,13 @@ bool M_Scene::DeleteGameObject(unsigned int id)
 	GameObject* currNode = nullptr;
 	GameObject* toDelete = nullptr;
 
-	if (root == nullptr)
+	if (currentScene->root == nullptr)
 	{
 		LOG("Root node did not exist!");
 		return UPDATE_STOP;
 	}
 
-	stack.push(root);
+	stack.push(currentScene->root);
 
 	while (!stack.empty())
 	{
@@ -531,13 +539,13 @@ void M_Scene::OnClickFocusGameObject(const LineSegment& mouseRay)
 
 	GameObject* currNode = nullptr;
 
-	if (root == nullptr)
+	if (currentScene->root == nullptr)
 	{
 		LOG("Root node did not exist!");
 		return;
 	}
 
-	stack.push(root);
+	stack.push(currentScene->root);
 
 	while (!stack.empty())
 	{
@@ -619,20 +627,14 @@ void M_Scene::CameraCuling(GameObject* current, C_Camera* myCam)
 
 void M_Scene::Play()
 {
-	char* buffer = nullptr;
-	uint size = SceneLoader::Save(GetRoot(), &buffer);
-	App->physFS->Save(std::string(LIBRARY_SCENES).append("myScene.collScene").c_str(), buffer, size);
-	RELEASE(buffer);
+	App->uiManager->SaveScene();
 
 	App->gameClock->Start();
 }
 
 void M_Scene::Stop()
 {
-	std::string path(LIBRARY_SCENES);
-	path.append("myScene.collScene");
-	App->scene->ResetScene();
-	SceneLoader::Load(path.c_str());
+	App->uiManager->LoadLastSavedScene();
 
 	App->gameClock->Stop();
 }

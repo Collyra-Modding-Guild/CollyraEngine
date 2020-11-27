@@ -56,6 +56,9 @@ public:
 	void SetupDarkImGuiStyle(float alpha);
 	void SetupLightImGuiStyle();
 
+	void LoadLastSavedScene();
+	void SaveScene();
+
 private:
 
 	//Functions for the editor menus-----------
@@ -78,6 +81,7 @@ private:
 	//Bool controllers for the editor menus-----------
 	bool			showDemoWindow;
 	bool			showConfigMenu;
+	unsigned int	lastSavedId;
 };
 
 #endif // __ModuleAudio_H__

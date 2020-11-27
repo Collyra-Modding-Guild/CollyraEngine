@@ -133,18 +133,11 @@ void MaterialLoader::Load(R_Material* myNewMaterial, char* buffer)
 	// Load Name
 	bytes = ranges[3] * sizeof(char);
 	std::string name;
-	name.resize(ranges[3]);
+	name.resize(ranges[2]);
 	memcpy(&name.at(0), cursor, bytes);
 	cursor += bytes;
 
-	// Load Path
-	bytes = ranges[4];
-	std::string path;
-	path.resize(ranges[4]);
-	memcpy(&path.at(0), cursor, bytes);
-	cursor += bytes;
-
-	myNewMaterial->SetNameAndPath(name.c_str(), path.c_str());
+	myNewMaterial->SetNameAndPath(name.c_str(), "");
 
 	//LoadTexture
 	if (textureid > -1)
