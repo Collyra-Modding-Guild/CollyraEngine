@@ -34,7 +34,7 @@
 #include "ModelLoader.h"
 
 
-M_Resources::M_Resources(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), defaultTextureId(-1)
+M_Resources::M_Resources(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), defaultTextureId(-1), deleteResources(true)
 {}
 
 M_Resources::~M_Resources()
@@ -261,8 +261,12 @@ Resource* M_Resources::LoadResource(uint id, const char* libPath)
 	case (R_TYPE::SCENE):
 	{
 		ret = new R_Scene(id);
+		deleteResources = false;
 		App->scene->ResetScene();
 		SceneLoader::Load(buffer);
+		deleteResources = true;
+		CheckResourcesToUnload();
+
 		break;
 	}
 	}
@@ -318,14 +322,14 @@ bool M_Resources::SaveResource(Resource* toSave, std::string assetsPath, bool sa
 		size = ModelLoader::Save(myModel, &buffer);
 		libraryPath = myModel->GetLibraryPath();
 	}
-		break;
+	break;
 	case R_TYPE::SCENE:
 	{
 		R_Scene* myScene = (R_Scene*)toSave;
 		size = SceneLoader::Save(myScene->root, &buffer);
 		libraryPath = myScene->GetLibraryPath();
 	}
-	break;	
+	break;
 	case R_TYPE::MESH:
 	{
 		R_Mesh* myMesh = (R_Mesh*)toSave;
@@ -397,13 +401,19 @@ bool M_Resources::SaveMeta(Resource* toSave, std::string assetsPath)
 bool M_Resources::DeleteResource(uint32 idToDestroy)
 {
 	bool ret = false;
-	std::map<uint, Resource*>::iterator it = resourceMap.find(idToDestroy);
-	if (it != resourceMap.end())
+
+	if (deleteResources)
 	{
-		RELEASE(it->second);
-		resourceMap.erase(it);
-		ret = true;
+		std::map<uint, Resource*>::iterator it = resourceMap.find(idToDestroy);
+		if (it != resourceMap.end())
+		{
+			RELEASE(it->second);
+			resourceMap.erase(it);
+			ret = true;
+		}
 	}
+	else
+		ret = true;
 
 	return ret;
 }
@@ -428,7 +438,27 @@ void M_Resources::UnloadResource(uint32 toUnloadId)
 			DeleteResource(toUnloadId);
 		}
 	}
+}
 
+void M_Resources::CheckResourcesToUnload()
+{
+	std::map<uint, Resource*>::iterator it = resourceMap.begin();
+
+	int size = resourceMap.size();
+
+	for (int i = 0; i < size; i++)
+	{
+		if (it->second->referenceCount <= 0)
+		{
+			DeleteResource(it->first);
+			it = resourceMap.begin();
+			i = 0;
+			size = resourceMap.size();
+			continue;
+		}
+
+		it++;
+	}
 }
 
 R_TYPE M_Resources::GetResourceTypeFromExtension(const char* rPath)
@@ -521,6 +551,12 @@ std::string M_Resources::FindLibraryFile(uint id)
 	std::string foundId = App->physFS->FindInPathNode(std::to_string(id).c_str(), allFiles);
 
 	return foundId;
+}
+
+void M_Resources::SetDeleteResources(bool newState)
+{
+	if (newState != deleteResources)
+		deleteResources = !deleteResources;
 }
 
 std::string M_Resources::DuplicateFile(const char* path)

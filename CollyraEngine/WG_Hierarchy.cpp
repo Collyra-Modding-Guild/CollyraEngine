@@ -137,3 +137,11 @@ void WG_Hierarchy::NewFocusedGameObject(int id)
 {
 	selected = id;
 }
+
+void WG_Hierarchy::OnDestroyedId(int id)
+{
+	if (id == selected)
+	{
+		selected = -1;
+	}
+}

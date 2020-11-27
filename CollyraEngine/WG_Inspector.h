@@ -23,7 +23,7 @@ public:
 
 	virtual void Cleanup();
 
-	void		SetGameObject(uint focusedGameObject);
+	void		SetGameObject(int focusedGameObject);
 	void		SetGameObject(GameObject* focusedGameObject);
 
 	int			GetFocusedGameObjectId() const;

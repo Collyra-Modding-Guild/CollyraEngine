@@ -32,6 +32,7 @@ bool M_Scene::Awake()
 	randomGenerator = LCG::LCG();
 
 	currentScene = (R_Scene*)App->resources->CreateResource(R_TYPE::SCENE);
+	currentScene->referenceCount++;
 
 	currentScene->root = new GameObject(DEFAULT_SCENE_NAME);
 	currentScene->root->CreateComponent(COMPONENT_TYPE::TRANSFORM);
@@ -241,16 +242,17 @@ GameObject* M_Scene::CreateGameObject(std::string name, GameObject* parent)
 
 void M_Scene::ResetScene()
 {
+	App->uiManager->SetFocusedGameObject(-1);
+	focusedGameObject = nullptr;
+
 	for (uint i = 0; i < currentScene->root->children.size(); i++)
 	{
 		App->uiManager->GameObjectDestroyed(currentScene->root->children[i]->GetUid());
 		RELEASE(currentScene->root->children[i]);
 	}
+
 	currentScene->root->children.clear();
-	focusedGameObject = nullptr;
-
 	currentScene->root->SetName(DEFAULT_SCENE_NAME);
-
 }
 
 uint32 M_Scene::GenerateId()
@@ -555,7 +557,7 @@ void M_Scene::OnClickFocusGameObject(const LineSegment& mouseRay)
 		float nearHit = 0.0f;
 		float farHit = 0.0f;
 
-		if (mouseRay.Intersects(currNode->GetGameObjectAABB(), nearHit, farHit))
+		if (mouseRay.Intersects(currNode->GetGameObjectAABB(), nearHit, farHit) && currNode->GetUid() != ROOT_ID)
 		{
 			inRay.insert({ nearHit, currNode });
 		}
@@ -571,7 +573,7 @@ void M_Scene::OnClickFocusGameObject(const LineSegment& mouseRay)
 
 	for (int i = 0; i < inRay.size(); i++)
 	{
-		const C_Mesh* mesh = iterator->second->GetComponent<C_Mesh>();
+		C_Mesh* mesh = iterator->second->GetComponent<C_Mesh>();
 
 		if (mesh != nullptr)
 		{
@@ -580,18 +582,20 @@ void M_Scene::OnClickFocusGameObject(const LineSegment& mouseRay)
 			LineSegment localRay = mouseRay;
 
 			localRay.Transform(transform->GetGlobalTransform().Inverted());
+			std::vector<uint>* indices = mesh->GetIndices();
+			std::vector<float3>* vertices = mesh->GetVertices();
 
 			for (uint j = 0; j < mesh->GetIndicesSize() - 2; j++)
 			{				
-				uint index_A = mesh->indices[j];
-				uint index_B = mesh->indices[j + 1];
-				uint index_C = mesh->indices[j + 2];
+				uint indexA = indices->at(j);
+				uint indexB = indices->at(j+1);
+				uint indexC = indices->at(j+2);
 
-				vec vertice_A(mesh->vertices[index_A]);
-				vec vertice_B(mesh->vertices[index_B]);	
-				vec vertice_C(mesh->vertices[index_C]);
+				vec verticeA(vertices->at(indexA));
+				vec verticeB(vertices->at(indexB));
+				vec verticeC(vertices->at(indexC));
 
-				Triangle meshTriangle(vertice_A, vertice_B, vertice_C);
+				Triangle meshTriangle(verticeA, verticeB, verticeC);
 
 				if (localRay.Intersects(meshTriangle, nullptr, nullptr))
 				{

@@ -43,7 +43,7 @@ public:
 	bool*			GetDrawFlags();
 	void			GetWindowSceneSize(float& w, float& h);
 	void			GameObjectDestroyed(uint id);
-	void            SetFocusedGameObject(uint id);
+	void            SetFocusedGameObject(int id);
 	int				GetFocusedGameObjectId() const;
 	void			OnWindowResize() const;
 

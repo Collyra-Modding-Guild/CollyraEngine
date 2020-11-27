@@ -209,7 +209,6 @@ bool M_UIManager::ShowMainMenuBar()
 			if (ImGui::MenuItem("Load Scene", NULL))
 			{
 				LoadLastSavedScene();
-
 			}
 
 			if (ImGui::MenuItem("Save Scene", NULL))
@@ -245,7 +244,7 @@ bool M_UIManager::ShowMainMenuBar()
 					GameObject* camera = App->scene->CreateGameObject("Camera");
 					camera->CreateComponent(COMPONENT_TYPE::CAMERA);
 				}
-				if (ImGui::Button("Cube", buttonSize))
+				/*if (ImGui::Button("Cube", buttonSize))
 				{
 					GameObject* cube = App->scene->CreateGameObject("Cube");
 					cube->CreateComponent(COMPONENT_TYPE::MESH);
@@ -276,7 +275,7 @@ bool M_UIManager::ShowMainMenuBar()
 
 					Pyramid infoMesh(2.0f, 3.0f, 2.0f);
 					pyramid->GetComponent<C_Mesh>()->GenerateMesh("Pyramid", "Pyramid", infoMesh.vertices, infoMesh.indices, infoMesh.normals, infoMesh.texCoords);
-				}
+				}*/
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenu();
@@ -442,6 +441,12 @@ void M_UIManager::GameObjectDestroyed(uint id)
 		WG_Inspector* inspector = (WG_Inspector*)inspectorWindow;
 		inspector->OnDestroyedId(id);
 	}
+
+	if (hierarchyWindow != nullptr)
+	{
+		WG_Hierarchy* hierarchy = (WG_Hierarchy*)hierarchyWindow;
+		hierarchy->OnDestroyedId(id);
+	}
 }
 
 
@@ -493,7 +498,7 @@ void M_UIManager::NewConsoleLog(const char* newLog)
 	}
 }
 
-void M_UIManager::SetFocusedGameObject(uint id)
+void M_UIManager::SetFocusedGameObject(int id)
 {
 	if (inspectorWindow != nullptr)
 	{
@@ -710,6 +715,8 @@ void M_UIManager::SetupLightImGuiStyle()
 
 void M_UIManager::LoadLastSavedScene()
 {
+
+
 	if (lastSavedId != 0)
 		App->resources->LoadResource(lastSavedId);
 }

@@ -6,18 +6,15 @@
 #include <vector>
 #include "MathGeoLib/include/MathGeoLib.h"
 
+class R_Mesh;
+
 class C_Mesh : public Component
 {
 public:
 	C_Mesh(bool active = true);
 	~C_Mesh();
 
-
 	AABB GetAABB() const;
-	void SetAABB();
-
-	void GenerateMesh(const char* meshName, const char* meshPath, std::vector<float3> vertices = {}, std::vector<uint> indices = {}, std::vector<float3> normals = {}, std::vector<float2> textureCoords = {});
-	void SetNameAndPath(const char* meshName, const char* meshPath);
 
 	void Render(bool* drawState,float4x4 transform = float4x4::identity, int textureID = -1, Color color = Grey) const;
 	void InnerRender(int textureID) const;
@@ -25,9 +22,6 @@ public:
 	void DrawNormals(bool* drawState) const;
 
 	void DrawOutline(float4x4& transform) const;
-
-	std::string GetMeshName() const;
-	std::string GetMeshPath() const;
 
 	uint GetVerticesSize() const;
 	std::vector<float3>* GetVertices();
@@ -55,46 +49,15 @@ public:
 	void SetDrawingNormFaces(bool newState);
 
 	void SetResourceId(uint newId);
-	int GetResourceId() const;
+	int GetResourceId();
+
+	std::string GetName() const;
+	std::string GetPath() const;
 	
-
-	float3 GetSize() const;
-
 private:
 
-	void GenerateBuffers();
-	void GenerateWireColor();
-	void GenerateSize(float3 scale);
-
-	void ClearMesh();
-
-
-public:
-
-	uint idVertex;
-	std::vector<float3> vertices;
-	const float3 verticesPoint;
-
-	uint idIndex;
-	std::vector<uint> indices;
-
-private:
-
-	uint idNormals;
-	std::vector<float3> normals;
-
-	uint idTextureCoords;
-	std::vector<float2> textureCoords;
-
-	Color wireColor;
 	bool drawWire, drawFaces, drawNormVertices, drawNormFaces;
 
-	std::string name;
-	std::string path;
-
-	float3 meshSize;
-
-	AABB aabb;
-
-	int rMesh;
+	int rMeshId;
+	R_Mesh* rMesh;
 };

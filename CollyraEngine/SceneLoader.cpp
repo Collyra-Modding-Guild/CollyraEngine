@@ -95,20 +95,15 @@ void SceneLoader::Private::SaveComponent(const Component* component, JsonConfig 
 	{
 		C_Mesh* compToSave = (C_Mesh*)component;
 
-		saveTo.AddString("Name", compToSave->GetMeshName().c_str());
-		saveTo.AddString("Path", compToSave->GetMeshPath().c_str());
-
+		//TODO: Save ID
+		saveTo.AddNumber("MeshID", compToSave->GetResourceId());
 	}
 	break;
 	case COMPONENT_TYPE::MATERIAL:
 	{
 		C_Material* compToSave = (C_Material*)component;
 
-		saveTo.AddString("MatName", compToSave->GetMaterialName().c_str());
-		saveTo.AddString("MatPath", compToSave->GetMaterialPath().c_str());
-
-		saveTo.AddString("TextName", compToSave->GetTextureName().c_str());
-		saveTo.AddString("TextPath", compToSave->GetTexturePath().c_str());
+		saveTo.AddNumber("MaterialID", compToSave->GetResourceId());
 	}
 	break;
 	case COMPONENT_TYPE::CAMERA:
@@ -212,17 +207,15 @@ void SceneLoader::Private::LoadComponent(JsonConfig& componentInfo, Component* c
 	case COMPONENT_TYPE::MESH:
 	{
 		C_Mesh* compToSave = (C_Mesh*)component;
-		compToSave->SetNameAndPath(componentInfo.GetString("Name").c_str(), componentInfo.GetString("Path").c_str());
 
-		//TODO: Private is obv a nono <- Resource Manager :)
-		//MeshLoader::Private::LoadMesh(compToSave, compToSave->GetMeshPath().c_str());
+		compToSave->SetResourceId(componentInfo.GetNumber("MeshID"));
 	}
 	break;
 	case COMPONENT_TYPE::MATERIAL:
 	{
 		C_Material* compToSave = (C_Material*)component;
 
-		//MaterialLoader::Load(compToSave, compToSave->GetMaterialPath().c_str());
+		compToSave->SetResourceId(componentInfo.GetNumber("MaterialID"));
 	}
 	break;
 	case COMPONENT_TYPE::CAMERA:

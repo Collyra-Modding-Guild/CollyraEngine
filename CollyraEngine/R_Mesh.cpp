@@ -11,7 +11,7 @@ R_Mesh::~R_Mesh()
 	ClearMesh();
 }
 
-void R_Mesh::GenerateMesh(const char* meshName, const char* meshPath, std::vector<float3> vertices, std::vector<uint> indices, std::vector<float3> normals, std::vector<float2> textureCoords)
+void R_Mesh::GenerateMesh(std::vector<float3> vertices, std::vector<uint> indices, std::vector<float3> normals, std::vector<float2> textureCoords)
 {
 	if (vertices.size() > 0)
 		this->vertices = vertices;
@@ -26,13 +26,6 @@ void R_Mesh::GenerateMesh(const char* meshName, const char* meshPath, std::vecto
 
 	GenerateBuffers();
 	GenerateWireColor();
-	SetNameAndPath(meshName, meshPath);
-}
-
-void R_Mesh::SetNameAndPath(const char* meshName, const char* meshPath)
-{
-	name = meshName;
-	path = meshPath;
 }
 
 void R_Mesh::SetAABB()
@@ -108,6 +101,11 @@ float3* R_Mesh::GetVerticesIndex()
 	return &vertices[0];
 }
 
+uint R_Mesh::GetVerticesId() const
+{
+	return idVertex;
+}
+
 std::vector<uint>* R_Mesh::GetIndices()
 {
 	return &indices;
@@ -121,6 +119,11 @@ uint R_Mesh::GetIndicesSize() const
 uint* R_Mesh::GetIndicesIndex()
 {
 	return &indices[0];
+}
+
+uint R_Mesh::GetIndicesId() const
+{
+	return idIndex;
 }
 
 std::vector<float3>* R_Mesh::GetNormals()
@@ -138,6 +141,11 @@ float3* R_Mesh::GetNormalsIndex()
 	return &normals[0];
 }
 
+float R_Mesh::GetNormalsId() const
+{
+	return idNormals;
+}
+
 std::vector<float2>* R_Mesh::GetTextCoords()
 {
 	return &textureCoords;
@@ -151,4 +159,19 @@ uint R_Mesh::GetTextureCoordsSize() const
 float2* R_Mesh::GetTextureCoordsIndex()
 {
 	return &textureCoords[0];
+}
+
+float R_Mesh::GetTextureCoordsId() const
+{
+	return idTextureCoords;
+}
+
+AABB R_Mesh::GetAABB() const
+{
+	return aabb;
+}
+
+Color R_Mesh::GetWireColor() const
+{
+	return wireColor;
 }

@@ -170,7 +170,7 @@ bool MeshLoader::Private::LoadNodeMeshes(const aiScene* scene, const aiNode* nod
 
 			R_Mesh* newMesh = (R_Mesh*)App->resources->CreateResource(R_TYPE::MESH);
 			meshId = newMesh->GetUid();
-			newMesh->GenerateMesh(std::string(meshName + "." + meshExtension).c_str(), filePath, vertices, indices, normals, textureCoords);
+			newMesh->GenerateMesh(vertices, indices, normals, textureCoords);
 
 			App->resources->SaveResource(newMesh, filePath, false);
 			App->resources->DeleteResource(meshId);
@@ -295,7 +295,6 @@ void MeshLoader::Private::LoadMesh(R_Mesh* myNewMesh, char** buffer, uint id)
 
 
 	myNewMesh->SetAABB();
-	myNewMesh->GenerateMesh(std::to_string(id).c_str(), "");
-
+	myNewMesh->GenerateMesh();
 }
 

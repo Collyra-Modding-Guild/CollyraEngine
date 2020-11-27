@@ -19,6 +19,7 @@ public:
 	virtual void Cleanup();
 
 	void NewFocusedGameObject(int id);
+	void OnDestroyedId(int id);
 
 private:
 	void CreateHierarchy(GameObject* parent);

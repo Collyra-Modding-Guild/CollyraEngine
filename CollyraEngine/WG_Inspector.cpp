@@ -63,7 +63,7 @@ updateStatus WG_Inspector::Update()
 void WG_Inspector::Cleanup()
 {}
 
-void WG_Inspector::SetGameObject(uint focusedGameObject)
+void WG_Inspector::SetGameObject(int focusedGameObject)
 {
 	if (this->focusedGameObject != nullptr)
 	{
@@ -249,14 +249,14 @@ void WG_Inspector::DrawMeshComponent(ImGuiTreeNodeFlags_ flag, C_Mesh* mesh)
 	{
 
 		char meshName[100];
-		strcpy_s(meshName, 100, mesh->GetMeshName().c_str());
+		strcpy_s(meshName, 100, mesh->GetName().c_str());
 
 		ImGui::Text("Mesh          ");
 		ImGui::SameLine();
 		ImGui::TextColored({ 0 , 255 , 255 , 100 }, meshName);
 
 		char meshPath[100];
-		strcpy_s(meshPath, 100, mesh->GetMeshPath().c_str());
+		strcpy_s(meshPath, 100, mesh->GetPath().c_str());
 
 		ImGui::Text("Mesh Path     ");
 		ImGui::SameLine();

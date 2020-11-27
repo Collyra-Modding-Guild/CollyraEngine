@@ -48,12 +48,14 @@ public:
 	bool DeleteResource(uint32 idToDestroy);
 	void UnloadResource(Resource* toUnload);
 	void UnloadResource(uint32 toUnloadId);
+	void CheckResourcesToUnload();
 
 	//Helpers
 	R_TYPE GetResourceTypeFromExtension(const char* rPath);
 	bool GetInfoFromMeta(const char* metaPath, uint32* id = nullptr, uint32* modDate = nullptr, R_TYPE* type = nullptr, std::string* path = nullptr);
 	uint32 GenerateId();
 	std::string FindLibraryFile(uint id);
+	void SetDeleteResources(bool newState);
 
 private:
 	void ImportModel(const char* path, char** buffer, unsigned int bufferSize, R_Model* resourceModel);
@@ -70,6 +72,7 @@ private:
 	std::map<uint, Resource*> resourceMap;
 	LCG randomGen;
 	Timer updateAssetsTimer;
+	bool deleteResources;
 
 };
 
