@@ -623,7 +623,7 @@ void M_Scene::CameraCuling(GameObject* current, C_Camera* myCam)
 		current->GetComponent<C_Mesh>()->SetActive(true);
 
 	}
-	else if (current->GetComponent<C_Mesh>() != nullptr)
+	else if (current->GetComponent<C_Mesh>() != nullptr && myCam->IsCulling())
 	{
 		current->GetComponent<C_Mesh>()->SetActive(false);
 	}
