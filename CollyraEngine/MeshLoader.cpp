@@ -174,7 +174,7 @@ bool MeshLoader::Private::LoadNodeMeshes(const aiScene* scene, const aiNode* nod
 			newMesh->GenerateMesh(std::string(meshName + "." + meshExtension).c_str(), filePath, vertices, indices, normals, textureCoords);
 
 			App->resources->SaveResource(newMesh, filePath, false);
-			App->resources->UnloadResource(meshId);
+			App->resources->DeleteResource(meshId);
 
 			//MATERIAL IMPORT & SAVE----------------------------------------
 			if (scene->HasMaterials())
@@ -187,7 +187,7 @@ bool MeshLoader::Private::LoadNodeMeshes(const aiScene* scene, const aiNode* nod
 				//IMPORT & SAVE
 				MaterialLoader::Import(material, newMaterial, node->mName.C_Str(), filePath);
 				App->resources->SaveResource(newMaterial, filePath, false);
-				App->resources->UnloadResource(meshId);
+				App->resources->DeleteResource(meshId);
 			}
 
 			//LOAD--------------------

@@ -7,6 +7,7 @@
 #include <string>
 #include "p2Defs.h"
 #include "Globals.h"
+#include "Timer.h"
 
 #include "MathGeoLib/include/Algorithm/Random/LCG.h"
 
@@ -25,7 +26,7 @@ public:
 
 	bool Awake();
 	bool Start();
-
+	updateStatus Update(float dt) override;
 	bool CleanUp();
 
 	//Resource------------
@@ -44,7 +45,8 @@ public:
 	bool SaveMeta(Resource* toSave, std::string assetsPath);
 
 	//Destruction
-	bool UnloadResource(uint32 idToDestroy);
+	bool DeleteResource(uint32 idToDestroy);
+	void UnloadResource(Resource* toUnload);
 
 	//Helpers
 	R_TYPE GetResourceTypeFromExtension(const char* rPath);
@@ -65,6 +67,7 @@ public:
 private:
 	std::map<uint, Resource*> resourceMap;
 	LCG randomGen;
+	Timer updateAssetsTimer;
 
 };
 

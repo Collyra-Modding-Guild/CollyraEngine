@@ -34,7 +34,6 @@
 
 #include "JsonConfig.h"
 
-
 M_Resources::M_Resources(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), defaultTextureId(-1)
 {}
 
@@ -62,7 +61,20 @@ bool M_Resources::Start()
 	uint toLoad = ImportResourceFromAssets("Assets/Meshes/house.fbx");
 	RequestResource(toLoad);
 
+	updateAssetsTimer.Start();
+
 	return true;
+}
+
+updateStatus M_Resources::Update(float dt)
+{
+	if (updateAssetsTimer.ReadSec() > 5)
+	{
+		ImportAllAssets();
+		updateAssetsTimer.StartFrom(0);
+	}
+
+	return UPDATE_CONTINUE;
 }
 
 bool M_Resources::CleanUp()
@@ -95,7 +107,9 @@ uint M_Resources::ImportResourceFromAssets(const char* path)
 	else
 		relativePath = normalizedPath;
 
-	std::string metaFile = relativePath + ".meta";
+	std::string metaFile = relativePath;
+	if (!App->physFS->IsMeta(relativePath))
+		metaFile += ".meta";
 
 	if (!App->physFS->Exists(metaFile.c_str()))
 	{
@@ -107,6 +121,17 @@ uint M_Resources::ImportResourceFromAssets(const char* path)
 		uint32 date = 0;
 		std::string path = "";
 		GetInfoFromMeta(metaFile.c_str(), &id, &date, nullptr, &path);
+
+		//Get the assets path
+		std::string assetsPath = relativePath.substr(0, relativePath.length() - 5);
+
+		if (!App->physFS->Exists(assetsPath.c_str())) //Assets has been removed!
+		{
+			DeleteResource(id);
+			App->physFS->DeleteFileIn(path.c_str());
+			App->physFS->DeleteFileIn(metaFile.c_str());
+			return 0;
+		}
 
 		//Date changed, we need to update the lib file
 		if (date != App->physFS->GetCurrDate(relativePath.c_str()))
@@ -316,7 +341,7 @@ bool M_Resources::SaveMeta(Resource* toSave, std::string assetsPath)
 	return false;
 }
 
-bool M_Resources::UnloadResource(uint32 idToDestroy)
+bool M_Resources::DeleteResource(uint32 idToDestroy)
 {
 	bool ret = false;
 	std::map<uint, Resource*>::iterator it = resourceMap.find(idToDestroy);
@@ -328,6 +353,15 @@ bool M_Resources::UnloadResource(uint32 idToDestroy)
 	}
 
 	return ret;
+}
+
+void M_Resources::UnloadResource(Resource* toUnload)
+{
+	toUnload->referenceCount--;
+	if (toUnload->referenceCount <= 0)
+	{
+		DeleteResource(toUnload->GetUid());
+	}
 }
 
 R_TYPE M_Resources::GetResourceTypeFromExtension(const char* rPath)
@@ -450,7 +484,7 @@ uint32 M_Resources::ImportResource(std::string path, uint32 forceid)
 
 		uint newResourceID = newResource->GetUid();
 		RELEASE_ARRAY(fileBuffer);
-		UnloadResource(newResource->GetUid());
+		DeleteResource(newResource->GetUid());
 
 		return newResourceID;
 	}
@@ -486,7 +520,7 @@ void M_Resources::ImportAllAssets()
 {
 	std::vector<std::string> ignoreExt;
 	ignoreExt.push_back(".meta");
-	PathNode assetFiles = App->physFS->GetAllFiles(ASSETS_FOLDER, nullptr, &ignoreExt);
+	PathNode assetFiles = App->physFS->GetAllFiles(ASSETS_FOLDER, nullptr, nullptr);
 	CheckAssetsImport(assetFiles);
 }
 

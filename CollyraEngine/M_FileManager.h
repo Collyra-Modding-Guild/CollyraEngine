@@ -70,6 +70,7 @@ public:
 
 	bool ImportFile(const char* file, std::string& relativePath);
 	bool DuplicateFile(const char* srcFile, const char* dstFile);
+	bool DeleteFileIn (const char* srcFile);
 
 	unsigned int	Save(const char* file, const void* buffer, unsigned int size, bool append = false) const;
 	bool			Remove(const char* file);
@@ -90,6 +91,7 @@ public:
 	R_TYPE			GetTypeFromExtension(const char* path);
 	std::string		GetInternalExtensionFromType(R_TYPE type);
 	std::string		GetExtensionFolderLibraryFromType(R_TYPE type);
+	bool			IsMeta(std::string& path);
 
 private:
 	int CheckPath(const char*);

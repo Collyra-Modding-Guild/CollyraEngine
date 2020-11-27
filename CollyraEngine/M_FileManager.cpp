@@ -358,6 +358,14 @@ std::string M_FileManager::GetExtensionFolderLibraryFromType(R_TYPE type)
 	return ret;
 }
 
+bool M_FileManager::IsMeta(std::string& path)
+{
+	if (path.find("meta") < path.length())
+		return true;
+
+	return false;
+}
+
 void M_FileManager::GetRealDir(const char* path, std::string& output) const
 {
 	output = PHYSFS_getBaseDir();
@@ -597,6 +605,17 @@ bool M_FileManager::DuplicateFile(const char* srcFile, const char* dstFile)
 
 
 	return ret;
+}
+
+bool M_FileManager::DeleteFileIn(const char* srcFile)
+{
+	if (Exists(srcFile))
+	{
+		PHYSFS_delete(srcFile);
+		return true;
+	}
+
+	return false;
 }
 
 std::string M_FileManager::GetExtensionFolderAssets(const char* fileExtension)
