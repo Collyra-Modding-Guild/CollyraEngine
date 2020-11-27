@@ -58,7 +58,7 @@ bool M_Resources::Start()
 
 	ImportAllAssets();
 
-	uint toLoad = ImportResourceFromAssets("Assets/Models/house.fbx");
+	uint toLoad = ImportResourceFromAssets("Assets/Models/Street environment_V01.FBX");
 	RequestResource(toLoad);
 
 	updateAssetsTimer.Start();
