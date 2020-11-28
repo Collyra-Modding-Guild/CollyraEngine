@@ -26,6 +26,7 @@ public:
 
 	void SetResourceId(uint newId);
 	int GetResourceId() const;
+	R_Material* GetResourcePointer() const;
 	void ResourceUpdated(std::vector<unsigned int>* ids);
 
 

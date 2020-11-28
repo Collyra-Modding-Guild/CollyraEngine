@@ -16,6 +16,7 @@ class GameObject;
 class Component;
 class C_Camera;
 class R_Scene;
+enum class R_TYPE;
 
 class M_Scene : public Module
 {
@@ -62,6 +63,7 @@ public:
 	R_Scene* GetSceneResource() const;
 
 	void ResoucesUpdated(std::vector<uint>* updatedId);
+	void SetResourceToGameObject(uint resourceId, R_TYPE rType, GameObject* setTo = nullptr);
 
 private:
 	void CheckSiblingsName(GameObject* parent, std::string& myName);

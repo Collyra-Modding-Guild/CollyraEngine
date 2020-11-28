@@ -281,6 +281,7 @@ Resource* M_Resources::LoadResource(uint id, const char* libPath)
 	}
 
 	RELEASE_ARRAY(buffer);
+
 	if (ret != nullptr)
 		ret->referenceCount++;
 

@@ -17,6 +17,7 @@ class WG_Inspector;
 class WG_About;
 class WG_Playbar;
 class WG_ResourceCount;
+class WG_Assets;
 
 class M_UIManager : public Module
 {
@@ -54,7 +55,7 @@ public:
 
 	void SetupDarkImGuiStyle(float alpha);
 	void SetupLightImGuiStyle();
-	void DrawDirectoryRecursive(const char* directory);
+	std::string DrawDirectoryRecursive(const char* directory, bool returnFullPath = false);
 
 	uint SaveScene();
 
@@ -79,6 +80,7 @@ public:
 	WG_About*		aboutWindow;
 	WG_Playbar*		playWindow;
 	WG_ResourceCount* resourceCount;
+	WG_Assets*		assetsWindow;
 
 
 private:

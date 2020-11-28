@@ -78,6 +78,11 @@ int C_Material::GetResourceId() const
 	return resourceId;
 }
 
+R_Material* C_Material::GetResourcePointer() const
+{
+	return myResource;
+}
+
 void C_Material::ResourceUpdated(std::vector<unsigned int>* ids)
 {
 	for (uint i = 0; i < ids->size(); i++)

@@ -12,8 +12,6 @@
 
 #include "MathGeoLib/include/Math/float4x4.h"
 
-
-
 WG_Scene::WG_Scene(bool isActive) : WindowGroup(WG_CONFIG, isActive), usingGizmo(false), gizOperation(ImGuizmo::OPERATION::TRANSLATE),
 																						 gizMode(ImGuizmo::MODE::LOCAL)
 {

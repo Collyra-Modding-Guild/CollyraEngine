@@ -17,11 +17,15 @@
 #include "M_FileManager.h"
 #include "M_Resources.h"
 #include "Timer.h"
+
+//TODO: This should be in the resource manager
+#include "R_Resource.h"
 #include "R_Scene.h"
+#include "R_Material.h"
 
 #include "OpenGL.h"
 
-M_Scene::M_Scene(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled),focusedGameObject(nullptr), currentScene(nullptr),
+M_Scene::M_Scene(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), focusedGameObject(nullptr), currentScene(nullptr),
 playedScene(0)
 {}
 
@@ -316,6 +320,58 @@ void M_Scene::ResoucesUpdated(std::vector<uint>* updatedId)
 	return;
 }
 
+void M_Scene::SetResourceToGameObject(uint resourceId, R_TYPE rType, GameObject* setTo)
+{
+	if (setTo == nullptr)
+	{
+		setTo = focusedGameObject;
+		if (setTo == nullptr)
+			return;
+	}
+
+	switch (rType)
+	{
+	case R_TYPE::TEXTURE:
+	{
+		C_Material* cmp = setTo->GetComponent<C_Material>();
+
+		if (cmp == nullptr)
+		{
+			cmp = (C_Material*)setTo->CreateComponent(COMPONENT_TYPE::MATERIAL);
+		}
+
+		uint myResourceId = cmp->GetResourceId();
+		R_Material* myResource = nullptr;
+
+		//No material loaded, let's create one
+		if (myResourceId == 0)
+		{
+			myResourceId = App->resources->CreateResource(R_TYPE::MATERIAL)->GetUid();
+			cmp->SetResourceId(myResourceId);
+		}
+
+		myResource = cmp->GetResourcePointer();
+		myResource->SetTextureResourceId(resourceId);
+	}
+	break;
+	case R_TYPE::MATERIAL:
+	{
+		C_Material* cmp = setTo->GetComponent<C_Material>();
+
+		if (cmp == nullptr)
+		{
+			cmp = (C_Material*)setTo->CreateComponent(COMPONENT_TYPE::MATERIAL);
+		}
+
+		cmp->SetResourceId(resourceId);
+	}
+	break;
+	default:
+		break;
+	}
+
+}
+
 void M_Scene::CheckSiblingsName(GameObject* parent, std::string& myName)
 {
 	uint siblingSameName = 0;
@@ -603,7 +659,7 @@ void M_Scene::OnClickFocusGameObject(const LineSegment& mouseRay)
 			stack.push(currNode->children[i]);
 		}
 	}
-	
+
 	std::map<float, GameObject*>::iterator iterator = inRay.begin();
 
 	for (int i = 0; i < inRay.size(); i++)
@@ -621,10 +677,10 @@ void M_Scene::OnClickFocusGameObject(const LineSegment& mouseRay)
 			std::vector<float3>* vertices = mesh->GetVertices();
 
 			for (uint j = 0; j < mesh->GetIndicesSize() - 2; j++)
-			{				
+			{
 				uint indexA = indices->at(j);
-				uint indexB = indices->at(j+1);
-				uint indexC = indices->at(j+2);
+				uint indexB = indices->at(j + 1);
+				uint indexC = indices->at(j + 2);
 
 				vec verticeA(vertices->at(indexA));
 				vec verticeB(vertices->at(indexB));
@@ -639,7 +695,7 @@ void M_Scene::OnClickFocusGameObject(const LineSegment& mouseRay)
 				}
 			}
 		}
-		else 
+		else
 		{
 			App->uiManager->SetFocusedGameObject(iterator->second->GetUid());
 			return;

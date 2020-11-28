@@ -29,6 +29,7 @@
 #include "WG_About.h"
 #include "WG_Playbar.h"
 #include "WG_ResourceCount.h"
+#include "WG_Assets.h"
 
 //OpenGL
 #include "OpenGL.h"
@@ -60,6 +61,7 @@ bool M_UIManager::Awake()
 	windowGroups.push_back(aboutWindow = new WG_About(false));
 	windowGroups.push_back(playWindow = new WG_Playbar(true));
 	windowGroups.push_back(resourceCount = new WG_ResourceCount(true));
+	windowGroups.push_back(assetsWindow = new WG_Assets(true));
 
 	return true;
 }
@@ -425,14 +427,22 @@ void M_UIManager::ShowLoadScenePopUp()
 	if (ImGui::BeginPopupModal("Load File", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 	{
 		ImGui::BeginChild("File Browser", ImVec2(300, 400), true);
-		DrawDirectoryRecursive(LIBRARY_SCENES);
+		std::string pushedValue = DrawDirectoryRecursive(LIBRARY_SCENES);
 		ImGui::EndChild();
-
-		if (ImGui::Button("Ok", ImVec2(50, 20)))
-			ImGui::SameLine();
 
 		if (ImGui::Button("Cancel", ImVec2(50, 20)))
 		{
+			showLoadScenePop = false;
+		}
+
+		if (pushedValue != "")
+		{
+			if (pushedValue.find(".collscene") < pushedValue.length())
+			{
+				pushedValue = pushedValue.substr(0, pushedValue.length() - 11);
+				App->resources->LoadResource(std::stoi(pushedValue));
+				pushedValue.clear();
+			}
 			showLoadScenePop = false;
 		}
 
@@ -804,13 +814,15 @@ void M_UIManager::SetupDarkImGuiStyle(float alpha)
 	style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
 }
 
-void M_UIManager::DrawDirectoryRecursive(const char* directory)
+std::string M_UIManager::DrawDirectoryRecursive(const char* directory, bool returnFullPath)
 {
 	std::vector<std::string> files;
 	std::vector<std::string> dirs;
+	std::string ret = "";
 
 	std::string dir((directory) ? directory : "");
-	dir = dir.substr(0, dir.length() - 1);
+	if (dir.find_last_of("/") == dir.length() - 1)
+		dir = dir.substr(0, dir.length() - 1);
 
 	App->physFS->DiscoverFiles(dir.c_str(), files, dirs);
 
@@ -818,8 +830,13 @@ void M_UIManager::DrawDirectoryRecursive(const char* directory)
 	{
 		if (ImGui::TreeNodeEx((dir + (*it)).c_str(), 0, "%s/", (*it).c_str()))
 		{
-			DrawDirectoryRecursive((dir + (*it)).c_str());
+			ret = DrawDirectoryRecursive((dir + "/" + (*it)).c_str(), returnFullPath);
 			ImGui::TreePop();
+
+			if (ret != "")
+			{
+				return ret;
+			}
 		}
 	}
 
@@ -835,18 +852,19 @@ void M_UIManager::DrawDirectoryRecursive(const char* directory)
 			{
 				if (ImGui::IsMouseDoubleClicked(0))
 				{
-					std::string selectedFile = str;
-					if (selectedFile.find(".collscene") < selectedFile.length())
-					{
-						selectedFile = selectedFile.substr(0, selectedFile.length() - 11);
-						App->resources->LoadResource(std::stoi(selectedFile));
-					}
-
-					showLoadScenePop = false;
+					ret = str;
 				}
 			}
 
 			ImGui::TreePop();
+
+			if (ret != "")
+			{
+				if (returnFullPath)
+					return dir + "/" + ret;
+			}
 		}
 	}
+
+	return ret;
 }

@@ -30,6 +30,7 @@ uint ModelLoader::Save(const R_Model* rModel, char** buffer)
 void ModelLoader::Load(R_Model* rModel, char* buffer)
 {
 	JsonConfig jsonFile(buffer);
+	std::vector<GameObject*> createdGameObjects;
 	if (jsonFile.IsInitialized())
 	{
 		JsonArray gameObjectsArr = jsonFile.GetArray("ModelNodes");
@@ -48,6 +49,7 @@ void ModelLoader::Load(R_Model* rModel, char* buffer)
 				}
 
 				GameObject* newGameObject = App->scene->CreateGameObject(modelNode.GetString("Name"), parent);
+				createdGameObjects.push_back(newGameObject);
 				newGameObject->SetUid(modelNode.GetNumber("ID"));
 				float3 translate = modelNode.GetArray("Translation").GetFloat3();
 				Quat rot = modelNode.GetArray("Rotation").GetQuaternion();
@@ -68,6 +70,11 @@ void ModelLoader::Load(R_Model* rModel, char* buffer)
 					C_Material* materialComponent = (C_Material*)newGameObject->CreateComponent(COMPONENT_TYPE::MATERIAL);
 					materialComponent->SetResourceId(materialID);
 				}
+			}
+
+			for (int i = 0; i < createdGameObjects.size(); i++)
+			{
+				createdGameObjects[i]->SetUid(App->scene->GenerateId());
 			}
 		}
 	}

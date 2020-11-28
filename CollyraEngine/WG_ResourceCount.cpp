@@ -22,7 +22,6 @@ updateStatus WG_ResourceCount::Update()
 
 	ImGui::End();
 
-
 	return UPDATE_CONTINUE;
 }
 
