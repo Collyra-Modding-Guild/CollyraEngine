@@ -55,7 +55,7 @@ public:
 
 	void SetupDarkImGuiStyle(float alpha);
 	void SetupLightImGuiStyle();
-	std::string DrawDirectoryRecursive(const char* directory, bool returnFullPath = false);
+	std::string DrawDirectoryRecursive(const char* directory, bool returnFullPath = false, std::vector<std::string>* ignoreExt = nullptr, char* dragType = nullptr);
 
 	uint SaveScene();
 

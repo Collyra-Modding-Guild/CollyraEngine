@@ -19,7 +19,9 @@ updateStatus WG_Assets::Update()
 {
 	ImGui::Begin("Assets");
 
-	std::string toLoad = App->uiManager->DrawDirectoryRecursive(ASSETS_FOLDER, true);
+	static std::vector<std::string> ignoreExt = {"meta"};
+
+	std::string toLoad = App->uiManager->DrawDirectoryRecursive(ASSETS_FOLDER, true, &ignoreExt, "Asset");
 
 	if (toLoad != "")
 	{
@@ -27,8 +29,7 @@ updateStatus WG_Assets::Update()
 
 		if (id > 0)
 		{
-			Resource* loadedResource = App->resources->LoadResource(id);
-
+			Resource* loadedResource = App->resources->RequestResource(id);
 
 			if (loadedResource != nullptr)
 			{

@@ -17,7 +17,6 @@ bool TextureLoader::Init()
 	iluInit();
 	ilutInit();
 	ilutRenderer(ILUT_OPENGL);
-	// ilClearColour(255, 255, 255, 000);
 
 	//Check for error
 	ILenum ilError = ilGetError();

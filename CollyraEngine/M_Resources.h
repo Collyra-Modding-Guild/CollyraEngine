@@ -8,6 +8,7 @@
 #include "p2Defs.h"
 #include "Globals.h"
 #include "Timer.h"
+#include "PathNode.h"
 
 #include "MathGeoLib/include/Algorithm/Random/LCG.h"
 
@@ -15,7 +16,13 @@ class Mesh;
 class Resource;
 enum class R_TYPE;
 class R_Model;
-struct PathNode;
+
+enum class ASSETS_CHECK
+{
+	TO_CHECK,
+	TO_IMPORT,
+	TO_CHANGE
+};
 
 class M_Resources : public Module
 {
@@ -27,6 +34,7 @@ public:
 	bool Awake();
 	bool Start();
 	updateStatus Update(float dt) override;
+	updateStatus PreDraw(bool* drawState) override;
 	bool CleanUp();
 
 	//Resource------------
@@ -60,8 +68,8 @@ public:
 
 private:
 	void ImportModel(const char* path, char** buffer, unsigned int bufferSize, R_Model* resourceModel);
-	void ImportAllAssets();
-	void CheckAssetsImport(PathNode assetsFiles);
+	void GetAllAssetFiles();
+	void CheckAssetsImport(PathNode& pathnode);
 	std::string DuplicateFile(const char* path);
 
 	uint32 ImportResource(std::string path, uint32 forceid = 0);
@@ -76,6 +84,9 @@ private:
 	bool deleteResources;
 
 	std::vector<uint> onlineIdUpdated;
+	PathNode allLibFiles;
+	PathNode allAssetFiles;
+	ASSETS_CHECK assetsRead;
 
 };
 

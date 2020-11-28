@@ -31,6 +31,19 @@ struct PathNode
 		return path == node.path;
 	}
 
+	void Clear()
+	{
+		children.clear();
+	}
+
+	bool IsEmpty()
+	{
+		if (children.size() <= 0)
+			return true;
+
+		return false;
+	}
+
 
 
 };

@@ -814,7 +814,7 @@ void M_UIManager::SetupDarkImGuiStyle(float alpha)
 	style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
 }
 
-std::string M_UIManager::DrawDirectoryRecursive(const char* directory, bool returnFullPath)
+std::string M_UIManager::DrawDirectoryRecursive(const char* directory, bool returnFullPath, std::vector<std::string>* ignoreExt, char* dragType)
 {
 	std::vector<std::string> files;
 	std::vector<std::string> dirs;
@@ -830,7 +830,7 @@ std::string M_UIManager::DrawDirectoryRecursive(const char* directory, bool retu
 	{
 		if (ImGui::TreeNodeEx((dir + (*it)).c_str(), 0, "%s/", (*it).c_str()))
 		{
-			ret = DrawDirectoryRecursive((dir + "/" + (*it)).c_str(), returnFullPath);
+			ret = DrawDirectoryRecursive((dir + "/" + (*it)).c_str(), returnFullPath, ignoreExt, dragType);
 			ImGui::TreePop();
 
 			if (ret != "")
@@ -838,6 +838,7 @@ std::string M_UIManager::DrawDirectoryRecursive(const char* directory, bool retu
 				return ret;
 			}
 		}
+
 	}
 
 	std::sort(files.begin(), files.end());
@@ -846,24 +847,54 @@ std::string M_UIManager::DrawDirectoryRecursive(const char* directory, bool retu
 	{
 		const std::string& str = *it;
 
-		if (ImGui::TreeNodeEx(str.c_str(), ImGuiTreeNodeFlags_Leaf))
+		bool ignore = false;
+		if (ignoreExt != nullptr)
 		{
-			if (ImGui::IsItemClicked())
+			ignore = App->physFS->HasExtension((*it).c_str(), *ignoreExt);
+		}
+
+		if (ignore == false)
+		{
+			if (ImGui::TreeNodeEx(str.c_str(), ImGuiTreeNodeFlags_Leaf))
 			{
-				if (ImGui::IsMouseDoubleClicked(0))
+				if (ImGui::IsItemClicked())
 				{
-					ret = str;
+					if (ImGui::IsMouseDoubleClicked(0))
+					{
+						ret = str;
+					}
+				}
+
+				if (dragType != nullptr)
+				{
+					if (ImGui::BeginDragDropSource())
+					{
+						std::string treeNode = str;
+						if (treeNode != "")
+						{
+							if (returnFullPath)
+								treeNode = dir + "/" + treeNode;
+						}
+
+						ImGui::SetDragDropPayload(dragType, treeNode.c_str(), treeNode.length());
+
+						ImGui::Text("%s", treeNode.c_str());
+
+						ImGui::EndDragDropSource();
+					}
+				}
+
+
+				ImGui::TreePop();
+
+				if (ret != "")
+				{
+					if (returnFullPath)
+						return dir + "/" + ret;
 				}
 			}
-
-			ImGui::TreePop();
-
-			if (ret != "")
-			{
-				if (returnFullPath)
-					return dir + "/" + ret;
-			}
 		}
+
 	}
 
 	return ret;

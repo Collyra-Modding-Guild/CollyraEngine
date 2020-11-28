@@ -67,10 +67,12 @@ std::string C_Material::GetTexturePath() const
 
 void C_Material::SetResourceId(uint newId)
 {
-	App->resources->UnloadResource(resourceId);
+	int prevId = resourceId;  
 
 	resourceId = newId;
 	myResource = (R_Material*)App->resources->RequestResource(resourceId);
+
+	App->resources->UnloadResource(prevId);
 }
 
 int C_Material::GetResourceId() const

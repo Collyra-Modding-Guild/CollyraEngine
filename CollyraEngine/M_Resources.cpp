@@ -34,7 +34,8 @@
 #include "ModelLoader.h"
 
 
-M_Resources::M_Resources(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), defaultTextureId(-1), deleteResources(true), onlineIdUpdated{}
+M_Resources::M_Resources(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), defaultTextureId(-1), deleteResources(true), onlineIdUpdated{},
+allLibFiles(), allAssetFiles(), assetsRead(ASSETS_CHECK::TO_CHECK)
 {}
 
 M_Resources::~M_Resources()
@@ -56,7 +57,7 @@ bool M_Resources::Start()
 	//Load from Start Demo-------
 	defaultTextureId = TextureLoader::LoadDefaultTexture();
 
-	ImportAllAssets();
+	GetAllAssetFiles();
 
 	uint toLoad = ImportResourceFromAssets("Assets/Models/Street environment_V01.FBX");
 	RequestResource(toLoad);
@@ -68,16 +69,36 @@ bool M_Resources::Start()
 
 updateStatus M_Resources::Update(float dt)
 {
-	if (updateAssetsTimer.ReadSec() > 5)
+	if (updateAssetsTimer.ReadSec() > 4 && assetsRead == ASSETS_CHECK::TO_CHECK)
 	{
-		ImportAllAssets();
-		updateAssetsTimer.StartFrom(0);
+		GetAllAssetFiles();
+		assetsRead = ASSETS_CHECK::TO_IMPORT;
+	}
+
+	if (updateAssetsTimer.ReadSec() > 4.5 && assetsRead == ASSETS_CHECK::TO_IMPORT)
+	{
+		CheckAssetsImport(allAssetFiles);
+		assetsRead = ASSETS_CHECK::TO_CHANGE;
+		allAssetFiles.Clear();
+	}
+
+	if (updateAssetsTimer.ReadSec() > 5 && assetsRead == ASSETS_CHECK::TO_CHANGE)
+	{
 		if (onlineIdUpdated.size() > 0)
 		{
 			App->scene->ResoucesUpdated(&onlineIdUpdated);
 			onlineIdUpdated.clear();
 		}
+		assetsRead = ASSETS_CHECK::TO_CHECK;
+		updateAssetsTimer.StartFrom(0);
 	}
+
+	return UPDATE_CONTINUE;
+}
+
+updateStatus M_Resources::PreDraw(bool* drawState)
+{
+	allLibFiles.Clear();
 
 	return UPDATE_CONTINUE;
 }
@@ -185,11 +206,14 @@ Resource* M_Resources::RequestResource(uint id)
 	}
 
 	// If not, search in library & load it
-	//TODO: This HAS to be optimized
-	std::vector<std::string> ignore_ext;
-	ignore_ext.push_back(".meta");
-	PathNode allFiles = App->physFS->GetAllFiles(LIBRARY_PATH, nullptr, &ignore_ext);
-	std::string foundId = App->physFS->FindInPathNode(std::to_string(id).c_str(), allFiles);
+	if (allLibFiles.IsEmpty())
+	{
+		std::vector<std::string> ignore_ext;
+		ignore_ext.push_back(".meta");
+		allLibFiles = App->physFS->GetAllFiles(LIBRARY_PATH, nullptr, &ignore_ext);
+	}
+
+	std::string foundId = App->physFS->FindInPathNode(std::to_string(id).c_str(), allLibFiles);
 
 	if (foundId == "")
 	{
@@ -365,6 +389,8 @@ uint M_Resources::SaveResource(Resource* toSave, std::string assetsPath, bool sa
 
 	if (size > 0)
 	{
+		allLibFiles.Clear();
+
 		App->physFS->Save(libraryPath.c_str(), buffer, size);
 
 		if (saveMeta == true)
@@ -546,7 +572,6 @@ bool M_Resources::GetInfoFromMeta(const char* metaPath, uint32* id, uint32* modD
 		return false;
 	}
 
-
 	return true;
 }
 
@@ -557,8 +582,10 @@ uint32 M_Resources::GenerateId()
 
 std::string M_Resources::FindLibraryFile(uint id)
 {
-	PathNode allFiles = App->physFS->GetAllFiles(LIBRARY_PATH, nullptr, nullptr);
-	std::string foundId = App->physFS->FindInPathNode(std::to_string(id).c_str(), allFiles);
+	if (allLibFiles.IsEmpty())
+		allLibFiles = App->physFS->GetAllFiles(LIBRARY_PATH, nullptr, nullptr);
+
+	std::string foundId = App->physFS->FindInPathNode(std::to_string(id).c_str(), allLibFiles);
 
 	return foundId;
 }
@@ -645,26 +672,24 @@ void M_Resources::ImportModel(const char* path, char** buffer, unsigned int buff
 	}
 }
 
-void M_Resources::ImportAllAssets()
+void M_Resources::GetAllAssetFiles()
 {
-	std::vector<std::string> ignoreExt;
-	ignoreExt.push_back(".meta");
-	PathNode assetFiles = App->physFS->GetAllFiles(ASSETS_FOLDER, nullptr, nullptr);
-	CheckAssetsImport(assetFiles);
+	static std::vector<std::string> ignoreExt = { "meta" };
+	allAssetFiles = App->physFS->GetAllFiles(ASSETS_FOLDER, nullptr, &ignoreExt);
 }
 
-void M_Resources::CheckAssetsImport(PathNode assetsFiles)
+void M_Resources::CheckAssetsImport(PathNode& pathnode)
 {
-	if (assetsFiles.isFile)
+	if (pathnode.isFile)
 	{
-		ImportResourceFromAssets(assetsFiles.path.c_str());
+		ImportResourceFromAssets(pathnode.path.c_str());
 	}
 
-	if (!assetsFiles.isLeaf)
+	if (!pathnode.isLeaf)
 	{
-		for (int i = 0; i < assetsFiles.children.size(); i++)
+		for (int i = 0; i < pathnode.children.size(); i++)
 		{
-			CheckAssetsImport(assetsFiles.children[i]);
+			CheckAssetsImport(pathnode.children[i]);
 		}
 	}
 }
