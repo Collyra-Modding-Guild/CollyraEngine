@@ -61,6 +61,8 @@ public:
 	void SetSceneName(const char* newName);
 	R_Scene* GetSceneResource() const;
 
+	void ResoucesUpdated(std::vector<uint>* updatedId);
+
 private:
 	void CheckSiblingsName(GameObject* parent, std::string& myName);
 	void DrawGameObject(GameObject* gameObject, bool* drawState);
@@ -75,6 +77,7 @@ public:
 
 private:
 	R_Scene* currentScene;
+	uint playedScene;
 
 };
 

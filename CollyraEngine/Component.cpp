@@ -46,3 +46,6 @@ COMPONENT_TYPE Component::GetType() const
 {
 	return type;
 }
+
+void Component::ResourceUpdated(std::vector<unsigned int>* ids)
+{}

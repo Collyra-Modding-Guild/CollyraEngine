@@ -21,7 +21,8 @@
 
 #include "OpenGL.h"
 
-M_Scene::M_Scene(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled),focusedGameObject(nullptr), currentScene(nullptr)
+M_Scene::M_Scene(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled),focusedGameObject(nullptr), currentScene(nullptr),
+playedScene(0)
 {}
 
 M_Scene::~M_Scene()
@@ -280,6 +281,41 @@ R_Scene* M_Scene::GetSceneResource() const
 	return currentScene;
 }
 
+void M_Scene::ResoucesUpdated(std::vector<uint>* updatedId)
+{
+	std::stack<GameObject*> stack;
+	GameObject* currNode = nullptr;
+
+	if (currentScene->root == nullptr)
+	{
+		LOG("Root node did not exist!");
+		return;
+	}
+
+	stack.push(currentScene->root);
+
+	while (!stack.empty())
+	{
+		currNode = stack.top();
+		stack.pop();
+
+		if (currNode != nullptr)
+		{
+			currNode->ResourcesUpdated(updatedId);
+		}
+		else
+			continue;
+
+		int childNum = currNode->children.size();
+		for (int i = 0; i < childNum; i++)
+		{
+			stack.push(currNode->children[i]);
+		}
+	}
+
+	return;
+}
+
 void M_Scene::CheckSiblingsName(GameObject* parent, std::string& myName)
 {
 	uint siblingSameName = 0;
@@ -365,7 +401,6 @@ void M_Scene::DrawFrustum(GameObject* gameObject)
 
 	for (uint i = 0; i < frustum.NumEdges(); i++)
 	{
-
 		glVertex3f(frustum.Edge(i).a.x,
 			frustum.Edge(i).a.y,
 			frustum.Edge(i).a.z);
@@ -632,13 +667,14 @@ void M_Scene::CameraCuling(GameObject* current, C_Camera* myCam)
 void M_Scene::Play()
 {
 	App->uiManager->SaveScene();
+	playedScene = this->GetSceneResource()->GetUid();
 
 	App->gameClock->Start();
 }
 
 void M_Scene::Stop()
 {
-	App->uiManager->LoadLastSavedScene();
+	App->resources->LoadResource(playedScene);
 
 	App->gameClock->Stop();
 }

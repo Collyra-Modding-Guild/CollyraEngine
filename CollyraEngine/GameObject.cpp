@@ -254,6 +254,14 @@ const AABB GameObject::GetGameObjectAABB() const
 	return aabb;
 }
 
+void GameObject::ResourcesUpdated(std::vector<unsigned int>* resourcesUpdated)
+{
+	for (uint i = 0; i < components.size(); i++)
+	{
+		components[i]->ResourceUpdated(resourcesUpdated);
+	}
+}
+
 void GameObject::BoundingBoxUpdate()
 {
 	C_Mesh* check = GetComponent<C_Mesh>();

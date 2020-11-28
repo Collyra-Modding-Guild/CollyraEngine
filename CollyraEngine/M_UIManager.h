@@ -55,15 +55,18 @@ public:
 
 	void SetupDarkImGuiStyle(float alpha);
 	void SetupLightImGuiStyle();
+	void DrawDirectoryRecursive(const char* directory);
 
-	void LoadLastSavedScene();
-	void SaveScene();
+	uint SaveScene();
 
 private:
 
 	//Functions for the editor menus-----------
 	bool			ShowMainMenuBar();
 	void			EnableDockSpace();
+
+	//Pop Ups--------------------------
+	void			ShowLoadScenePopUp();
 
 public:
 
@@ -82,6 +85,7 @@ private:
 	bool			showDemoWindow;
 	bool			showConfigMenu;
 	unsigned int	lastSavedId;
+	bool			showLoadScenePop;
 };
 
 #endif // __ModuleAudio_H__

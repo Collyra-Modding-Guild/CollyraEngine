@@ -26,6 +26,8 @@ public:
 
 	void SetResourceId(uint newId);
 	int GetResourceId() const;
+	void ResourceUpdated(std::vector<unsigned int>* ids);
+
 
 private:
 

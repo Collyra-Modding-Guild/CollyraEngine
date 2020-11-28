@@ -23,6 +23,8 @@ public:
 
 	COMPONENT_TYPE GetType() const;
 
+	virtual void ResourceUpdated(std::vector<unsigned int>* ids);
+
 protected:
 	COMPONENT_TYPE type;
 	bool active;

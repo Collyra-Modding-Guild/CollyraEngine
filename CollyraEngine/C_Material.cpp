@@ -77,3 +77,19 @@ int C_Material::GetResourceId() const
 {
 	return resourceId;
 }
+
+void C_Material::ResourceUpdated(std::vector<unsigned int>* ids)
+{
+	for (uint i = 0; i < ids->size(); i++)
+	{
+		if (ids->at(i) == resourceId)
+		{
+			SetResourceId(ids->at(i));
+		}
+		else if (myResource && ids->at(i) == myResource->GetTextureResourceId())
+		{
+			myResource->SetTextureResourceId(ids->at(i));
+		}
+
+	}
+}

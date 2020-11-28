@@ -58,6 +58,8 @@ public:
 
 	const AABB GetGameObjectAABB() const;	
 
+	void ResourcesUpdated(std::vector<unsigned int>* resourcesUpdated);
+
 private:
 
 	void BoundingBoxUpdate();

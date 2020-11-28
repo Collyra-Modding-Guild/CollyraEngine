@@ -21,11 +21,13 @@ void R_Material::SetColor(Color color)
 
 void R_Material::SetTextureResourceId(uint rTexId, bool load)
 {
-	App->resources->UnloadResource(idTextureResource);
+	int prevId = idTextureResource;  
 	idTextureResource = rTexId;
 
-	if(load)
-	myTexResource = (R_Texture*)App->resources->RequestResource(idTextureResource);
+	if (load)
+		myTexResource = (R_Texture*)App->resources->RequestResource(idTextureResource);
+
+	App->resources->UnloadResource(prevId);
 }
 
 Color R_Material::GetColor() const

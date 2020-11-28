@@ -41,7 +41,7 @@ public:
 	Resource* CreateResource(R_TYPE rType, uint32 forceId = 0);
 
 	//Save
-	bool SaveResource(Resource* toSave, std::string assetsPath, bool saveMeta = true);
+	uint SaveResource(Resource* toSave, std::string assetsPath, bool saveMeta = true);
 	bool SaveMeta(Resource* toSave, std::string assetsPath);
 
 	//Destruction
@@ -73,6 +73,8 @@ private:
 	LCG randomGen;
 	Timer updateAssetsTimer;
 	bool deleteResources;
+
+	std::vector<uint> onlineIdUpdated;
 
 };
 

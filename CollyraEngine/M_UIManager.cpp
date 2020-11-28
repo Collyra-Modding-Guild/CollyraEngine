@@ -5,6 +5,7 @@
 #include "M_Window.h"
 #include "M_Scene.h"
 #include "M_Resources.h"
+#include "M_FileManager.h"
 
 #include "GameObject.h"
 #include "Component.h"
@@ -16,6 +17,7 @@
 #include "R_Scene.h"
 
 #include "MathGeoLib/include/Math/float2.h"
+#include <algorithm>
 
 // All UI Windows
 #include "WindowGroup.h"
@@ -141,6 +143,12 @@ updateStatus M_UIManager::Update(float dt)
 
 	ret = updateStatus(ShowMainMenuBar());
 
+	//Pop-Ups---------------------------
+	if (showLoadScenePop == true)
+	{
+		ShowLoadScenePopUp();
+	}
+
 
 	return ret;
 }
@@ -208,7 +216,7 @@ bool M_UIManager::ShowMainMenuBar()
 		{
 			if (ImGui::MenuItem("Load Scene", NULL))
 			{
-				LoadLastSavedScene();
+				showLoadScenePop = true;
 			}
 
 			if (ImGui::MenuItem("Save Scene", NULL))
@@ -406,6 +414,28 @@ void M_UIManager::EnableDockSpace()
 	}
 
 	ImGui::End();
+
+}
+
+void M_UIManager::ShowLoadScenePopUp()
+{
+	ImGui::OpenPopup("Load File");
+	if (ImGui::BeginPopupModal("Load File", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		ImGui::BeginChild("File Browser", ImVec2(300, 400), true);
+		DrawDirectoryRecursive(LIBRARY_SCENES);
+		ImGui::EndChild();
+
+		if (ImGui::Button("Ok", ImVec2(50, 20)))
+			ImGui::SameLine();
+
+		if (ImGui::Button("Cancel", ImVec2(50, 20)))
+		{
+			showLoadScenePop = false;
+		}
+
+		ImGui::EndPopup();
+	}
 
 }
 
@@ -713,18 +743,9 @@ void M_UIManager::SetupLightImGuiStyle()
 
 }
 
-void M_UIManager::LoadLastSavedScene()
+uint M_UIManager::SaveScene()
 {
-
-
-	if (lastSavedId != 0)
-		App->resources->LoadResource(lastSavedId);
-}
-
-void M_UIManager::SaveScene()
-{
-	App->resources->SaveResource((Resource*)App->scene->GetSceneResource(), "", false);
-	lastSavedId = App->scene->GetSceneResource()->GetUid();
+	return App->resources->SaveResource((Resource*)App->scene->GetSceneResource(), "", false);
 }
 
 void M_UIManager::SetupDarkImGuiStyle(float alpha)
@@ -781,3 +802,49 @@ void M_UIManager::SetupDarkImGuiStyle(float alpha)
 	style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
 }
 
+void M_UIManager::DrawDirectoryRecursive(const char* directory)
+{
+	std::vector<std::string> files;
+	std::vector<std::string> dirs;
+
+	std::string dir((directory) ? directory : "");
+	dir = dir.substr(0, dir.length() - 1);
+
+	App->physFS->DiscoverFiles(dir.c_str(), files, dirs);
+
+	for (std::vector<std::string>::const_iterator it = dirs.begin(); it != dirs.end(); ++it)
+	{
+		if (ImGui::TreeNodeEx((dir + (*it)).c_str(), 0, "%s/", (*it).c_str()))
+		{
+			DrawDirectoryRecursive((dir + (*it)).c_str());
+			ImGui::TreePop();
+		}
+	}
+
+	std::sort(files.begin(), files.end());
+
+	for (std::vector<std::string>::const_iterator it = files.begin(); it != files.end(); ++it)
+	{
+		const std::string& str = *it;
+
+		if (ImGui::TreeNodeEx(str.c_str(), ImGuiTreeNodeFlags_Leaf))
+		{
+			if (ImGui::IsItemClicked())
+			{
+				if (ImGui::IsMouseDoubleClicked(0))
+				{
+					std::string selectedFile = str;
+					if (selectedFile.find(".collscene") < selectedFile.length())
+					{
+						selectedFile = selectedFile.substr(0, selectedFile.length() - 11);
+						App->resources->LoadResource(std::stoi(selectedFile));
+					}
+
+					showLoadScenePop = false;
+				}
+			}
+
+			ImGui::TreePop();
+		}
+	}
+}

@@ -34,7 +34,7 @@
 #include "ModelLoader.h"
 
 
-M_Resources::M_Resources(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), defaultTextureId(-1), deleteResources(true)
+M_Resources::M_Resources(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), defaultTextureId(-1), deleteResources(true), onlineIdUpdated{}
 {}
 
 M_Resources::~M_Resources()
@@ -72,6 +72,11 @@ updateStatus M_Resources::Update(float dt)
 	{
 		ImportAllAssets();
 		updateAssetsTimer.StartFrom(0);
+		if (onlineIdUpdated.size() > 0)
+		{
+			App->scene->ResoucesUpdated(&onlineIdUpdated);
+			onlineIdUpdated.clear();
+		}
 	}
 
 	return UPDATE_CONTINUE;
@@ -147,6 +152,7 @@ uint M_Resources::ImportResourceFromAssets(const char* path)
 			{
 				ImportResource(assetsPath, id);
 				LoadResource(id);
+				onlineIdUpdated.push_back(id);
 			}
 			else // If not, simple re-import
 			{
@@ -180,14 +186,16 @@ Resource* M_Resources::RequestResource(uint id)
 
 	// If not, search in library & load it
 	//TODO: This HAS to be optimized
-	PathNode allFiles = App->physFS->GetAllFiles(LIBRARY_PATH, nullptr, nullptr);
+	std::vector<std::string> ignore_ext;
+	ignore_ext.push_back(".meta");
+	PathNode allFiles = App->physFS->GetAllFiles(LIBRARY_PATH, nullptr, &ignore_ext);
 	std::string foundId = App->physFS->FindInPathNode(std::to_string(id).c_str(), allFiles);
 
 	if (foundId == "")
 	{
-		std::vector<std::string> searchFor;
-		searchFor.push_back(".meta");
-		PathNode allAssets = App->physFS->GetAllFiles(ASSETS_FOLDER, &searchFor, nullptr);
+		//std::vector<std::string> searchFor;
+		//searchFor.push_back(".meta");
+		//PathNode allAssets = App->physFS->GetAllFiles(ASSETS_FOLDER, &searchFor, nullptr);
 		//TODO: Search in Assets .neta & try to find the id
 
 		RELEASE(resource);
@@ -261,12 +269,13 @@ Resource* M_Resources::LoadResource(uint id, const char* libPath)
 	case (R_TYPE::SCENE):
 	{
 		ret = new R_Scene(id);
+
 		deleteResources = false;
 		App->scene->ResetScene();
 		SceneLoader::Load(buffer);
+
 		deleteResources = true;
 		CheckResourcesToUnload();
-
 		break;
 	}
 	}
@@ -308,7 +317,7 @@ Resource* M_Resources::CreateResource(R_TYPE rType, uint32 forceId)
 	return ret;
 }
 
-bool M_Resources::SaveResource(Resource* toSave, std::string assetsPath, bool saveMeta)
+uint M_Resources::SaveResource(Resource* toSave, std::string assetsPath, bool saveMeta)
 {
 	char* buffer = nullptr;
 	uint size = 0;
@@ -362,10 +371,10 @@ bool M_Resources::SaveResource(Resource* toSave, std::string assetsPath, bool sa
 
 		RELEASE_ARRAY(buffer);
 
-		return true;
+		return toSave->GetUid();
 	}
 
-	return false;
+	return 0;
 }
 
 bool M_Resources::SaveMeta(Resource* toSave, std::string assetsPath)
@@ -614,7 +623,6 @@ void M_Resources::ImportModel(const char* path, char** buffer, unsigned int buff
 		//WARNING: assuming that all the mesh is made from triangles
 		std::string fbxName = "";
 		App->physFS->SplitFilePath(path, nullptr, nullptr, &fbxName, nullptr);
-		//GameObject* sceneRoot = App->scene->CreateGameObject(fbxName.c_str(), nullptr);
 		uint32 ID = resourceModel->AddModelNode(GenerateId(), fbxName.c_str(), float4x4::identity, App->scene->GetRoot()->GetUid());
 
 		MeshLoader::Private::LoadAiSceneMeshes(scene, scene->mRootNode, path, resourceModel, ID);
