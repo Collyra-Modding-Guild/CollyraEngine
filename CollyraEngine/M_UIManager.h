@@ -16,8 +16,7 @@ class WG_Hierarchy;
 class WG_Inspector;
 class WG_About;
 class WG_Playbar;
-
-
+class WG_ResourceCount;
 
 class M_UIManager : public Module
 {
@@ -79,6 +78,8 @@ public:
 	WG_Inspector*	inspectorWindow;
 	WG_About*		aboutWindow;
 	WG_Playbar*		playWindow;
+	WG_ResourceCount* resourceCount;
+
 
 private:
 	//Bool controllers for the editor menus-----------

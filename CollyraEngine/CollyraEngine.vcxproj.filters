@@ -409,6 +409,10 @@
     <ClInclude Include="ModelLoader.h">
       <Filter>Sources\Helpers\Loaders</Filter>
     </ClInclude>
+    <ClInclude Include="ImGuizmo\ImGuizmo.h" />
+    <ClInclude Include="WG_ResourceCount.h">
+      <Filter>Sources\WindowGroup</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="log.cpp">
@@ -671,6 +675,10 @@
     </ClCompile>
     <ClCompile Include="ModelLoader.cpp">
       <Filter>Sources\Helpers\Loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuizmo\ImGuizmo.cpp" />
+    <ClCompile Include="WG_ResourceCount.cpp">
+      <Filter>Sources\WindowGroup</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -28,6 +28,7 @@
 #include "WG_Inspector.h"
 #include "WG_About.h"
 #include "WG_Playbar.h"
+#include "WG_ResourceCount.h"
 
 //OpenGL
 #include "OpenGL.h"
@@ -40,7 +41,7 @@
 
 M_UIManager::M_UIManager(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), showDemoWindow(false), showConfigMenu(false),
 configWindow(nullptr), consoleWindow(nullptr), sceneWindow(nullptr), hierarchyWindow(nullptr), inspectorWindow(nullptr),
-playWindow(nullptr), aboutWindow(nullptr), lastSavedId(0)
+playWindow(nullptr), aboutWindow(nullptr), resourceCount(nullptr), lastSavedId(0), showLoadScenePop(false)
 {}
 
 // Destructor
@@ -58,6 +59,7 @@ bool M_UIManager::Awake()
 	windowGroups.push_back(inspectorWindow = new WG_Inspector(true));
 	windowGroups.push_back(aboutWindow = new WG_About(false));
 	windowGroups.push_back(playWindow = new WG_Playbar(true));
+	windowGroups.push_back(resourceCount = new WG_ResourceCount(true));
 
 	return true;
 }

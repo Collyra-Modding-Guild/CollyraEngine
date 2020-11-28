@@ -56,6 +56,7 @@ public:
 	uint32 GenerateId();
 	std::string FindLibraryFile(uint id);
 	void SetDeleteResources(bool newState);
+	void GetResourcesByType(std::vector<const Resource*>& resources, R_TYPE type) const;
 
 private:
 	void ImportModel(const char* path, char** buffer, unsigned int bufferSize, R_Model* resourceModel);

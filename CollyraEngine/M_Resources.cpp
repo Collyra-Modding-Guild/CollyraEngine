@@ -451,7 +451,7 @@ void M_Resources::UnloadResource(uint32 toUnloadId)
 
 void M_Resources::CheckResourcesToUnload()
 {
-	std::map<uint, Resource*>::iterator it = resourceMap.begin();
+	std::map<uint, Resource*>::const_iterator it = resourceMap.begin();
 
 	int size = resourceMap.size();
 
@@ -566,6 +566,15 @@ void M_Resources::SetDeleteResources(bool newState)
 {
 	if (newState != deleteResources)
 		deleteResources = !deleteResources;
+}
+
+void M_Resources::GetResourcesByType(std::vector<const Resource*>& resources, R_TYPE type) const
+{
+	for (std::map<uint, Resource*>::const_iterator it = resourceMap.begin(); it != resourceMap.end(); ++it)
+	{
+		if (it->second->GetType() == type)
+			resources.push_back(it->second);
+	}
 }
 
 std::string M_Resources::DuplicateFile(const char* path)
