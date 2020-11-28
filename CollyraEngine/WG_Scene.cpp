@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "M_Window.h"
 #include "M_Renderer3D.h"
+#include "M_Resources.h"
 
 #include "M_Scene.h"
 #include "M_Camera3D.h"
@@ -9,6 +10,7 @@
 
 #include "GameObject.h"
 #include "C_Transform.h"
+#include "R_Resource.h"
 
 #include "MathGeoLib/include/Math/float4x4.h"
 
@@ -45,6 +47,49 @@ updateStatus WG_Scene::Update()
 
 
 		HandleGuizmo();
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Asset"))
+			{
+				std::string assetStr = "";
+				assetStr.resize(payload->DataSize);
+
+				memcpy(&assetStr.at(0), payload->Data, payload->DataSize);
+
+				if (assetStr != "")
+				{
+					uint id = App->resources->ImportResourceFromAssets(assetStr.c_str());
+
+					if (id > 0)
+					{
+						Resource* loadedResource = App->resources->RequestResource(id);
+
+						if (loadedResource != nullptr)
+						{
+							switch (loadedResource->GetType())
+							{
+							case R_TYPE::MESH:
+								break;
+							case R_TYPE::TEXTURE:
+							{
+								App->scene->SetResourceToGameObject(id, loadedResource->GetType());
+							}
+							break;
+							case R_TYPE::MATERIAL:
+								break;
+							default:
+								break;
+							}
+
+							App->resources->UnloadResource(id);
+						}
+
+					}
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
 
 
 		ImGui::EndChild();

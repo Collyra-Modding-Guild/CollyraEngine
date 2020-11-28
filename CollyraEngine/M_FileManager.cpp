@@ -403,7 +403,7 @@ bool M_FileManager::HasExtension(const char* path, std::string extension) const
 bool M_FileManager::HasExtension(const char* path, std::vector<std::string> extensions) const
 {
 	std::string ext = "";
-	SplitFilePath(path, nullptr, nullptr, &ext);
+	SplitFilePath(path, nullptr, nullptr, nullptr, &ext);
 	if (ext == "")
 		return true;
 	for (uint i = 0; i < extensions.size(); i++)
