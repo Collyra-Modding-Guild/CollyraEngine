@@ -42,6 +42,10 @@ bool M_Scene::Awake()
 	currentScene->root->CreateComponent(COMPONENT_TYPE::TRANSFORM);
 	currentScene->root->SetUid(0);
 
+	//Demo Camera-----
+	GameObject* camera = App->scene->CreateGameObject("Camera");
+	camera->CreateComponent(COMPONENT_TYPE::CAMERA);
+
 	return true;
 }
 
