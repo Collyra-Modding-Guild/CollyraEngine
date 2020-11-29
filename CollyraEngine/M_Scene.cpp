@@ -112,14 +112,34 @@ updateStatus M_Scene::PostUpdate(float dt)
 			stack.push(currNode->children[i]);
 		}
 
+		int checkCulling = 0;
+
 		for (int i = 0; i < cameras.size(); i++)
 		{
 			CameraCuling(currNode, cameras[i]);
+
+			C_Camera* currentCam = cameras[i];
+
+			if (currentCam->IsCulling())
+				checkCulling++;
+
 		}
 		if (App->camera->GetCamera())
 		{
 			CameraCuling(currNode, App->camera->GetCamera());
+
+			if(App->camera->GetCamera()->IsCulling())
+				checkCulling++;
 		}
+
+		if (currNode->GetComponent<C_Mesh>() != nullptr) 
+		{
+			if (checkCulling == 0)
+			{
+				currNode->GetComponent<C_Mesh>()->SetActive(true);
+			}
+		}
+		
 
 	}
 
