@@ -1,143 +1,39 @@
 #include "C_Mesh.h"
 #include "Globals.h"
-
 #include "C_Transform.h"
+
+#include "Application.h"
+#include "M_Resources.h"
+#include "R_Mesh.h"
 
 #include "OpenGL.h"
 
-C_Mesh::C_Mesh(bool active) : Component(COMPONENT_TYPE::MESH, active), idIndex(-1), idVertex(-1), idNormals(-1), idTextureCoords(-1),
-drawWire(false), drawNormVertices(false), drawNormFaces(false), drawFaces(true)
-{}
-
-C_Mesh::C_Mesh(std::vector<float3> vertices, std::vector<uint> indices, std::vector<float3> normals, std::vector<float2> textureCoords, bool active) :
-	Component(COMPONENT_TYPE::MESH, active),
-	idIndex(-1), idVertex(-1), idNormals(-1), idTextureCoords(-1),
-	drawWire(false), drawNormVertices(false), drawNormFaces(false), drawFaces(true)
+C_Mesh::C_Mesh(bool active) : Component(COMPONENT_TYPE::MESH, active),
+drawWire(false), drawNormVertices(false), drawNormFaces(false), drawFaces(true), rMeshId(-1), rMesh(nullptr)
 {}
 
 C_Mesh::~C_Mesh()
 {
-	ClearMesh();
+	App->resources->UnloadResource(rMeshId);
 }
 
-void C_Mesh::GenerateMesh(const char* meshName, const char* meshPath, std::vector<float3> vertices, std::vector<uint> indices, std::vector<float3> normals, std::vector<float2> textureCoords)
+AABB C_Mesh::GetAABB() const
 {
-	this->vertices = vertices;
-	this->indices = indices;
-	this->normals = normals;
-	this->textureCoords = textureCoords;
-
-	GenerateBuffers();
-	GenerateWireColor();
-	SetNameAndPath(meshName, meshPath);
+	return rMesh ? rMesh->GetAABB() : AABB();
 }
 
-void C_Mesh::SetNameAndPath(const char* meshName, const char* meshPath)
-{
-	name = meshName;
-	path = meshPath;
-}
-
-void C_Mesh::GenerateBuffers()
-{
-	if (!indices.empty() && !vertices.empty())
-	{
-		glGenBuffers(1, (GLuint*)&(idVertex));
-		glBindBuffer(GL_ARRAY_BUFFER, idVertex);
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float3), &vertices[0], GL_STATIC_DRAW);
-
-		GenerateSize(this->myGameObject->GetComponent<C_Transform>()->GetGlobalScale());
-
-		glGenBuffers(1, (GLuint*)&(idIndex));
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndex);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint), &indices[0], GL_STATIC_DRAW);
-
-		if (!normals.empty())
-		{
-			glGenBuffers(1, (GLuint*)&(idNormals));
-			glBindBuffer(GL_ARRAY_BUFFER, idNormals);
-			glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(float3), &normals[0], GL_STATIC_DRAW);
-		}
-
-		if (!textureCoords.empty())
-		{
-			glGenBuffers(1, (GLuint*)&(idTextureCoords));
-			glBindBuffer(GL_ARRAY_BUFFER, idTextureCoords);
-			glBufferData(GL_ARRAY_BUFFER, textureCoords.size() * sizeof(float2), &textureCoords[0], GL_STATIC_DRAW);
-		}
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	}
-}
-
-void C_Mesh::GenerateWireColor()
-{
-	wireColor = Color((float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f, (float)(std::rand() % 255) / 255.f);
-}
-
-void C_Mesh::GenerateSize(float3 scale)
-{
-	float maxY = 0, maxX = 0, maxZ = 0;
-	float minY = FLT_MAX, minX = FLT_MAX, minZ = FLT_MAX;
-
-	for (int i = 0; i < vertices.size(); i++)
-	{
-		if (vertices[i].x > maxX)
-		{
-			maxX = vertices[i].x;
-		}
-
-		if (vertices[i].x < minX)
-		{
-			minX = vertices[i].x;
-		}
-
-		if (vertices[i].y > maxY)
-		{
-			maxY = vertices[i].y;
-		}
-
-		if (vertices[i].y < minY)
-		{
-			minY = vertices[i].y;
-		}
-
-		if (vertices[i].z > maxZ)
-		{
-			maxZ = vertices[i].z;
-		}
-
-		if (vertices[i].z < minZ)
-		{
-			minZ = vertices[i].z;
-		}
-	}
-
-	meshSize.x = abs(maxX - minX) * scale.x;
-	meshSize.y = abs(maxY - minY) * scale.y;
-	meshSize.z = abs(maxZ - minZ) * scale.z;
-}
-
-void C_Mesh::ClearMesh()
-{
-	vertices.clear();
-	indices.clear();
-	normals.clear();
-	textureCoords.clear();
-
-	glDeleteBuffers(1, &idVertex);
-	glDeleteBuffers(1, &idIndex);
-	glDeleteBuffers(1, &idNormals);
-	glDeleteBuffers(1, &idTextureCoords);
-}
-
+//void C_Mesh::SetAABB()
+//{
+//	aabb.SetNegativeInfinity();
+//	aabb.Enclose(&vertices[0], (uint)vertices.size());
+//}
 
 // ------------------------------------------------------------
 void C_Mesh::Render(bool* drawState, float4x4 transform, int textureID, Color color) const
 {
+	if (rMesh == nullptr)
+		return;
+
 	glPushMatrix();
 	glMultMatrixf((float*)&transform);
 
@@ -145,6 +41,7 @@ void C_Mesh::Render(bool* drawState, float4x4 transform, int textureID, Color co
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+		Color wireColor = rMesh->GetWireColor();
 		glColor3f(wireColor.r, wireColor.g, wireColor.b);
 		glLineWidth(2.0f);
 
@@ -171,27 +68,30 @@ void C_Mesh::InnerRender(int textureID) const
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
 
-	if (idNormals != -1)
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glEnable(GL_POLYGON_OFFSET_FILL);
+
+	if (rMesh->GetNormalsId() != -1)
 		glEnableClientState(GL_NORMAL_ARRAY);
 
-	if (idTextureCoords != -1)
+	if (rMesh->GetTextureCoordsId() != -1)
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	if (textureID != -1)
 		glEnableClientState(GL_TEXTURE_2D);
 
-	glBindBuffer(GL_ARRAY_BUFFER, idVertex);
+	glBindBuffer(GL_ARRAY_BUFFER, rMesh->GetVerticesId());
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 
-	if (idNormals != -1)
+	if (rMesh->GetNormalsId() != -1)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, idNormals);
+		glBindBuffer(GL_ARRAY_BUFFER, rMesh->GetNormalsId());
 		glNormalPointer(GL_FLOAT, 0, NULL);
 	}
 
-	if (idTextureCoords != -1)
+	if (rMesh->GetTextureCoordsId() != -1)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, idTextureCoords);
+		glBindBuffer(GL_ARRAY_BUFFER, rMesh->GetTextureCoordsId());
 		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 	}
 
@@ -200,9 +100,9 @@ void C_Mesh::InnerRender(int textureID) const
 		glBindTexture(GL_TEXTURE_2D, textureID);
 	}
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndex);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rMesh->GetIndicesId());
 
-	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, NULL);
+	glDrawElements(GL_TRIANGLES, rMesh->GetIndicesSize(), GL_UNSIGNED_INT, NULL);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
@@ -218,23 +118,26 @@ void C_Mesh::InnerRender(int textureID) const
 
 void C_Mesh::DrawNormals(bool* drawState) const
 {
+	if (rMesh == nullptr)
+		return;
+
 	glLineWidth(2.0f);
 
 	glBegin(GL_LINES);
 
 	uint lineLength = 1;
 
-	if (vertices.size() == normals.size())
-		for (uint i = 0, j = 0; i < vertices.size(); i++)
+	if (rMesh->GetVerticesSize() == rMesh->GetNormalsSize())
+		for (uint i = 0, j = 0; i < rMesh->GetVerticesSize(); i++)
 		{
 			//Draw Vertex Normals-----------------------
-			if (drawNormVertices == true|| drawState[NORMAL_V])
+			if (drawNormVertices == true || drawState[NORMAL_V])
 			{
 				glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
 
 
-				float3 vector = vertices[i];
-				float3 normal = vector + normals[i] * lineLength;
+				float3 vector = rMesh->vertices[i];
+				float3 normal = vector + rMesh->normals[i] * lineLength;
 
 				glVertex3f(vector.x, vector.y, vector.z); glVertex3f(normal.x, normal.y, normal.z);
 			}
@@ -245,9 +148,9 @@ void C_Mesh::DrawNormals(bool* drawState) const
 			//Draw Faces normals-------------------
 			if (j == 3 && (drawNormFaces == true || drawState[NORMAL_F]))
 			{
-				float3 P0 = vertices[i - 2];
-				float3 P1 = vertices[i - 1];
-				float3 P2 = vertices[i];
+				float3 P0 = rMesh->vertices[i - 2];
+				float3 P1 = rMesh->vertices[i - 1];
+				float3 P2 = rMesh->vertices[i];
 
 				float3 V0 = P0 - P1;
 				float3 V1 = P2 - P1;
@@ -272,24 +175,100 @@ void C_Mesh::DrawNormals(bool* drawState) const
 	glLineWidth(1.0f);
 }
 
+void C_Mesh::DrawOutline(float4x4& transform) const
+{
+	if (rMesh == nullptr)
+		return;
+
+	glPushMatrix();
+	glMultMatrixf((float*)&transform);
+
+	glDisable(GL_LIGHTING);
+
+	glLineWidth(10.f);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+
+	// - - - - - - - - - -
+	glPolygonMode(GL_FRONT, GL_LINE);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, rMesh->GetVerticesId());
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rMesh->GetIndicesId());
+	glVertexPointer(3, GL_FLOAT, 0, 0);
+	glDrawElements(GL_TRIANGLES, rMesh->GetIndicesSize() * 3, GL_UNSIGNED_INT, 0);
+	glDisable(GL_POLYGON_OFFSET_FILL);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	// - - - - - - - - - -
+	glLineWidth(1.0f);
+
+	glEnable(GL_LIGHTING);
+	glPopMatrix();
+
+}
+
 uint C_Mesh::GetVerticesSize() const
 {
-	return vertices.size();
+	return rMesh ? rMesh->GetVerticesSize() : 0;
+}
+
+std::vector<float3>* C_Mesh::GetVertices()
+{
+	return rMesh ? rMesh->GetVertices() : nullptr;
+}
+
+float3* C_Mesh::GetVerticesIndex()
+{
+	return rMesh ? rMesh->GetVerticesIndex() : nullptr;
+}
+
+std::vector<uint>* C_Mesh::GetIndices()
+{
+	return rMesh ? rMesh->GetIndices() : nullptr;
 }
 
 uint C_Mesh::GetIndicesSize() const
 {
-	return indices.size();
+	return rMesh ? rMesh->GetIndicesSize() : 0;
+}
+
+uint* C_Mesh::GetIndicesIndex()
+{
+	return rMesh ? rMesh->GetIndicesIndex() : nullptr;
+}
+
+std::vector<float3>* C_Mesh::GetNormals()
+{
+	return rMesh ? rMesh->GetNormals() : nullptr;
 }
 
 uint C_Mesh::GetNormalsSize() const
 {
-	return normals.size();
+	return rMesh ? rMesh->GetNormalsSize() : 0;
+}
+
+float3* C_Mesh::GetNormalsIndex()
+{
+	return rMesh ? rMesh->GetNormalsIndex() : nullptr;
+}
+
+std::vector<float2>* C_Mesh::GetTextCoords()
+{
+	return rMesh ? rMesh->GetTextCoords() : nullptr;
 }
 
 uint C_Mesh::GetTextureCoordsSize() const
 {
-	return textureCoords.size();
+	return rMesh ? rMesh->GetTextureCoordsSize() : 0;
+}
+
+float2* C_Mesh::GetTextureCoordsIndex()
+{
+	return rMesh ? rMesh->GetTextureCoordsIndex() : nullptr;
 }
 
 bool C_Mesh::GetDrawingWire() const
@@ -332,17 +311,26 @@ void C_Mesh::SetDrawingNormFaces(bool newState)
 	drawNormFaces = newState;
 }
 
-float3 C_Mesh::GetSize() const
+void C_Mesh::SetResourceId(uint newId)
 {
-	return meshSize;
+	App->resources->UnloadResource(rMeshId);
+
+	rMeshId = newId;
+	rMesh = (R_Mesh*)App->resources->RequestResource(rMeshId);
 }
 
-std::string C_Mesh::GetMeshName() const
+int C_Mesh::GetResourceId()
 {
-	return name;
+	return rMeshId;
 }
 
-std::string C_Mesh::GetMeshPath() const
+std::string C_Mesh::GetName() const
 {
-	return path;
+	return rMesh ? rMesh->GetName() : "No Mesh Loaded";
 }
+
+std::string C_Mesh::GetPath() const
+{
+	return rMesh ? rMesh->GetLibraryPath() : "No Mesh Loaded";
+}
+

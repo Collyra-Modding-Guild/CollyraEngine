@@ -9,18 +9,24 @@ class Timer
 public:
 
 	// Constructor
-	Timer();
+	Timer(bool isRunning = true);
+	~Timer();
+	
 
 	void Start();
 	void StartFrom(uint time);
 	void Stop();
-	void ReStart();
 
+	void Pause();
+	void Resume();
+	void Tick(bool step);
+	
 	Uint32 Read();
 	float ReadSec() const;
 
 	bool	running;
-
+	bool	pause;
+	bool    tick;
 
 private:
 

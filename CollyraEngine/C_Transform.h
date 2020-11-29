@@ -16,7 +16,8 @@ public:
 	void SetLocalTransformation(float4x4 transform);
 	void SetLocalTransformation(float3 pos, Quat rotation, float3 scale);
 	void GenerateGlobalTransformationFrom(float4x4 parentTransform);
-	void SetGlobalTransformation(float4x4 globalTransform);
+	void UpdateGuizmoTransformation(float4x4 globalTransform, float4x4 parentGlobalTransform);
+	void UpdateLocalTransformMaintingGlobalToFit(float4x4 newParentTransform);
 
 	//Getters-------------------
 	float4x4	GetLocalTransform() const;
@@ -27,6 +28,8 @@ public:
 	float3		GetRotationEuler() const;
 	float3		GetScale() const;
 	float3		GetGlobalScale() const;
+
+	bool hasUpdated;
 
 private:
 	void GenerateEulerFromRot();

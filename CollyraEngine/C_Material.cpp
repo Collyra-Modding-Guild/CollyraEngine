@@ -1,36 +1,18 @@
 #include "C_Material.h"
 
-//TODO: This hurts	my soul
 #include "Application.h"
 #include "M_Resources.h"
+#include "R_Material.h"
 
 #include "OpenGL.h"
 
-C_Material::C_Material(bool active) : Component(COMPONENT_TYPE::MATERIAL, active), idTextureImage(0), color(Grey), useDefaultTexture(false),
-defaultTextureId(App->resources->defaultTextureId)
+C_Material::C_Material(bool active) : Component(COMPONENT_TYPE::MATERIAL, active), useDefaultTexture(false),
+defaultTextureId(App->resources->defaultTextureId), resourceId(0), myResource(nullptr)
 {}
 
 C_Material::~C_Material()
 {
-	ClearTexture();
-}
-
-void C_Material::SetTexture(uint idTexture)
-{
-	ClearTexture();
-
-	idTextureImage = idTexture;
-}
-
-void C_Material::SetTextureNameAndPath(const char* name, const char* path)
-{
-	this->name = name;
-	this->path = path;
-}
-
-void C_Material::SetColor(Color color)
-{
-	this->color = color;
+	App->resources->UnloadResource(resourceId);
 }
 
 void C_Material::SetUseDefaultTexture(bool defaultTextureOn)
@@ -49,12 +31,17 @@ uint C_Material::GetTexture() const
 	if (useDefaultTexture == true)
 		return defaultTextureId;
 
-	return idTextureImage;
+	return myResource ? myResource->GetTextureId() : 0;
 }
 
 Color C_Material::GetColor() const
 {
-	return color;
+	return myResource ? myResource->GetColor() : Grey;
+}
+
+void C_Material::SetColor(Color newColor) 
+{
+	return myResource ? myResource->SetColor(newColor) : 0;
 }
 
 std::string C_Material::GetMaterialName() const
@@ -62,7 +49,7 @@ std::string C_Material::GetMaterialName() const
 	if (useDefaultTexture == true)
 		return "Checkers";
 
-	return name;
+	return myResource ? myResource->GetName() : "No Material Loaded";
 }
 
 std::string C_Material::GetMaterialPath() const
@@ -70,10 +57,71 @@ std::string C_Material::GetMaterialPath() const
 	if (useDefaultTexture == true)
 		return "Default";
 
-	return path;
+	return myResource ? myResource->GetLibraryPath() : "No Material Loaded";
 }
 
-void C_Material::ClearTexture()
+std::string C_Material::GetTextureName() const
 {
-	glDeleteTextures(1, &idTextureImage);
+	return myResource ? myResource->GetTextureName() : "No Texture Loaded";
+}
+
+std::string C_Material::GetTexturePath() const
+{
+	return myResource ? myResource->GetTexturePath() : "No Texture Loaded";
+}
+
+void C_Material::SetResourceId(uint newId)
+{
+	int prevId = resourceId;
+
+	resourceId = newId;
+	myResource = (R_Material*)App->resources->RequestResource(resourceId);
+
+	App->resources->UnloadResource(prevId);
+}
+
+int C_Material::GetResourceId() const
+{
+	return resourceId;
+}
+
+R_Material* C_Material::GetResourcePointer() const
+{
+	return myResource;
+}
+
+void C_Material::ResourceUpdated(std::map<uint, bool>* ids)
+{
+	std::map<uint, bool>::iterator it = ids->find(resourceId);
+
+	if (it != ids->end())
+	{
+		if (it->second == true)
+			SetResourceId(it->first);
+		else
+		{
+			App->resources->UnloadResource(resourceId);
+			myResource = nullptr;
+			resourceId = 0;
+		}
+	}
+
+	if (myResource != nullptr)
+	{
+		it = ids->find(myResource->GetTextureResourceId());
+
+		if (it != ids->end())
+		{
+			if (it->second == true)
+			{
+				myResource->SetTextureResourceId(it->first);
+			}
+			else
+			{
+				myResource->SetTextureResourceId(it->first, false);
+			}
+		}
+	}
+
+
 }

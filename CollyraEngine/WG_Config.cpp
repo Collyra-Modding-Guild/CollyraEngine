@@ -3,6 +3,9 @@
 #include "M_Window.h"
 #include "M_Renderer3D.h"
 #include "M_Input.h"
+#include "M_Camera3D.h"
+
+#include "C_Camera.h"
 
 #include "p2Defs.h"
 
@@ -19,7 +22,7 @@
 #include "Devil/include/il.h"
 
 WG_Config::WG_Config(bool isActive) : WindowGroup(WG_CONFIG, isActive),
-fpsLog(FRAMERATE_LOG_SIZE), msLog(FRAMERATE_LOG_SIZE), newInput(false), drawFlags{true, false, false, false},
+fpsLog(FRAMERATE_LOG_SIZE), msLog(FRAMERATE_LOG_SIZE), newInput(false), drawFlags{true, false, false, false, false, true, false, false},
 buffWinW(0), buffWinH(0)
 {}
 
@@ -356,6 +359,72 @@ updateStatus WG_Config::Update()
 		ImGui::SameLine();
 		ImGui::Checkbox("Face Normals", &drawFlags[NORMAL_F]);
 
+
+		ImGui::BulletText("Others:");
+
+		ImGui::Checkbox("Bounding Box", &drawFlags[BOUNDING_BOX]);
+		ImGui::SameLine();
+		ImGui::Checkbox("Frustum", &drawFlags[FRUSTUM]);
+
+		ImGui::Checkbox("Mouse Ray", &drawFlags[MOUSE_RAY]);
+		ImGui::SameLine();
+		ImGui::Checkbox("Outline", &drawFlags[OUTLINE]);
+
+	}
+
+	//  - - - - - - Main Camera Customization - - - - - - 
+	if (ImGui::CollapsingHeader("Scene Camera Options"))
+	{
+		ImGui::Spacing();
+
+		//  - - - - - - Culling - - - - - - 
+		ImGui::BulletText("Main Scene Camera:");
+		bool check = App->camera->GetSceneCameraCuling();
+		if (ImGui::Checkbox("Camera Culling", &check))
+		{
+			App->camera->SetCameraSceneCulling(check);
+		}
+
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		//  - - - - - - FOV - - - - - - 
+		ImGui::Text("Field of View");
+		ImGui::SameLine();
+		float currentFoV = App->camera->GetCamera()->GetHorizontalFov();
+
+		if (ImGui::SliderFloat("##fov", &currentFoV, 30.f, 170.f))
+		{
+			App->camera->GetCamera()->SetHorizontalFov(currentFoV);
+			App->renderer3D->RefreshCamera();
+		}
+
+		float currentNearPlane = App->camera->GetCamera()->GetNearPlane();
+		float currentFarPlane = App->camera->GetCamera()->GetFarPlane();
+
+		//  - - - - - - Near Plane - - - - - - 
+		ImGui::Spacing();
+		ImGui::Text("Near Plane");
+		ImGui::SameLine();
+
+
+		if (ImGui::DragFloat("##main_nearplane", &currentNearPlane, 1.0f, 0.1f, currentFarPlane))
+		{
+			App->camera->GetCamera()->SetNearPlane(currentNearPlane);
+			App->renderer3D->RefreshCamera();
+		}
+
+		//  - - - - - - Far Plane - - - - - - 
+		ImGui::Spacing();
+		ImGui::Text("Far Plane");
+		ImGui::SameLine();
+
+		if (ImGui::DragFloat("##main_farplane", &currentFarPlane, 1.0f, currentNearPlane, 1000.f))
+		{
+			App->camera->GetCamera()->SetFarPlane(currentFarPlane);
+			App->renderer3D->RefreshCamera();
+		}
+		
 	}
 
 	ImGui::End();

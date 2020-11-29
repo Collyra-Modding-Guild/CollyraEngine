@@ -1,14 +1,19 @@
 #pragma once
 
+#include "MathGeoLib/include/MathGeoLib.h"
+
 #include <string>
 #include <vector>
+#include <map>
+#include "p2Defs.h"
 
 enum class COMPONENT_TYPE
 {
 	NO_TYPE = -1,
 	TRANSFORM,
 	MESH,
-	MATERIAL
+	MATERIAL,
+	CAMERA
 };
 
 class Component;
@@ -22,6 +27,7 @@ public:
 
 	void Start();
 	void Update(float dt);
+	void PostUpdate(float dt);
 
 	Component* CreateComponent(COMPONENT_TYPE type);
 
@@ -30,26 +36,51 @@ public:
 
 	template<typename T>
 	T* GetComponent();
+	const std::vector<Component*>* GetAllComponents() const;
 
-	unsigned int GetId() const;
-	void SetId(unsigned int newId);
+	uint32 GetUid() const;
+	void SetUid(uint32 newId);
+
+	bool IsSelected() const;
+	void SetSelected(bool newId);
 
 	std::string GetName() const;
-
 	void SetName(std::string newName);
 
+	void SetActive(bool newState);
+
+	void SetParent(GameObject* newParent);
+	GameObject* GetParent() const;
+
 	void NotifyChildDeath(GameObject* deadChild);
+	void AddChildren(GameObject* newChild);
+	GameObject* GetChild(int id) const;
+	std::vector<GameObject*> GetChilds() const;
+
+	const AABB GetGameObjectAABB() const;	
+
+	void ResourcesUpdated(std::map<unsigned int, bool>* resourcesUpdated);
+
+private:
+
+	void BoundingBoxUpdate();
+
 
 public:
 	std::vector<Component*> components;
-	GameObject* parent;
 	std::vector<GameObject*> children;
 
 	bool active;
 
 private:
 	std::string name;
-	unsigned int id;
+	GameObject* parent;
+	uint32 uid;
+
+	AABB aabb;
+	OBB	obb;
+
+	bool selected;
 
 };
 

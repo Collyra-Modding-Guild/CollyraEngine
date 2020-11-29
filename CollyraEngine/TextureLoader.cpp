@@ -3,6 +3,7 @@
 #include "M_FileManager.h"
 
 #include "OpenGL.h"
+#include "R_Texture.h"
 
 #include "Devil/include/ilut.h"
 #pragma comment( lib, "Devil/libx86/DevIL.lib" )
@@ -16,7 +17,6 @@ bool TextureLoader::Init()
 	iluInit();
 	ilutInit();
 	ilutRenderer(ILUT_OPENGL);
-	// ilClearColour(255, 255, 255, 000);
 
 	//Check for error
 	ILenum ilError = ilGetError();
@@ -66,20 +66,64 @@ uint TextureLoader::LoadDefaultTexture()
 	return texID;
 }
 
-uint TextureLoader::Load(const char* path)
+uint TextureLoader::Import(const char* path, char** buffer, unsigned int bufferSize)
 {
-	char* buffer = nullptr;
 
-	uint bytesFile = App->physFS->Load(path, &buffer);
+	ilLoadL(IL_TYPE_UNKNOWN, (const void*)*buffer, bufferSize);
 
-	if(bytesFile == 0)
-		return 0;
+	return true;
+}
 
-	ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, bytesFile);
+uint TextureLoader::Save(char** compressedBuffer)
+{
+	ilEnable(IL_FILE_OVERWRITE);
+
+	ILuint size = 0;
+	ILubyte* data;
+
+	ilSetInteger(IL_DXTC_FORMAT, IL_DXT5);// To pick a specific DXT compression use
+	size = ilSaveL(IL_DDS, NULL, 0); // Get the size of the data buffer
+
+	if (size > 0)
+	{
+		data = new ILubyte[size]; // allocate data buffer
+		if (ilSaveL(IL_DDS, data, size) > 0) // Save to buffer with the ilSaveIL function
+		{
+			*compressedBuffer = (char*)data;
+		}
+	}
+
+
+	return size;
+}
+
+uint TextureLoader::Load(char* buffer, uint bufferSize, R_Texture* rTexture)
+{
+	ILuint ImageName = 0;
+	ilGenImages(1, &ImageName);
+	ilBindImage(ImageName);
+
+	ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, bufferSize);
 	uint ret = ilutGLBindTexImage();
-	
-	RELEASE_ARRAY(buffer);
+
+	rTexture->textureId = ret;
 
 	return ret;
 }
 
+//uint TextureLoader::Load(const char* path)
+//{
+//	char* buffer = nullptr;
+//
+//	uint bytesFile = App->physFS->Load(path, &buffer);
+//
+//	if (bytesFile == 0)
+//		return 0;
+//
+//	ilLoadL(IL_TYPE_UNKNOWN, (const void*)buffer, bytesFile);
+//	uint ret = ilutGLBindTexImage();
+//
+//	RELEASE_ARRAY(buffer);
+//
+//	return ret;
+//}

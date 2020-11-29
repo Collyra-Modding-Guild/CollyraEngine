@@ -152,7 +152,7 @@ updateStatus M_Input::PreUpdate(float dt)
 			{     
 				char* droppedFilePath = e.drop.file;
 
-				App->resources->ImportResourceInternal(droppedFilePath);
+				App->resources->ImportResourceFromAssets(droppedFilePath);
 				
 				SDL_free(droppedFilePath);
 				break;

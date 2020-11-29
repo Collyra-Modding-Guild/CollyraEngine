@@ -36,7 +36,7 @@ void WG_Hierarchy::Cleanup()
 	rootPointer = nullptr;
 }
 
-void WG_Hierarchy::CreateHierarchy(const GameObject* gameObject)
+void WG_Hierarchy::CreateHierarchy(GameObject* gameObject)
 {
 	//Reset the Flags
 	SetTreeNodeFlags(gameObject);
@@ -46,12 +46,13 @@ void WG_Hierarchy::CreateHierarchy(const GameObject* gameObject)
 	//Check Clicked
 	if (ImGui::IsItemClicked())
 	{
-		if (gameObject->GetId() != ROOT)
+		if (gameObject->GetUid() != ROOT_ID)
 		{
-			App->uiManager->SetFocusedGameObject(gameObject->GetId());
-			selected = gameObject->GetId();
+			App->uiManager->SetFocusedGameObject(gameObject->GetUid());
 		}
 	}
+
+	HandleDragAndDrop(gameObject);
 
 	//If the Node is opened, display the childs
 	if (isNodeOpened)
@@ -66,16 +67,81 @@ void WG_Hierarchy::CreateHierarchy(const GameObject* gameObject)
 
 }
 
-void WG_Hierarchy::SetTreeNodeFlags(const GameObject* gameObject)
+void WG_Hierarchy::SetTreeNodeFlags(GameObject* gameObject)
 {
-	flag = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+	flag = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_FramePadding;
 
-	if (gameObject->GetId() == ROOT)
+	if (gameObject->GetUid() == ROOT_ID)
 		flag |= ImGuiTreeNodeFlags_DefaultOpen;
 
 	if (gameObject->children.size() == 0)
 		flag |= ImGuiTreeNodeFlags_Leaf;
 
-	if (gameObject->GetId() == selected)
+
+	if (gameObject->GetUid() == selected) 
 		flag |= ImGuiTreeNodeFlags_Selected;
+
+}
+
+void WG_Hierarchy::HandleDragAndDrop(GameObject* currentGo)
+{
+	//Drop on Target--------------
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("GameObject"))
+		{
+			GameObject* gameObjectBuffer = (GameObject*)(payload->Data);
+			if (gameObjectBuffer != nullptr)
+			{
+				GameObject* transportedGameObject = App->scene->GetGameObject(gameObjectBuffer->GetUid());
+				if (transportedGameObject != nullptr)
+				{
+					DrpGameObject(transportedGameObject, currentGo);
+				}
+			}
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+	if (currentGo->GetUid() != ROOT_ID)
+	{
+		//Get Source-----------------
+		if (ImGui::BeginDragDropSource())
+		{
+			ImGui::SetDragDropPayload("GameObject", currentGo, sizeof(GameObject));
+			if (currentGo->children.size() > 0)
+			{
+				ImGui::Text("%s (+ %i...)", currentGo->GetName().c_str(), currentGo->children.size());
+			}
+			else
+			{
+				ImGui::Text("%s", currentGo->GetName().c_str());
+			}
+			ImGui::EndDragDropSource();
+		}
+	}
+}
+
+void WG_Hierarchy::DrpGameObject(GameObject* moved, GameObject* objective)
+{
+	//If the moved is already child of the objective OR the objective is child of Moved
+	if (moved->GetParent() == objective || objective->GetParent() == moved)
+	{
+		return;
+	}
+
+	moved->SetParent(objective);
+}
+
+void WG_Hierarchy::NewFocusedGameObject(int id)
+{
+	selected = id;
+}
+
+void WG_Hierarchy::OnDestroyedId(int id)
+{
+	if (id == selected)
+	{
+		selected = -1;
+	}
 }

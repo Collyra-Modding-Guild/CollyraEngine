@@ -10,6 +10,7 @@
 #include "C_Material.h"
 #include "C_Mesh.h"
 #include "C_Transform.h"
+#include "C_Camera.h"
 
 
 WG_Inspector::WG_Inspector(bool isActive) : WindowGroup(WG_INSPECTOR, isActive), focusedGameObject(nullptr),
@@ -30,9 +31,10 @@ updateStatus WG_Inspector::Update()
 	{
 		C_Mesh* mesh = focusedGameObject->GetComponent<C_Mesh>();
 		C_Material* material = focusedGameObject->GetComponent<C_Material>();
+		C_Camera* camera = focusedGameObject->GetComponent<C_Camera>();
 
 		//Delete the selected item - - - - - - - - - - - -
-		if(DeleteGameObject(SDL_SCANCODE_DELETE))
+		if (DeleteGameObject(SDL_SCANCODE_DELETE))
 			return UPDATE_CONTINUE;
 
 
@@ -48,6 +50,9 @@ updateStatus WG_Inspector::Update()
 		if (material != nullptr)
 			DrawMaterialComponent(ImGuiTreeNodeFlags_DefaultOpen, material);
 
+		if (camera != nullptr)
+			DrawCameraComponent(ImGuiTreeNodeFlags_DefaultOpen, camera);
+
 	}
 
 	ImGui::End();
@@ -58,15 +63,25 @@ updateStatus WG_Inspector::Update()
 void WG_Inspector::Cleanup()
 {}
 
-void WG_Inspector::SetGameObject(uint focusedGameObject)
+void WG_Inspector::SetGameObject(int focusedGameObject)
 {
+	if (this->focusedGameObject != nullptr)
+	{
+		this->focusedGameObject->SetSelected(false);
+	}
+
 	this->focusedGameObject = App->scene->GetGameObject(focusedGameObject);
 	App->scene->focusedGameObject = this->focusedGameObject;
 
 	if (this->focusedGameObject == nullptr)
+	{
 		focusedId = -1;
+	}
 	else
+	{
 		focusedId = focusedGameObject;
+		this->focusedGameObject->SetSelected(true);
+	}
 }
 
 int WG_Inspector::GetFocusedGameObjectId() const
@@ -79,7 +94,7 @@ void WG_Inspector::SetGameObject(GameObject* focusedGameObject)
 	if (focusedGameObject != nullptr)
 	{
 		this->focusedGameObject = focusedGameObject;
-		focusedId = focusedGameObject->GetId();
+		focusedId = focusedGameObject->GetUid();
 	}
 }
 
@@ -101,12 +116,15 @@ void WG_Inspector::DrawTransformComponent(ImGuiTreeNodeFlags_ flag)
 {
 	float3 selectedPosition = focusedGameObject->GetComponent<C_Transform>()->GetPosition();
 	float3 selectedRotation = focusedGameObject->GetComponent<C_Transform>()->GetRotationEuler();
+	float3 initialRot = selectedRotation;
 	float3 selectedScale = focusedGameObject->GetComponent<C_Transform>()->GetScale();
 
 	ImGui::SameLine();
 
 	if (ImGui::CollapsingHeader("Transform", flag))
 	{
+		bool anyTransformPerformed = false;
+		bool transformUpdate = false;
 
 		// POSITION - - - - - - - - - - - - - - - - - - - - - - 
 		ImGui::Spacing();
@@ -117,22 +135,29 @@ void WG_Inspector::DrawTransformComponent(ImGuiTreeNodeFlags_ flag)
 		ImGui::Text("X");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##posX", &selectedPosition.x);
+		transformUpdate = ImGui::DragFloat("##posX", &selectedPosition.x);
+		anyTransformPerformed ? transformUpdate : anyTransformPerformed = transformUpdate;
+
 
 		ImGui::SameLine();
 		ImGui::Text("Y");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##posY", &selectedPosition.y);
+		transformUpdate = ImGui::DragFloat("##posY", &selectedPosition.y);
+		anyTransformPerformed ? transformUpdate : anyTransformPerformed = transformUpdate;
 
 		ImGui::SameLine();
 		ImGui::Text("Z");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##posZ", &selectedPosition.z);
+		transformUpdate = ImGui::DragFloat("##posZ", &selectedPosition.z);
+		anyTransformPerformed ? transformUpdate : anyTransformPerformed = transformUpdate;
+
 
 		// ROTATION - - - - - - - - - - - - - - - - - - - - - - 
 		ImGui::Spacing();
+
+		bool rotationUpdate = false;
 
 		ImGui::Text("Rotation   ");
 		ImGui::SameLine();
@@ -140,19 +165,26 @@ void WG_Inspector::DrawTransformComponent(ImGuiTreeNodeFlags_ flag)
 		ImGui::Text("X");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##rotX", &selectedRotation.x);
+		transformUpdate = ImGui::DragFloat("##rotX", &selectedRotation.x);
+		anyTransformPerformed ? transformUpdate : anyTransformPerformed = transformUpdate;
+		rotationUpdate ? transformUpdate : rotationUpdate = transformUpdate;
+
 
 		ImGui::SameLine();
 		ImGui::Text("Y");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##rotY", &selectedRotation.y);
+		transformUpdate = ImGui::DragFloat("##rotY", &selectedRotation.y);
+		anyTransformPerformed ? transformUpdate : anyTransformPerformed = transformUpdate;
+		rotationUpdate ? transformUpdate : rotationUpdate = transformUpdate;
 
 		ImGui::SameLine();
 		ImGui::Text("Z");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##rotZ", &selectedRotation.z);
+		transformUpdate = ImGui::DragFloat("##rotZ", &selectedRotation.z);
+		anyTransformPerformed ? transformUpdate : anyTransformPerformed = transformUpdate;
+		rotationUpdate ? transformUpdate : rotationUpdate = transformUpdate;
 
 
 		// SCALE  - - - - - - - - - - - - - - - - - - - - - - 
@@ -164,19 +196,38 @@ void WG_Inspector::DrawTransformComponent(ImGuiTreeNodeFlags_ flag)
 		ImGui::Text("X");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##scaX", &selectedScale.x);
+		transformUpdate = ImGui::DragFloat("##scaX", &selectedScale.x);
+		anyTransformPerformed ? transformUpdate : anyTransformPerformed = transformUpdate;
 
 		ImGui::SameLine();
 		ImGui::Text("Y");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##scaY", &selectedScale.y);
+		transformUpdate = ImGui::DragFloat("##scaY", &selectedScale.y);
+		anyTransformPerformed ? transformUpdate : anyTransformPerformed = transformUpdate;
 
 		ImGui::SameLine();
 		ImGui::Text("Z");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		ImGui::DragFloat("##scaZ", &selectedScale.z);
+		transformUpdate = ImGui::DragFloat("##scaZ", &selectedScale.z);
+		anyTransformPerformed ? transformUpdate : anyTransformPerformed = transformUpdate;
+
+		if (anyTransformPerformed)
+		{
+			Quat qObjectInitialRot = focusedGameObject->GetComponent<C_Transform>()->GetRotation();
+
+			if (rotationUpdate)
+			{
+				float3 rotIncrement = selectedRotation - initialRot;
+				rotIncrement *= DEGTORAD;
+
+				Quat qRotIncrement = qRotIncrement.FromEulerXYZ(rotIncrement.x, rotIncrement.y, rotIncrement.z);
+				qObjectInitialRot = qObjectInitialRot * qRotIncrement;
+			}
+
+			focusedGameObject->GetComponent<C_Transform>()->SetLocalTransformation(selectedPosition, qObjectInitialRot, selectedScale);;
+		}
 
 		ImGui::Spacing();
 	}
@@ -198,14 +249,14 @@ void WG_Inspector::DrawMeshComponent(ImGuiTreeNodeFlags_ flag, C_Mesh* mesh)
 	{
 
 		char meshName[100];
-		strcpy_s(meshName, 100, mesh->GetMeshName().c_str());
+		strcpy_s(meshName, 100, mesh->GetName().c_str());
 
 		ImGui::Text("Mesh          ");
 		ImGui::SameLine();
 		ImGui::TextColored({ 0 , 255 , 255 , 100 }, meshName);
 
 		char meshPath[100];
-		strcpy_s(meshPath, 100, mesh->GetMeshPath().c_str());
+		strcpy_s(meshPath, 100, mesh->GetPath().c_str());
 
 		ImGui::Text("Mesh Path     ");
 		ImGui::SameLine();
@@ -279,9 +330,9 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* m
 		char materialName[100];
 		strcpy_s(materialName, 100, material->GetMaterialName().c_str());
 
-		ImGui::Spacing();	
+		ImGui::Spacing();
 
-		ImGui::Text("Texture          ");
+		ImGui::Text("Material          ");
 		ImGui::SameLine();
 		ImGui::TextColored({ 0 , 255 , 255 , 100 }, materialName);
 
@@ -290,9 +341,30 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* m
 
 		ImGui::Spacing();
 
-		ImGui::Text("Texture Path     ");
+		ImGui::Text("Material Path     ");
 		ImGui::SameLine();
 		ImGui::TextColored({ 0 , 255 , 255 , 100 }, materialPath);
+
+		ImGui::Spacing();
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		char textureName[100];
+		strcpy_s(textureName, 100, material->GetTextureName().c_str());
+
+
+		ImGui::Text("Texture          ");
+		ImGui::SameLine();
+		ImGui::TextColored({ 0 , 255 , 255 , 100 }, textureName);
+
+		char texturePath[100];
+		strcpy_s(texturePath, 100, material->GetTexturePath().c_str());
+
+		ImGui::Spacing();
+
+		ImGui::Text("Texture Path     ");
+		ImGui::SameLine();
+		ImGui::TextColored({ 0 , 255 , 255 , 100 }, texturePath);
 
 		ImGui::Spacing();
 		ImGui::Spacing();
@@ -334,31 +406,97 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* m
 		ImGui::Text("R");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(60.0f);
-		ImGui::DragFloat("##colorR", &(myColor.r));
+		ImGui::SliderFloat("##colorR", &myColor.r, 0.f, 255.f);
 
 		ImGui::SameLine();
 		ImGui::Text("G");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(60.0f);
-		ImGui::DragFloat("##colorG", &myColor.g);
+		ImGui::SliderFloat("##colorG", &myColor.g, 0.f, 255.f);
 
 		ImGui::SameLine();
 		ImGui::Text("B");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(60.0f);
-		ImGui::DragFloat("##colorB", &myColor.b);
+		ImGui::SliderFloat("##colorB", &myColor.b, 0.f, 255.f);
 
 		ImGui::SameLine();
 		ImGui::Text("A");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(60.0f);
-		ImGui::DragFloat("##colorA", &myColor.a);
+		ImGui::SliderFloat("##colorA", &myColor.a, 0.f, 255.f);
+
+		myColor.r /= 255;
+		myColor.g /= 255;
+		myColor.b /= 255;
+		myColor.a /= 255;
+
+		material->SetColor(myColor);
 	}
 
 	ImGui::Spacing();
 	ImGui::Spacing();
 	ImGui::Separator();
 	ImGui::Spacing();
+}
+
+void WG_Inspector::DrawCameraComponent(ImGuiTreeNodeFlags_ flag, C_Camera* camera)
+{
+
+	bool cameraActive = camera->IsActive();
+	if (ImGui::Checkbox("##CameraActive", &cameraActive))
+		camera->SetActive(cameraActive);
+
+	ImGui::SameLine();
+
+	if (ImGui::CollapsingHeader("Camera", flag))
+	{
+		bool check = camera->IsCulling();
+		if (ImGui::Checkbox("Camera Culling", &check))
+		{
+			camera->SetCulling(check);
+		}
+
+		ImGui::Spacing();
+		ImGui::Text("Field of View");
+		ImGui::SameLine();
+		float currentFoV = camera->GetHorizontalFov();
+
+		if (ImGui::SliderFloat("##fov", &currentFoV, 30.f, 170.f))
+		{
+			camera->SetHorizontalFov(currentFoV);
+		}
+
+		float currentNearPlane = camera->GetNearPlane();
+		float currentFarPlane = camera->GetFarPlane();
+
+		ImGui::Spacing();
+		ImGui::Text("Near Plane");
+		ImGui::SameLine();
+
+	
+
+		if (ImGui::DragFloat("##nearplane", &currentNearPlane, 1.0f, 0.1f, currentFarPlane))
+		{
+			camera->SetNearPlane(currentNearPlane);
+		}
+
+
+		ImGui::Spacing();
+		ImGui::Text("Far Plane");
+		ImGui::SameLine();
+
+		if (ImGui::DragFloat("##farplane", &currentFarPlane, 1.0f, currentNearPlane, 1000.f))
+		{
+			camera->SetFarPlane(currentFarPlane);
+		}
+
+	}
+
+	ImGui::Spacing();
+	ImGui::Separator();
+	ImGui::Spacing();
+
 }
 
 void WG_Inspector::DrawHeaderGameObject()

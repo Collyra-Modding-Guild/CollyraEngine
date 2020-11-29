@@ -6,8 +6,6 @@
 
 class GameObject;
 
-#define ROOT 0
-
 class WG_Hierarchy : public WindowGroup
 {
 public:
@@ -20,15 +18,22 @@ public:
 
 	virtual void Cleanup();
 
+	void NewFocusedGameObject(int id);
+	void OnDestroyedId(int id);
+
 private:
-	void CreateHierarchy(const GameObject* parent);
-	void SetTreeNodeFlags(const GameObject* parent);
+	void CreateHierarchy(GameObject* parent);
+	void SetTreeNodeFlags(GameObject* parent);
+	void HandleDragAndDrop(GameObject* currentGo);
+
+	void DrpGameObject(GameObject* from, GameObject* to);
+
 
 private:
 	ImGuiTreeNodeFlags	flag;
 	int					selected;
 
-	const GameObject*	rootPointer;
+	GameObject*	rootPointer;
 
 };
 

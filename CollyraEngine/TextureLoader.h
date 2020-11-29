@@ -8,7 +8,7 @@
 
 #define DEFAULT_TEXTURE_SIZE 40
 
-class Texture;
+class R_Texture;
 
 namespace TextureLoader
 {
@@ -16,7 +16,12 @@ namespace TextureLoader
 	void CleanUp();
 
 	uint LoadDefaultTexture();
-	uint Load(const char* path);
+
+	uint Import(const char* path, char** buffer, unsigned int bufferSize);
+	uint Save(char** compressedBuffer);
+	uint Load(char* buffer, uint bufferSize, R_Texture* rTexture);
+
+	//uint Load(const char* path);
 
 }
 

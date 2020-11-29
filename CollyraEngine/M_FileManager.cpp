@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "M_FileManager.h"
 #include "PathNode.h"
+#include "R_Resource.h"
 
 #include "PhysFS/include/physfs.h"
 
@@ -54,7 +55,8 @@ bool M_FileManager::CleanUp()
 void M_FileManager::CreateFolderDirs()
 {
 	// If the standard folders do not exist, create them
-	std::vector<const char*> dirs = { ASSETS_FOLDER, MESHES_PATH, TEXTYRES_PATH };
+	std::vector<const char*> dirs = { ASSETS_FOLDER, ASSETS_TEXTURES_PATH,
+		LIBRARY_PATH,LIBRARY_MESHES,LIBRARY_TEXTURES,LIBRARY_SCENES,LIBRARY_MODELS, LIBRARY_MATERIALS, ASSETS_MODELS_PATH };
 
 	for (uint i = 0; i < dirs.size(); ++i)
 	{
@@ -211,9 +213,15 @@ PathNode M_FileManager::GetAllFiles(const char* directory, std::vector<std::stri
 	if (Exists(directory))
 	{
 		root.path = directory;
-		App->physFS->SplitFilePath(directory, nullptr, &root.localPath);
+		std::string extension;
+		App->physFS->SplitFilePath(directory, nullptr, nullptr, &root.localPath, &extension);
 		if (root.localPath == "")
 			root.localPath = directory;
+		else
+		{
+			if (extension != "")
+				root.localPath += "." + extension;
+		}
 
 		std::vector<std::string> file_list, dir_list;
 		DiscoverFiles(directory, file_list, dir_list);
@@ -251,6 +259,119 @@ PathNode M_FileManager::GetAllFiles(const char* directory, std::vector<std::stri
 	return root;
 }
 
+std::string M_FileManager::FindInPathNode(const char* toFind, PathNode& searchIn)
+{
+	for (int i = 0; i < searchIn.children.size(); i++)
+	{
+		size_t findPos = searchIn.children[i].path.find(toFind);
+
+		if (findPos < searchIn.children[i].path.length())
+		{
+			return searchIn.children[i].path;
+		}
+
+		std::string searchInChilds;
+		searchInChilds = FindInPathNode(toFind, searchIn.children[i]);
+
+		if (searchInChilds != "")
+			return searchInChilds.c_str();
+	}
+
+	return "";
+}
+
+R_TYPE M_FileManager::GetTypeFromExtension(const char* path)
+{
+	std::string extension = LowerCaseString(path);;
+
+	if (extension == MODELS_EXTENSION)
+	{
+		return R_TYPE::MODEL;
+	}
+	else if (extension == TEXTURES_EXTENSION)
+	{
+		return R_TYPE::TEXTURE;
+	}
+	else if (extension == MATERIAL_EXTENSION)
+	{
+		return R_TYPE::MATERIAL;
+	}
+	else if (extension == SCENES_EXTENSION)
+	{
+		return R_TYPE::SCENE;
+	}
+	else if (extension == MESH_EXTENSION)
+	{
+		return R_TYPE::MESH;
+	}
+
+	return R_TYPE::NO_TYPE;
+}
+
+std::string M_FileManager::GetInternalExtensionFromType(R_TYPE type)
+{
+	std::string ret = ".";
+
+	if (type == R_TYPE::MODEL)
+	{
+		ret += MODELS_EXTENSION;
+	}
+	else if (type == R_TYPE::TEXTURE)
+	{
+		ret += TEXTURES_EXTENSION;
+	}
+	else if (type == R_TYPE::MATERIAL)
+	{
+		ret += MATERIAL_EXTENSION;
+	}
+	else if (type == R_TYPE::SCENE)
+	{
+		ret += SCENES_EXTENSION;
+	}
+	else if (type == R_TYPE::MESH)
+	{
+		ret += MESH_EXTENSION;
+	}
+
+	return ret;
+}
+
+std::string M_FileManager::GetExtensionFolderLibraryFromType(R_TYPE type)
+{
+	std::string ret = "";
+
+	if (type == R_TYPE::MODEL)
+	{
+		ret = LIBRARY_MODELS;
+	}
+	else if (type == R_TYPE::TEXTURE)
+	{
+		ret = LIBRARY_TEXTURES;
+	}
+	else if (type == R_TYPE::MATERIAL)
+	{
+		ret = LIBRARY_MATERIALS;
+	}
+	else if (type == R_TYPE::SCENE)
+	{
+		ret = LIBRARY_SCENES;
+	}
+	else if (type == R_TYPE::MESH)
+	{
+		ret = LIBRARY_MESHES;
+	}
+
+	return ret;
+}
+
+bool M_FileManager::IsMeta(std::string& path)
+{
+	if (path.find("meta") < path.length())
+		return true;
+
+	return false;
+}
+
 void M_FileManager::GetRealDir(const char* path, std::string& output) const
 {
 	output = PHYSFS_getBaseDir();
@@ -274,7 +395,7 @@ std::string M_FileManager::GetPathRelativeToAssets(const char* originalPath) con
 bool M_FileManager::HasExtension(const char* path) const
 {
 	std::string ext = "";
-	SplitFilePath(path, nullptr, nullptr, &ext);
+	SplitFilePath(path, nullptr, nullptr, nullptr, &ext);
 	return ext != "";
 }
 
@@ -288,7 +409,7 @@ bool M_FileManager::HasExtension(const char* path, std::string extension) const
 bool M_FileManager::HasExtension(const char* path, std::vector<std::string> extensions) const
 {
 	std::string ext = "";
-	SplitFilePath(path, nullptr, nullptr, &ext);
+	SplitFilePath(path, nullptr, nullptr, nullptr, &ext);
 	if (ext == "")
 		return true;
 	for (uint i = 0; i < extensions.size(); i++)
@@ -326,13 +447,20 @@ void M_FileManager::SplitFilePath(const char* full_path, std::string* projectPat
 	{
 		std::string full(full_path);
 		size_t pos_separator = full.find_last_of("\\/");
-		size_t projectSeparator = full.find("CollyraEngine/Engine");
+		size_t projectSeparator = full.find("CollyraEngine/");
+		size_t projectSeparator2 = full.find("CollyraEngine/Engine");
 		size_t pos_dot = full.find_last_of(".");
 
 		if (projectPath != nullptr)
 		{
 			if (projectSeparator < full.length())
-				*projectPath = full.substr(projectSeparator + 21);
+			{
+				if (projectSeparator2 < full.length())
+					*projectPath = full.substr(projectSeparator2 + 21);
+				else
+					*projectPath = full.substr(projectSeparator + 14);
+
+			}
 			else
 				projectPath->clear();
 		}
@@ -441,8 +569,8 @@ unsigned int M_FileManager::Load(const char* path, const char* file, char** buff
 bool M_FileManager::ImportFile(const char* file, std::string& relativePath)
 {
 	std::string fileStr, extensionStr;
-	SplitFilePath(file, nullptr, &fileStr, &extensionStr);
-	std::string extensionFolder = GetExtensionFolder(extensionStr.c_str()) + ("/");
+	SplitFilePath(file, nullptr, nullptr, &fileStr, &extensionStr);
+	std::string extensionFolder = GetExtensionFolderAssets(extensionStr.c_str()) + ("/");
 
 	relativePath = relativePath.append(extensionFolder + fileStr.append(".") + extensionStr);
 
@@ -458,36 +586,106 @@ bool M_FileManager::DuplicateFile(const char* srcFile, const char* dstFile)
 
 	FILE* source = nullptr;
 	fopen_s(&source, srcFile, "rb");
-	PHYSFS_file* dest = PHYSFS_openWrite(dstFile);
 
-	if (source && dest)
+	if (source)
 	{
-		while (size = fread_s(buf, HUGE_STR, 1, HUGE_STR, source))
-			PHYSFS_write(dest, buf, 1, size);
+		PHYSFS_file* dest = PHYSFS_openWrite(dstFile);
 
-		fclose(source);
-		PHYSFS_close(dest);
-		ret = true;
+		if (source && dest)
+		{
+			while (size = fread_s(buf, HUGE_STR, 1, HUGE_STR, source))
+				PHYSFS_write(dest, buf, 1, size);
 
-		LOG("File System copied file [%s] to [%s]", srcFile, dstFile);
+			fclose(source);
+			PHYSFS_close(dest);
+			ret = true;
+
+			LOG("File System copied file [%s] to [%s]", srcFile, dstFile);
+		}
+		else
+			LOG("File System error while copy from [%s] to [%s]", srcFile, dstFile);
 	}
 	else
-		LOG("File System error while copy from [%s] to [%s]", srcFile, dstFile);
+		LOG("File System error opening [%s], file not found or did not exist!", srcFile);
+
+
 
 	return ret;
 }
 
-std::string M_FileManager::GetExtensionFolder(const char* fileExtension)
+bool M_FileManager::DeleteFileIn(const char* srcFile)
+{
+	if (Exists(srcFile))
+	{
+		PHYSFS_delete(srcFile);
+		return true;
+	}
+
+	return false;
+}
+
+std::string M_FileManager::GetExtensionFolderAssets(const char* fileExtension)
 {
 	std::string extension = LowerCaseString(fileExtension);;
+	std::string ret = "";
 
 	if (extension == "fbx")
 	{
-		return MESHES_PATH;
+		ret = ASSETS_MODELS_PATH;
 	}
-	else if (extension == "png")
+	else if (extension == "png" || extension == "jpg" || extension == "dds")
 	{
-		return TEXTYRES_PATH;
+		ret = ASSETS_TEXTURES_PATH;
+	}
+
+
+	return ret;
+}
+
+std::string M_FileManager::GetExtensionFolderLibrary(const char* fileExtension)
+{
+	std::string extension = LowerCaseString(fileExtension);;
+	std::string ret = "";
+
+	if (extension == "fbx")
+	{
+		ret = LIBRARY_MODELS;
+	}
+	else if (extension == "png" || extension == "jpg" || extension == "dds" || extension == "tga")
+	{
+		ret = LIBRARY_TEXTURES;
+	}
+	else if (extension == "collscene")
+	{
+		ret = LIBRARY_SCENES;
+	}
+	else if (extension == "collmat")
+	{
+		ret = LIBRARY_MATERIALS;
+	}
+
+	return ret;
+}
+
+std::string M_FileManager::GetInternalExtension(const char* externalExtension)
+{
+	std::string extension = LowerCaseString(externalExtension);;
+
+	if (extension == "fbx")
+	{
+		return std::string(MODELS_EXTENSION);
+	}
+	else if (extension == "png" || extension == "jpg" || extension == "dds" || extension == "tga")
+	{
+		return std::string(TEXTURES_EXTENSION);
+	}
+	else if (extension == "collscene")
+	{
+		return std::string(SCENES_EXTENSION);
+	}
+	else if (extension == "collmat")
+	{
+		return std::string(MATERIAL_EXTENSION);
 	}
 
 	return std::string("unknown");
@@ -561,7 +759,7 @@ bool M_FileManager::Remove(const char* file)
 	return ret;
 }
 
-uint64 M_FileManager::GetLastModTime(const char* filename)
+uint64 M_FileManager::GetCurrDate(const char* filename)
 {
 	return PHYSFS_getLastModTime(filename);
 }

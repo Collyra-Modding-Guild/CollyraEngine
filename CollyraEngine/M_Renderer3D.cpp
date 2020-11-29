@@ -5,6 +5,9 @@
 #include "M_UIManager.h"
 #include "M_Window.h"
 #include "M_Resources.h"
+#include "M_UIManager.h"
+
+#include "WG_Scene.h"
 
 #include "Primitive.h"
 #include "TextureLoader.h"
@@ -92,6 +95,10 @@ bool M_Renderer3D::Awake()
 
 		//OpenGl Additional Enables----------
 		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_STENCIL_TEST);
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_LIGHTING);
 		glEnable(GL_COLOR_MATERIAL);
@@ -162,10 +169,15 @@ uint M_Renderer3D::GetTextureBuffer()
 // PreUpdate: clear buffer
 updateStatus M_Renderer3D::PreUpdate(float dt)
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	glLoadIdentity();
 
 	glMatrixMode(GL_MODELVIEW);
+	//glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	glStencilMask(0x00);
 
 	M_Camera3D* cameraModule = (M_Camera3D*)App->GetModulePointer(M_CAMERA3D);
 	if (cameraModule == nullptr)
@@ -174,8 +186,8 @@ updateStatus M_Renderer3D::PreUpdate(float dt)
 	}
 
 	glLoadMatrixf(cameraModule->GetViewMatrix());
-
-	lights[0].SetPos(cameraModule->Position.x, cameraModule->Position.y, cameraModule->Position.z);
+	float3 Position = cameraModule->GetCameraPosition();
+	lights[0].SetPos(Position.x, Position.y, Position.z);
 
 	for (uint i = 0; i < MAX_LIGHTS; ++i)
 		lights[i].Render();
@@ -195,6 +207,10 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 
 	if (drawState == nullptr)
 		return UPDATE_STOP;
+
+	BeginStencilMode();
+	App->PreDraw(drawState);
+	EndStencilMode();
 
 	App->Draw(drawState);
 
@@ -224,8 +240,15 @@ bool M_Renderer3D::CleanUp()
 	return true;
 }
 
+void M_Renderer3D::RefreshCamera()
+{
+	float w, h;
+	App->uiManager->sceneWindow->GetWindowSize(w, h);
+	UpdateCamera(w, h);
+}
+
 //Called when a window is alterated
-void M_Renderer3D::OnResize(float width, float height)
+void M_Renderer3D::UpdateCamera(float width, float height)
 {
 	if (width == 0 || height == 0)
 		return;
@@ -233,9 +256,8 @@ void M_Renderer3D::OnResize(float width, float height)
 	//Calculate OpenGl projection matrix -----------------
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	ProjectionMatrix = perspective(60.0f, width / height, 0.125f, 512.0f);
-	glLoadMatrixf(&ProjectionMatrix);
-
+	App->camera->SetAspectRatio(width / height);
+	glLoadMatrixf((GLfloat*)App->camera->GetProjectionMatrix());
 	glViewport(0, 0, width, height);
 
 	glMatrixMode(GL_MODELVIEW);
@@ -247,18 +269,40 @@ void M_Renderer3D::OnResize(float width, float height)
 void M_Renderer3D::BeginDrawMode()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-	glClear(GL_COLOR_BUFFER_BIT);
-	glClear(GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	glStencilMask(0xFF);
 
 	//Grind + Axis
 	CPlane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
+
 }
 
 void M_Renderer3D::EndDrawMode()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void M_Renderer3D::BeginStencilMode()
+{
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilMask(0x00);
+	glDisable(GL_DEPTH_TEST);
+	glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+}
+
+void M_Renderer3D::EndStencilMode()
+{
+	glStencilMask(0xFF);
+	glStencilFunc(GL_ALWAYS, 0, 0xFF);
+	glEnable(GL_DEPTH_TEST);
+
+
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	glStencilMask(0xFF);
 }
 
 bool M_Renderer3D::GetVSync()

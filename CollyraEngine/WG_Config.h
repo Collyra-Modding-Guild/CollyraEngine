@@ -35,8 +35,9 @@ private:
 	bool				newInput;
 
 	bool				drawFlags[MAX_FLAGS];
-	int buffWinH;
-	int buffWinW;
+
+	int					buffWinH;
+	int					buffWinW;
 
 };
 

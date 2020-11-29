@@ -1,18 +1,18 @@
 #include "Application.h"
 #include "MeshLoader.h"
 #include "M_FileManager.h"
-#include "M_Scene.h"
+#include "M_Resources.h"
 
-#include "GameObject.h"
+#include "R_Model.h"
+#include "R_Material.h"
+#include "R_Mesh.h"
 #include "C_Mesh.h"
-#include "C_Transform.h"
-#include "C_Material.h"
 
 #include "TextureLoader.h"
+#include "MaterialLoader.h"
 
 #include "p2Defs.h"
-#include "MathGeoLib/include/Math/float3.h"
-#include "MathGeoLib/include/Math/float2.h"
+#include "MathGeoLib/include/MathGeoLib.h"
 
 #include "Assimp/include/cimport.h"
 #include "Assimp/include/scene.h"
@@ -28,7 +28,6 @@ void MeshLoader::Init()
 	struct aiLogStream stream;
 	stream = aiGetPredefinedLogStream(aiDefaultLogStream_DEBUGGER, nullptr);
 	aiAttachLogStream(&stream);
-
 }
 
 void MeshLoader::CleanUp()
@@ -37,194 +36,93 @@ void MeshLoader::CleanUp()
 	aiDetachAllLogStreams();
 }
 
-void MeshLoader::Load(const char* path)
+
+uint MeshLoader::ImportMeshFromModel(const char* filePath, aiMesh* myMesh)
 {
-	char* buffer = nullptr;
+	uint MeshID = 0;
 
-	uint bytesFile = App->physFS->Load(path, &buffer);
+	aiMesh* mesh = myMesh;
 
-	if (bytesFile == 0)
+	std::vector<float3> vertices;
+	std::vector<float3> normals;
+	std::vector<float2> textureCoords;
+	std::vector<uint> indices;
+
+	vertices.reserve(mesh->mNumVertices);
+	textureCoords.reserve(mesh->mNumVertices);
+	if (mesh->HasNormals())
+		normals.reserve(mesh->mNumVertices);
+
+	Private::LoadVertices(mesh, vertices, normals, textureCoords);
+	if (vertices.size() == 0)
 	{
-		return;
+		LOG("Error loading vertices in scene")
+			return 0;
 	}
 
-	const aiScene* scene = aiImportFileFromMemory(buffer, bytesFile, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
-
-	RELEASE_ARRAY(buffer);
-
-	if (scene)
+	indices.reserve(mesh->mNumFaces * 3);
+	bool ret = Private::LoadIndices(mesh, indices);
+	if (indices.size() == 0 || !ret)
 	{
-		//WARNING: assuming that all the mesh is made from triangles
-		std::string fbxName = "";
-		App->physFS->SplitFilePath(path, nullptr, nullptr, &fbxName, nullptr);
-		GameObject* sceneRoot = App->scene->CreateGameObject(fbxName.c_str(), nullptr);
-
-		LoadSceneMeshes(scene, scene->mRootNode, path, sceneRoot);
-
-		aiReleaseImport(scene);
+		LOG("Error loading indices in scene")
+			return 0;
 	}
-	else
-	{
-		LOG("Error loading aiScene %s", path);
-	}
+	LOG("New mesh with %i vertices & %i indices", vertices.size(), indices.size());
 
+	//MESH IMPORT & SAVE ----------------------------------------
+	std::string path = "";
+	std::string meshName = "";
+	std::string meshExtension = "";
+	App->physFS->SplitFilePath(filePath, nullptr, &path, &meshName, &meshExtension);
+
+	R_Mesh* newMesh = (R_Mesh*)App->resources->CreateResource(R_TYPE::MESH);
+	MeshID = newMesh->GetUid();
+	newMesh->GenerateMesh(vertices, indices, normals, textureCoords);
+
+	App->resources->SaveResource(newMesh, filePath, false);
+	App->resources->DeleteResource(MeshID);
+
+	return MeshID;
 }
 
-bool MeshLoader::LoadSceneMeshes(const aiScene* scene, const aiNode* parent, const char* filePath, GameObject* gbParent, float4x4 transform)
+uint MeshLoader::Save(R_Mesh* mesh, char** fileBuffer)
 {
-	for (int i = 0; i < parent->mNumChildren; i++)
-	{
-		LoadNodeMeshes(scene, parent->mChildren[i], filePath, gbParent, transform);
-	}
+	// amount of indices / vertices /  normals / texture_coords / AABB
+	uint ranges[4] = { mesh->GetIndicesSize(), mesh->GetVerticesSize(), mesh->GetNormalsSize(), mesh->GetTextureCoordsSize() };
+	uint size = sizeof(ranges) + sizeof(uint) * mesh->GetIndicesSize() + sizeof(float3) * mesh->GetVerticesSize()
+		+ sizeof(float3) * mesh->GetNormalsSize() + sizeof(float2) * mesh->GetNormalsSize();
 
-	return true;
-}
+	*fileBuffer = new char[size]; // Allocate
+	char* cursor = *fileBuffer;
+	uint bytes = sizeof(ranges); // First store ranges
+	memcpy(cursor, ranges, bytes);
+	cursor += bytes;
 
-bool MeshLoader::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const char* filePath, GameObject* parent, float4x4 transform)
-{
-	GameObject* newGameObject = nullptr;
+	// Store indices
+	bytes = sizeof(uint) * mesh->GetIndicesSize();
+	memcpy(cursor, mesh->GetIndicesIndex(), bytes);
+	cursor += bytes;
 
-	aiVector3D translation, scaling;
-	aiQuaternion rotation;
-	node->mTransformation.Decompose(scaling, rotation, translation);
-	float3 pos(translation.x, translation.y, translation.z);
-	Quat rot(rotation.x, rotation.y, rotation.z, rotation.w);
-	float3 scale(scaling.x, scaling.y, scaling.z);
+	// Store vertices
+	bytes = sizeof(float3) * mesh->GetVerticesSize();
+	memcpy(cursor, mesh->GetVerticesIndex(), bytes);
+	cursor += bytes;
 
-	if (node->mNumMeshes > 0)
-	{
-		GameObject* newGameObject = App->scene->CreateGameObject(node->mName.C_Str(), parent);
+	// Store normals
+	bytes = sizeof(float3) * mesh->GetNormalsSize();
+	memcpy(cursor, mesh->GetNormalsIndex(), bytes);
+	cursor += bytes;
 
-		//Transform Load------
+	// Store textureCoords
+	bytes = sizeof(float2) * mesh->GetTextureCoordsSize();
+	memcpy(cursor, mesh->GetTextureCoordsIndex(), bytes);
+	cursor += bytes;
 
-		newGameObject->GetComponent<C_Transform>()->SetLocalTransformation(pos, rot, scale);
-		parent->GetComponent<C_Transform>()->SetLocalTransformation(transform);
-		newGameObject->GetComponent<C_Transform>()->GenerateGlobalTransformationFrom(transform);
-
-		//Mesh Load---------
-		int meshSize = node->mNumMeshes;
-		for (int i = 0; i < node->mNumMeshes; i++)
-		{
-			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-
-
-			std::vector<float3> vertices;
-			std::vector<float3> normals;
-			std::vector<float2> textureCoords;
-			std::vector<uint> indices;
-
-			vertices.reserve(mesh->mNumVertices);
-			if (mesh->HasNormals())
-				normals.reserve(mesh->mNumVertices);
-			textureCoords.reserve(mesh->mNumVertices);
-
-			LoadVertices(mesh, vertices, normals, textureCoords);
-			if (vertices.size() == 0)
-			{
-				LOG("Error loading vertices in scene")
-					continue;
-			}
-
-			indices.reserve(mesh->mNumFaces * 3);
-			bool ret = LoadIndices(mesh, indices);
-			if (indices.size() == 0 || !ret)
-			{
-				LOG("Error loading indices in scene")
-					continue;
-			}
-			LOG("New mesh with %i vertices & %i indices", vertices.size(), indices.size());
-
-			C_Mesh* newMesh = (C_Mesh*)newGameObject->CreateComponent(COMPONENT_TYPE::MESH);
-
-			std::string path = "";
-			std::string meshName = "";
-			std::string meshExtension = "";
-			App->physFS->SplitFilePath(filePath, nullptr, &path, &meshName, &meshExtension);
-
-			newMesh->GenerateMesh(std::string(meshName + "." + meshExtension).c_str(), filePath, vertices, indices, normals, textureCoords);
-
-			//Materials Load------------
-			if (scene->HasMaterials())
-			{
-				aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-
-				if (material != nullptr)
-					LoadMaterialFromMesh(material, newGameObject, filePath);
-			}
-
-		}
-
-	}
-
-	//We calculate the transform & send it to the recursive interaction
-	// Because we avoid the "empty" TRS parents that assimp generates but we want to keep the Transformation
-	transform = transform * float4x4::FromTRS(pos, rot, scale);
-
-	LoadSceneMeshes(scene, node, filePath, newGameObject == nullptr ? parent : newGameObject, transform);
-
-	return true;
-}
-
-void MeshLoader::LoadMaterialFromMesh(const aiMaterial* mat, GameObject* newGameObject, const char* meshPath)
-{
-	aiString path;
-	mat->GetTexture(aiTextureType_DIFFUSE, 0, &path);
-
-	C_Material* newMaterial = nullptr;
-	aiColor4D materialColor;
-	if (aiGetMaterialColor(mat, AI_MATKEY_COLOR_DIFFUSE, &materialColor) == aiReturn_SUCCESS)
-	{
-		newMaterial = (C_Material*)newGameObject->CreateComponent(COMPONENT_TYPE::MATERIAL);
-		newMaterial->SetColor(Color{ materialColor.r, materialColor.g, materialColor.b, materialColor.a });
-	}
-
-	if (path.length > 0)
-	{
-		std::string loadedPath = "";
-
-		std::string pathRelativeToFbx = path.C_Str();
-		std::string relativePath = "";
-		App->physFS->SplitFilePath(meshPath, nullptr, &relativePath, nullptr, nullptr);
-		pathRelativeToFbx = App->physFS->GetProjectPathFromInternalRelative(relativePath, pathRelativeToFbx);
-		loadedPath = pathRelativeToFbx;
-
-		uint loadTexture = TextureLoader::Load(pathRelativeToFbx.c_str());
-		if (loadTexture == 0)
-		{
-			LOG("Checking if texture exists in Textures Folder....");
-			std::string textureName = "";
-			std::string textureExtension = "";
-			App->physFS->SplitFilePath(path.C_Str(), nullptr, nullptr, &textureName, &textureExtension);
-			std::string defaultPath = TEXTYRES_PATH;
-			defaultPath += "/" + textureName + "." + textureExtension;
-			loadTexture = TextureLoader::Load(defaultPath.c_str());
-			loadedPath = defaultPath;
-		}
-
-		if (loadTexture != 0)
-		{
-			LOG("Texture loaded! ID: %i", loadTexture);
-
-			if (newMaterial == nullptr)
-				newMaterial = (C_Material*)newGameObject->CreateComponent(COMPONENT_TYPE::MATERIAL);
-
-			std::string materialName = "";
-			std::string materialExtension = "";
-			App->physFS->SplitFilePath(loadedPath.c_str(), nullptr, nullptr, &materialName, &materialExtension);
-
-			newMaterial->SetTexture(loadTexture);
-			newMaterial->SetTextureNameAndPath(std::string(materialName + "." + materialExtension).c_str(), loadedPath.c_str());
-
-		}
-		else
-		{
-			LOG("Material found but could not be loaded. Texture not found in path given by scene: %s", pathRelativeToFbx.c_str());
-		}
-	}
+	return size;
 }
 
 
-void MeshLoader::LoadVertices(aiMesh* mesh, std::vector<float3>& vertices, std::vector<float3>& normals, std::vector<float2>& textureCoords)
+void MeshLoader::Private::LoadVertices(aiMesh* mesh, std::vector<float3>& vertices, std::vector<float3>& normals, std::vector<float2>& textureCoords)
 {
 	for (uint i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -258,7 +156,7 @@ void MeshLoader::LoadVertices(aiMesh* mesh, std::vector<float3>& vertices, std::
 	}
 }
 
-bool MeshLoader::LoadIndices(aiMesh* mesh, std::vector<uint>& indices)
+bool MeshLoader::Private::LoadIndices(aiMesh* mesh, std::vector<uint>& indices)
 {
 	for (uint i = 0; i < mesh->mNumFaces; i++)
 	{
@@ -274,5 +172,45 @@ bool MeshLoader::LoadIndices(aiMesh* mesh, std::vector<uint>& indices)
 	}
 
 	return true;
+}
+
+
+
+void MeshLoader::Private::LoadMesh(R_Mesh* myNewMesh, char** buffer, uint id)
+{
+	char* cursor = *buffer;
+	// amount of indices / vertices / normals / texture_coords / AABB
+	uint ranges[4];
+	uint bytes = sizeof(ranges);
+	memcpy(ranges, cursor, bytes);
+	cursor += bytes;
+
+	// Load indices
+	bytes = sizeof(uint) * ranges[0];
+	myNewMesh->GetIndices()->resize(ranges[0]);
+	memcpy(myNewMesh->GetIndicesIndex(), cursor, bytes);
+	cursor += bytes;
+
+	// Load vertices
+	bytes = sizeof(float3) * ranges[1];
+	myNewMesh->GetVertices()->resize(ranges[1]);
+	memcpy(myNewMesh->GetVerticesIndex(), cursor, bytes);
+	cursor += bytes;
+
+	// Load Normals
+	bytes = sizeof(float3) * ranges[2];
+	myNewMesh->GetNormals()->resize(ranges[2]);
+	memcpy(myNewMesh->GetNormalsIndex(), cursor, bytes);
+	cursor += bytes;
+
+	// Load Texture Coords
+	bytes = sizeof(float2) * ranges[3];
+	myNewMesh->GetTextCoords()->resize(ranges[3]);
+	memcpy(myNewMesh->GetTextureCoordsIndex(), cursor, bytes);
+	cursor += bytes;
+
+
+	myNewMesh->SetAABB();
+	myNewMesh->GenerateMesh();
 }
 
