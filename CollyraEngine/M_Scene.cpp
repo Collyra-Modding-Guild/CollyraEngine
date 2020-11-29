@@ -349,6 +349,9 @@ void M_Scene::SetResourceToGameObject(uint resourceId, R_TYPE rType, GameObject*
 	{
 		setTo = focusedGameObject;
 		if (setTo == nullptr)
+		{
+			LOG("You need to have a GameObject selected!!!");
+		}
 			return;
 	}
 

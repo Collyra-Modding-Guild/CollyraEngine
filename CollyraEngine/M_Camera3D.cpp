@@ -69,8 +69,8 @@ updateStatus M_Camera3D::Update(float dt)
 	}
 
 	if (inputModule->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
-	{	
-		ShootRay({ App->uiManager->GetImGuiMousePosition().x, App->uiManager->GetImGuiMousePosition().y });	
+	{
+		ShootRay({ App->uiManager->GetImGuiMousePosition().x, App->uiManager->GetImGuiMousePosition().y });
 	}
 
 
@@ -81,8 +81,6 @@ updateStatus M_Camera3D::Update(float dt)
 // -----------------------------------------------------------------
 void M_Camera3D::CameraMovement(float dt)
 {
-
-	
 	float3 newPos(0, 0, 0);
 	float speed = DEFAULT_MOUSE_SPEED * dt;
 
@@ -90,10 +88,12 @@ void M_Camera3D::CameraMovement(float dt)
 	if (inputModule->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
 		speed = (speed * 2);
 
-	float3 zoom = CameraZoom(dt);
+	float3 zoom = { 0,0,0 };
 
 	if (GetMouseSceneFocus())
 	{
+		zoom = CameraZoom(dt);
+
 		CameraPlanePan(newPos);
 
 		if (inputModule->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
@@ -348,21 +348,21 @@ void M_Camera3D::ShootRay(float2 mousePosition)
 {
 
 	float2 normalized;
-	normalized.x = (mousePosition.x - App->uiManager->GetSceneWindowPosition().x) 
-					/ (App->uiManager->GetSceneWindowSize().x * 0.5) - 1.0f;
+	normalized.x = (mousePosition.x - App->uiManager->GetSceneWindowPosition().x)
+		/ (App->uiManager->GetSceneWindowSize().x * 0.5) - 1.0f;
 
-	normalized.y = (mousePosition.y - App->uiManager->GetSceneWindowPosition().y) 
-					/ (App->uiManager->GetSceneWindowSize().y * 0.5) - 1.0f;
+	normalized.y = (mousePosition.y - App->uiManager->GetSceneWindowPosition().y)
+		/ (App->uiManager->GetSceneWindowSize().y * 0.5) - 1.0f;
 
 
 	// Check if the mouse is inside scene window.
 	if (Abs(normalized.x) < 1.0f && Abs(normalized.y) < 1.0f)
-	{		
+	{
 		ray = sceneCamera->frustum.UnProjectLineSegment(normalized.x, -normalized.y);
 
 		if (!App->uiManager->sceneWindow->usingGizmo)
 			App->scene->OnClickFocusGameObject(ray);
-	}		
+	}
 }
 
 C_Camera* M_Camera3D::GetCamera() const
@@ -398,7 +398,7 @@ bool M_Camera3D::GetMouseSceneFocus()
 	}
 	else
 		return false;
-	
+
 
 }
 

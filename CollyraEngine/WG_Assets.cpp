@@ -18,6 +18,9 @@ WG_Assets::~WG_Assets()
 updateStatus WG_Assets::Update()
 {
 	ImGui::Begin("Assets");
+	ImGui::Text("-Double left click to spawn (except models, into selected GameObject) \n-Middle Click to delete");
+
+	ImGui::Spacing();
 
 	static std::vector<std::string> ignoreExt = { "meta" };
 
