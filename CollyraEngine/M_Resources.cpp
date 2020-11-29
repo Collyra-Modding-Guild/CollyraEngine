@@ -11,14 +11,6 @@
 #include "PathNode.h"
 #include "JsonConfig.h"
 
-#include "Assimp/include/cimport.h"
-#include "Assimp/include/scene.h"
-#include "Assimp/include/postprocess.h"
-
-#include "Assimp/include/mesh.h"
-
-#pragma comment (lib, "Assimp/libx86/assimp.lib")
-
 //Resources ----
 #include "R_Resource.h"
 #include "R_Model.h"
@@ -57,7 +49,7 @@ bool M_Resources::Start()
 	//Load from Start Demo-------
 	defaultTextureId = TextureLoader::LoadDefaultTexture();
 
-	GetAllAssetFiles();
+	SearchAllAssetFiles();
 
 	uint toLoad = ImportResourceFromAssets("Assets/Models/Street environment_V01.FBX");
 	RequestResource(toLoad);
@@ -71,7 +63,7 @@ updateStatus M_Resources::Update(float dt)
 {
 	if (updateAssetsTimer.ReadSec() > 4 && assetsRead == ASSETS_CHECK::TO_CHECK)
 	{
-		GetAllAssetFiles();
+		SearchAllAssetFiles();
 		assetsRead = ASSETS_CHECK::TO_IMPORT;
 	}
 
@@ -79,7 +71,6 @@ updateStatus M_Resources::Update(float dt)
 	{
 		CheckAssetsImport(allAssetFiles);
 		assetsRead = ASSETS_CHECK::TO_CHANGE;
-		allAssetFiles.Clear();
 	}
 
 	if (updateAssetsTimer.ReadSec() > 5 && assetsRead == ASSETS_CHECK::TO_CHANGE)
@@ -605,6 +596,14 @@ void M_Resources::GetResourcesByType(std::vector<const Resource*>& resources, R_
 	}
 }
 
+PathNode* M_Resources::GetAllAssetFiles()
+{
+	if (allAssetFiles.IsEmpty())
+		SearchAllAssetFiles();
+
+	return &allAssetFiles;
+}
+
 std::string M_Resources::DuplicateFile(const char* path)
 {
 	std::string normalizedPath = App->physFS->NormalizePath(path);
@@ -672,7 +671,7 @@ void M_Resources::ImportModel(const char* path, char** buffer, unsigned int buff
 	}
 }
 
-void M_Resources::GetAllAssetFiles()
+void M_Resources::SearchAllAssetFiles()
 {
 	static std::vector<std::string> ignoreExt = { "meta" };
 	allAssetFiles = App->physFS->GetAllFiles(ASSETS_FOLDER, nullptr, &ignoreExt);

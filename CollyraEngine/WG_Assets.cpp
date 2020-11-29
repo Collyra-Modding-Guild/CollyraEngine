@@ -21,7 +21,7 @@ updateStatus WG_Assets::Update()
 
 	static std::vector<std::string> ignoreExt = {"meta"};
 
-	std::string toLoad = App->uiManager->DrawDirectoryRecursive(ASSETS_FOLDER, true, &ignoreExt, "Asset");
+	std::string toLoad = App->uiManager->DrawDirectoryRecursiveOld(ASSETS_FOLDER, true, &ignoreExt, "Asset");
 
 	if (toLoad != "")
 	{

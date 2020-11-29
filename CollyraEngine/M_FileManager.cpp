@@ -213,9 +213,15 @@ PathNode M_FileManager::GetAllFiles(const char* directory, std::vector<std::stri
 	if (Exists(directory))
 	{
 		root.path = directory;
-		App->physFS->SplitFilePath(directory, nullptr,nullptr, &root.localPath);
+		std::string extension;
+		App->physFS->SplitFilePath(directory, nullptr, nullptr, &root.localPath, &extension);
 		if (root.localPath == "")
 			root.localPath = directory;
+		else
+		{
+			if (extension != "")
+				root.localPath += "." + extension;
+		}
 
 		std::vector<std::string> file_list, dir_list;
 		DiscoverFiles(directory, file_list, dir_list);

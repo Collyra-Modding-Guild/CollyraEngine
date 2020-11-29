@@ -18,6 +18,7 @@
 
 #include "MathGeoLib/include/Math/float2.h"
 #include <algorithm>
+#include "PathNode.h"
 
 // All UI Windows
 #include "WindowGroup.h"
@@ -427,7 +428,7 @@ void M_UIManager::ShowLoadScenePopUp()
 	if (ImGui::BeginPopupModal("Load File", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 	{
 		ImGui::BeginChild("File Browser", ImVec2(300, 400), true);
-		std::string pushedValue = DrawDirectoryRecursive(LIBRARY_SCENES);
+		std::string pushedValue = DrawDirectoryRecursiveOld(LIBRARY_SCENES);
 		ImGui::EndChild();
 
 		if (ImGui::Button("Cancel", ImVec2(50, 20)))
@@ -814,43 +815,74 @@ void M_UIManager::SetupDarkImGuiStyle(float alpha)
 	style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
 }
 
-std::string M_UIManager::DrawDirectoryRecursive(const char* directory, bool returnFullPath, std::vector<std::string>* ignoreExt, char* dragType)
+std::string M_UIManager::DrawDirectoryRecursiveOld(const char* directory, bool returnFullPath, std::vector<std::string>* ignoreExt, char* dragType)
 {
-	std::vector<std::string> files;
-	std::vector<std::string> dirs;
-	std::string ret = "";
-
 	std::string dir((directory) ? directory : "");
 	if (dir.find_last_of("/") == dir.length() - 1)
 		dir = dir.substr(0, dir.length() - 1);
 
-	App->physFS->DiscoverFiles(dir.c_str(), files, dirs);
+	std::string ret = "";
 
-	for (std::vector<std::string>::const_iterator it = dirs.begin(); it != dirs.end(); ++it)
+	PathNode* myPathNode;
+	PathNode createdPathNode;
+
+	if (directory == ASSETS_FOLDER)
 	{
-		if (ImGui::TreeNodeEx((dir + (*it)).c_str(), 0, "%s/", (*it).c_str()))
-		{
-			ret = DrawDirectoryRecursive((dir + "/" + (*it)).c_str(), returnFullPath, ignoreExt, dragType);
-			ImGui::TreePop();
+		myPathNode = App->resources->GetAllAssetFiles();
+	}
+	else
+	{
+		createdPathNode = App->physFS->GetAllFiles(directory, nullptr, ignoreExt);
+		myPathNode = &createdPathNode;
+	}
 
+	for (uint i = 0; i < myPathNode->children.size(); i++)
+	{
+		ret = DrawDirectoryRecursive(&myPathNode->children.at(i), directory, returnFullPath, ignoreExt, dragType);
+
+		if (ret != "")
+			break;
+	}
+
+	return ret;
+}
+
+std::string M_UIManager::DrawDirectoryRecursive(PathNode* myNode, const char* directory, bool returnFullPath, std::vector<std::string>* ignoreExt, char* dragType)
+{
+	std::string ret = "";
+
+	if (!myNode->isFile)
+	{
+		if (ImGui::TreeNodeEx((myNode->path).c_str(), 0, "%s/", myNode->path.c_str()))
+		{
+			if (!myNode->isLeaf)
+			{
+				for (uint i = 0; i < myNode->children.size(); i++)
+				{
+					ret = DrawDirectoryRecursive(&myNode->children.at(i), directory, returnFullPath, ignoreExt, dragType);
+					if (ret != "")
+					{
+						break;
+						return ret;
+					}
+				}
+			}
+			ImGui::TreePop();
 			if (ret != "")
 			{
 				return ret;
 			}
+
 		}
-
 	}
-
-	std::sort(files.begin(), files.end());
-
-	for (std::vector<std::string>::const_iterator it = files.begin(); it != files.end(); ++it)
+	else
 	{
-		const std::string& str = *it;
+		const std::string& str = myNode->localPath;
 
 		bool ignore = false;
 		if (ignoreExt != nullptr)
 		{
-			ignore = App->physFS->HasExtension((*it).c_str(), *ignoreExt);
+			ignore = App->physFS->HasExtension(myNode->path.c_str(), *ignoreExt);
 		}
 
 		if (ignore == false)
@@ -873,7 +905,7 @@ std::string M_UIManager::DrawDirectoryRecursive(const char* directory, bool retu
 						if (treeNode != "")
 						{
 							if (returnFullPath)
-								treeNode = dir + "/" + treeNode;
+								treeNode = myNode->path.c_str();
 						}
 
 						ImGui::SetDragDropPayload(dragType, treeNode.c_str(), treeNode.length());
@@ -890,12 +922,12 @@ std::string M_UIManager::DrawDirectoryRecursive(const char* directory, bool retu
 				if (ret != "")
 				{
 					if (returnFullPath)
-						return dir + "/" + ret;
+						return myNode->path.c_str();
 				}
 			}
 		}
-
 	}
+
 
 	return ret;
 }

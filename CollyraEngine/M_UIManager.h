@@ -19,6 +19,8 @@ class WG_Playbar;
 class WG_ResourceCount;
 class WG_Assets;
 
+struct PathNode;
+
 class M_UIManager : public Module
 {
 public:
@@ -55,7 +57,8 @@ public:
 
 	void SetupDarkImGuiStyle(float alpha);
 	void SetupLightImGuiStyle();
-	std::string DrawDirectoryRecursive(const char* directory, bool returnFullPath = false, std::vector<std::string>* ignoreExt = nullptr, char* dragType = nullptr);
+	std::string DrawDirectoryRecursiveOld(const char* directory, bool returnFullPath = false, std::vector<std::string>* ignoreExt = nullptr, char* dragType = nullptr);
+	std::string DrawDirectoryRecursive(PathNode* myNode, const char* directory, bool returnFullPath = false, std::vector<std::string>* ignoreExt = nullptr, char* dragType = nullptr);
 
 	uint SaveScene();
 

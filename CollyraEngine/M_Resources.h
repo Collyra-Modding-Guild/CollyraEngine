@@ -48,15 +48,10 @@ public:
 	//Creation
 	Resource* CreateResource(R_TYPE rType, uint32 forceId = 0);
 
-	//Save
-	uint SaveResource(Resource* toSave, std::string assetsPath, bool saveMeta = true);
-	bool SaveMeta(Resource* toSave, std::string assetsPath);
-
 	//Destruction
 	bool DeleteResource(uint32 idToDestroy);
 	void UnloadResource(Resource* toUnload);
 	void UnloadResource(uint32 toUnloadId);
-	void CheckResourcesToUnload();
 
 	//Helpers
 	R_TYPE GetResourceTypeFromExtension(const char* rPath);
@@ -65,14 +60,20 @@ public:
 	std::string FindLibraryFile(uint id);
 	void SetDeleteResources(bool newState);
 	void GetResourcesByType(std::vector<const Resource*>& resources, R_TYPE type) const;
+	PathNode* GetAllAssetFiles();
 
 private:
 	void ImportModel(const char* path, char** buffer, unsigned int bufferSize, R_Model* resourceModel);
-	void GetAllAssetFiles();
+	void SearchAllAssetFiles();
 	void CheckAssetsImport(PathNode& pathnode);
 	std::string DuplicateFile(const char* path);
 
 	uint32 ImportResource(std::string path, uint32 forceid = 0);
+	void CheckResourcesToUnload();
+
+	//Save
+	uint SaveResource(Resource* toSave, std::string assetsPath, bool saveMeta = true);
+	bool SaveMeta(Resource* toSave, std::string assetsPath);
 
 public: 
 	int defaultTextureId;
