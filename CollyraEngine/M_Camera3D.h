@@ -35,6 +35,8 @@ public:
 	bool GetSceneCameraCuling() const;
 	void SetCameraSceneCulling(bool newCullingState);
 
+	bool GetMouseSceneFocus();
+
 
 private:
 	void CameraMovement(float dt);
