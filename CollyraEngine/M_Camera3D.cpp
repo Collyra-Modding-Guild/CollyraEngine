@@ -80,6 +80,8 @@ updateStatus M_Camera3D::Update(float dt)
 // -----------------------------------------------------------------
 void M_Camera3D::CameraMovement(float dt)
 {
+
+	
 	float3 newPos(0, 0, 0);
 	float speed = DEFAULT_MOUSE_SPEED * dt;
 
@@ -87,22 +89,25 @@ void M_Camera3D::CameraMovement(float dt)
 	if (inputModule->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
 		speed = (speed * 2);
 
-	CameraPlanePan(newPos);
-
 	float3 zoom = CameraZoom(dt);
 
-	if (inputModule->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+	if (GetMouseSceneFocus())
 	{
-		OrbitArroundReference(Reference, newPos, speed);
-		this->orbitalReference = sceneCamera->frustum.Pos();
-		this->orbitalReference += sceneCamera->frustum.Front() * 20;
-	}
+		CameraPlanePan(newPos);
 
-	else if (inputModule->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && inputModule->GetKey(SDL_SCANCODE_LALT))
-	{
-		OrbitArroundReference(orbitalReference, newPos, speed);
-		this->Reference = sceneCamera->frustum.Pos();
-		this->Reference += sceneCamera->frustum.Front() * 5;
+		if (inputModule->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+		{
+			OrbitArroundReference(Reference, newPos, speed);
+			this->orbitalReference = sceneCamera->frustum.Pos();
+			this->orbitalReference += sceneCamera->frustum.Front() * 20;
+		}
+
+		else if (inputModule->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && inputModule->GetKey(SDL_SCANCODE_LALT))
+		{
+			OrbitArroundReference(orbitalReference, newPos, speed);
+			this->Reference = sceneCamera->frustum.Pos();
+			this->Reference += sceneCamera->frustum.Front() * 5;
+		}
 	}
 
 	//If we are rotating arround a GameObject, we only change the focus when we move
@@ -372,6 +377,27 @@ bool M_Camera3D::GetSceneCameraCuling() const
 void M_Camera3D::SetCameraSceneCulling(bool newCullingState)
 {
 	sceneCamera->SetCulling(newCullingState);
+
+}
+
+bool M_Camera3D::GetMouseSceneFocus()
+{
+
+
+	float2 normalized;
+	normalized.x = (App->uiManager->GetImGuiMousePosition().x - App->uiManager->GetSceneWindowPosition().x)
+		/ (App->uiManager->GetSceneWindowSize().x * 0.5) - 1.0f;
+
+	normalized.y = (App->uiManager->GetImGuiMousePosition().y - App->uiManager->GetSceneWindowPosition().y)
+		/ (App->uiManager->GetSceneWindowSize().y * 0.5) - 1.0f;
+
+	if (Abs(normalized.x) < 1.0f && Abs(normalized.y) < 1.0f)
+	{
+		return true;
+	}
+	else
+		return false;
+	
 
 }
 
