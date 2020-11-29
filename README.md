@@ -25,13 +25,17 @@ Here, you will also see the GameObject's components; for the moment, there are o
 Alongside the inspector window, there is the configuration window. Here you will find how to change the configuration for the most important of the engine's components (such as renderer, window, input, scene camera, etc.) and/or check important information (such as fps, enable/disable vsync, software versions, outline, bounding boxes, scene camera culling, etc.).
 
 ### Console
-Finally, in the console you will see the system messages displayed as the code runs. You can also clear, search for certain logs, enable/disable auto-scroll, etc. You can see all the controls detailed there!
+In the console you will see the system messages displayed as the code runs. You can also clear, search for certain logs, enable/disable auto-scroll, etc. You can see all the controls detailed there!
 
 ### Resource counting
 It will show all the resources that are loaded and how many instances of that resources are on the scene.
 
 ### File Explorer 
 It shows all the resources that are ready to load. You can double click or drag into the scene window to load them. WARNING: If you try to load a material, texture or a mesh you will have to select a Game Object first. You can aslo middle click to delete an object.
+
+### Play Bar
+Finally, in the play bar you will see the buttons that manage the game state time. Play will save the current scene and enter into the game state, Stop will recover the scene before the game state, Pause will stop the game into the game state, Resume will run if the game was paused, and Advance will do just 1 loop to test and debug with precision. Time multiplier will accelerate or desaccelerate the game state time with debug purposes.
+
 
 ## Controls
 ### General 
@@ -72,6 +76,8 @@ All the inputs that involve a mouse click, must be in the scene window, otherwis
 - The Assets window could take a couple of seconds to refresh.
 - You can not delete loaded resources in the Asset window because they will be reimported again, if you desire to delete a resources, please delete the Assets associated to it.
 - Currently, if you delete an imported FBX, it will delete only the "model". It will leave as is the meshes, textures & materials imported from that model.
+
+- WARNING: Time multiplier affects Scene Camera movement, but it's just for you to see it is well implemented. It will only work at Game State in a future. You can test also Play and Stop moving objects in Game State, and pressing Stop to recover its original position.
 
 ## License:
 MIT License
