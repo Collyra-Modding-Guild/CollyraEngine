@@ -94,7 +94,7 @@ void Application::PrepareUpdate()
 
 	//Controls pause of the engine
 	if (!pause)
-		engineDT = lastFrameTimer.ReadSec();
+		engineDT = lastFrameTimer.ReadSec() * timeMultiplier; //Demo
 	else
 		engineDT = 0.0f;
 

@@ -40,11 +40,10 @@ updateStatus WG_Playbar::Update()
 	if (App->gameClock->tick)
 		App->gameClock->Tick(false);
 
-	if (ImGui::Button(tickButtonText.c_str()))
+	if (ImGui::Button(tickButtonText.c_str()) && App->gameClock->pause)
 		App->scene->Tick();
 
 	ShowTimeMultiplier();
-
 
 	ImGui::End();
 

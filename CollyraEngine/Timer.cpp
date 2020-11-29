@@ -46,7 +46,7 @@ void Timer::Resume()
 void Timer::Tick(bool step)
 {
 	tick = step;
-	running = step;
+	//running = step;
 	pause = !step;
 }
 

@@ -54,7 +54,7 @@ bool M_Camera3D::CleanUp()
 updateStatus M_Camera3D::Update(float dt)
 {
 	// Implement a debug camera with keys and mouse
-	// Now we can make this movememnt frame rate independant! 
+	// Now we can make this movememnt frame rate independant!  
 
 	if (inputModule == nullptr)
 	{
