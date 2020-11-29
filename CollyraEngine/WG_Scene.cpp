@@ -3,6 +3,7 @@
 #include "M_Window.h"
 #include "M_Renderer3D.h"
 #include "M_Resources.h"
+#include "M_FileManager.h"
 
 #include "M_Scene.h"
 #include "M_Camera3D.h"
@@ -85,6 +86,49 @@ updateStatus WG_Scene::Update()
 							App->resources->UnloadResource(id);
 						}
 
+					}
+				}
+			}
+			
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("LibFile"))
+			{
+				std::string libStr = "";
+				libStr.resize(payload->DataSize);
+
+				memcpy(&libStr.at(0), payload->Data, payload->DataSize);
+
+				if (libStr != "")
+				{
+					std::string name;
+					App->physFS->SplitFilePath(libStr.c_str(), nullptr, nullptr, &name);
+
+					uint id = std::stoi(name);
+					Resource* loadedResource = App->resources->RequestResource(id);
+
+					if (loadedResource != nullptr)
+					{
+						switch (loadedResource->GetType())
+						{
+						case R_TYPE::MESH:
+						{
+							App->scene->SetResourceToGameObject(id, loadedResource->GetType());
+						}
+						break;
+						case R_TYPE::TEXTURE:
+						{
+							App->scene->SetResourceToGameObject(id, loadedResource->GetType());
+						}
+						break;
+						case R_TYPE::MATERIAL:
+						{
+							App->scene->SetResourceToGameObject(id, loadedResource->GetType());
+						}
+						break;
+						default:
+							break;
+						}
+
+						App->resources->UnloadResource(id);
 					}
 				}
 			}

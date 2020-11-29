@@ -36,6 +36,22 @@ updateStatus WG_Assets::Update()
 
 	}
 
+	ret = App->uiManager->DrawDirectoryRecursiveOld(LIBRARY_PATH, true, &ignoreExt, "LibFile");
+
+	if (ret != "")
+	{
+		if (ImGui::IsMouseDoubleClicked(0))
+		{
+			LoadNewResource(ret);
+		}
+		else if (ImGui::IsMouseClicked(2))
+		{
+			DeleteAsset(ret);
+		}
+
+	}
+
+
 	ImGui::End();
 
 	return UPDATE_CONTINUE;
@@ -73,6 +89,41 @@ void WG_Assets::LoadNewAsset(std::string& toLoad)
 			App->resources->UnloadResource(id);
 		}
 
+	}
+}
+
+void WG_Assets::LoadNewResource(std::string& toLoad)
+{
+	std::string name;
+	App->physFS->SplitFilePath(toLoad.c_str(), nullptr, nullptr, &name);
+
+	uint id = std::stoi(name);
+	Resource* loadedResource = App->resources->RequestResource(id);
+
+	if (loadedResource != nullptr)
+	{
+		switch (loadedResource->GetType())
+		{
+		case R_TYPE::MESH:
+		{
+			App->scene->SetResourceToGameObject(id, loadedResource->GetType());
+		}
+		break;
+		case R_TYPE::TEXTURE:
+		{
+			App->scene->SetResourceToGameObject(id, loadedResource->GetType());
+		}
+		break;
+		case R_TYPE::MATERIAL:
+		{
+			App->scene->SetResourceToGameObject(id, loadedResource->GetType());
+		}
+		break;
+		default:
+			break;
+		}
+
+		App->resources->UnloadResource(id);
 	}
 }
 

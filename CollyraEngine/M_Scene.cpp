@@ -385,6 +385,18 @@ void M_Scene::SetResourceToGameObject(uint resourceId, R_TYPE rType, GameObject*
 		cmp->SetResourceId(resourceId);
 	}
 	break;
+	case R_TYPE::MESH:
+	{
+		C_Mesh* cmp = setTo->GetComponent<C_Mesh>();
+
+		if (cmp == nullptr)
+		{
+			cmp = (C_Mesh*)setTo->CreateComponent(COMPONENT_TYPE::MESH);
+		}
+
+		cmp->SetResourceId(resourceId);
+	}
+	break;
 	default:
 		break;
 	}

@@ -118,7 +118,7 @@ void C_Material::ResourceUpdated(std::map<uint, bool>* ids)
 			}
 			else
 			{
-				myResource->SetTextureResourceId(0, false);
+				myResource->SetTextureResourceId(it->first, false);
 			}
 		}
 	}

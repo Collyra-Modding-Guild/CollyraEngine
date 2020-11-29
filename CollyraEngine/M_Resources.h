@@ -63,12 +63,15 @@ public:
 	void SetDeleteResources(bool newState);
 	void GetResourcesByType(std::vector<const Resource*>& resources, R_TYPE type) const;
 	PathNode* GetAllAssetFiles();
+	PathNode GetAllLibraryFiles();
 	void UpdateChangedResources();
 	uint CheckAssetInMeta (std::string metaPath, std::string relativePath);
 
 private:
 	void SearchAllAssetFiles();
 	void CheckAssetsImport(PathNode& pathnode);
+	std::string CheckMetaFilesId(PathNode& metasOnly, uint searchFor);
+	std::string CheckAssetFolderForId(uint searchFor);
 	std::string DuplicateFile(const char* path);
 
 	uint32 ImportResource(std::string path, uint32 forceid = 0);

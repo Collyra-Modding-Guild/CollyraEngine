@@ -52,7 +52,7 @@ bool M_Resources::Start()
 	SearchAllAssetFiles();
 
 	uint toLoad = ImportResourceFromAssets("Assets/Models/Street environment_V01.FBX");
-	//RequestResource(toLoad);
+	RequestResource(toLoad);
 
 	updateAssetsTimer.Start();
 
@@ -76,7 +76,7 @@ updateStatus M_Resources::Update(float dt)
 	if (updateAssetsTimer.ReadSec() > 5 && assetsRead == ASSETS_CHECK::TO_CHANGE)
 	{
 		UpdateChangedResources();
-	
+
 		assetsRead = ASSETS_CHECK::TO_CHECK;
 		updateAssetsTimer.StartFrom(0);
 	}
@@ -143,20 +143,26 @@ Resource* M_Resources::RequestResource(uint id)
 	// If not, search in library & load it
 	if (allLibFiles.IsEmpty())
 	{
-		std::vector<std::string> ignore_ext;
-		ignore_ext.push_back(".meta");
-		allLibFiles = App->physFS->GetAllFiles(LIBRARY_PATH, nullptr, &ignore_ext);
+		allLibFiles = App->physFS->GetAllFiles(LIBRARY_PATH, nullptr, nullptr);
 	}
 
 	std::string foundId = App->physFS->FindInPathNode(std::to_string(id).c_str(), allLibFiles);
 
+	if (foundId == "" || !App->physFS->Exists(foundId.c_str()))
+	{
+		//TODO: Search in Assets .neta & try to find the id
+		foundId = CheckAssetFolderForId(id);
+
+		if (foundId != "")
+		{
+			ImportResourceFromAssets(foundId.c_str());
+			std::string metaPath = foundId + ".meta";
+			GetInfoFromMeta(metaPath.c_str(), nullptr, nullptr, nullptr, &foundId);
+		}
+	}
+
 	if (foundId == "")
 	{
-		//std::vector<std::string> searchFor;
-		//searchFor.push_back(".meta");
-		//PathNode allAssets = App->physFS->GetAllFiles(ASSETS_FOLDER, &searchFor, nullptr);
-		//TODO: Search in Assets .neta & try to find the id
-
 		RELEASE(resource);
 		return nullptr;
 	}
@@ -389,7 +395,9 @@ bool M_Resources::DeleteResource(uint32 idToDestroy)
 
 void M_Resources::UnloadResource(Resource* toUnload)
 {
-	toUnload->referenceCount--;
+	if (toUnload->referenceCount > 0)
+		toUnload->referenceCount--;
+
 	if (toUnload->referenceCount <= 0)
 	{
 		DeleteResource(toUnload->GetUid());
@@ -401,7 +409,7 @@ void M_Resources::UnloadResource(uint32 toUnloadId)
 	std::map<uint, Resource*>::iterator it = resourceMap.find(toUnloadId);
 	if (it != resourceMap.end())
 	{
-		if (it->second->referenceCount != 0)
+		if (it->second->referenceCount > 0)
 			it->second->referenceCount--;
 
 		if (it->second->referenceCount <= 0)
@@ -548,6 +556,14 @@ PathNode* M_Resources::GetAllAssetFiles()
 	return &allAssetFiles;
 }
 
+PathNode M_Resources::GetAllLibraryFiles()
+{
+	if (allLibFiles.IsEmpty())
+		allLibFiles = App->physFS->GetAllFiles(LIBRARY_PATH, nullptr, nullptr);
+
+	return allLibFiles;
+}
+
 void M_Resources::UpdateChangedResources()
 {
 	if (onlineIdUpdated.size() > 0)
@@ -604,6 +620,8 @@ uint M_Resources::CheckAssetInMeta(std::string metaPath, std::string relativePat
 		if (!App->physFS->Exists(path.c_str()))
 		{
 			ImportResource(assetsPath, id);
+			LoadResource(id);
+			onlineIdUpdated.insert({ id, true });
 		}
 
 	}
@@ -647,7 +665,7 @@ uint32 M_Resources::ImportResource(std::string path, uint32 forceid)
 
 		uint newResourceID = newResource->GetUid();
 		RELEASE_ARRAY(fileBuffer);
-		DeleteResource(newResource->GetUid());
+		UnloadResource(newResource);
 
 		return newResourceID;
 	}
@@ -678,3 +696,50 @@ void M_Resources::CheckAssetsImport(PathNode& pathnode)
 		}
 	}
 }
+
+std::string M_Resources::CheckAssetFolderForId(uint searchFor)
+{
+	std::string ret = "";
+	std::vector<std::string> extFilter;
+	extFilter.push_back("meta");
+	PathNode allAssets = App->physFS->GetAllFiles(ASSETS_FOLDER, &extFilter, nullptr);
+
+	ret = CheckMetaFilesId(allAssets, searchFor);
+
+	if (ret != "")
+	{
+		if (App->physFS->IsMeta(ret))
+			ret = ret.substr(0, ret.length() - 5);
+		else
+			ret = "";
+	}
+
+	return  ret;
+}
+
+std::string M_Resources::CheckMetaFilesId(PathNode& metasOnly, uint searchFor)
+{
+	if (metasOnly.isFile)
+	{
+		uint32 id = 0;
+		GetInfoFromMeta(metasOnly.path.c_str(), &id, nullptr, nullptr, nullptr);
+
+		if (searchFor == id)
+			return metasOnly.path;
+	}
+
+	if (!metasOnly.isLeaf)
+	{
+		for (int i = 0; i < metasOnly.children.size(); i++)
+		{
+			std::string ret = "";
+			ret = CheckMetaFilesId(metasOnly.children[i], searchFor);
+
+			if (ret != "")
+				return ret;
+		}
+	}
+	return "";
+}
+
+

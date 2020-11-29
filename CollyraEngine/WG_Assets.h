@@ -18,7 +18,9 @@ public:
 
 private:
 	void LoadNewAsset(std::string& toLoad);
+	void LoadNewResource(std::string& toLoad);
 	void DeleteAsset(std::string& toDelete);
+	void DeleteResource(std::string& toDelete);
 
 };
 

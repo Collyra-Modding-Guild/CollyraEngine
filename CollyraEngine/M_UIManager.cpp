@@ -840,6 +840,21 @@ std::string M_UIManager::DrawDirectoryRecursiveOld(const char* directory, bool r
 	{
 		myPathNode = App->resources->GetAllAssetFiles();
 	}
+	else if (directory == LIBRARY_PATH)
+	{
+		createdPathNode = App->resources->GetAllLibraryFiles();
+		myPathNode = &createdPathNode;
+
+		for (int i = 0; i < myPathNode->children.size(); i++)
+		{
+			std::string compare = myPathNode->children[i].path + "/";
+			if (compare == LIBRARY_TEXTURES || compare == LIBRARY_MODELS ||compare == LIBRARY_SCENES)
+			{
+				myPathNode->children[i].Clear();
+			}
+
+		}
+	}
 	else
 	{
 		createdPathNode = App->physFS->GetAllFiles(directory, nullptr, ignoreExt);
@@ -861,7 +876,7 @@ std::string M_UIManager::DrawDirectoryRecursive(PathNode* myNode, const char* di
 {
 	std::string ret = "";
 
-	if (!myNode->isFile)
+	if (!myNode->isFile && myNode->children.size() > 0)
 	{
 		if (ImGui::TreeNodeEx((myNode->path).c_str(), 0, "%s/", myNode->path.c_str()))
 		{
