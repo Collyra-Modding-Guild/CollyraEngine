@@ -36,8 +36,9 @@ It shows all the resources that are ready to load. You can double click or drag 
 ## Controls
 ### General 
 - Left click to interactuate will all the buttons, input boxes, drag inputs, etc.
-- Drag & Drop of Meshes (supported fbx) will load the fbx hierarchy into the scene with its respective GameObjects & components
-- Drag & Drop of Textures (supported Png & Dds) will load a texture into the selected fbx, creating a Material Component if necessary.
+- Drag & Drop of Assets (supported fbx for models; dds, jpg and png for textures) from anywhere on the disk and shows them into the Assets window.
+- Drag & Drop of Imported Files (our double click) to load them into the scene window and middle click to delete an imported file.
+- Gizmos Modes (once a Game Object focused): keyboard key W (Translate), E (Rotate) & R (Scale).
 
 ### Camera
 - Right Click + WASD to move for a fps-like movement
@@ -58,6 +59,19 @@ All the inputs that involve a mouse click, must be in the scene window, otherwis
 ### File Explorer
 - Double click or drag into the scene window to load them.
 - Middle click to delete an object.
+
+## Extra
+### Additional Functionalities
+- Mesh outline when selected.
+- Gizmo functionalities.
+- Asset import by drag and drop from anywhere on the disk.
+- Supports hot reloaded of textures, also reimports if you modify a file, delete it by accident or drag a new asset in runtime.
+
+### Additional Comments
+- The Resource counting window only shows you the resources that are currently loaded in the scene.
+- The Assets window could take a couple of seconds to refresh.
+- You can not delete loaded resources in the Asset window because they will be reimported again, if you desire to delete a resources, please delete the Assets associated to it.
+- Currently, if you delete an imported FBX, it will delete only the "model". It will leave as is the meshes, textures & materials imported from that model.
 
 ## License:
 MIT License
