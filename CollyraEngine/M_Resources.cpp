@@ -52,7 +52,7 @@ bool M_Resources::Start()
 	SearchAllAssetFiles();
 
 	uint toLoad = ImportResourceFromAssets("Assets/Models/Street environment_V01.FBX");
-	RequestResource(toLoad);
+	//RequestResource(toLoad);
 
 	updateAssetsTimer.Start();
 
@@ -75,21 +75,11 @@ updateStatus M_Resources::Update(float dt)
 
 	if (updateAssetsTimer.ReadSec() > 5 && assetsRead == ASSETS_CHECK::TO_CHANGE)
 	{
-		if (onlineIdUpdated.size() > 0)
-		{
-			App->scene->ResoucesUpdated(&onlineIdUpdated);
-			onlineIdUpdated.clear();
-		}
+		UpdateChangedResources();
+	
 		assetsRead = ASSETS_CHECK::TO_CHECK;
 		updateAssetsTimer.StartFrom(0);
 	}
-
-	return UPDATE_CONTINUE;
-}
-
-updateStatus M_Resources::PreDraw(bool* drawState)
-{
-	allLibFiles.Clear();
 
 	return UPDATE_CONTINUE;
 }
@@ -134,53 +124,7 @@ uint M_Resources::ImportResourceFromAssets(const char* path)
 	}
 	else
 	{
-		uint32 id = 0, date = 0;
-		std::string path = "";
-		GetInfoFromMeta(metaFile.c_str(), &id, &date, nullptr, &path);
-
-		//Get the assets path
-		std::string assetsPath = "";
-		if (App->physFS->IsMeta(relativePath))
-			assetsPath = relativePath.substr(0, relativePath.length() - 5);
-		else
-			assetsPath = relativePath;
-
-
-		if (!App->physFS->Exists(assetsPath.c_str())) //Assets has been removed!
-		{
-			DeleteResource(id);
-			App->physFS->DeleteFileIn(path.c_str());
-			App->physFS->DeleteFileIn(metaFile.c_str());
-			return 0;
-		}
-
-		//Date changed, we need to update the lib file
-		if (date != App->physFS->GetCurrDate(assetsPath.c_str()))
-		{
-			//If the asset is in mem, we re-import & load
-			// TODO: We need to find a way to "alert" components that are using that resource that has updated
-			std::map<uint32, Resource*>::iterator it = resourceMap.find(id);
-			if (it != resourceMap.end())
-			{
-				ImportResource(assetsPath, id);
-				LoadResource(id);
-				onlineIdUpdated.push_back(id);
-			}
-			else // If not, simple re-import
-			{
-				ImportResource(assetsPath, id);
-			}
-		}
-		else // If nothing has changed, simple return the id
-		{
-			//If lib file doesn't exist, we try to re-import
-			if (!App->physFS->Exists(path.c_str()))
-			{
-				ImportResource(assetsPath, id);
-			}
-
-		}
-		return id;
+		return CheckAssetInMeta(metaFile, relativePath);;
 	}
 }
 
@@ -307,8 +251,6 @@ Resource* M_Resources::CreateResource(R_TYPE rType, uint32 forceId)
 {
 	Resource* ret = nullptr;
 
-	//TODO: Check if the resource already exists, if it does, get his id & delete the old one
-	//TODO 2: Also, instances :)
 	uint32 uId = (forceId != 0 ? forceId : GenerateId());
 
 	switch (rType)
@@ -459,7 +401,9 @@ void M_Resources::UnloadResource(uint32 toUnloadId)
 	std::map<uint, Resource*>::iterator it = resourceMap.find(toUnloadId);
 	if (it != resourceMap.end())
 	{
-		it->second->referenceCount--;
+		if (it->second->referenceCount != 0)
+			it->second->referenceCount--;
+
 		if (it->second->referenceCount <= 0)
 		{
 			DeleteResource(toUnloadId);
@@ -604,6 +548,69 @@ PathNode* M_Resources::GetAllAssetFiles()
 	return &allAssetFiles;
 }
 
+void M_Resources::UpdateChangedResources()
+{
+	if (onlineIdUpdated.size() > 0)
+	{
+		App->scene->ResoucesUpdated(&onlineIdUpdated);
+		onlineIdUpdated.clear();
+	}
+}
+
+uint M_Resources::CheckAssetInMeta(std::string metaPath, std::string relativePath)
+{
+	uint32 id = 0, date = 0;
+	std::string path = "";
+	GetInfoFromMeta(metaPath.c_str(), &id, &date, nullptr, &path);
+
+	//Get the assets path
+	std::string assetsPath = "";
+	if (App->physFS->IsMeta(relativePath))
+		assetsPath = relativePath.substr(0, relativePath.length() - 5);
+	else
+		assetsPath = relativePath;
+
+
+	if (!App->physFS->Exists(assetsPath.c_str())) //Assets has been removed!
+	{
+		DeleteResource(id);
+		App->physFS->DeleteFileIn(path.c_str());
+		App->physFS->DeleteFileIn(metaPath.c_str());
+		onlineIdUpdated.insert({ id, false });
+		UpdateChangedResources();
+
+		return 0;
+	}
+
+	//Date changed, we need to update the lib file
+	if (date != App->physFS->GetCurrDate(assetsPath.c_str()))
+	{
+		//If the asset is in mem, we re-import & load
+		std::map<uint32, Resource*>::iterator it = resourceMap.find(id);
+		if (it != resourceMap.end())
+		{
+			ImportResource(assetsPath, id);
+			LoadResource(id);
+			onlineIdUpdated.insert({ id, true });
+		}
+		else // If not, simple re-import
+		{
+			ImportResource(assetsPath, id);
+		}
+	}
+	else // If nothing has changed, simple return the id
+	{
+		//If lib file doesn't exist, we try to re-import
+		if (!App->physFS->Exists(path.c_str()))
+		{
+			ImportResource(assetsPath, id);
+		}
+
+	}
+
+	return id;
+}
+
 std::string M_Resources::DuplicateFile(const char* path)
 {
 	std::string normalizedPath = App->physFS->NormalizePath(path);
@@ -633,7 +640,7 @@ uint32 M_Resources::ImportResource(std::string path, uint32 forceid)
 		switch (resourceType)
 		{
 		case (R_TYPE::TEXTURE):				TextureLoader::Import(path.c_str(), &fileBuffer, fileSize); break;
-		case (R_TYPE::MODEL):				ImportModel(path.c_str(), &fileBuffer, fileSize, (R_Model*)newResource); break;
+		case (R_TYPE::MODEL):				ModelLoader::ImportModel(path.c_str(), &fileBuffer, fileSize, (R_Model*)newResource); break;
 		}
 
 		SaveResource(newResource, path);
@@ -650,31 +657,10 @@ uint32 M_Resources::ImportResource(std::string path, uint32 forceid)
 	}
 }
 
-void M_Resources::ImportModel(const char* path, char** buffer, unsigned int bufferSize, R_Model* resourceModel)
-{
-	const aiScene* scene = aiImportFileFromMemory(*buffer, bufferSize, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
-
-	if (scene)
-	{
-		//WARNING: assuming that all the mesh is made from triangles
-		std::string fbxName = "";
-		App->physFS->SplitFilePath(path, nullptr, nullptr, &fbxName, nullptr);
-		uint32 ID = resourceModel->AddModelNode(GenerateId(), fbxName.c_str(), float4x4::identity, App->scene->GetRoot()->GetUid());
-
-		MeshLoader::Private::LoadAiSceneMeshes(scene, scene->mRootNode, path, resourceModel, ID);
-
-		aiReleaseImport(scene);
-	}
-	else
-	{
-		LOG("Error loading aiScene %s", path);
-	}
-}
 
 void M_Resources::SearchAllAssetFiles()
 {
-	static std::vector<std::string> ignoreExt = { "meta" };
-	allAssetFiles = App->physFS->GetAllFiles(ASSETS_FOLDER, nullptr, &ignoreExt);
+	allAssetFiles = App->physFS->GetAllFiles(ASSETS_FOLDER, nullptr, nullptr);
 }
 
 void M_Resources::CheckAssetsImport(PathNode& pathnode)

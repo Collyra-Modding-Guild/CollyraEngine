@@ -154,6 +154,11 @@ updateStatus M_UIManager::Update(float dt)
 		ShowLoadScenePopUp();
 	}
 
+	if (selectedMenuNode != "")
+	{
+		ShowSelectedItemPopUp();
+	}
+
 
 	return ret;
 }
@@ -257,104 +262,95 @@ bool M_UIManager::ShowMainMenuBar()
 					GameObject* camera = App->scene->CreateGameObject("Camera");
 					camera->CreateComponent(COMPONENT_TYPE::CAMERA);
 				}
-				/*if (ImGui::Button("Cube", buttonSize))
+				if (ImGui::Button("Cube", buttonSize))
 				{
-					GameObject* cube = App->scene->CreateGameObject("Cube");
-					cube->CreateComponent(COMPONENT_TYPE::MESH);
-
-					CCube infoMesh(1.0f, 1.0f, 1.0f);
-					cube->GetComponent<C_Mesh>()->GenerateMesh("Cube", "Cube", infoMesh.vertices, infoMesh.indices, infoMesh.normals, infoMesh.texCoords);
+					uint toLoad = App->resources->ImportResourceFromAssets(".innerAssets/cube.FBX");
+					App->resources->RequestResource(toLoad);
 				}
 				if (ImGui::Button("Sphere", buttonSize))
 				{
-					GameObject* sphere = App->scene->CreateGameObject("Sphere");
-					sphere->CreateComponent(COMPONENT_TYPE::MESH);
-
-					SSphere infoMesh(1.0f, 36, 18);
-					sphere->GetComponent<C_Mesh>()->GenerateMesh("Sphere", "Sphere", infoMesh.vertices, infoMesh.indices, infoMesh.normals, infoMesh.texCoords);
+					uint toLoad = App->resources->ImportResourceFromAssets(".innerAssets/Sphere.FBX");
+					App->resources->RequestResource(toLoad);
 				}
 				if (ImGui::Button("Cylinder", buttonSize))
 				{
-					GameObject* cylinder = App->scene->CreateGameObject("Cylinder");
-					cylinder->CreateComponent(COMPONENT_TYPE::MESH);
-
-					CCylinder infoMesh(4.0f, 10, 8);
-					cylinder->GetComponent<C_Mesh>()->GenerateMesh("Cylinder", "Cylinder", infoMesh.vertices, infoMesh.indices, infoMesh.normals, infoMesh.texCoords);
+					uint toLoad = App->resources->ImportResourceFromAssets(".innerAssets/Cylinder.FBX");
+					App->resources->RequestResource(toLoad);
 				}
 				if (ImGui::Button("Pyramid", buttonSize))
 				{
-					GameObject* pyramid = App->scene->CreateGameObject("Pyramid");
-					pyramid->CreateComponent(COMPONENT_TYPE::MESH);
-
-					Pyramid infoMesh(2.0f, 3.0f, 2.0f);
-					pyramid->GetComponent<C_Mesh>()->GenerateMesh("Pyramid", "Pyramid", infoMesh.vertices, infoMesh.indices, infoMesh.normals, infoMesh.texCoords);
-				}*/
+					uint toLoad = App->resources->ImportResourceFromAssets(".innerAssets/Pyramid.FBX");
+					App->resources->RequestResource(toLoad);
+				}
 				ImGui::EndMenu();
+
 			}
 			ImGui::EndMenu();
 
 		}
 
-
-		if (ImGui::BeginMenu("Windows"))
-		{
-			if (configWindow != nullptr)
-			{
-				ImGui::MenuItem("Configuration", "", &configWindow->active);
-			}
-			if (consoleWindow != nullptr)
-			{
-				ImGui::MenuItem("Console", "", &consoleWindow->active);
-			}
-			if (hierarchyWindow != nullptr)
-			{
-				ImGui::MenuItem("Hierarchy", "", &hierarchyWindow->active);
-			}
-			if (inspectorWindow != nullptr)
-			{
-				ImGui::MenuItem("Inspector", "", &inspectorWindow->active);
-			}
-			if (aboutWindow != nullptr)
-			{
-				ImGui::MenuItem("About", "", &aboutWindow->active);
-			}
-
-
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Preferences"))
-		{
-
-			if (ImGui::BeginMenu("UI Style"))
-			{
-				ImVec2 buttonSize = { 70, 20 };
-
-				if (ImGui::Button("Smooth", buttonSize))
-				{
-					SetupSmoothImGuiStyle(true);
-				}
-				if (ImGui::Button("Dark", buttonSize))
-				{
-					SetupDarkImGuiStyle(1.0f);
-				}
-				if (ImGui::Button("Light", buttonSize))
-				{
-					SetupLightImGuiStyle();
-				}
-
-
-				ImGui::EndMenu();
-			}
-
-			ImGui::EndMenu();
-		}
-
-		ImGui::EndMainMenuBar();
-
-		return ret;
 	}
+
+
+	if (ImGui::BeginMenu("Windows"))
+	{
+		if (configWindow != nullptr)
+		{
+			ImGui::MenuItem("Configuration", "", &configWindow->active);
+		}
+		if (consoleWindow != nullptr)
+		{
+			ImGui::MenuItem("Console", "", &consoleWindow->active);
+		}
+		if (hierarchyWindow != nullptr)
+		{
+			ImGui::MenuItem("Hierarchy", "", &hierarchyWindow->active);
+		}
+		if (inspectorWindow != nullptr)
+		{
+			ImGui::MenuItem("Inspector", "", &inspectorWindow->active);
+		}
+		if (aboutWindow != nullptr)
+		{
+			ImGui::MenuItem("About", "", &aboutWindow->active);
+		}
+
+
+		ImGui::EndMenu();
+	}
+
+	if (ImGui::BeginMenu("Preferences"))
+	{
+
+		if (ImGui::BeginMenu("UI Style"))
+		{
+			ImVec2 buttonSize = { 70, 20 };
+
+			if (ImGui::Button("Smooth", buttonSize))
+			{
+				SetupSmoothImGuiStyle(true);
+			}
+			if (ImGui::Button("Dark", buttonSize))
+			{
+				SetupDarkImGuiStyle(1.0f);
+			}
+			if (ImGui::Button("Light", buttonSize))
+			{
+				SetupLightImGuiStyle();
+			}
+
+
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMenu();
+	}
+
+	ImGui::EndMainMenuBar();
+
+	return ret;
 }
+
 
 void M_UIManager::EnableDockSpace()
 {
@@ -450,6 +446,20 @@ void M_UIManager::ShowLoadScenePopUp()
 		ImGui::EndPopup();
 	}
 
+}
+
+void M_UIManager::ShowSelectedItemPopUp()
+{
+	if (ImGui::IsMouseReleased(0) || ImGui::IsMouseReleased(2))
+		selectedMenuNode = "";
+
+	if (ImGui::BeginPopup("my_select_popup"))
+	{
+		ImGui::Text("Aquarium");
+		ImGui::Separator();
+
+		ImGui::EndPopup();
+	}
 }
 
 void M_UIManager::NewFpsLog(float currMs, float currFps)
@@ -889,9 +899,9 @@ std::string M_UIManager::DrawDirectoryRecursive(PathNode* myNode, const char* di
 		{
 			if (ImGui::TreeNodeEx(str.c_str(), ImGuiTreeNodeFlags_Leaf))
 			{
-				if (ImGui::IsItemClicked())
+				if (ImGui::IsItemClicked() || ImGui::IsItemClicked(2))
 				{
-					if (ImGui::IsMouseDoubleClicked(0))
+					if (ImGui::IsMouseDoubleClicked(0) || ImGui::IsItemClicked(2))
 					{
 						ret = str;
 					}

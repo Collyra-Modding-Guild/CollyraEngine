@@ -23,7 +23,7 @@ public:
 
 	COMPONENT_TYPE GetType() const;
 
-	virtual void ResourceUpdated(std::vector<unsigned int>* ids);
+	virtual void ResourceUpdated(std::map<unsigned int, bool>* ids);
 
 protected:
 	COMPONENT_TYPE type;

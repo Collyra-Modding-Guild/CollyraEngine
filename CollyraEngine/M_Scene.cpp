@@ -18,7 +18,6 @@
 #include "M_Resources.h"
 #include "Timer.h"
 
-//TODO: This should be in the resource manager
 #include "R_Resource.h"
 #include "R_Scene.h"
 #include "R_Material.h"
@@ -305,7 +304,7 @@ R_Scene* M_Scene::GetSceneResource() const
 	return currentScene;
 }
 
-void M_Scene::ResoucesUpdated(std::vector<uint>* updatedId)
+void M_Scene::ResoucesUpdated(std::map<uint, bool>* updatedId)
 {
 	std::stack<GameObject*> stack;
 	GameObject* currNode = nullptr;
@@ -466,7 +465,6 @@ void M_Scene::DrawBoundingBox(GameObject* gameObject)
 
 void M_Scene::DrawFrustum(GameObject* gameObject)
 {
-
 	glDisable(GL_LIGHTING);
 	glBegin(GL_LINES);
 

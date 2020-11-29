@@ -70,6 +70,7 @@ private:
 
 	//Pop Ups--------------------------
 	void			ShowLoadScenePopUp();
+	void			ShowSelectedItemPopUp();
 
 public:
 
@@ -92,6 +93,7 @@ private:
 	bool			showConfigMenu;
 	unsigned int	lastSavedId;
 	bool			showLoadScenePop;
+	std::string		selectedMenuNode;
 };
 
 #endif // __ModuleAudio_H__

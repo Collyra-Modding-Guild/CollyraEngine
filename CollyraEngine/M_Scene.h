@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include "p2Defs.h"
+#include <map>
 
 #include "MathGeoLib/include/Algorithm/Random/LCG.h"
 #include "MathGeoLib/include/Geometry/LineSegment.h"
@@ -62,7 +63,7 @@ public:
 	void SetSceneName(const char* newName);
 	R_Scene* GetSceneResource() const;
 
-	void ResoucesUpdated(std::vector<uint>* updatedId);
+	void ResoucesUpdated(std::map<uint, bool>* updatedId);
 	void SetResourceToGameObject(uint resourceId, R_TYPE rType, GameObject* setTo = nullptr);
 
 private:

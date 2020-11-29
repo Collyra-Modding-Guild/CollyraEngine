@@ -12,6 +12,23 @@
 #include "Assimp/include/scene.h"
 #include "Assimp/include/postprocess.h"
 
+uint MaterialLoader::ImportMaterialFromMesh(const char* filePath, aiMaterial* mat, const char* matName)
+{
+	aiMaterial* material = mat;
+
+	uint matID = 0;
+	R_Material* newMaterial = (R_Material*)App->resources->CreateResource(R_TYPE::MATERIAL);
+
+	matID = newMaterial->GetUid();
+
+	//IMPORT & SAVE
+	MaterialLoader::Import(material, newMaterial, matName, filePath);
+	App->resources->SaveResource(newMaterial, filePath, false);
+	App->resources->UnloadResource(matID);
+
+	return matID;
+}
+
 void MaterialLoader::Import(const aiMaterial* material, R_Material* myNewMaterial, const char* matName, const char* meshPath)
 {
 	//Color----

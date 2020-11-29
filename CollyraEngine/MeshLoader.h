@@ -13,13 +13,14 @@ class aiNode;
 class GameObject;
 class aiMaterial;
 class R_Model;
+class aiMesh;
 
 namespace MeshLoader
 {
 	void Init();
 	void CleanUp();
 
-	void Import(const char* path);
+	uint ImportMeshFromModel(const char* path, aiMesh* myMesh);
 	uint Save(R_Mesh* mesh, char** buffer);
 
 	namespace Private

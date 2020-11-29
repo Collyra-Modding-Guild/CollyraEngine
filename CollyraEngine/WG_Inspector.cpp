@@ -332,7 +332,7 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* m
 
 		ImGui::Spacing();
 
-		ImGui::Text("Texture          ");
+		ImGui::Text("Material          ");
 		ImGui::SameLine();
 		ImGui::TextColored({ 0 , 255 , 255 , 100 }, materialName);
 
@@ -341,9 +341,30 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* m
 
 		ImGui::Spacing();
 
-		ImGui::Text("Texture Path     ");
+		ImGui::Text("Material Path     ");
 		ImGui::SameLine();
 		ImGui::TextColored({ 0 , 255 , 255 , 100 }, materialPath);
+
+		ImGui::Spacing();
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		char textureName[100];
+		strcpy_s(textureName, 100, material->GetTextureName().c_str());
+
+
+		ImGui::Text("Texture          ");
+		ImGui::SameLine();
+		ImGui::TextColored({ 0 , 255 , 255 , 100 }, textureName);
+
+		char texturePath[100];
+		strcpy_s(texturePath, 100, material->GetTexturePath().c_str());
+
+		ImGui::Spacing();
+
+		ImGui::Text("Texture Path     ");
+		ImGui::SameLine();
+		ImGui::TextColored({ 0 , 255 , 255 , 100 }, texturePath);
 
 		ImGui::Spacing();
 		ImGui::Spacing();
@@ -385,25 +406,32 @@ void WG_Inspector::DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* m
 		ImGui::Text("R");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(60.0f);
-		ImGui::DragFloat("##colorR", &(myColor.r));
+		ImGui::SliderFloat("##colorR", &myColor.r, 0.f, 255.f);
 
 		ImGui::SameLine();
 		ImGui::Text("G");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(60.0f);
-		ImGui::DragFloat("##colorG", &myColor.g);
+		ImGui::SliderFloat("##colorG", &myColor.g, 0.f, 255.f);
 
 		ImGui::SameLine();
 		ImGui::Text("B");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(60.0f);
-		ImGui::DragFloat("##colorB", &myColor.b);
+		ImGui::SliderFloat("##colorB", &myColor.b, 0.f, 255.f);
 
 		ImGui::SameLine();
 		ImGui::Text("A");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(60.0f);
-		ImGui::DragFloat("##colorA", &myColor.a);
+		ImGui::SliderFloat("##colorA", &myColor.a, 0.f, 255.f);
+
+		myColor.r /= 255;
+		myColor.g /= 255;
+		myColor.b /= 255;
+		myColor.a /= 255;
+
+		material->SetColor(myColor);
 	}
 
 	ImGui::Spacing();

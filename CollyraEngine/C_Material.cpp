@@ -39,6 +39,11 @@ Color C_Material::GetColor() const
 	return myResource ? myResource->GetColor() : Grey;
 }
 
+void C_Material::SetColor(Color newColor) 
+{
+	return myResource ? myResource->SetColor(newColor) : 0;
+}
+
 std::string C_Material::GetMaterialName() const
 {
 	if (useDefaultTexture == true)
@@ -67,7 +72,7 @@ std::string C_Material::GetTexturePath() const
 
 void C_Material::SetResourceId(uint newId)
 {
-	int prevId = resourceId;  
+	int prevId = resourceId;
 
 	resourceId = newId;
 	myResource = (R_Material*)App->resources->RequestResource(resourceId);
@@ -85,18 +90,38 @@ R_Material* C_Material::GetResourcePointer() const
 	return myResource;
 }
 
-void C_Material::ResourceUpdated(std::vector<unsigned int>* ids)
+void C_Material::ResourceUpdated(std::map<uint, bool>* ids)
 {
-	for (uint i = 0; i < ids->size(); i++)
-	{
-		if (ids->at(i) == resourceId)
-		{
-			SetResourceId(ids->at(i));
-		}
-		else if (myResource && ids->at(i) == myResource->GetTextureResourceId())
-		{
-			myResource->SetTextureResourceId(ids->at(i));
-		}
+	std::map<uint, bool>::iterator it = ids->find(resourceId);
 
+	if (it != ids->end())
+	{
+		if (it->second == true)
+			SetResourceId(it->first);
+		else
+		{
+			App->resources->UnloadResource(resourceId);
+			myResource = nullptr;
+			resourceId = 0;
+		}
 	}
+
+	if (myResource != nullptr)
+	{
+		it = ids->find(myResource->GetTextureResourceId());
+
+		if (it != ids->end())
+		{
+			if (it->second == true)
+			{
+				myResource->SetTextureResourceId(it->first);
+			}
+			else
+			{
+				myResource->SetTextureResourceId(0, false);
+			}
+		}
+	}
+
+
 }

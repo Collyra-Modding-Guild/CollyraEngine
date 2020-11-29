@@ -3,6 +3,7 @@
 
 #include "WindowGroup.h"
 #include "Imgui/imgui.h"
+#include <string>
 #include "Globals.h"
 
 class WG_Assets : public WindowGroup
@@ -14,6 +15,10 @@ public:
 	virtual updateStatus Update();
 
 	virtual void Cleanup();
+
+private:
+	void LoadNewAsset(std::string& toLoad);
+	void DeleteAsset(std::string& toDelete);
 
 };
 

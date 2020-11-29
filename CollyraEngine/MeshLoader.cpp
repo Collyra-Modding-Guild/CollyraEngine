@@ -37,30 +37,52 @@ void MeshLoader::CleanUp()
 }
 
 
-void MeshLoader::Import(const char* path)
+uint MeshLoader::ImportMeshFromModel(const char* filePath, aiMesh* myMesh)
 {
-	//char* buffer = nullptr;
+	uint MeshID = 0;
 
-	//uint bytesFile = App->physFS->Load(path, &buffer);
+	aiMesh* mesh = myMesh;
 
-	//if (bytesFile == 0)
-	//{
-	//	return;
-	//}
+	std::vector<float3> vertices;
+	std::vector<float3> normals;
+	std::vector<float2> textureCoords;
+	std::vector<uint> indices;
 
-	//const aiScene* scene = aiImportFileFromMemory(buffer, bytesFile, aiProcessPreset_TargetRealtime_MaxQuality, nullptr);
+	vertices.reserve(mesh->mNumVertices);
+	textureCoords.reserve(mesh->mNumVertices);
+	if (mesh->HasNormals())
+		normals.reserve(mesh->mNumVertices);
 
-	//RELEASE_ARRAY(buffer);
+	Private::LoadVertices(mesh, vertices, normals, textureCoords);
+	if (vertices.size() == 0)
+	{
+		LOG("Error loading vertices in scene")
+			return 0;
+	}
 
-	//if (scene)
-	//{
-	//	LOG("FileÑ: %s Succesfully Imported!! Trying to convert to own format. . .", path);
-	//	Save(scene, path);
-	//}
-	//else
-	//{
-	//	LOG("Error importing aiScene %s", path);
-	//}
+	indices.reserve(mesh->mNumFaces * 3);
+	bool ret = Private::LoadIndices(mesh, indices);
+	if (indices.size() == 0 || !ret)
+	{
+		LOG("Error loading indices in scene")
+			return 0;
+	}
+	LOG("New mesh with %i vertices & %i indices", vertices.size(), indices.size());
+
+	//MESH IMPORT & SAVE ----------------------------------------
+	std::string path = "";
+	std::string meshName = "";
+	std::string meshExtension = "";
+	App->physFS->SplitFilePath(filePath, nullptr, &path, &meshName, &meshExtension);
+
+	R_Mesh* newMesh = (R_Mesh*)App->resources->CreateResource(R_TYPE::MESH);
+	MeshID = newMesh->GetUid();
+	newMesh->GenerateMesh(vertices, indices, normals, textureCoords);
+
+	App->resources->SaveResource(newMesh, filePath, false);
+	App->resources->DeleteResource(MeshID);
+
+	return MeshID;
 }
 
 uint MeshLoader::Save(R_Mesh* mesh, char** fileBuffer)
@@ -97,109 +119,6 @@ uint MeshLoader::Save(R_Mesh* mesh, char** fileBuffer)
 	cursor += bytes;
 
 	return size;
-}
-
-
-bool MeshLoader::Private::LoadAiSceneMeshes(const aiScene* scene, const aiNode* parent, const char* filePath, R_Model* myResource, unsigned int parentID, float4x4 transform)
-{
-	for (int i = 0; i < parent->mNumChildren; i++)
-	{
-		LoadNodeMeshes(scene, parent->mChildren[i], filePath, myResource, parentID, transform);
-	}
-
-	return true;
-}
-
-bool MeshLoader::Private::LoadNodeMeshes(const aiScene* scene, const aiNode* node, const char* filePath, R_Model* myResource, unsigned int panretId, float4x4 transform)
-{
-	//GameObject* newGameObject = nullptr;
-	unsigned int myID = panretId;
-
-	aiVector3D translation, scaling;
-	aiQuaternion rotation;
-	node->mTransformation.Decompose(scaling, rotation, translation);
-	float3 pos(translation.x, translation.y, translation.z);
-	Quat rot(rotation.x, rotation.y, rotation.z, rotation.w);
-	float3 scale(scaling.x, scaling.y, scaling.z);
-
-	transform = transform * float4x4::FromTRS(pos, rot, scale);
-
-	if (node->mNumMeshes > 0)
-	{
-		//newGameObject = App->scene->CreateGameObject(node->mName.C_Str(), parent);
-		uint32 meshId = 0;
-		uint32 materialId = 0;
-
-		//Mesh Load---------
-		int meshSize = node->mNumMeshes;
-		for (int i = 0; i < node->mNumMeshes; i++)
-		{
-			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-
-			std::vector<float3> vertices;
-			std::vector<float3> normals;
-			std::vector<float2> textureCoords;
-			std::vector<uint> indices;
-
-			vertices.reserve(mesh->mNumVertices);
-			textureCoords.reserve(mesh->mNumVertices);
-			if (mesh->HasNormals())
-				normals.reserve(mesh->mNumVertices);
-
-			LoadVertices(mesh, vertices, normals, textureCoords);
-			if (vertices.size() == 0)
-			{
-				LOG("Error loading vertices in scene")
-					continue;
-			}
-
-			indices.reserve(mesh->mNumFaces * 3);
-			bool ret = LoadIndices(mesh, indices);
-			if (indices.size() == 0 || !ret)
-			{
-				LOG("Error loading indices in scene")
-					continue;
-			}
-			LOG("New mesh with %i vertices & %i indices", vertices.size(), indices.size());
-
-			//MESH IMPORT & SAVE ----------------------------------------
-			std::string path = "";
-			std::string meshName = "";
-			std::string meshExtension = "";
-			App->physFS->SplitFilePath(filePath, nullptr, &path, &meshName, &meshExtension);
-
-			R_Mesh* newMesh = (R_Mesh*)App->resources->CreateResource(R_TYPE::MESH);
-			meshId = newMesh->GetUid();
-			newMesh->GenerateMesh(vertices, indices, normals, textureCoords);
-
-			App->resources->SaveResource(newMesh, filePath, false);
-			App->resources->DeleteResource(meshId);
-
-			//MATERIAL IMPORT & SAVE----------------------------------------
-			if (scene->HasMaterials())
-			{
-				R_Material* newMaterial = (R_Material*)App->resources->CreateResource(R_TYPE::MATERIAL);
-				aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-
-				materialId = newMaterial->GetUid();
-
-				//IMPORT & SAVE
-				MaterialLoader::Import(material, newMaterial, node->mName.C_Str(), filePath);
-				App->resources->SaveResource(newMaterial, filePath, false);
-				App->resources->DeleteResource(materialId);
-			}
-
-			//LOAD--------------------
-			//Transform Load------
-
-			myID = myResource->AddModelNode(App->resources->GenerateId(), node->mName.C_Str(), transform, panretId, meshId, materialId);
-			transform = float4x4::identity;
-		}
-	}
-
-	LoadAiSceneMeshes(scene, node, filePath, myResource, myID, transform);
-
-	return true;
 }
 
 

@@ -4,6 +4,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include "p2Defs.h"
 
 enum class COMPONENT_TYPE
@@ -58,7 +59,7 @@ public:
 
 	const AABB GetGameObjectAABB() const;	
 
-	void ResourcesUpdated(std::vector<unsigned int>* resourcesUpdated);
+	void ResourcesUpdated(std::map<unsigned int, bool>* resourcesUpdated);
 
 private:
 

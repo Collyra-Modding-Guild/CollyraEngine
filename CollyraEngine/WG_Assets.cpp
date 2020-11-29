@@ -19,39 +19,21 @@ updateStatus WG_Assets::Update()
 {
 	ImGui::Begin("Assets");
 
-	static std::vector<std::string> ignoreExt = {"meta"};
+	static std::vector<std::string> ignoreExt = { "meta" };
 
-	std::string toLoad = App->uiManager->DrawDirectoryRecursiveOld(ASSETS_FOLDER, true, &ignoreExt, "Asset");
+	std::string ret = App->uiManager->DrawDirectoryRecursiveOld(ASSETS_FOLDER, true, &ignoreExt, "Asset");
 
-	if (toLoad != "")
+	if (ret != "")
 	{
-		uint id = App->resources->ImportResourceFromAssets(toLoad.c_str());
-
-		if (id > 0)
+		if (ImGui::IsMouseDoubleClicked(0))
 		{
-			Resource* loadedResource = App->resources->RequestResource(id);
-
-			if (loadedResource != nullptr)
-			{
-				switch (loadedResource->GetType())
-				{
-				case R_TYPE::MESH:
-					break;
-				case R_TYPE::TEXTURE:
-				{
-					App->scene->SetResourceToGameObject(id, loadedResource->GetType());
-				}
-				break;
-				case R_TYPE::MATERIAL:
-					break;
-				default:
-					break;
-				}
-
-				App->resources->UnloadResource(id);
-			}
-
+			LoadNewAsset(ret);
 		}
+		else if (ImGui::IsMouseClicked(2))
+		{
+			DeleteAsset(ret);
+		}
+
 	}
 
 	ImGui::End();
@@ -62,3 +44,42 @@ updateStatus WG_Assets::Update()
 
 void WG_Assets::Cleanup()
 {}
+
+void WG_Assets::LoadNewAsset(std::string& toLoad)
+{
+	uint id = App->resources->ImportResourceFromAssets(toLoad.c_str());
+
+	if (id > 0)
+	{
+		Resource* loadedResource = App->resources->RequestResource(id);
+
+		if (loadedResource != nullptr)
+		{
+			switch (loadedResource->GetType())
+			{
+			case R_TYPE::MESH:
+				break;
+			case R_TYPE::TEXTURE:
+			{
+				App->scene->SetResourceToGameObject(id, loadedResource->GetType());
+			}
+			break;
+			case R_TYPE::MATERIAL:
+				break;
+			default:
+				break;
+			}
+
+			App->resources->UnloadResource(id);
+		}
+
+	}
+}
+
+void WG_Assets::DeleteAsset(std::string& toDelete)
+{
+	App->physFS->DeleteFileIn(toDelete.c_str());
+	App->resources->CheckAssetInMeta((toDelete + ".meta"), toDelete);
+}
+
+

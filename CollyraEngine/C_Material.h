@@ -18,6 +18,7 @@ public:
 
 	uint GetTexture() const;
 	Color GetColor() const;
+	void SetColor(Color newColor);
 
 	std::string GetMaterialName() const;
 	std::string GetMaterialPath() const;
@@ -27,7 +28,7 @@ public:
 	void SetResourceId(uint newId);
 	int GetResourceId() const;
 	R_Material* GetResourcePointer() const;
-	void ResourceUpdated(std::vector<unsigned int>* ids);
+	void ResourceUpdated(std::map<uint, bool>* ids);
 
 
 private:

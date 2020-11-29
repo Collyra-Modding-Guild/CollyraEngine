@@ -254,7 +254,7 @@ const AABB GameObject::GetGameObjectAABB() const
 	return aabb;
 }
 
-void GameObject::ResourcesUpdated(std::vector<unsigned int>* resourcesUpdated)
+void GameObject::ResourcesUpdated(std::map<unsigned int, bool>* resourcesUpdated)
 {
 	for (uint i = 0; i < components.size(); i++)
 	{

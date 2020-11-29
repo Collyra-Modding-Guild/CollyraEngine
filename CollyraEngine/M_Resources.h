@@ -34,19 +34,21 @@ public:
 	bool Awake();
 	bool Start();
 	updateStatus Update(float dt) override;
-	updateStatus PreDraw(bool* drawState) override;
 	bool CleanUp();
 
 	//Resource------------
 	//Import
 	uint ImportResourceFromAssets(const char* path);
-	 
+
 	//Load & Request
 	Resource* RequestResource(uint id);
 	Resource* LoadResource(uint id, const char* assetsPath = nullptr);
 
 	//Creation
 	Resource* CreateResource(R_TYPE rType, uint32 forceId = 0);
+
+	//Save
+	uint SaveResource(Resource* toSave, std::string assetsPath, bool saveMeta = true);
 
 	//Destruction
 	bool DeleteResource(uint32 idToDestroy);
@@ -61,9 +63,10 @@ public:
 	void SetDeleteResources(bool newState);
 	void GetResourcesByType(std::vector<const Resource*>& resources, R_TYPE type) const;
 	PathNode* GetAllAssetFiles();
+	void UpdateChangedResources();
+	uint CheckAssetInMeta (std::string metaPath, std::string relativePath);
 
 private:
-	void ImportModel(const char* path, char** buffer, unsigned int bufferSize, R_Model* resourceModel);
 	void SearchAllAssetFiles();
 	void CheckAssetsImport(PathNode& pathnode);
 	std::string DuplicateFile(const char* path);
@@ -72,10 +75,9 @@ private:
 	void CheckResourcesToUnload();
 
 	//Save
-	uint SaveResource(Resource* toSave, std::string assetsPath, bool saveMeta = true);
 	bool SaveMeta(Resource* toSave, std::string assetsPath);
 
-public: 
+public:
 	int defaultTextureId;
 
 private:
@@ -84,7 +86,7 @@ private:
 	Timer updateAssetsTimer;
 	bool deleteResources;
 
-	std::vector<uint> onlineIdUpdated;
+	std::map<uint, bool> onlineIdUpdated;
 	PathNode allLibFiles;
 	PathNode allAssetFiles;
 	ASSETS_CHECK assetsRead;

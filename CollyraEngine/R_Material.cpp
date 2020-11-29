@@ -28,6 +28,9 @@ void R_Material::SetTextureResourceId(uint rTexId, bool load)
 	{
 		myTexResource = (R_Texture*)App->resources->RequestResource(idTextureResource);
 	}
+	else
+		myTexResource = nullptr;
+
 
 	App->resources->UnloadResource(prevId);
 }
