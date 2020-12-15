@@ -58,6 +58,6 @@ private:
 
 	bool drawWire, drawFaces, drawNormVertices, drawNormFaces;
 
-	int rMeshId;
+	uint rMeshId;
 	R_Mesh* rMesh;
 };

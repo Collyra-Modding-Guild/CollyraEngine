@@ -351,8 +351,8 @@ void M_Scene::SetResourceToGameObject(uint resourceId, R_TYPE rType, GameObject*
 		if (setTo == nullptr)
 		{
 			LOG("You need to have a GameObject selected!!!");
-		}
 			return;
+		}
 	}
 
 	switch (rType)

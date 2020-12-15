@@ -1,7 +1,7 @@
 #include "R_Mesh.h"
 #include "OpenGL.h"
 
-R_Mesh::R_Mesh(unsigned int uid) : Resource(uid, R_TYPE::MESH), idIndex(-1), idVertex(-1), idNormals(-1), idTextureCoords(-1),
+R_Mesh::R_Mesh(unsigned int uid) : Resource(uid, R_TYPE::MESH), idIndex(0), idVertex(0), idNormals(0), idTextureCoords(0),
  vertices{}, indices{}, normals{}, textureCoords{}
 {}
 
@@ -83,6 +83,11 @@ void R_Mesh::ClearMesh()
 	glDeleteBuffers(1, &idIndex);
 	glDeleteBuffers(1, &idNormals);
 	glDeleteBuffers(1, &idTextureCoords);
+
+	idVertex = 0;
+	idIndex = 0;
+	idNormals = 0;
+	idTextureCoords = 0;
 }
 
 

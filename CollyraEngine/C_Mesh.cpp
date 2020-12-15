@@ -9,7 +9,7 @@
 #include "OpenGL.h"
 
 C_Mesh::C_Mesh(bool active) : Component(COMPONENT_TYPE::MESH, active),
-drawWire(false), drawNormVertices(false), drawNormFaces(false), drawFaces(true), rMeshId(-1), rMesh(nullptr)
+drawWire(false), drawNormVertices(false), drawNormFaces(false), drawFaces(true), rMeshId(0), rMesh(nullptr)
 {}
 
 C_Mesh::~C_Mesh()
@@ -187,20 +187,14 @@ void C_Mesh::DrawOutline(float4x4& transform) const
 
 	glLineWidth(10.f);
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
-
 	// - - - - - - - - - -
 	glPolygonMode(GL_FRONT, GL_LINE);
-	glEnableClientState(GL_VERTEX_ARRAY);
 	glBindBuffer(GL_ARRAY_BUFFER, rMesh->GetVerticesId());
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rMesh->GetIndicesId());
 	glVertexPointer(3, GL_FLOAT, 0, 0);
 	glDrawElements(GL_TRIANGLES, rMesh->GetIndicesSize() * 3, GL_UNSIGNED_INT, 0);
 	glDisable(GL_POLYGON_OFFSET_FILL);
 
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	// - - - - - - - - - -

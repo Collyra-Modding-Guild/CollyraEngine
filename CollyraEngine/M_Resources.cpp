@@ -132,6 +132,9 @@ Resource* M_Resources::RequestResource(uint id)
 {
 	Resource* resource = nullptr;
 
+	if (id == 0)
+		return resource;
+
 	//Search if the resource is loaded in mem
 	std::map<uint, Resource*>::iterator resourcesIt = resourceMap.find(id);
 	if (resourcesIt != resourceMap.end())
@@ -406,6 +409,9 @@ void M_Resources::UnloadResource(Resource* toUnload)
 
 void M_Resources::UnloadResource(uint32 toUnloadId)
 {
+	if (toUnloadId == 0)
+		return;
+
 	std::map<uint, Resource*>::iterator it = resourceMap.find(toUnloadId);
 	if (it != resourceMap.end())
 	{
