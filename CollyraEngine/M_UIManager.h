@@ -72,6 +72,9 @@ private:
 	void			ShowLoadScenePopUp();
 	void			ShowSelectedItemPopUp();
 
+	// Helpers ----
+	std::string		GetTreeFormatedName(std::string fullPath);
+
 public:
 
 	std::vector<WindowGroup*> windowGroups;

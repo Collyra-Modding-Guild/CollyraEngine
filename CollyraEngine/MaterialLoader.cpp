@@ -17,7 +17,7 @@ uint MaterialLoader::ImportMaterialFromMesh(const char* filePath, aiMaterial* ma
 	aiMaterial* material = mat;
 
 	uint matID = 0;
-	R_Material* newMaterial = (R_Material*)App->resources->CreateResource(R_TYPE::MATERIAL);
+	R_Material* newMaterial = (R_Material*)App->resources->CreateResource(R_TYPE::MATERIAL, matName);
 
 	matID = newMaterial->GetUid();
 

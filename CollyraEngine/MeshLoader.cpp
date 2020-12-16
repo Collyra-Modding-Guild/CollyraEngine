@@ -37,7 +37,7 @@ void MeshLoader::CleanUp()
 }
 
 
-uint MeshLoader::ImportMeshFromModel(const char* filePath, aiMesh* myMesh)
+uint MeshLoader::ImportMeshFromModel(const char* filePath, aiMesh* myMesh, uint meshIndex)
 {
 	uint MeshID = 0;
 
@@ -75,7 +75,9 @@ uint MeshLoader::ImportMeshFromModel(const char* filePath, aiMesh* myMesh)
 	std::string meshExtension = "";
 	App->physFS->SplitFilePath(filePath, nullptr, &path, &meshName, &meshExtension);
 
-	R_Mesh* newMesh = (R_Mesh*)App->resources->CreateResource(R_TYPE::MESH);
+	meshName += "_" + std::to_string(meshIndex);
+
+	R_Mesh* newMesh = (R_Mesh*)App->resources->CreateResource(R_TYPE::MESH, meshName);
 	MeshID = newMesh->GetUid();
 	newMesh->GenerateMesh(vertices, indices, normals, textureCoords);
 

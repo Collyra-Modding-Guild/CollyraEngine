@@ -462,6 +462,16 @@ void M_UIManager::ShowSelectedItemPopUp()
 	}
 }
 
+std::string M_UIManager::GetTreeFormatedName(std::string fullPath)
+{
+	size_t pos_separator = fullPath.find("_coll_");
+
+	if (pos_separator < fullPath.length())
+		fullPath = fullPath.substr(0, pos_separator);
+
+	return fullPath;
+}
+
 void M_UIManager::NewFpsLog(float currMs, float currFps)
 {
 	if (configWindow != nullptr)
@@ -587,7 +597,7 @@ void M_UIManager::OnWindowResize() const
 
 float2 M_UIManager::GetSceneWindowSize() const
 {
-	float w, h;
+	float w = 0.f, h = 0.f;
 
 	if (sceneWindow != nullptr)
 	{
@@ -600,7 +610,7 @@ float2 M_UIManager::GetSceneWindowSize() const
 
 float2 M_UIManager::GetSceneWindowPosition() const
 {
-	float x, y;
+	float x = 0.f, y = 0.f;
 
 	if (sceneWindow != nullptr)
 	{
@@ -852,7 +862,6 @@ std::string M_UIManager::DrawDirectoryRecursiveOld(const char* directory, bool r
 			{
 				myPathNode->children[i].Clear();
 			}
-
 		}
 	}
 	else
@@ -878,7 +887,7 @@ std::string M_UIManager::DrawDirectoryRecursive(PathNode* myNode, const char* di
 
 	if (!myNode->isFile && myNode->children.size() > 0)
 	{
-		if (ImGui::TreeNodeEx((myNode->path).c_str(), 0, "%s/", myNode->path.c_str()))
+		if (ImGui::TreeNodeEx((myNode->path).c_str(), 0, "%s/", myNode->localPath.c_str()))
 		{
 			if (!myNode->isLeaf)
 			{
@@ -902,7 +911,7 @@ std::string M_UIManager::DrawDirectoryRecursive(PathNode* myNode, const char* di
 	}
 	else
 	{
-		const std::string& str = myNode->localPath;
+		const std::string& str = GetTreeFormatedName(myNode->localPath);
 
 		bool ignore = false;
 		if (ignoreExt != nullptr)

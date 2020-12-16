@@ -45,7 +45,7 @@ public:
 	Resource* LoadResource(uint id, const char* assetsPath = nullptr);
 
 	//Creation
-	Resource* CreateResource(R_TYPE rType, uint32 forceId = 0);
+	Resource* CreateResource(R_TYPE rType, std::string name = "", uint32 forceId = 0);
 
 	//Save
 	uint SaveResource(Resource* toSave, std::string assetsPath, bool saveMeta = true);
@@ -73,6 +73,7 @@ private:
 	std::string CheckMetaFilesId(PathNode& metasOnly, uint searchFor);
 	std::string CheckAssetFolderForId(uint searchFor);
 	std::string DuplicateFile(const char* path);
+	std::string GetDefaultResourceName(R_TYPE type) const;
 
 	uint32 ImportResource(std::string path, uint32 forceid = 0);
 	void CheckResourcesToUnload();

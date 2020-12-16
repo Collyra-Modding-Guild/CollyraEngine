@@ -44,8 +44,7 @@ void ModelLoader::ImportModel(const char* path, char** buffer, unsigned int buff
 				if (resourceModel->modelNodes[n].meshID == i)
 					meshName = resourceModel->modelNodes[n].name;
 			}
-			scene->mMeshes[i]->mName = meshName;
-			meshes.push_back(MeshLoader::ImportMeshFromModel(path, scene->mMeshes[i]));
+			meshes.push_back(MeshLoader::ImportMeshFromModel(path, scene->mMeshes[i], i));
 		}
 		for (uint i = 0; i < scene->mNumMaterials; ++i)
 		{

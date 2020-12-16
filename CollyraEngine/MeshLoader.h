@@ -20,7 +20,7 @@ namespace MeshLoader
 	void Init();
 	void CleanUp();
 
-	uint ImportMeshFromModel(const char* path, aiMesh* myMesh);
+	uint ImportMeshFromModel(const char* path, aiMesh* myMesh, uint meshIndex);
 	uint Save(R_Mesh* mesh, char** buffer);
 
 	namespace Private

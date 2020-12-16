@@ -201,8 +201,8 @@ Resource* M_Resources::LoadResource(uint id, const char* libPath)
 		return ret;
 	}
 
-	std::string extension;
-	App->physFS->SplitFilePath(libPathStr.c_str(), nullptr, nullptr, nullptr, &extension);
+	std::string extension, name;
+	App->physFS->SplitFilePath(libPathStr.c_str(), nullptr, nullptr, &name, &extension);
 
 	R_TYPE resourceType = App->physFS->GetTypeFromExtension(extension.c_str());
 
@@ -210,20 +210,20 @@ Resource* M_Resources::LoadResource(uint id, const char* libPath)
 	{
 	case (R_TYPE::MESH):
 	{
-		ret = CreateResource(R_TYPE::MESH, id);
+		ret = CreateResource(R_TYPE::MESH, name, id);
 		MeshLoader::Private::LoadMesh((R_Mesh*)ret, &buffer, id);
 		break;
 	}
 	case (R_TYPE::TEXTURE):
 	{
-		ret = CreateResource(R_TYPE::TEXTURE, id);
+		ret = CreateResource(R_TYPE::TEXTURE, name, id);
 		R_Texture* tmp = (R_Texture*)ret;
 		tmp->textureId = TextureLoader::Load(buffer, size, (R_Texture*)ret);
 		break;
 	}
 	case (R_TYPE::MATERIAL):
 	{
-		ret = CreateResource(R_TYPE::MATERIAL, id);
+		ret = CreateResource(R_TYPE::MATERIAL, name, id);
 		MaterialLoader::Load((R_Material*)ret, buffer);
 		break;
 	}
@@ -256,7 +256,7 @@ Resource* M_Resources::LoadResource(uint id, const char* libPath)
 	return ret;
 }
 
-Resource* M_Resources::CreateResource(R_TYPE rType, uint32 forceId)
+Resource* M_Resources::CreateResource(R_TYPE rType, std::string name, uint32 forceId)
 {
 	Resource* ret = nullptr;
 
@@ -275,9 +275,15 @@ Resource* M_Resources::CreateResource(R_TYPE rType, uint32 forceId)
 
 	if (ret != nullptr)
 	{
-		ret->SetName(std::to_string(uId));
+		if (name == "")
+		{
+			name = GetDefaultResourceName(rType);
+		}
+		std::string fullName = name + "_coll_" + std::to_string(uId);
 
-		ret->SetLibraryPath(App->physFS->GetExtensionFolderLibraryFromType(rType).append(std::to_string(uId).append(App->physFS->GetInternalExtensionFromType(rType))));
+		ret->SetName(name);
+
+		ret->SetLibraryPath(App->physFS->GetExtensionFolderLibraryFromType(rType).append(fullName.append(App->physFS->GetInternalExtensionFromType(rType))));
 		resourceMap.insert({ uId , ret });
 	}
 
@@ -649,13 +655,44 @@ std::string M_Resources::DuplicateFile(const char* path)
 		return "";
 }
 
+std::string M_Resources::GetDefaultResourceName(R_TYPE type) const
+{
+	std::string ret = "";
+
+	switch (type)
+	{
+	case R_TYPE::MODEL:
+		ret = "CollyraModel";
+		break;
+	case R_TYPE::SCENE:
+		ret = "CollyraScene";
+		break;
+	case R_TYPE::MESH:
+		ret = "CollyraMesh";
+		break;
+	case R_TYPE::TEXTURE:
+		ret = "CollyraTexture";
+		break;
+	case R_TYPE::MATERIAL:
+		ret = "CollyraMaterial";
+		break;
+	default:
+		break;
+	}
+
+	return ret;
+}
+
 uint32 M_Resources::ImportResource(std::string path, uint32 forceid)
 {
 	R_TYPE resourceType = GetResourceTypeFromExtension(path.c_str());
 
 	if (resourceType != R_TYPE::NO_TYPE)
 	{
-		Resource* newResource = CreateResource(resourceType, forceid);
+		std::string name = "";
+		App->physFS->SplitFilePath(path.c_str(), nullptr, nullptr, &name, nullptr);
+
+		Resource* newResource = CreateResource(resourceType, name, forceid);
 
 		char* fileBuffer = nullptr;
 		uint64 fileSize = 0;
