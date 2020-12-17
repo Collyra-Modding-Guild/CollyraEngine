@@ -53,6 +53,8 @@ updateStatus WG_Inspector::Update()
 		if (camera != nullptr)
 			DrawCameraComponent(ImGuiTreeNodeFlags_DefaultOpen, camera);
 
+		AddComponentButtonDraw();
+
 	}
 
 	ImGui::End();
@@ -474,7 +476,7 @@ void WG_Inspector::DrawCameraComponent(ImGuiTreeNodeFlags_ flag, C_Camera* camer
 		ImGui::Text("Near Plane");
 		ImGui::SameLine();
 
-	
+
 
 		if (ImGui::DragFloat("##nearplane", &currentNearPlane, 1.0f, 0.1f, currentFarPlane))
 		{
@@ -496,6 +498,20 @@ void WG_Inspector::DrawCameraComponent(ImGuiTreeNodeFlags_ flag, C_Camera* camer
 	ImGui::Spacing();
 	ImGui::Separator();
 	ImGui::Spacing();
+
+}
+
+void WG_Inspector::AddComponentButtonDraw()
+{
+	//ImGui::PushItemWidth(10);
+	//if (ImGui::BeginMenu("Add Component"))
+	//{
+	//	if (ImGui::MenuItem("Exit", NULL))
+	//	{
+	//	}
+
+	//	ImGui::EndMenu();
+	//}
 
 }
 

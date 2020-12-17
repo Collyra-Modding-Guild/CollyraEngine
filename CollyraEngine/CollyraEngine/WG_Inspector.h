@@ -31,13 +31,15 @@ public:
 
 	void		OnDestroyedId(uint destroyedGameObject);
 
+	bool		DeleteGameObject(int key);
+
+private:
 	void		DrawHeaderGameObject();
-	void		DrawTransformComponent (ImGuiTreeNodeFlags_ flag);
+	void		DrawTransformComponent(ImGuiTreeNodeFlags_ flag);
 	void		DrawMeshComponent(ImGuiTreeNodeFlags_ flag, C_Mesh* mesh);
 	void		DrawMaterialComponent(ImGuiTreeNodeFlags_ flag, C_Material* material);
 	void		DrawCameraComponent(ImGuiTreeNodeFlags_ flag, C_Camera* camera);
-
-	bool		DeleteGameObject(int key);
+	void		AddComponentButtonDraw();
 
 private:
 	int			focusedId;
