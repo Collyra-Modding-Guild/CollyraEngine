@@ -11,6 +11,7 @@
 #include "imgui/imgui_impl_sdl.h"
 
 #include "SDL/include/SDL.h"
+#include "CollyraLibrary.h"
 
 #define MAX_KEYS 300
 
@@ -39,6 +40,8 @@ bool M_Input::Awake()
 		LOG("SDL_EVENTS could not initialize! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
 	}
+	fibonacci_init(1, 2);
+
 
 	return ret;
 }
@@ -47,6 +50,8 @@ bool M_Input::Awake()
 updateStatus M_Input::PreUpdate(float dt)
 {
 	SDL_PumpEvents();
+	fibonacci_next();
+	App->NewConsoleLog(std::string(std::to_string(fibonacci_current())).c_str());
 
 	const Uint8* keys = SDL_GetKeyboardState(NULL);
 	
