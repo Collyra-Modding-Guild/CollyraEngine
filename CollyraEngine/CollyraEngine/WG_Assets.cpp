@@ -54,7 +54,6 @@ updateStatus WG_Assets::Update()
 
 	}
 
-
 	ImGui::End();
 
 	return UPDATE_CONTINUE;

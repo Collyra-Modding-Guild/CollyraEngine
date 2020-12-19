@@ -45,7 +45,7 @@ public:
 
 	void		CameraCuling(GameObject* current, C_Camera* myCam);
 
-	// Game State
+	// Game State ------
 	void Play();
 	void Stop();
 	void Pause();
@@ -54,6 +54,7 @@ public:
 
 	//Delete all GameObjects, Components, cameras, reset Name,....
 	void		ResetScene();
+	uint		SaveScene();
 
 	uint32 GenerateId();
 
@@ -81,6 +82,7 @@ public:
 private:
 	R_Scene* currentScene;
 	uint playedScene;
+	std::string savedScenePath;
 
 };
 

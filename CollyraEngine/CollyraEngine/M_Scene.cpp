@@ -25,7 +25,7 @@
 #include "OpenGL.h"
 
 M_Scene::M_Scene(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), focusedGameObject(nullptr), currentScene(nullptr),
-playedScene(0)
+playedScene(0), savedScenePath()
 {}
 
 M_Scene::~M_Scene()
@@ -37,6 +37,8 @@ bool M_Scene::Awake()
 
 	currentScene = (R_Scene*)App->resources->CreateResource(R_TYPE::SCENE);
 	currentScene->referenceCount++;
+
+	savedScenePath = currentScene->GetLibraryPath();
 
 	currentScene->root = new GameObject(DEFAULT_SCENE_NAME);
 	currentScene->root->CreateComponent(COMPONENT_TYPE::TRANSFORM);
@@ -283,6 +285,13 @@ void M_Scene::ResetScene()
 	currentScene->root->SetName(DEFAULT_SCENE_NAME);
 }
 
+uint M_Scene::SaveScene()
+{
+	App->physFS->DeleteFileIn(savedScenePath.c_str());
+	savedScenePath = currentScene->GetLibraryPath();
+	return App->resources->SaveResource(currentScene, "", false);
+}
+
 uint32 M_Scene::GenerateId()
 {
 	return randomGenerator.Int();
@@ -301,6 +310,8 @@ std::string M_Scene::GetSceneName() const
 void M_Scene::SetSceneName(const char* newName)
 {
 	currentScene->root->SetName(newName);
+	currentScene->SetName(newName);
+	currentScene->SetLibraryPath(App->physFS->GetExtensionFolderLibraryFromType(R_TYPE::SCENE).append(currentScene->GetName().append(App->physFS->GetInternalExtensionFromType(R_TYPE::SCENE))));
 }
 
 R_Scene* M_Scene::GetSceneResource() const
@@ -759,7 +770,7 @@ void M_Scene::CameraCuling(GameObject* current, C_Camera* myCam)
 
 void M_Scene::Play()
 {
-	App->uiManager->SaveScene();
+	SaveScene();
 	playedScene = this->GetSceneResource()->GetUid();
 
 	App->gameClock->Start();

@@ -24,16 +24,23 @@ public:
 private:
 	void CreateHierarchy(GameObject* parent);
 	void SetTreeNodeFlags(GameObject* parent);
+	void HandleNodeInput(GameObject* currentGo);
 	void HandleDragAndDrop(GameObject* currentGo);
 
 	void DrpGameObject(GameObject* from, GameObject* to);
+	void HandlePopUp();
+	void PopUpHierarchy();
+	void PopUpSceneName();
 
 
 private:
 	ImGuiTreeNodeFlags	flag;
 	int					selected;
+	int					popUpSelected;
+	bool				changeSceneNamePopUp;
+	char				sceneName[256];
 
-	GameObject*	rootPointer;
+	GameObject*			rootPointer;
 
 };
 

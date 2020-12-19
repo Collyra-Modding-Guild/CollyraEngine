@@ -43,7 +43,7 @@
 
 M_UIManager::M_UIManager(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), showDemoWindow(false), showConfigMenu(false),
 configWindow(nullptr), consoleWindow(nullptr), sceneWindow(nullptr), hierarchyWindow(nullptr), inspectorWindow(nullptr),
-playWindow(nullptr), aboutWindow(nullptr), resourceCount(nullptr), lastSavedId(0), showLoadScenePop(false)
+playWindow(nullptr), aboutWindow(nullptr), resourceCount(nullptr), assetsWindow(nullptr), lastSavedId(0), showLoadScenePop(false)
 {}
 
 // Destructor
@@ -231,7 +231,7 @@ bool M_UIManager::ShowMainMenuBar()
 
 			if (ImGui::MenuItem("Save Scene", NULL))
 			{
-				SaveScene();
+				App->scene->SaveScene();
 			}
 
 			ImGui::EndMenu();
@@ -424,7 +424,7 @@ void M_UIManager::ShowLoadScenePopUp()
 	if (ImGui::BeginPopupModal("Load File", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 	{
 		ImGui::BeginChild("File Browser", ImVec2(300, 400), true);
-		std::string pushedValue = DrawDirectoryRecursiveOld(LIBRARY_SCENES);
+		std::string pushedValue = DrawDirectoryRecursiveOld(LIBRARY_SCENES, true);
 		ImGui::EndChild();
 
 		if (ImGui::Button("Cancel", ImVec2(50, 20)))
@@ -436,8 +436,15 @@ void M_UIManager::ShowLoadScenePopUp()
 		{
 			if (pushedValue.find(".collscene") < pushedValue.length())
 			{
-				pushedValue = pushedValue.substr(0, pushedValue.length() - 11);
-				App->resources->LoadResource(std::stoi(pushedValue));
+				std::string name;
+				App->physFS->SplitFilePath(pushedValue.c_str(), nullptr, nullptr, &name);
+
+				size_t itemSeparator = name.find("_coll_");
+				name = name.substr(itemSeparator + 7);
+
+				uint id = std::stoi(name);
+
+				App->resources->LoadResource(id);
 				pushedValue.clear();
 			}
 			showLoadScenePop = false;
@@ -774,11 +781,6 @@ void M_UIManager::SetupLightImGuiStyle()
 	style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
 
 
-}
-
-uint M_UIManager::SaveScene()
-{
-	return App->resources->SaveResource((Resource*)App->scene->GetSceneResource(), "", false);
 }
 
 void M_UIManager::SetupDarkImGuiStyle(float alpha)

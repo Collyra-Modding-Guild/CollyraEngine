@@ -279,11 +279,10 @@ Resource* M_Resources::CreateResource(R_TYPE rType, std::string name, uint32 for
 		{
 			name = GetDefaultResourceName(rType);
 		}
-		std::string fullName = name + "_coll_" + std::to_string(uId);
 
 		ret->SetName(name);
 
-		ret->SetLibraryPath(App->physFS->GetExtensionFolderLibraryFromType(rType).append(fullName.append(App->physFS->GetInternalExtensionFromType(rType))));
+		ret->SetLibraryPath(App->physFS->GetExtensionFolderLibraryFromType(rType).append(ret->GetName().append(App->physFS->GetInternalExtensionFromType(rType))));
 		resourceMap.insert({ uId , ret });
 	}
 

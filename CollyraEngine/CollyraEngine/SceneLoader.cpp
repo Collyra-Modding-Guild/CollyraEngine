@@ -18,6 +18,7 @@
 uint SceneLoader::Save(const GameObject* hierarchyParent, char** buffer)
 {
 	JsonConfig jsonFile;
+	jsonFile.AddString("SceneName", hierarchyParent->GetName().c_str());
 	JsonArray gameObjectsArr = jsonFile.CreateElementArray("GameObjects");
 
 	const std::vector<GameObject*> gameObjects = hierarchyParent->GetChilds();
@@ -37,6 +38,7 @@ bool SceneLoader::Load(char* buffer)
 	JsonConfig jsonFile(buffer);
 	if (jsonFile.IsInitialized())
 	{
+		App->scene->SetSceneName(jsonFile.GetString("SceneName").c_str());
 		JsonArray gameObjectsArr = jsonFile.GetArray("GameObjects");
 		if (gameObjectsArr.IsInitialized())
 		{

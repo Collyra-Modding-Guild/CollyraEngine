@@ -17,7 +17,7 @@ void Resource::SetNameAndPath(std::string name, std::string path)
 
 void Resource::SetName(std::string name)
 {
-	this->name = name;
+	this->name = name + "_coll_" + std::to_string(uid);;
 }
 
 
