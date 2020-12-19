@@ -113,7 +113,6 @@ void C_Mesh::InnerRender(int textureID) const
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_TEXTURE_COORD_ARRAY, 0);
-
 }
 
 void C_Mesh::DrawNormals(bool* drawState) const
@@ -180,19 +179,21 @@ void C_Mesh::DrawOutline(float4x4& transform) const
 	if (rMesh == nullptr)
 		return;
 
+	if (rMesh->GetVertices() == nullptr || rMesh->GetIndices() == nullptr)
+		return;
+
 	glPushMatrix();
 	glMultMatrixf((float*)&transform);
 
 	glDisable(GL_LIGHTING);
 
 	glLineWidth(10.f);
-
 	// - - - - - - - - - -
 	glPolygonMode(GL_FRONT, GL_LINE);
 	glBindBuffer(GL_ARRAY_BUFFER, rMesh->GetVerticesId());
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rMesh->GetIndicesId());
-	glVertexPointer(3, GL_FLOAT, 0, 0);
-	glDrawElements(GL_TRIANGLES, rMesh->GetIndicesSize() * 3, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, rMesh->GetIndicesSize(), GL_UNSIGNED_INT, NULL);
 	glDisable(GL_POLYGON_OFFSET_FILL);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

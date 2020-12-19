@@ -176,8 +176,6 @@ updateStatus M_Renderer3D::PreUpdate(float dt)
 	glLoadIdentity();
 
 	glMatrixMode(GL_MODELVIEW);
-	//glStencilFunc(GL_ALWAYS, 1, 0xFF);
-	glStencilMask(0x00);
 
 	M_Camera3D* cameraModule = (M_Camera3D*)App->GetModulePointer(M_CAMERA3D);
 	if (cameraModule == nullptr)
@@ -213,7 +211,6 @@ updateStatus M_Renderer3D::PostUpdate(float dt)
 	EndStencilMode();
 
 	App->Draw(drawState);
-
 	EndDrawMode();
 
 	//UI Render
@@ -292,6 +289,8 @@ void M_Renderer3D::BeginStencilMode()
 	glStencilMask(0x00);
 	glDisable(GL_DEPTH_TEST);
 	glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
 }
 
 void M_Renderer3D::EndStencilMode()
@@ -300,9 +299,10 @@ void M_Renderer3D::EndStencilMode()
 	glStencilFunc(GL_ALWAYS, 0, 0xFF);
 	glEnable(GL_DEPTH_TEST);
 
-
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);
 	glStencilMask(0xFF);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 bool M_Renderer3D::GetVSync()
