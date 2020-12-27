@@ -36,7 +36,7 @@ public:
 	M_Resources* resources;
 	M_Scene* scene;
 	M_ScriptingInterface* scriptInterface;
-	
+
 	float capTime = 0;
 
 	Timer* gameClock = nullptr;
@@ -51,7 +51,7 @@ public:
 private:
 
 	int					argc;
-	char**				args;
+	char** args;
 
 	Timer				ms_timer;
 
@@ -119,6 +119,6 @@ private:
 
 };
 
-extern Application* App;
+extern  Application* App;
 
 #endif // __APPLICATION_CPP__

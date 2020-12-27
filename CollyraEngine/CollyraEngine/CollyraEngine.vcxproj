@@ -62,6 +62,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <AdditionalDependencies>CollyraGameSystem.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\CollyraGameSystem\$(IntDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>/Zc:externConstexpr %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(ProjectDir)..\CollyraGameSystem\$(IntDir)CollyraGameSystem.dll" "$(OutDir)"</Command>
@@ -96,6 +97,7 @@
     <ClInclude Include="C_Camera.h" />
     <ClInclude Include="C_Mesh.h" />
     <ClInclude Include="C_Material.h" />
+    <ClInclude Include="C_Script.h" />
     <ClInclude Include="C_Transform.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="glmath.h" />
@@ -182,6 +184,7 @@
     <ClInclude Include="M_Renderer3D.h" />
     <ClInclude Include="M_Resources.h" />
     <ClInclude Include="M_Scene.h" />
+    <ClInclude Include="M_ScriptingInterface.h" />
     <ClInclude Include="M_UIManager.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="M_Input.h" />
@@ -197,6 +200,7 @@
     <ClInclude Include="R_Model.h" />
     <ClInclude Include="R_Resource.h" />
     <ClInclude Include="R_Scene.h" />
+    <ClInclude Include="R_Script.h" />
     <ClInclude Include="R_Texture.h" />
     <ClInclude Include="SceneLoader.h" />
     <ClInclude Include="TextureLoader.h" />
@@ -219,6 +223,7 @@
     <ClCompile Include="C_Camera.cpp" />
     <ClCompile Include="C_Mesh.cpp" />
     <ClCompile Include="C_Material.cpp" />
+    <ClCompile Include="C_Script.cpp" />
     <ClCompile Include="C_Transform.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="glmath.cpp" />
@@ -278,6 +283,7 @@
     <ClCompile Include="M_Renderer3D.cpp" />
     <ClCompile Include="M_Resources.cpp" />
     <ClCompile Include="M_Scene.cpp" />
+    <ClCompile Include="M_ScriptingInterface.cpp" />
     <ClCompile Include="M_UIManager.cpp" />
     <ClCompile Include="M_Window.cpp" />
     <ClCompile Include="p2Defs.h" />
@@ -289,6 +295,7 @@
     <ClCompile Include="R_Model.cpp" />
     <ClCompile Include="R_Resource.cpp" />
     <ClCompile Include="R_Scene.cpp" />
+    <ClCompile Include="R_Script.cpp" />
     <ClCompile Include="R_Texture.cpp" />
     <ClCompile Include="SceneLoader.cpp" />
     <ClCompile Include="TextureLoader.cpp" />

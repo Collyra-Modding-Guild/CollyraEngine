@@ -12,6 +12,8 @@
 
 #include "SDL/include/SDL.h"
 
+#include "CollyraLibrary.h"
+
 #define MAX_KEYS 300
 
 M_Input::M_Input(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled)
@@ -40,6 +42,7 @@ bool M_Input::Awake()
 		ret = false;
 	}
 
+	fibonacci_init(1,2);
 
 	return ret;
 }
@@ -48,6 +51,7 @@ bool M_Input::Awake()
 updateStatus M_Input::PreUpdate(float dt)
 {
 	SDL_PumpEvents();
+	fibonacci_next();
 
 	const Uint8* keys = SDL_GetKeyboardState(NULL);
 	

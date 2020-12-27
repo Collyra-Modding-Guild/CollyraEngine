@@ -416,6 +416,15 @@
     <ClInclude Include="WG_Assets.h">
       <Filter>Sources\WindowGroup</Filter>
     </ClInclude>
+    <ClInclude Include="M_ScriptingInterface.h">
+      <Filter>Sources\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="C_Script.h">
+      <Filter>Sources\Game Objects\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="R_Script.h">
+      <Filter>Sources\Modules\Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="log.cpp">
@@ -685,6 +694,15 @@
     </ClCompile>
     <ClCompile Include="WG_Assets.cpp">
       <Filter>Sources\WindowGroup</Filter>
+    </ClCompile>
+    <ClCompile Include="M_ScriptingInterface.cpp">
+      <Filter>Sources\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="C_Script.cpp">
+      <Filter>Sources\Game Objects\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="R_Script.cpp">
+      <Filter>Sources\Modules\Resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -25,7 +25,6 @@
 #include "MaterialLoader.h"
 #include "ModelLoader.h"
 
-
 M_Resources::M_Resources(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), defaultTextureId(-1), deleteResources(true), onlineIdUpdated{},
 allLibFiles(), allAssetFiles(), assetsRead(ASSETS_CHECK::TO_CHECK)
 {}
@@ -89,6 +88,7 @@ bool M_Resources::CleanUp()
 	//Loaders CleanUp----------------------------
 	MeshLoader::CleanUp();
 	TextureLoader::CleanUp();
+
 
 	return true;
 }

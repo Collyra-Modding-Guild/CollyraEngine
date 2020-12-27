@@ -18,26 +18,39 @@ WG_Assets::~WG_Assets()
 updateStatus WG_Assets::Update()
 {
 	ImGui::Begin("Assets");
-	ImGui::Text("-Double left click to spawn (except models, into selected GameObject) \n-Middle Click to delete");
+	//ImGui::Text("-Double left click to spawn (except models, into selected GameObject) \n-Middle Click to delete");
 
-	ImGui::Spacing();
-
-	static std::vector<std::string> ignoreExt = { "meta" };
-
-	std::string ret = App->uiManager->DrawDirectoryRecursiveOld(ASSETS_FOLDER, true, &ignoreExt, "Asset");
-
-	if (ret != "")
+	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable)
 	{
-		if (ImGui::IsMouseDoubleClicked(0))
-		{
-			LoadNewAsset(ret);
-		}
-		else if (ImGui::IsMouseClicked(2))
-		{
-			DeleteAsset(ret);
-		}
-
+		ImGuiID dockspace_id = ImGui::GetID("Project##");
+		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
 	}
+
+	ImGui::Begin("AssetsTree");
+	static std::vector<std::string> ignoreExt = { "meta" };
+	std::string ret = "";
+
+	if (ImGui::TreeNodeEx(ASSETS_FOLDER, ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ret = App->uiManager->DrawDirectoryRecursiveOld(ASSETS_FOLDER, true, &ignoreExt, "Asset");
+
+		if (ret != "")
+		{
+			if (ImGui::IsMouseDoubleClicked(0))
+			{
+				LoadNewAsset(ret);
+			}
+			else if (ImGui::IsMouseClicked(2))
+			{
+				DeleteAsset(ret);
+			}
+
+		}
+		ImGui::TreePop();
+	}
+
+	ImGui::End();
+
 
 	ret = App->uiManager->DrawDirectoryRecursiveOld(LIBRARY_PATH, true, &ignoreExt, "LibFile");
 

@@ -55,7 +55,6 @@ public:
 	std::vector<float3> normals;
 	std::vector<float2> textureCoords;
 
-
 private:
 
 	uint idIndex;

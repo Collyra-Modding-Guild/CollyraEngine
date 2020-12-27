@@ -4,7 +4,7 @@
 #include "Globals.h"
 #include "SDL\include\SDL.h"
 
-class Timer
+class __declspec(dllexport) Timer
 {
 public:
 

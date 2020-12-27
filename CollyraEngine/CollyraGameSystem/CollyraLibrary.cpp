@@ -4,6 +4,8 @@
 #include <utility>
 #include <limits.h>
 
+#include "../CollyraEngine/ModelLoader.h"
+
 // DLL internal state variables:
 static unsigned long long previous_;  // Previous value, if any
 static unsigned long long current_;   // Current sequence value
@@ -25,6 +27,8 @@ void fibonacci_init(
 // Returns true on success, false on overflow.
 bool fibonacci_next()
 {
+	ModelLoader::NewRandomLog();
+
 	// check to see if we'd overflow result or position
 	if ((ULLONG_MAX - previous_ < current_) ||
 		(UINT_MAX == index_))

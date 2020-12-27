@@ -837,7 +837,7 @@ void M_UIManager::SetupDarkImGuiStyle(float alpha)
 	style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
 }
 
-std::string M_UIManager::DrawDirectoryRecursiveOld(const char* directory, bool returnFullPath, std::vector<std::string>* ignoreExt, char* dragType)
+std::string M_UIManager::DrawDirectoryRecursiveOld(const char* directory, bool returnFullPath, std::vector<std::string>* ignoreExt, char* dragType, bool onlyFolders)
 {
 	std::string dir((directory) ? directory : "");
 	if (dir.find_last_of("/") == dir.length() - 1)
@@ -874,7 +874,7 @@ std::string M_UIManager::DrawDirectoryRecursiveOld(const char* directory, bool r
 
 	for (uint i = 0; i < myPathNode->children.size(); i++)
 	{
-		ret = DrawDirectoryRecursive(&myPathNode->children.at(i), directory, returnFullPath, ignoreExt, dragType);
+		ret = DrawDirectoryRecursive(&myPathNode->children.at(i), directory, returnFullPath, ignoreExt, dragType, onlyFolders);
 
 		if (ret != "")
 			break;
@@ -883,7 +883,7 @@ std::string M_UIManager::DrawDirectoryRecursiveOld(const char* directory, bool r
 	return ret;
 }
 
-std::string M_UIManager::DrawDirectoryRecursive(PathNode* myNode, const char* directory, bool returnFullPath, std::vector<std::string>* ignoreExt, char* dragType)
+std::string M_UIManager::DrawDirectoryRecursive(PathNode* myNode, const char* directory, bool returnFullPath, std::vector<std::string>* ignoreExt, char* dragType, bool onlyFolders)
 {
 	std::string ret = "";
 
@@ -895,7 +895,7 @@ std::string M_UIManager::DrawDirectoryRecursive(PathNode* myNode, const char* di
 			{
 				for (uint i = 0; i < myNode->children.size(); i++)
 				{
-					ret = DrawDirectoryRecursive(&myNode->children.at(i), directory, returnFullPath, ignoreExt, dragType);
+					ret = DrawDirectoryRecursive(&myNode->children.at(i), directory, returnFullPath, ignoreExt, dragType, onlyFolders);
 					if (ret != "")
 					{
 						break;
@@ -911,7 +911,7 @@ std::string M_UIManager::DrawDirectoryRecursive(PathNode* myNode, const char* di
 
 		}
 	}
-	else
+	else if (!onlyFolders)
 	{
 		const std::string& str = GetTreeFormatedName(myNode->localPath);
 

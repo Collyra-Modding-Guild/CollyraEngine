@@ -57,8 +57,8 @@ public:
 
 	void SetupDarkImGuiStyle(float alpha);
 	void SetupLightImGuiStyle();
-	std::string DrawDirectoryRecursiveOld(const char* directory, bool returnFullPath = false, std::vector<std::string>* ignoreExt = nullptr, char* dragType = nullptr);
-	std::string DrawDirectoryRecursive(PathNode* myNode, const char* directory, bool returnFullPath = false, std::vector<std::string>* ignoreExt = nullptr, char* dragType = nullptr);
+	std::string DrawDirectoryRecursiveOld(const char* directory, bool returnFullPath = false, std::vector<std::string>* ignoreExt = nullptr, char* dragType = nullptr, bool onlyFolders = false);
+	std::string DrawDirectoryRecursive(PathNode* myNode, const char* directory, bool returnFullPath = false, std::vector<std::string>* ignoreExt = nullptr, char* dragType = nullptr, bool onlyFolders = false);
 
 private:
 
