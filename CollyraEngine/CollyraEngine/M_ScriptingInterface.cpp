@@ -22,6 +22,5 @@ bool M_ScriptingInterface::CleanUp()
 
 void M_ScriptingInterface::NewGameplayLog(const char* log)
 {
-	// Call New Console LOG
 	App->NewConsoleLog(log);
 }

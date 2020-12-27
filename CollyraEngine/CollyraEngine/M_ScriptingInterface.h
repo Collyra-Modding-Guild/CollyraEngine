@@ -13,7 +13,7 @@ public:
 	updateStatus Update(float dt);
 	bool CleanUp();
 
-	void NewGameplayLog(const char* gameplay);
+	void NewGameplayLog(const char* log);
 
 };
 
