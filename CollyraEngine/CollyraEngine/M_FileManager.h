@@ -19,12 +19,14 @@ struct PathNode;
 #define LIBRARY_SCENES "/Library/Scenes/"
 #define LIBRARY_MODELS "/Library/Models/"
 #define LIBRARY_MATERIALS "/Library/Materials/"
+#define LIBRARY_SCRIPTS "/Library/Scripts/"
 
 #define MODELS_EXTENSION "collmodel"
 #define TEXTURES_EXTENSION "dds"
 #define SCENES_EXTENSION "collscene"
 #define MESH_EXTENSION "collmesh"
 #define MATERIAL_EXTENSION "collmat"
+#define SCRIPT_EXTENSION "collscript"
 
 enum class R_TYPE;
 

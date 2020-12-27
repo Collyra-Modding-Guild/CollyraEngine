@@ -9,6 +9,7 @@
 #include "C_Material.h"
 #include "C_Mesh.h"
 #include "C_Camera.h"
+#include "C_Script.h"
 
 GameObject::GameObject(std::string name) : parent(nullptr), uid(0), name(name), active(true),
 selected(false)
@@ -108,6 +109,11 @@ Component* GameObject::CreateComponent(COMPONENT_TYPE type)
 	{
 		newComponent = new C_Camera();
 		App->scene->cameras.push_back((C_Camera*)newComponent);
+	}
+	break;
+	case COMPONENT_TYPE::SCRIPT: 
+	{
+		newComponent = new C_Script();
 	}
 	break;
 	default:
@@ -310,6 +316,8 @@ Component* GameObject::AddComponent(Component* c)
 								 break;
 	case COMPONENT_TYPE::CAMERA: {}
 							   break;
+	case COMPONENT_TYPE::SCRIPT: {}
+								 break;
 	default:
 		break;
 	}

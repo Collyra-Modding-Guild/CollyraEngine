@@ -9,6 +9,7 @@
 #include "M_FileManager.h"
 #include "M_Resources.h"
 #include "M_Scene.h"
+#include "M_ScriptingInterface.h"
 
 
 Application::Application(int argc, char* args[]) : argc(argc), args(args)
@@ -21,6 +22,8 @@ Application::Application(int argc, char* args[]) : argc(argc), args(args)
 	physFS = new M_FileManager(M_FILEMANAGER, true);
 	resources = new M_Resources(M_RESOURCES,true);
 	scene = new M_Scene(M_SCENE,true);
+	scriptInterface = new M_ScriptingInterface(M_SCRIPTINTERFACE, true);
+
 
 	gamePerfTimer = new PerfTimer();
 	lastSecFrames = new Timer();
@@ -38,6 +41,7 @@ Application::Application(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(physFS);
 	AddModule(resources);
 	AddModule(scene);
+	AddModule(scriptInterface);
 
 	// Scenes
 	AddModule(camera);
@@ -281,6 +285,12 @@ Module* Application::GetModulePointer(MODULE_TYPE type)
 	{
 		if (uiManager != nullptr)
 			ret = uiManager;
+	}
+		break;
+	case M_SCRIPTINTERFACE: 
+	{
+		if (scriptInterface != nullptr)
+			ret = scriptInterface;
 	}
 		break;
 	default:

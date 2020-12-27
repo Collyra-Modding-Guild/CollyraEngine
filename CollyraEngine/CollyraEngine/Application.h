@@ -20,6 +20,7 @@ class M_UIManager;
 class M_FileManager;
 class M_Resources;
 class M_Scene;
+class M_ScriptingInterface;
 
 enum MODULE_TYPE;
 
@@ -34,6 +35,7 @@ public:
 	M_FileManager* physFS;
 	M_Resources* resources;
 	M_Scene* scene;
+	M_ScriptingInterface* scriptInterface;
 	
 	float capTime = 0;
 

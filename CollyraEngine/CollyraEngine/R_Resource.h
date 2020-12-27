@@ -11,7 +11,8 @@ enum class R_TYPE
 	SCENE,
 	MESH,
 	TEXTURE,
-	MATERIAL
+	MATERIAL,
+	SCRIPT
 };
 
 class Resource

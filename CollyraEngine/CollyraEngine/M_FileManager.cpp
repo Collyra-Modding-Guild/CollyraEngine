@@ -304,6 +304,10 @@ R_TYPE M_FileManager::GetTypeFromExtension(const char* path)
 	{
 		return R_TYPE::MESH;
 	}
+	else if (extension == SCRIPT_EXTENSION) 
+	{
+		return R_TYPE::SCRIPT;
+	}
 
 	return R_TYPE::NO_TYPE;
 }
@@ -332,6 +336,10 @@ std::string M_FileManager::GetInternalExtensionFromType(R_TYPE type)
 	{
 		ret += MESH_EXTENSION;
 	}
+	else if (type == R_TYPE::SCRIPT) 
+	{
+		ret += SCRIPT_EXTENSION;
+	}
 
 	return ret;
 }
@@ -359,6 +367,10 @@ std::string M_FileManager::GetExtensionFolderLibraryFromType(R_TYPE type)
 	else if (type == R_TYPE::MESH)
 	{
 		ret = LIBRARY_MESHES;
+	}
+	else if (type == R_TYPE::SCRIPT) 
+	{
+		ret = LIBRARY_SCRIPTS;
 	}
 
 	return ret;
@@ -663,6 +675,10 @@ std::string M_FileManager::GetExtensionFolderLibrary(const char* fileExtension)
 	{
 		ret = LIBRARY_MATERIALS;
 	}
+	else if (extension == "collscript") 
+	{
+		ret = LIBRARY_SCRIPTS;
+	}
 
 	return ret;
 }
@@ -686,6 +702,10 @@ std::string M_FileManager::GetInternalExtension(const char* externalExtension)
 	else if (extension == "collmat")
 	{
 		return std::string(MATERIAL_EXTENSION);
+	}
+	else if (extension == "collscript") 
+	{
+		return std::string(SCRIPT_EXTENSION);
 	}
 
 	return std::string("unknown");
