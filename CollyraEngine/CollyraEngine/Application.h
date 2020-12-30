@@ -47,6 +47,8 @@ public:
 	//The amount of time spended calculating the last frame
 	uint64 lastFrameMs = 0u;
 
+	//------ GAMEPLAY SYSTEM-------//
+	HINSTANCE gameSystemDll;
 
 private:
 
@@ -86,6 +88,7 @@ private:
 	bool windowTitleControl = false; //Changes the title of the window
 	bool pause = false; //Bool that controls the pause of the game
 
+
 public:
 
 	Application(int argc, char* args[]);
@@ -111,11 +114,14 @@ public:
 	float GetTimeMultiplier() const;
 	void SetTimeMultiplier(float newMultiplier);
 
+
+
 private:
 
 	void AddModule(Module* mod);
 	void PrepareUpdate();
 	void FinishUpdate();
+	void LoadDllOnBoot();
 
 };
 

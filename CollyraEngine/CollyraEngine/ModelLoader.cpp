@@ -216,11 +216,6 @@ void ModelLoader::Load(R_Model* rModel, char* buffer)
 
 }
 
-void ModelLoader::NewPollas()
-{
-	App->NewConsoleLog("sfdfgsdffsd");
-}
-
 void ModelLoader::Private::SaveGameModel(const ModelNode* modelNode, JsonConfig saveTo, JsonArray* gameObjectsArray)
 {
 	saveTo.AddNumber("ID", modelNode->ID);

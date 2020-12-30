@@ -12,7 +12,7 @@
 #include "M_ScriptingInterface.h"
 
 
-Application::Application(int argc, char* args[]) : argc(argc), args(args)
+Application::Application(int argc, char* args[]) : argc(argc), args(args), gameSystemDll(nullptr)
 {
 	window = new M_Window(M_WINDOW, true);
 	input = new M_Input(M_INPUT, true);
@@ -29,6 +29,8 @@ Application::Application(int argc, char* args[]) : argc(argc), args(args)
 	lastSecFrames = new Timer();
 	gameClock = new Timer(false);
 	timeMultiplier = 1.0f;
+
+	LoadDllOnBoot();
 
 	// The order of calls is very important!
 	// Modules will Awake() Start() and Update in this order
@@ -60,9 +62,10 @@ bool Application::Awake()
 {
 	bool ret = true;
 
+
 	// Call Awake() in all modules
 	int numModules = moduleList.size();
-
+		
 	for (int i = 0; i < numModules; i++)
 	{
 		ret = moduleList[i]->Awake();
@@ -132,6 +135,11 @@ void Application::FinishUpdate()
 			SDL_Delay((1000 / (uint)capTime) - lastFrameMs);
 		}
 
+}
+
+void Application::LoadDllOnBoot()
+{
+	gameSystemDll = LoadLibrary(std::string("../../CollyraGameSystem/Debug/CollyraGameSystem.dll").data());
 }
 
 // Call PreUpdate, Update and PostUpdate on all modules

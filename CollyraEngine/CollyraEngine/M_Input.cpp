@@ -12,8 +12,6 @@
 
 #include "SDL/include/SDL.h"
 
-#include "CollyraLibrary.h"
-
 #define MAX_KEYS 300
 
 M_Input::M_Input(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled)
@@ -42,7 +40,10 @@ bool M_Input::Awake()
 		ret = false;
 	}
 
-	fibonacci_init(1,2);
+	void* (*Fibbo_Init)(int, int) = (void* (*)(int, int))GetProcAddress(App->gameSystemDll, "fibonacci_init");
+
+	if (Fibbo_Init != nullptr)
+		Fibbo_Init(1,2);
 
 	return ret;
 }
@@ -51,7 +52,15 @@ bool M_Input::Awake()
 updateStatus M_Input::PreUpdate(float dt)
 {
 	SDL_PumpEvents();
-	fibonacci_next();
+
+	void* (*Fibbo_Next)() = (void* (*)())GetProcAddress(App->gameSystemDll, "fibonacci_next");
+
+	if (Fibbo_Next != nullptr)
+		Fibbo_Next();
+
+	int pGlobal = (int)GetProcAddress(App->gameSystemDll, "hola1");
+
+	App->NewConsoleLog(std::to_string(pGlobal).c_str());
 
 	const Uint8* keys = SDL_GetKeyboardState(NULL);
 	

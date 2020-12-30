@@ -24,3 +24,8 @@ void M_ScriptingInterface::NewGameplayLog(const char* log)
 {
 	App->NewConsoleLog(log);
 }
+
+void M_ScriptingInterface::GameplayLog(const char* newLog)
+{
+	App->NewConsoleLog(newLog);
+}

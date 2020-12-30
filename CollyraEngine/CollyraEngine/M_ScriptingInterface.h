@@ -3,7 +3,7 @@
 
 #include "Module.h"
 
-class M_ScriptingInterface : public Module
+class __declspec(dllexport) M_ScriptingInterface : public Module
 {
 public:
 	M_ScriptingInterface(MODULE_TYPE type, bool startEnabled = true);
@@ -14,6 +14,8 @@ public:
 	bool CleanUp();
 
 	void NewGameplayLog(const char* log);
+
+	static void GameplayLog(const char* newLog);
 
 };
 

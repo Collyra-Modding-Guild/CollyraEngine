@@ -3,8 +3,9 @@
 #include "CollyraLibrary.h"
 #include <utility>
 #include <limits.h>
+#include <string>
 
-#include "../CollyraEngine/ModelLoader.h"
+#include "../CollyraEngine/M_ScriptingInterface.h"
 
 // DLL internal state variables:
 static unsigned long long previous_;  // Previous value, if any
@@ -21,15 +22,18 @@ void fibonacci_init(
 	index_ = 0;
 	current_ = a;
 	previous_ = b; // see special case when initialized
+	hola1 = 0;
 }
 
 // Produce the next value in the sequence.
 // Returns true on success, false on overflow.
 bool fibonacci_next()
 {
-	ModelLoader::NewRandomLog();
+	M_ScriptingInterface::GameplayLog(std::to_string(hola1).c_str());
 
-	// check to see if we'd overflow result or position
+	hola1++;
+
+	// check to see if we'd overflow result or position		
 	if ((ULLONG_MAX - previous_ < current_) ||
 		(UINT_MAX == index_))
 	{

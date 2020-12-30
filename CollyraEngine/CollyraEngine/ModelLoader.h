@@ -28,8 +28,6 @@ namespace  ModelLoader
 		void SaveGameModel(const ModelNode* gameObject, JsonConfig saveTo, JsonArray* gameObjectsArray);
 	}
 
-	void __declspec(dllexport) NewPollas();
-
 }
 
 
