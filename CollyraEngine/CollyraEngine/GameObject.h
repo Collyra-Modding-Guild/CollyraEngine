@@ -14,7 +14,9 @@ enum class COMPONENT_TYPE
 	MESH,
 	MATERIAL,
 	CAMERA,
-	SCRIPT
+	SCRIPT,
+
+	MAX_TYPES
 };
 
 class Component;
@@ -35,8 +37,12 @@ public:
 	//If succesfull to Add return the component, else return nullptr
 	Component* AddComponent(Component* c);
 
+	bool DeleteComponent(Component* toDelete);
+
 	template<typename T>
 	T* GetComponent();
+	template<typename T>
+	std::vector<T*> GetComponentList();
 	const std::vector<Component*>* GetAllComponents() const;
 
 	uint32 GetUid() const;
@@ -96,4 +102,18 @@ T* GameObject::GetComponent()
 			return	c;
 	}
 	return nullptr;
+}
+
+template<typename T>
+std::vector<T*> GameObject::GetComponentList()
+{
+	std::vector<T*> componentVector;
+	for (int i = 0; i < components.size(); i++)
+	{
+		T* c = dynamic_cast<T*>(components[i]);
+		if (c != nullptr)
+			componentVector.push_back(c);
+	}
+
+	return componentVector;
 }

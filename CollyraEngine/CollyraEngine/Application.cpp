@@ -26,13 +26,10 @@ Application::Application(int argc, char* args[]) : argc(argc), args(args), gameS
 	scene = new M_Scene(M_SCENE, true);
 	scriptInterface = new M_ScriptingInterface(M_SCRIPTINTERFACE, true);
 
-
 	gamePerfTimer = new PerfTimer();
 	lastSecFrames = new Timer();
 	gameClock = new Timer(false);
 	timeMultiplier = 1.0f;
-
-	CompileDll();
 
 	// The order of calls is very important!
 	// Modules will Awake() Start() and Update in this order
@@ -64,7 +61,6 @@ bool Application::Awake()
 {
 	bool ret = true;
 
-
 	// Call Awake() in all modules
 	int numModules = moduleList.size();
 
@@ -84,6 +80,12 @@ bool Application::Awake()
 		}
 	}
 
+	if (CompileDll() == false)
+	{
+		MessageBox(0, "Dll coudn't compile on start or was not found!", "Error - Dll was not found", MB_ICONERROR);
+		ret = false;
+	}
+
 	ms_timer.Start();
 	return ret;
 }
@@ -93,7 +95,6 @@ void Application::PrepareUpdate()
 {
 	frameCount++;
 	lastSecondFrameCount++;
-
 
 	//Controls pause of the game
 	if (gameClock->running)
@@ -113,7 +114,7 @@ void Application::PrepareUpdate()
 // ---------------------------------------------
 void Application::FinishUpdate()
 {
-	/*float seconds_since_startup = gameTimer->ReadSec();
+	/* float seconds_since_startup = gameTimer->ReadSec();
 
 	avg_fps = float(frame_count) / seconds_since_startup; */
 
@@ -139,20 +140,24 @@ void Application::FinishUpdate()
 
 }
 
-void Application::CompileDll()
+bool Application::CompileDll(bool cleanCompile)
 {
+	DeleteFile("_compilation_output.txt");
+
 	char auxString[256];
 	std::ofstream batch;
 	batch.open("_compile.bat");
-	DeleteFile("_compilation_output.txt");
 
-	sprintf_s(auxString, "call \"%s\" x86", "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat");
+	sprintf_s(auxString, "call \"%s\" %s", VCVARSALL_PATH, COMPILE_TARGET);
 
 	batch << auxString << std::endl;
 
-	bool cleanCompile = true;
+	// TODO: We could loop this and compile for many configurations.
+	// Probably not necessary thought
 
-	sprintf_s(auxString, "MSBuild \"%s\" /t:%s /p:Configuration=%s  /p:Platform=%s /p:OutDir=%s >> _compilation_output.txt", "..\\..\\CollyraGameSystem\\CollyraGameSystem.vcxproj", cleanCompile ? "Build" : "Build", "Debug", "Win32", "C:\\temp\\CollyraEngine\\");
+	sprintf_s(auxString, "MSBuild \"%s\" /t:%s /p:Configuration=%s  /p:Platform=%s /p:OutDir=%s >> _compilation_output.txt",
+		GAMEPLAY_PROJECT_PATH, cleanCompile ? CLEAN_COMPILE_ACTIONS : REGULAR_COMPILE_ACTIONS, COMPILE_MODE, COMPILE_PLATFORM,
+		TEMP_DLL_FOLDER);
 	batch << auxString << std::endl;
 
 	batch.close();
@@ -193,22 +198,24 @@ void Application::CompileDll()
 	else
 	{
 		LOG("Compilation Completed! Copying file to engine folder...");
-		bool result = CopyFile("C:\\temp\\CollyraEngine\\CollyraGameSystem.dll", "CollyraGameSystem.dll", false);
+		std::string tmpDllLocation = std::string(TEMP_DLL_FOLDER).append("\\").append(GAMEPLAY_DLL_NAME);
+
+		bool result = CopyFileA(tmpDllLocation.c_str(), GAMEPLAY_DLL_NAME, false);
 
 		if (result == false)
 		{
 			LOG("Error copying file, check the source path!");
-
 		}
 
 		LOG("Deleting temp folders & files...");
-		DeleteAllFilesWin("C:\\temp\\CollyraEngine\\");
-		RemoveDirectory("C:\\temp\\CollyraEngine\\");
+		DeleteAllFilesWin(TEMP_DLL_FOLDER);
+		RemoveDirectory(TEMP_DLL_FOLDER);
 		DeleteFile("_compilation_output.txt");
 	}
 
-	gameSystemDll = LoadLibrary(std::string("CollyraGameSystem.dll").data());
+	gameSystemDll = LoadLibrary(std::string(GAMEPLAY_DLL_NAME).data());
 
+	return gameSystemDll;
 }
 
 // Call PreUpdate, Update and PostUpdate on all modules

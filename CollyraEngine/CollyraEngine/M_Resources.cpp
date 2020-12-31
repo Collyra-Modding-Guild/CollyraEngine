@@ -89,7 +89,6 @@ bool M_Resources::CleanUp()
 	MeshLoader::CleanUp();
 	TextureLoader::CleanUp();
 
-
 	return true;
 }
 
@@ -153,7 +152,6 @@ Resource* M_Resources::RequestResource(uint id)
 
 	if (foundId == "" || !App->physFS->Exists(foundId.c_str()))
 	{
-		//TODO: Search in Assets .neta & try to find the id
 		foundId = CheckAssetFolderForId(id);
 
 		if (foundId != "")

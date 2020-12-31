@@ -12,6 +12,7 @@ struct PathNode;
 #define ASSETS_FOLDER "/Assets"
 #define ASSETS_TEXTURES_PATH "/Assets/Textures"
 #define ASSETS_MODELS_PATH "/Assets/Models"
+#define ASSETS_SCRIPTS_PATH "/Assets/Scripts"
 
 #define LIBRARY_PATH "/Library"
 #define LIBRARY_MESHES "/Library/Meshes/"

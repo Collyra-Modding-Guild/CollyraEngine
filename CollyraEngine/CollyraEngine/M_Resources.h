@@ -81,8 +81,6 @@ private:
 	//Save
 	bool SaveMeta(Resource* toSave, std::string assetsPath);
 
-
-
 public:
 	int defaultTextureId;
 

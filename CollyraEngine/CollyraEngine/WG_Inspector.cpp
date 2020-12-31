@@ -11,10 +11,11 @@
 #include "C_Mesh.h"
 #include "C_Transform.h"
 #include "C_Camera.h"
+#include "C_Script.h"
 
 
 WG_Inspector::WG_Inspector(bool isActive) : WindowGroup(WG_INSPECTOR, isActive), focusedGameObject(nullptr),
-focusedId(-1), currentTag(tags[0]), currentLayer(layers[0])
+focusedId(-1), currentTag(tags[0]), currentLayer(layers[0]), selectedNewComponentType(-1)
 {
 }
 
@@ -33,10 +34,11 @@ updateStatus WG_Inspector::Update()
 		C_Material* material = focusedGameObject->GetComponent<C_Material>();
 		C_Camera* camera = focusedGameObject->GetComponent<C_Camera>();
 
+		std::vector<C_Script*> scripts = focusedGameObject->GetComponentList<C_Script>();
+
 		//Delete the selected item - - - - - - - - - - - -
 		if (DeleteGameObject(SDL_SCANCODE_DELETE))
 			return UPDATE_CONTINUE;
-
 
 		// Draw Inspector Structure  - - - - - - - - - - - -
 
@@ -52,6 +54,15 @@ updateStatus WG_Inspector::Update()
 
 		if (camera != nullptr)
 			DrawCameraComponent(ImGuiTreeNodeFlags_DefaultOpen, camera);
+
+		for (int i = 0; i < scripts.size(); i++)
+		{
+			if (DrawScriptComponent(ImGuiTreeNodeFlags_DefaultOpen, scripts[i], i) == false)
+			{
+				focusedGameObject->DeleteComponent(scripts[i]);
+				break;
+			}
+		}
 
 		AddComponentButtonDraw();
 
@@ -501,18 +512,111 @@ void WG_Inspector::DrawCameraComponent(ImGuiTreeNodeFlags_ flag, C_Camera* camer
 
 }
 
+bool WG_Inspector::DrawScriptComponent(ImGuiTreeNodeFlags_ flag, C_Script* script, int index)
+{
+	bool cameraActive = script->IsActive();
+	if (ImGui::Checkbox("##ScriptActive", &cameraActive))
+		script->SetActive(cameraActive);
+
+	ImGui::SameLine();
+
+	bool deleteScriptComponent = true;
+	if (ImGui::CollapsingHeader("Script", &deleteScriptComponent, flag))
+	{
+
+		ImGui::Text("	Current Script");
+		ImGui::SameLine();
+
+		ImGui::SetNextItemWidth(110.0f);
+		if (ImGui::BeginCombo(std::string("##currentScript").append(std::to_string(index)).c_str(), "")) 
+		{
+			//TODO: Iterate though scripts names (library scripts)
+			for (int n = 0; n < (int)COMPONENT_TYPE::MAX_TYPES; n++)
+			{
+				bool is_selected = (selectedNewComponentType == n);
+
+				if (ImGui::Selectable(GetNameFromComponentEnum(n).c_str(), is_selected))
+				{
+					//TODO: Delete previous script (if any) & add the new one
+					true;
+				}
+			}
+
+			if (ImGui::Selectable("Create New Script...", false))
+			{
+				//TODO: Open "Create Script Pop-up" similar to rename scene one
+				true;
+			}
+			ImGui::EndCombo();
+		}
+
+	}
+
+	ImGui::Spacing();
+	ImGui::Separator();
+	ImGui::Spacing();
+
+	return deleteScriptComponent;
+
+}
+
 void WG_Inspector::AddComponentButtonDraw()
 {
-	//ImGui::PushItemWidth(10);
-	//if (ImGui::BeginMenu("Add Component"))
-	//{
-	//	if (ImGui::MenuItem("Exit", NULL))
-	//	{
-	//	}
 
-	//	ImGui::EndMenu();
-	//}
+	ImGui::Text("	Add Component");
+	ImGui::SameLine();
 
+	ImGui::SetNextItemWidth(110.0f);
+	if (ImGui::BeginCombo("##addcomponents", "")) // Check TAGS list and selected Tag
+	{
+		for (int n = 0; n < (int)COMPONENT_TYPE::MAX_TYPES; n++)
+		{
+			bool is_selected = (selectedNewComponentType == n);
+
+			//TODO: Only Scripts for now
+			if ((COMPONENT_TYPE)n != COMPONENT_TYPE::SCRIPT)
+				continue;
+
+			if (ImGui::Selectable(GetNameFromComponentEnum(n).c_str(), is_selected))
+			{
+				focusedGameObject->CreateComponent(COMPONENT_TYPE::SCRIPT);
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+
+}
+
+std::string WG_Inspector::GetNameFromComponentEnum(int num)
+{
+	std::string ret;
+	switch (COMPONENT_TYPE(num))
+	{
+	case COMPONENT_TYPE::NO_TYPE:
+		ret = "No Type";
+		break;
+	case COMPONENT_TYPE::TRANSFORM:
+		ret = "Transform";
+		break;
+	case COMPONENT_TYPE::MESH:
+		ret = "Mesh";
+		break;
+	case COMPONENT_TYPE::MATERIAL:
+		ret = "Material";
+		break;
+	case COMPONENT_TYPE::CAMERA:
+		ret = "Camera";
+		break;
+	case COMPONENT_TYPE::SCRIPT:
+		ret = "Script";
+		break;
+	default:
+		break;
+	}
+
+
+	return ret;
 }
 
 void WG_Inspector::DrawHeaderGameObject()

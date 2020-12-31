@@ -327,3 +327,18 @@ Component* GameObject::AddComponent(Component* c)
 
 	return c;
 }
+
+bool GameObject::DeleteComponent(Component* toDelete)
+{
+	for (int i = 0; i < components.size(); i++)
+	{
+		if (components[i] == toDelete)
+		{
+			RELEASE(components[i]);
+			components.erase(components.begin() + i);
+			return true;
+		}
+	}
+
+	return false;
+}
