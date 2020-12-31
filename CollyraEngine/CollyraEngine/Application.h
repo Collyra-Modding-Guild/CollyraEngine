@@ -115,13 +115,14 @@ public:
 	void SetTimeMultiplier(float newMultiplier);
 
 
+	void CompileDll();
 
 private:
 
 	void AddModule(Module* mod);
 	void PrepareUpdate();
 	void FinishUpdate();
-	void LoadDllOnBoot();
+	void DeleteAllFilesWin(char* folderPath);
 
 };
 

@@ -29,7 +29,7 @@ void fibonacci_init(
 // Returns true on success, false on overflow.
 bool fibonacci_next()
 {
-	M_ScriptingInterface::GameplayLog(std::to_string(hola1).c_str());
+	M_ScriptingInterface::GameplayLog("H-H-Hot Reloading");
 
 	hola1++;
 

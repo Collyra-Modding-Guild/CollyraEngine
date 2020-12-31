@@ -3,6 +3,8 @@
 
 #include "Module.h"
 
+typedef unsigned __int64 uint64;
+
 class __declspec(dllexport) M_ScriptingInterface : public Module
 {
 public:
@@ -13,9 +15,9 @@ public:
 	updateStatus Update(float dt);
 	bool CleanUp();
 
-	void NewGameplayLog(const char* log);
-
 	static void GameplayLog(const char* newLog);
+
+	uint64 lastModDate;
 
 };
 

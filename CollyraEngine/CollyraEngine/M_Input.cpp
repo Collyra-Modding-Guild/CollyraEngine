@@ -58,9 +58,6 @@ updateStatus M_Input::PreUpdate(float dt)
 	if (Fibbo_Next != nullptr)
 		Fibbo_Next();
 
-	int pGlobal = (int)GetProcAddress(App->gameSystemDll, "hola1");
-
-	App->NewConsoleLog(std::to_string(pGlobal).c_str());
 
 	const Uint8* keys = SDL_GetKeyboardState(NULL);
 	

@@ -11,6 +11,8 @@
 #include "M_Scene.h"
 #include "M_ScriptingInterface.h"
 
+#include <fstream> 
+
 
 Application::Application(int argc, char* args[]) : argc(argc), args(args), gameSystemDll(nullptr)
 {
@@ -20,8 +22,8 @@ Application::Application(int argc, char* args[]) : argc(argc), args(args), gameS
 	camera = new M_Camera3D(M_CAMERA3D, true);
 	uiManager = new M_UIManager(M_UIMANAGER, true);
 	physFS = new M_FileManager(M_FILEMANAGER, true);
-	resources = new M_Resources(M_RESOURCES,true);
-	scene = new M_Scene(M_SCENE,true);
+	resources = new M_Resources(M_RESOURCES, true);
+	scene = new M_Scene(M_SCENE, true);
 	scriptInterface = new M_ScriptingInterface(M_SCRIPTINTERFACE, true);
 
 
@@ -30,7 +32,7 @@ Application::Application(int argc, char* args[]) : argc(argc), args(args), gameS
 	gameClock = new Timer(false);
 	timeMultiplier = 1.0f;
 
-	LoadDllOnBoot();
+	CompileDll();
 
 	// The order of calls is very important!
 	// Modules will Awake() Start() and Update in this order
@@ -65,7 +67,7 @@ bool Application::Awake()
 
 	// Call Awake() in all modules
 	int numModules = moduleList.size();
-		
+
 	for (int i = 0; i < numModules; i++)
 	{
 		ret = moduleList[i]->Awake();
@@ -137,9 +139,76 @@ void Application::FinishUpdate()
 
 }
 
-void Application::LoadDllOnBoot()
+void Application::CompileDll()
 {
-	gameSystemDll = LoadLibrary(std::string("../../CollyraGameSystem/Debug/CollyraGameSystem.dll").data());
+	char auxString[256];
+	std::ofstream batch;
+	batch.open("_compile.bat");
+	DeleteFile("_compilation_output.txt");
+
+	sprintf_s(auxString, "call \"%s\" x86", "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat");
+
+	batch << auxString << std::endl;
+
+	bool cleanCompile = true;
+
+	sprintf_s(auxString, "MSBuild \"%s\" /t:%s /p:Configuration=%s  /p:Platform=%s /p:OutDir=%s >> _compilation_output.txt", "..\\..\\CollyraGameSystem\\CollyraGameSystem.vcxproj", cleanCompile ? "Build" : "Build", "Debug", "Win32", "C:\\temp\\CollyraEngine\\");
+	batch << auxString << std::endl;
+
+	batch.close();
+
+	// Start process
+	STARTUPINFO info = { 0 };
+	PROCESS_INFORMATION procInfo = { 0 };
+	ZeroMemory(&info, sizeof(info));
+	info.cb = sizeof(info);
+	ZeroMemory(&procInfo, sizeof(procInfo));
+
+	DWORD ret = 0;
+	if (CreateProcessA("_compile.bat", NULL, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &info, &procInfo))
+	{
+		WaitForSingleObject(procInfo.hProcess, INFINITE);
+		CloseHandle(procInfo.hProcess);
+		CloseHandle(procInfo.hThread);
+		GetExitCodeProcess(procInfo.hProcess, &ret);
+	}
+
+	DeleteFile("_compile.bat");
+
+	std::ifstream compilationOutput;
+	std::string auxSTDSTring;
+	compilationOutput.open("_compilation_output.txt");
+	compilationOutput.seekg(0, std::ios::end);
+	auxSTDSTring.reserve((size_t)compilationOutput.tellg());
+	compilationOutput.seekg(0, std::ios::beg);
+	auxSTDSTring.assign((std::istreambuf_iterator<char>(compilationOutput)), std::istreambuf_iterator<char>());
+	compilationOutput.close();
+
+	if (auxSTDSTring.find("Build FAILED") != std::string::npos || auxSTDSTring.find("ERROR al compilar") != std::string::npos)
+	{
+		OutputDebugStringA(auxSTDSTring.c_str());
+		OutputDebugStringA("\n");
+		MessageBox(0, "Failed to compile; please check your output window or _compilation_output.txt \n Keeping previous dll", "Error - Compilation Failed", MB_ICONERROR);
+	}
+	else
+	{
+		LOG("Compilation Completed! Copying file to engine folder...");
+		bool result = CopyFile("C:\\temp\\CollyraEngine\\CollyraGameSystem.dll", "CollyraGameSystem.dll", false);
+
+		if (result == false)
+		{
+			LOG("Error copying file, check the source path!");
+
+		}
+
+		LOG("Deleting temp folders & files...");
+		DeleteAllFilesWin("C:\\temp\\CollyraEngine\\");
+		RemoveDirectory("C:\\temp\\CollyraEngine\\");
+		DeleteFile("_compilation_output.txt");
+	}
+
+	gameSystemDll = LoadLibrary(std::string("CollyraGameSystem.dll").data());
+
 }
 
 // Call PreUpdate, Update and PostUpdate on all modules
@@ -264,43 +333,43 @@ Module* Application::GetModulePointer(MODULE_TYPE type)
 	{
 		return nullptr;
 	}
-		break;
+	break;
 	case M_WINDOW:
 	{
 		if (window != nullptr)
 			ret = window;
 	}
-		break;
+	break;
 	case M_RENDER3D:
 	{
 		if (renderer3D != nullptr)
 			ret = renderer3D;
 	}
-		break;
+	break;
 	case M_INPUT:
 	{
 		if (input != nullptr)
 			ret = input;
 	}
-		break;
+	break;
 	case M_CAMERA3D:
 	{
 		if (camera != nullptr)
 			ret = camera;
 	}
-		break;
+	break;
 	case M_UIMANAGER:
 	{
 		if (uiManager != nullptr)
 			ret = uiManager;
 	}
-		break;
-	case M_SCRIPTINTERFACE: 
+	break;
+	case M_SCRIPTINTERFACE:
 	{
 		if (scriptInterface != nullptr)
 			ret = scriptInterface;
 	}
-		break;
+	break;
 	default:
 		return nullptr;
 		break;
@@ -351,4 +420,23 @@ void Application::SetTimeMultiplier(float newMultiplier)
 void Application::AddModule(Module* mod)
 {
 	moduleList.push_back(mod);
+}
+
+void Application::DeleteAllFilesWin(char* folderPath)
+{
+	char fileFound[256];
+	WIN32_FIND_DATA info;
+	HANDLE hp;
+	sprintf_s(fileFound, "%s\\*.*", folderPath);
+	hp = FindFirstFile(fileFound, &info);
+	if (hp != INVALID_HANDLE_VALUE)
+	{
+		do
+		{
+			sprintf_s(fileFound, "%s\\%s", folderPath, info.cFileName);
+			DeleteFile(fileFound);
+
+		} while (FindNextFile(hp, &info));
+		FindClose(hp);
+	}
 }
