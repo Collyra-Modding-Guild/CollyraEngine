@@ -55,6 +55,9 @@
     <Filter Include="Sources\Modules\Resources">
       <UniqueIdentifier>{39f48e4b-1a26-4a9b-8718-cdc2b04d18ea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Helpers\Scripting">
+      <UniqueIdentifier>{53c913e7-a6fa-47ff-98a3-872f8a24a966}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Module.h">
@@ -425,6 +428,9 @@
     <ClInclude Include="R_Script.h">
       <Filter>Sources\Modules\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="CollObject.h">
+      <Filter>Sources\Helpers\Scripting</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="log.cpp">
@@ -703,6 +709,9 @@
     </ClCompile>
     <ClCompile Include="R_Script.cpp">
       <Filter>Sources\Modules\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="CollObject.cpp">
+      <Filter>Sources\Helpers\Scripting</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,0 +1,27 @@
+Microsoft (R) Build Engine versi¢n 16.8.2+25e4d540b para .NET Framework
+Copyright (C) Microsoft Corporation. Todos los derechos reservados.
+
+Compilaci¢n iniciada a las 02/01/2021 10:02:20.
+Proyecto "C:\Users\Usuario\Documents\GitHub\Collyra_Mods\CollyraEngine\CollyraEngine\CollyraGameSystem\CollyraGameSystem.vcxproj" en el nodo 1 (Build destinos).
+PrepareForBuild:
+  Creando directorio "C:\temp\CollyraEngine\".
+InitializeBuildStatus:
+  Aplicando tarea Touch a "Debug\CollyraG.0C43801B.tlog\unsuccessfulbuild".
+ClCompile:
+  Todas las salidas est n actualizadas.
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\bin\HostX86\x86\link.exe /ERRORREPORT:QUEUE /OUT:"C:\temp\CollyraEngine\CollyraGameSystem.dll" /INCREMENTAL /NOLOGO /LIBPATH:../CollyraEngine/Debug "Collyra Engine.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:NO /manifest:embed /DEBUG:FASTLINK /PDB:"C:\temp\CollyraEngine\CollyraGameSystem.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\temp\CollyraEngine\CollyraGameSystem.lib" /MACHINE:X86 /DLL Debug\dllmain.obj
+  Debug\CollyraLibrary.obj
+     Creating library C:\temp\CollyraEngine\CollyraGameSystem.lib and object C:\temp\CollyraEngine\CollyraGameSystem.exp
+  CollyraGameSystem.vcxproj -> C:\temp\CollyraEngine\CollyraGameSystem.dll
+CopyFilesToOutputDirectory:
+  Copiando el archivo de "C:\Users\Usuario\Documents\GitHub\Collyra_Mods\CollyraEngine\CollyraEngine\CollyraGameSystem\Debug\CollyraGameSystem.pdb" en "C:\temp\CollyraEngine\CollyraGameSystem.pdb".
+FinalizeBuildStatus:
+  Aplicando tarea Touch a "Debug\CollyraG.0C43801B.tlog\CollyraGameSystem.lastbuildstate".
+Compilaci¢n del proyecto terminada "C:\Users\Usuario\Documents\GitHub\Collyra_Mods\CollyraEngine\CollyraEngine\CollyraGameSystem\CollyraGameSystem.vcxproj" (Build destinos).
+
+Compilaci¢n correcta.
+    0 Advertencia(s)
+    0 Errores
+
+Tiempo transcurrido 00:00:01.82
