@@ -162,11 +162,11 @@
       <EnableUAC>false</EnableUAC>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
+  <ItemGroup Label="hFiles">
     <ClInclude Include="CollyraFramework.h" />
     <ClInclude Include="GameScripts\CollyraLibrary.h" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Label="cppFiles">
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="GameScripts\CollyraLibrary.cpp" />
   </ItemGroup>

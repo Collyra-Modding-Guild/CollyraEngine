@@ -160,7 +160,6 @@ uint ModelLoader::Save(const R_Model* rModel, char** buffer)
 	uint size = jsonFile.Serialize(buffer);
 	jsonFile.ReleaseFile();
 	return size;
-
 }
 
 void ModelLoader::Load(R_Model* rModel, char* buffer)

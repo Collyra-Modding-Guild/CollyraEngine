@@ -18,12 +18,14 @@
 #include "R_Mesh.h"
 #include "R_Scene.h"
 #include "R_Texture.h"
+#include "R_Script.h"
 
 //Importers-----
 #include "SceneLoader.h"
 #include "TextureLoader.h"
 #include "MaterialLoader.h"
 #include "ModelLoader.h"
+#include "ScriptLoader.h"
 
 M_Resources::M_Resources(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), defaultTextureId(-1), deleteResources(true), onlineIdUpdated{},
 allLibFiles(), allAssetFiles(), assetsRead(ASSETS_CHECK::TO_CHECK)
@@ -267,6 +269,7 @@ Resource* M_Resources::CreateResource(R_TYPE rType, std::string name, uint32 for
 	case R_TYPE::MESH:ret = new R_Mesh(uId); break;
 	case R_TYPE::TEXTURE:ret = new R_Texture(uId); break;
 	case R_TYPE::MATERIAL: ret = new R_Material(uId); break;
+	case R_TYPE::SCRIPT: ret = new R_Script(uId); break;
 	default:
 		break;
 	}
@@ -328,6 +331,13 @@ uint M_Resources::SaveResource(Resource* toSave, std::string assetsPath, bool sa
 		R_Material* myMaterial = (R_Material*)toSave;
 		size = MaterialLoader::Save(myMaterial, &buffer);
 		libraryPath = myMaterial->GetLibraryPath();
+	}
+	break;
+	case R_TYPE::SCRIPT:
+	{
+		R_Script* myScript = (R_Script*)toSave;
+		size = ScriptLoader::Save(myScript, &buffer);
+		libraryPath = myScript->GetLibraryPath();
 	}
 	break;
 	}
@@ -471,6 +481,10 @@ R_TYPE M_Resources::GetResourceTypeFromExtension(const char* rPath)
 	else if (extension == "collmat")
 	{
 		return R_TYPE::MATERIAL;
+	}
+	else if (extension == SCRIPT_EXTENSION)
+	{
+		return R_TYPE::SCRIPT;
 	}
 
 
@@ -699,6 +713,7 @@ uint32 M_Resources::ImportResource(std::string path, uint32 forceid)
 		{
 		case (R_TYPE::TEXTURE):				TextureLoader::Import(path.c_str(), &fileBuffer, fileSize); break;
 		case (R_TYPE::MODEL):				ModelLoader::ImportModel(path.c_str(), &fileBuffer, fileSize, (R_Model*)newResource); break;
+		case (R_TYPE::SCRIPT):				ScriptLoader::Import(path.c_str(), &fileBuffer, (R_Script*)newResource); break;
 		}
 
 		SaveResource(newResource, path);

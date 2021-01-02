@@ -431,6 +431,9 @@
     <ClInclude Include="M_Scripting.h">
       <Filter>Sources\Modules</Filter>
     </ClInclude>
+    <ClInclude Include="ScriptLoader.h">
+      <Filter>Sources\Helpers\Loaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="log.cpp">
@@ -712,6 +715,9 @@
     </ClCompile>
     <ClCompile Include="M_Scripting.cpp">
       <Filter>Sources\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptLoader.cpp">
+      <Filter>Sources\Helpers\Loaders</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

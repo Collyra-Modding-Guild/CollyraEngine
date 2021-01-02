@@ -19,7 +19,7 @@
 #define COMPILE_TARGET "x86"
 #define TEMP_DLL_FOLDER "C:\\temp\\CollyraEngine\\"
 #define COMPILE_MODE "Debug"
-#define GAMEPLAY_PROJECT_PATH "..\\..\\CollyraGameSystem\\CollyraGameSystem.vcxproj"
+#define GAMEPLAY_PROJECT_PATH "CollyraGameSystem\\CollyraGameSystem.vcxproj"
 #define CLEAN_COMPILE_ACTIONS "Build"
 #define REGULAR_COMPILE_ACTIONS "Rebuild"
 #define GAMEPLAY_DLL_NAME "CollyraGameSystem.dll"

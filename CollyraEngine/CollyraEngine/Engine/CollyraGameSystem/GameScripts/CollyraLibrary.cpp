@@ -26,7 +26,7 @@ void fibonacci_init(
 // Returns true on success, false on overflow.
 bool fibonacci_next()
 {
-	//M_Scripting::GameplayLog("H-H-Hot Reloading");
+	//M_Scripting::GameplayLog("L'adri es molt gay");
 
 	// check to see if we'd overflow result or position		
 	if ((ULLONG_MAX - previous_ < current_) ||

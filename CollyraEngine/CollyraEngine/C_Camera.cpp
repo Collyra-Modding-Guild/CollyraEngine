@@ -9,7 +9,6 @@ farPlane(FAR_PLANE), culling(true)
 	frustum.SetFront(float3::unitZ);
 	frustum.SetUp(float3::unitY);
 
-
 	frustum.SetViewPlaneDistances(NEAR_PLANE, FAR_PLANE);
 	frustum.SetHorizontalFovAndAspectRatio(DEGTORAD * horizontalFOV, 16.f / 9.f);
 

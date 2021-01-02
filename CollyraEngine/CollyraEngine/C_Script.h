@@ -11,7 +11,11 @@ public:
 	C_Script(bool active = true);
 	~C_Script();
 
+	std::string GetScriptClass();
+	void		SetScriptClass(const char* newClass);
+
 
 private:
+	std::string currentScriptClass;
 
 };

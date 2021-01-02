@@ -531,25 +531,27 @@ bool WG_Inspector::DrawScriptComponent(ImGuiTreeNodeFlags_ flag, C_Script* scrip
 		ImGui::SameLine();
 
 		ImGui::SetNextItemWidth(110.0f);
-		if (ImGui::BeginCombo(std::string("##currentScript").append(std::to_string(index)).c_str(), ""))
+		if (ImGui::BeginCombo(std::string("##currentScript").append(std::to_string(index)).c_str(), script->GetScriptClass().c_str()))
 		{
-			//TODO: Iterate though scripts names (library scripts)
-			for (int n = 0; n < (int)COMPONENT_TYPE::MAX_TYPES; n++)
-			{
-				bool is_selected = (selectedNewComponentType == n);
+			std::map<std::string, std::pair<std::string, std::string>>::iterator it = App->scriptInterface->GetClassesMap()->begin();
 
-				if (ImGui::Selectable(GetNameFromComponentEnum(n).c_str(), is_selected))
+			int mapSize = App->scriptInterface->GetClassesMap()->size();
+			for (int i = 0; i < mapSize; i++)
+			{
+				bool is_selected = (it->first == script->GetScriptClass());
+
+				if (ImGui::Selectable(it->first.c_str(), is_selected))
 				{
 					//TODO: Delete previous script (if any) & add the new one
-					true;
+					script->SetScriptClass(it->first.c_str());
 				}
+
+				it++;
 			}
 
 			if (ImGui::Selectable("Create New Script...", false))
 			{
-				//TODO: Open "Create Script Pop-up" similar to rename scene one
 				craeteScriptPopUp = true;
-				true;
 			}
 
 			ImGui::EndCombo();
@@ -630,7 +632,8 @@ void WG_Inspector::HandlePopUp()
 		return;
 
 	static char newScriptName[256] = "Class Name";
-	static bool nameError = false;
+	static bool error = false;
+	static char errorString[512] = "";
 
 	ImGui::OpenPopup("Create New Script");
 	ImGui::SetNextWindowSize({ 320,155 });
@@ -648,26 +651,37 @@ void WG_Inspector::HandlePopUp()
 		{
 			if (std::string(newScriptName).find(" ") == std::string::npos)
 			{
-				App->scriptInterface->CreateNewScript(newScriptName);
-				strcpy(newScriptName, "Data Name");
-				craeteScriptPopUp = false;
+				strcpy(errorString, "");
+				std::string createdOutput = App->scriptInterface->CreateNewScript(newScriptName);
+
+				if (createdOutput == "SUCCESS")
+				{
+					strcpy(newScriptName, "Data Name");
+					craeteScriptPopUp = false;
+				}
+				else
+				{
+					strcpy(errorString, createdOutput.c_str());
+					error = true;
+				}
 			}
 			else
 			{
-				nameError = true;
+				error = true;
+				strcpy(errorString, "In C++ Class names cannot have spaces!");
 			}
 		}
 
-		if (nameError == true)
+		if (error == true)
 		{
-			ImGui::TextColored({ 255 , 0 , 0 , 100 }, "In C++ Class names cannot have spaces!");
+			ImGui::TextColored({ 255 , 0 , 0 , 100 }, errorString);
 		}
 
 		ImGui::EndPopup();
 	}
 	else
 	{
-		nameError = false;
+		error = false;
 	}
 
 }

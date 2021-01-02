@@ -205,6 +205,7 @@
     <ClInclude Include="R_Script.h" />
     <ClInclude Include="R_Texture.h" />
     <ClInclude Include="SceneLoader.h" />
+    <ClInclude Include="ScriptLoader.h" />
     <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="WG_About.h" />
@@ -301,6 +302,7 @@
     <ClCompile Include="R_Script.cpp" />
     <ClCompile Include="R_Texture.cpp" />
     <ClCompile Include="SceneLoader.cpp" />
+    <ClCompile Include="ScriptLoader.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="WG_About.cpp" />
