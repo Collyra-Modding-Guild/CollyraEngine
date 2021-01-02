@@ -186,7 +186,7 @@
     <ClInclude Include="M_Renderer3D.h" />
     <ClInclude Include="M_Resources.h" />
     <ClInclude Include="M_Scene.h" />
-    <ClInclude Include="M_ScriptingInterface.h" />
+    <ClInclude Include="M_Scripting.h" />
     <ClInclude Include="M_UIManager.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="M_Input.h" />
@@ -286,7 +286,7 @@
     <ClCompile Include="M_Renderer3D.cpp" />
     <ClCompile Include="M_Resources.cpp" />
     <ClCompile Include="M_Scene.cpp" />
-    <ClCompile Include="M_ScriptingInterface.cpp" />
+    <ClCompile Include="M_Scripting.cpp" />
     <ClCompile Include="M_UIManager.cpp" />
     <ClCompile Include="M_Window.cpp" />
     <ClCompile Include="p2Defs.h" />

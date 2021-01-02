@@ -419,9 +419,6 @@
     <ClInclude Include="WG_Assets.h">
       <Filter>Sources\WindowGroup</Filter>
     </ClInclude>
-    <ClInclude Include="M_ScriptingInterface.h">
-      <Filter>Sources\Modules</Filter>
-    </ClInclude>
     <ClInclude Include="C_Script.h">
       <Filter>Sources\Game Objects\Components</Filter>
     </ClInclude>
@@ -430,6 +427,9 @@
     </ClInclude>
     <ClInclude Include="CollObject.h">
       <Filter>Sources\Helpers\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="M_Scripting.h">
+      <Filter>Sources\Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -701,9 +701,6 @@
     <ClCompile Include="WG_Assets.cpp">
       <Filter>Sources\WindowGroup</Filter>
     </ClCompile>
-    <ClCompile Include="M_ScriptingInterface.cpp">
-      <Filter>Sources\Modules</Filter>
-    </ClCompile>
     <ClCompile Include="C_Script.cpp">
       <Filter>Sources\Game Objects\Components</Filter>
     </ClCompile>
@@ -712,6 +709,9 @@
     </ClCompile>
     <ClCompile Include="CollObject.cpp">
       <Filter>Sources\Helpers\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="M_Scripting.cpp">
+      <Filter>Sources\Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

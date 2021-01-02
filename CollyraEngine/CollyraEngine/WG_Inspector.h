@@ -32,7 +32,6 @@ public:
 	GameObject* GetGameObject() const;
 
 	void		OnDestroyedId(uint destroyedGameObject);
-
 	bool		DeleteGameObject(int key);
 
 private:
@@ -43,7 +42,9 @@ private:
 	void		DrawCameraComponent(ImGuiTreeNodeFlags_ flag, C_Camera* camera);
 	bool		DrawScriptComponent(ImGuiTreeNodeFlags_ flag, C_Script* script, int index);
 	void		AddComponentButtonDraw();
+
 	std::string	GetNameFromComponentEnum(int num);
+	void		HandlePopUp();
 
 private:
 	int			focusedId;
@@ -56,6 +57,7 @@ private:
 	const char* currentLayer;
 
 	int			selectedNewComponentType;
+	bool		craeteScriptPopUp;
 
 };
 

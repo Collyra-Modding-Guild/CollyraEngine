@@ -29,6 +29,9 @@ struct PathNode;
 #define MATERIAL_EXTENSION "collmat"
 #define SCRIPT_EXTENSION "collscript"
 
+#define SCRIPT_PROJECT "/CollyraGameSystem/"
+#define SCRIPT_FILES_LOCATION "CollyraGameSystem/GameScripts/"
+
 enum class R_TYPE;
 
 class M_FileManager : public Module

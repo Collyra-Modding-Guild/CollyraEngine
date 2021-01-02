@@ -1,5 +1,6 @@
 #include "WG_Inspector.h"
 #include "Application.h"
+#include "M_Scripting.h"
 #include "M_Scene.h"
 #include "M_Input.h"
 #include "M_Resources.h"
@@ -15,7 +16,7 @@
 
 
 WG_Inspector::WG_Inspector(bool isActive) : WindowGroup(WG_INSPECTOR, isActive), focusedGameObject(nullptr),
-focusedId(-1), currentTag(tags[0]), currentLayer(layers[0]), selectedNewComponentType(-1)
+focusedId(-1), currentTag(tags[0]), currentLayer(layers[0]), selectedNewComponentType(-1), craeteScriptPopUp(false)
 {
 }
 
@@ -27,6 +28,8 @@ updateStatus WG_Inspector::Update()
 	ImGuiIO& io = ImGui::GetIO();
 
 	ImGui::Begin("Inspector");
+
+	HandlePopUp();
 
 	if (focusedId != -1)
 	{
@@ -528,7 +531,7 @@ bool WG_Inspector::DrawScriptComponent(ImGuiTreeNodeFlags_ flag, C_Script* scrip
 		ImGui::SameLine();
 
 		ImGui::SetNextItemWidth(110.0f);
-		if (ImGui::BeginCombo(std::string("##currentScript").append(std::to_string(index)).c_str(), "")) 
+		if (ImGui::BeginCombo(std::string("##currentScript").append(std::to_string(index)).c_str(), ""))
 		{
 			//TODO: Iterate though scripts names (library scripts)
 			for (int n = 0; n < (int)COMPONENT_TYPE::MAX_TYPES; n++)
@@ -545,8 +548,10 @@ bool WG_Inspector::DrawScriptComponent(ImGuiTreeNodeFlags_ flag, C_Script* scrip
 			if (ImGui::Selectable("Create New Script...", false))
 			{
 				//TODO: Open "Create Script Pop-up" similar to rename scene one
+				craeteScriptPopUp = true;
 				true;
 			}
+
 			ImGui::EndCombo();
 		}
 
@@ -579,7 +584,7 @@ void WG_Inspector::AddComponentButtonDraw()
 
 			if (ImGui::Selectable(GetNameFromComponentEnum(n).c_str(), is_selected))
 			{
-				focusedGameObject->CreateComponent(COMPONENT_TYPE::SCRIPT);
+				focusedGameObject->CreateComponent(COMPONENT_TYPE(n));
 			}
 		}
 		ImGui::EndCombo();
@@ -617,6 +622,54 @@ std::string WG_Inspector::GetNameFromComponentEnum(int num)
 
 
 	return ret;
+}
+
+void WG_Inspector::HandlePopUp()
+{
+	if (craeteScriptPopUp == false)
+		return;
+
+	static char newScriptName[256] = "Class Name";
+	static bool nameError = false;
+
+	ImGui::OpenPopup("Create New Script");
+	ImGui::SetNextWindowSize({ 320,155 });
+	if (ImGui::BeginPopupModal("Create New Script", &craeteScriptPopUp, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))
+	{
+		ImGui::PushItemWidth(135);
+		ImGui::Spacing();
+		ImGui::InputText("Name", newScriptName, 256, ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue);
+		ImGui::Spacing();
+		ImGui::Text("Cpp & H files will be generated and added to the scripting Project");
+		ImGui::Spacing();
+		ImGui::SetCursorPosX(90);
+
+		if (ImGui::Button("Create Script"))
+		{
+			if (std::string(newScriptName).find(" ") == std::string::npos)
+			{
+				App->scriptInterface->CreateNewScript(newScriptName);
+				strcpy(newScriptName, "Data Name");
+				craeteScriptPopUp = false;
+			}
+			else
+			{
+				nameError = true;
+			}
+		}
+
+		if (nameError == true)
+		{
+			ImGui::TextColored({ 255 , 0 , 0 , 100 }, "In C++ Class names cannot have spaces!");
+		}
+
+		ImGui::EndPopup();
+	}
+	else
+	{
+		nameError = false;
+	}
+
 }
 
 void WG_Inspector::DrawHeaderGameObject()

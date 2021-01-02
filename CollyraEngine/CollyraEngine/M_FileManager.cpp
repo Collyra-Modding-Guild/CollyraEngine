@@ -17,8 +17,8 @@ M_FileManager::M_FileManager(MODULE_TYPE type, bool startEnabled) : Module(type,
 
 	// We only need this when compiling in debug. In Release we don't need it.
 	PHYSFS_mount(".", nullptr, 1);
-	AddPath("../../CollyraGameSystem/");
-
+	AddPath(SCRIPT_PROJECT);
+	
 	// Enable PhysFS writting
 	if (PHYSFS_setWriteDir(".") == 0)
 	{

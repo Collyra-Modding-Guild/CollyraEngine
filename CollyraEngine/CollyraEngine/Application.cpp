@@ -9,7 +9,7 @@
 #include "M_FileManager.h"
 #include "M_Resources.h"
 #include "M_Scene.h"
-#include "M_ScriptingInterface.h"
+#include "M_Scripting.h"
 
 #include <fstream> 
 
@@ -24,7 +24,7 @@ Application::Application(int argc, char* args[]) : argc(argc), args(args), gameS
 	physFS = new M_FileManager(M_FILEMANAGER, true);
 	resources = new M_Resources(M_RESOURCES, true);
 	scene = new M_Scene(M_SCENE, true);
-	scriptInterface = new M_ScriptingInterface(M_SCRIPTINTERFACE, true);
+	scriptInterface = new M_Scripting(M_SCRIPTINTERFACE, true);
 
 	gamePerfTimer = new PerfTimer();
 	lastSecFrames = new Timer();

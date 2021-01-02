@@ -102,7 +102,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>../CollyraEngine/Debug</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../Debug</AdditionalLibraryDirectories>
       <AdditionalDependencies>Collyra Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

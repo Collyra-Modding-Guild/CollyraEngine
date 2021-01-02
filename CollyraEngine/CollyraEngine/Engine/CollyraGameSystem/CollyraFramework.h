@@ -12,5 +12,5 @@
 
 
 //Engine Communication--------------
-#include "../CollyraEngine/CollObject.h"
-#include "../CollyraEngine/M_ScriptingInterface.h"
+#include "../../CollObject.h"
+#include "../../M_Scripting.h"
