@@ -14,6 +14,8 @@
 #define PROJECT_CPP_LABEL "cppFiles"
 #define VS_H_TEMPLATE "\t<ClInclude Include= \"GameScripts\\myFile.h\" />"
 #define VS_CPP_TEMPLATE "\t<ClInclude Include= \"GameScripts\\myFile.cpp\" />"
+#define VS_HFILTER_TEMPLATE "\t<ClInclude Include= \"GameScripts\\myFile.h\" >\n\t  <Filter>Gameplay Scripts</Filter>\n\t</ClInclude>"
+#define VS_CPPFILTER_TEMPLATE "\t<ClInclude Include= \"GameScripts\\myFile.cpp\" >\n\t  <Filter>Gameplay Scripts</Filter>\n\t</ClInclude>"
 
 typedef unsigned __int64 uint64;
 typedef unsigned __int64 uint64;
