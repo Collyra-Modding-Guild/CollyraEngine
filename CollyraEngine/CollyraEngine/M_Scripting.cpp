@@ -159,57 +159,58 @@ std::string M_Scripting::CreateNewScript(const char* className)
 		return "SUCCESS";
 	}
 
-	//line = "";
-	//while (std::getline(projectFileBuff, line))
-	//{
-	//	std::string add = "";
-	//	if (line.find(PROJECT_H_LABEL) != std::string::npos)
-	//	{
-	//		std::string fileTemplate = VS_H_TEMPLATE;
+	line = "";
+	while (std::getline(projectFileBuff, line))
+	{
+		std::string add = "";
+		if (line.find(PROJECT_H_LABEL) != std::string::npos)
+		{
+			std::string fileTemplate = VS_H_TEMPLATE;
 
-	//		fileTemplate.replace(fileTemplate.find("myFile.h") , 8, std::string(className).append(".h"));
+			fileTemplate.replace(fileTemplate.find("myFile.h") , 8, std::string(className).append(".h"));
 
-	//		add =  fileTemplate + "\n";
-	//	}
-	//	else if (line.find(PROJECT_CPP_LABEL) != std::string::npos)
-	//	{
-	//		std::string fileTemplate = VS_CPP_TEMPLATE;
+			add =  fileTemplate + "\n";
+		}
+		else if (line.find(PROJECT_CPP_LABEL) != std::string::npos)
+		{
+			std::string fileTemplate = VS_CPP_TEMPLATE;
 
-	//		fileTemplate.replace(fileTemplate.find("myFile.cpp"), 10, std::string(className).append(".cpp"));
+			fileTemplate.replace(fileTemplate.find("myFile.cpp"), 10, std::string(className).append(".cpp"));
 
-	//		add =  fileTemplate + "\n";
-	//	}
+			add =  fileTemplate + "\n";
+		}
 
-	//	projectCode += line + "\n" + add;
-	//}
+		projectCode += line + "\n" + add;
+	}
 
-	//App->physFS->Save("CollyraGameSystem/CollyraGameSystem2.vcxproj", projectCode.data(), projectCode.size());
+	App->physFS->Save(SCRIPT_PROJECT_PATH, projectCode.data(), projectCode.size());
 
 
-	//line = "";
-	//while (std::getline(filtersFileBuff, line))
-	//{
-	//	std::string add = "";
-	//	if (line.find(PROJECT_H_LABEL) != std::string::npos)
-	//	{
-	//		std::string fileTemplate = VS_H_TEMPLATE;
+	line = "";
+	while (std::getline(filtersFileBuff, line))
+	{
+		std::string add = "";
+		if (line.find("CollyraLibrary.h") != std::string::npos)
+		{
+			std::string fileTemplate = VS_HFILTER_TEMPLATE;
 
-	//		fileTemplate.replace(fileTemplate.find("myFile.h"), 6, std::string(className).append(".h"));
+			fileTemplate.replace(fileTemplate.find("myFile.h"), 8, std::string(className).append(".h"));
 
-	//		add = "\n" + fileTemplate;
-	//	}
-	//	else if (line.find(PROJECT_CPP_LABEL) != std::string::npos)
-	//	{
-	//		std::string fileTemplate = VS_CPP_TEMPLATE;
+			add = fileTemplate + "\n";
+		}
+		else if (line.find("CollyraLibrary.cpp") != std::string::npos)
+		{
+			std::string fileTemplate = VS_CPPFILTER_TEMPLATE;
 
-	//		fileTemplate.replace(fileTemplate.find("myFile.cpp"), 6, std::string(className).append(".cpp"));
+			fileTemplate.replace(fileTemplate.find("myFile.cpp"), 10, std::string(className).append(".cpp"));
 
-	//	}
+			add = fileTemplate + "\n";
+		}
 
-	//	projectCode += line + "\n" + add;
-	//}
+		projectFilters += add + line + "\n";
+	}
 
-	//App->physFS->Save("CollyraGameSystem/CollyraGameSystem2.vcxproj", projectCode.data(), projectCode.size());
+	App->physFS->Save(SCRIPT_PROJECTFILTERS_PATH, projectFilters.data(), projectFilters.size());
 
 	return "SUCCESS";
 }
