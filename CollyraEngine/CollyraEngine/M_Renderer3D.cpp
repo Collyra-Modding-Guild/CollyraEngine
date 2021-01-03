@@ -118,8 +118,8 @@ bool M_Renderer3D::Awake()
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LightModelAmbient);
 
 		lights[0].ref = GL_LIGHT0;
-		lights[0].ambient.Set(0.25f, 0.25f, 0.25f, 1.0f);
-		lights[0].diffuse.Set(0.75f, 0.75f, 0.75f, 1.0f);
+		lights[0].ambient.Set(0.65f, 0.65f, 0.65f, 1.0f);
+		lights[0].diffuse.Set(0.15f, 0.15f, 0.15f, 1.0f);
 		lights[0].Awake();
 
 		GLfloat MaterialAmbient[] = { 1.0f, 1.0f, 1.0f, 1.0f };

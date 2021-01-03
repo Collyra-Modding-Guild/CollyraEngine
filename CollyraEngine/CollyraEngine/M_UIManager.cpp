@@ -440,7 +440,7 @@ void M_UIManager::ShowLoadScenePopUp()
 				App->physFS->SplitFilePath(pushedValue.c_str(), nullptr, nullptr, &name);
 
 				size_t itemSeparator = name.find("_coll_");
-				name = name.substr(itemSeparator + 7);
+				name = name.substr(itemSeparator + 6);
 
 				uint id = std::stoi(name);
 
