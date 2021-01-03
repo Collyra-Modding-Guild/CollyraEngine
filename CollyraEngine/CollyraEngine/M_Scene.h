@@ -35,9 +35,9 @@ public:
 	bool CleanUp() override;
 
 	GameObject* CreateGameObject(std::string name = "", GameObject* parent = nullptr);
-	bool		DeleteGameObject(unsigned int id);
 	GameObject* GetGameObject(unsigned int id);
 	GameObject* GetGameObject(std::string name);
+	bool		DeleteGameObject(unsigned int id);
 	bool		DeleteGameObject(GameObject* gameObject);
 	void		DeleteCamera(Component* component);
 
