@@ -25,8 +25,8 @@ void fibonacci_init(
 // Produce the next value in the sequence.
 // Returns true on success, false on overflow.
 bool fibonacci_next()
-{
-	//M_Scripting::GameplayLog("L'adri es molt gay");
+{  
+	//M_Scripting::GameplayLog("Hot Reloading!");
 
 	// check to see if we'd overflow result or position		
 	if ((ULLONG_MAX - previous_ < current_) ||

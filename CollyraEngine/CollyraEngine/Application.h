@@ -14,7 +14,7 @@
 // Dll Paths------------ 
 //Warning: The "\\" instead of the "/" or "\" is necessary, otherwise Windows doesn't recognize the paths
 // TODO: This need to be in a config file *gasps* I know
-#define VCVARSALL_PATH "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat"
+#define VCVARSALL_PATH "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Auxiliary\\Build\\vcvars32.bat"
 #define COMPILE_PLATFORM "Win32"
 #define COMPILE_TARGET "x86"
 #define TEMP_DLL_FOLDER "C:\\temp\\CollyraEngine\\"
