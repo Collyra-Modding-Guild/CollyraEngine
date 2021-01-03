@@ -67,6 +67,8 @@ public:
 	void UpdateChangedResources();
 	uint CheckAssetInMeta (std::string metaPath, std::string relativePath);
 
+	uint LoadDefaultScene();
+
 private:
 	void SearchAllAssetFiles();
 	void CheckAssetsImport(PathNode& pathnode);

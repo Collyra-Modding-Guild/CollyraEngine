@@ -39,7 +39,6 @@ void ScriptLoader::Import(const char* scriptAssetPath, char** buffer, R_Script* 
 
 		myNewScript->SetScriptClassName(jsonFile.GetString("Class").c_str());
 
-
 		myNewScript->SetScriptCppPath(jsonFile.GetString("CppPath").c_str());
 		myNewScript->SetScriptCppFileModDate(jsonFile.GetNumber("CppFileModTime"));
 
@@ -72,5 +71,26 @@ uint ScriptLoader::Save(R_Script* myNewScript, char** buffer)
 	uint size = jsonFile.Serialize(buffer);
 	jsonFile.ReleaseFile();
 	return size;
+}
+
+bool ScriptLoader::Load(R_Script* myNewScript, char* buffer)
+{
+	JsonConfig jsonFile(buffer);
+	if (jsonFile.IsInitialized())
+	{
+		myNewScript->SetScriptClassName(jsonFile.GetString("Class").c_str());
+
+		myNewScript->SetScriptCppPath(jsonFile.GetString("CppPath").c_str());
+		myNewScript->SetScriptCppFileModDate(jsonFile.GetNumber("CppFileModTime"));
+
+		myNewScript->SetScriptHPath(jsonFile.GetString("HPath").c_str());
+		myNewScript->SetScriptHFileModDate(jsonFile.GetNumber("HFileModTime"));
+
+
+		myNewScript->SetScriptCppCode(jsonFile.GetString("CppCode").c_str());
+		myNewScript->SetScriptHCode(jsonFile.GetString("hCode").c_str());
+	}
+
+	return true;
 }
 

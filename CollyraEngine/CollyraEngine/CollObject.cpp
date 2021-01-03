@@ -15,7 +15,7 @@ CollObject::CollObject()
 CollObject::~CollObject()
 {}
 
-void Debug::Log(char* text)
+void Debug::Log(const char* text)
 {
 	LOG(std::string(SCRIPTING).append(text).c_str());
 }

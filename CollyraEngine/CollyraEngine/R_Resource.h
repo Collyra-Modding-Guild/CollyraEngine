@@ -35,8 +35,10 @@ public:
 public:
 	unsigned int referenceCount;
 
-private:
+protected:
 	unsigned int uid;
+
+private:
 	std::string libraryPath;
 	std::string name;
 

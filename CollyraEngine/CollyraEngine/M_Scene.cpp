@@ -51,6 +51,16 @@ bool M_Scene::Awake()
 	return true;
 }
 
+bool M_Scene::Start()
+{
+	uint defaultSceneId = App->resources->LoadDefaultScene();
+	if (defaultSceneId != 0)
+	{
+		App->resources->RequestResource(defaultSceneId);
+	}
+	return true;
+}
+
 updateStatus M_Scene::Update(float dt)
 {
 	std::stack<GameObject*> stack;
@@ -317,6 +327,12 @@ void M_Scene::SetSceneName(const char* newName)
 R_Scene* M_Scene::GetSceneResource() const
 {
 	return currentScene;
+}
+
+void M_Scene::SetSceneResource(R_Scene* newScene)
+{
+	currentScene->SetUid(newScene->GetUid());
+	currentScene->SetLibraryPath(newScene->GetLibraryPath());
 }
 
 void M_Scene::ResoucesUpdated(std::map<uint, bool>* updatedId)

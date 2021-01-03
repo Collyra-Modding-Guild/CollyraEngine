@@ -533,7 +533,7 @@ bool WG_Inspector::DrawScriptComponent(ImGuiTreeNodeFlags_ flag, C_Script* scrip
 		ImGui::SetNextItemWidth(110.0f);
 		if (ImGui::BeginCombo(std::string("##currentScript").append(std::to_string(index)).c_str(), script->GetScriptClass().c_str()))
 		{
-			std::map<std::string, std::pair<std::string, std::string>>::iterator it = App->scriptInterface->GetClassesMap()->begin();
+			std::map<std::string, ScriptData>::iterator it = App->scriptInterface->GetClassesMap()->begin();
 
 			int mapSize = App->scriptInterface->GetClassesMap()->size();
 			for (int i = 0; i < mapSize; i++)

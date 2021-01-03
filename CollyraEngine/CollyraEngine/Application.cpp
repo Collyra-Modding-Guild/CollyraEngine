@@ -35,6 +35,12 @@ Application::Application(int argc, char* args[]) : argc(argc), args(args), gameS
 	// Modules will Awake() Start() and Update in this order
 	// They will CleanUp() in reverse order
 
+	if (CompileDll() == false)
+	{
+		MessageBox(0, "Dll coudn't compile on start or was not found!", "Error - Dll was not found", MB_ICONERROR);
+		gameSystemDll = nullptr;
+	}
+
 	// Main Modules
 	AddModule(window);
 	AddModule(input);
@@ -60,6 +66,9 @@ Application::~Application()
 bool Application::Awake()
 {
 	bool ret = true;
+
+	if (gameSystemDll == nullptr)
+		return false;
 
 	// Call Awake() in all modules
 	int numModules = moduleList.size();

@@ -3,7 +3,7 @@
 #include "Application.h"
 
 R_Script::R_Script(unsigned int uid) : Resource(uid, R_TYPE::SCRIPT),
-className(""), hFile(""), cppFile(""), hCode(""), cppCode("")
+className(""), hFile(""), cppFile(""), hCode(""), cppCode(""), hFileModDate(0), cppFileModDate(0)
 {}
 
 R_Script::~R_Script()

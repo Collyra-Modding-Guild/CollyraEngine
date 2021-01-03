@@ -9,6 +9,7 @@
 #include "C_Transform.h"
 #include "C_Material.h"
 #include "C_Mesh.h"
+#include "C_Script.h"
 
 #include "JsonConfig.h"
 
@@ -97,7 +98,6 @@ void SceneLoader::Private::SaveComponent(const Component* component, JsonConfig 
 	{
 		C_Mesh* compToSave = (C_Mesh*)component;
 
-		//TODO: Save ID
 		saveTo.AddNumber("MeshID", compToSave->GetResourceId());
 	}
 	break;
@@ -115,6 +115,13 @@ void SceneLoader::Private::SaveComponent(const Component* component, JsonConfig 
 		saveTo.AddNumber("HorizontalFov", compToSave->GetHorizontalFov());
 		saveTo.AddNumber("Near Plane", compToSave->GetNearPlane());
 		saveTo.AddNumber("Far Plane", compToSave->GetFarPlane());
+	}
+	break;
+	case COMPONENT_TYPE::SCRIPT:
+	{
+		C_Script* compToSave = (C_Script*)component;
+
+		saveTo.AddNumber("ScriptID", compToSave->GetResourceId());
 	}
 	break;
 	default:
@@ -169,11 +176,6 @@ void SceneLoader::Private::LoadComponents(JsonArray& components, GameObject* gam
 
 			if (Component* component = gameObject->CreateComponent(cmpType))
 			{
-				//TODO: This load should be a resource requested to Resource Manager
-				//As with everything, is resource is loaded in mem, just get the id
-				//If it is not, try loading it from library, if not, try loading it from assets
-				//And if not, why do you mess with the file structure, do you want to create a game or not?
-
 				Private::LoadComponent(componentInfo, component);
 			}
 			else
@@ -218,6 +220,13 @@ void SceneLoader::Private::LoadComponent(JsonConfig& componentInfo, Component* c
 		C_Material* compToSave = (C_Material*)component;
 
 		compToSave->SetResourceId(componentInfo.GetNumber("MaterialID"));
+	}
+	break;
+	case COMPONENT_TYPE::SCRIPT:
+	{
+		C_Script* compToSave = (C_Script*)component;
+
+		compToSave->SetResourceId(componentInfo.GetNumber("ScriptID"));
 	}
 	break;
 	case COMPONENT_TYPE::CAMERA:

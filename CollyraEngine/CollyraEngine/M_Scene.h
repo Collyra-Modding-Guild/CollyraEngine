@@ -27,6 +27,7 @@ public:
 	~M_Scene();
 
 	bool Awake() override;
+	bool Start() override;
 	updateStatus Update(float dt) override;
 	updateStatus PostUpdate(float dt) override;
 	updateStatus Draw(bool* drawState) override;
@@ -63,6 +64,7 @@ public:
 	std::string GetSceneName() const;
 	void SetSceneName(const char* newName);
 	R_Scene* GetSceneResource() const;
+	void SetSceneResource(R_Scene* newScene);
 
 	void ResoucesUpdated(std::map<uint, bool>* updatedId);
 	void SetResourceToGameObject(uint resourceId, R_TYPE rType, GameObject* setTo = nullptr);

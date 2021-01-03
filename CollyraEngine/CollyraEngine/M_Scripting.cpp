@@ -45,18 +45,13 @@ bool M_Scripting::CleanUp()
 	return true;
 }
 
-void M_Scripting::GameplayLog(const char* newLog)
-{
-	App->NewConsoleLog(newLog);
-}
-
 std::string M_Scripting::CreateNewScript(const char* className)
 {
 	std::string saveToCpp = std::string(SCRIPT_FILES_LOCATION).append(className).append(".cpp");
 	std::string saveToH = std::string(SCRIPT_FILES_LOCATION).append(className).append(".h");
 
 	//Check if the script name already exists
-	std::map<std::string, std::pair<std::string, std::string>>::iterator classIterator = scriptClassLoaded.find(className);
+	std::map<std::string, ScriptData>::iterator classIterator = scriptClassLoaded.find(className);
 	if (classIterator != scriptClassLoaded.end())
 	{
 		return "Script already loaded in the Project!";
@@ -126,13 +121,14 @@ std::string M_Scripting::CreateNewScript(const char* className)
 	App->physFS->Save(saveToCpp.c_str(), cppCode.data(), cppCode.size());
 	scriptFilesLoaded.insert({ saveToCpp , App->physFS->GetCurrDate(cppCode.c_str()) });
 
-	LOG("Created new Script files with name %s", className);
-	scriptClassLoaded.insert({ className , { saveToCpp, saveToH} });
 
 	// Creating the Script Resource
-	App->resources->ImportResourceFromAssets(
+	uint scriptId = App->resources->ImportResourceFromAssets(
 		ScriptLoader::Create(className, saveToCpp.c_str(), saveToH.c_str(), cppCode.c_str(), headerCode.c_str()).c_str()
 	);
+
+	LOG("Created new Script files with name %s", className);
+	scriptClassLoaded.insert({ className , { saveToCpp, saveToH, scriptId} });
 
 	//Add it to the Script Project
 
@@ -215,7 +211,22 @@ std::string M_Scripting::CreateNewScript(const char* className)
 	return "SUCCESS";
 }
 
-std::map<std::string, std::pair<std::string, std::string>>* M_Scripting::GetClassesMap()
+std::map<std::string, ScriptData>* M_Scripting::GetClassesMap()
 {
 	return &scriptClassLoaded;
 }
+
+uint M_Scripting::GetScriptIdByClassName(const char* className)
+{
+	uint ret = 0;
+
+	std::map<std::string, ScriptData>::iterator classIterator = scriptClassLoaded.find(className);
+	if (classIterator != scriptClassLoaded.end())
+	{
+		ret = classIterator->second.resourceId;
+	}
+
+
+	return ret;
+}
+

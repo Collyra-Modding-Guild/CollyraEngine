@@ -18,7 +18,19 @@
 #define VS_CPPFILTER_TEMPLATE "\t<ClInclude Include= \"GameScripts\\myFile.cpp\" >\n\t  <Filter>Gameplay Scripts</Filter>\n\t</ClInclude>"
 
 typedef unsigned __int64 uint64;
-typedef unsigned __int64 uint64;
+
+struct ScriptData
+{
+	ScriptData(std::string cppFile, std::string hFile, uint resourceId) {
+		this->cppFile = cppFile;
+		this->hFile = hFile;
+		this->resourceId = resourceId;
+	}
+
+	std::string cppFile;
+	std::string hFile;
+	uint resourceId;
+};
 
 class __declspec(dllexport) M_Scripting : public Module
 {
@@ -30,12 +42,11 @@ public:
 	updateStatus Update(float dt);
 	bool CleanUp();
 
-	//Demo
-	static void GameplayLog(const char* newLog);
-
 	std::string CreateNewScript(const char* className);
 
-	std::map<std::string, std::pair<std::string, std::string>>* GetClassesMap();
+	std::map<std::string, ScriptData>* GetClassesMap();
+
+	uint GetScriptIdByClassName(const char* className);
 
 private:
 	//Script files control-----------
@@ -47,8 +58,8 @@ private:
 	//The Classes that we have loaded (key) & as value its related .cpp & .h (in that order)
 	//Is is to control if someone changes the name of a file (we have the class associated) 
 	// & if someone changes the class name (when the file is detected to be sabed, we check if the class name still the same)
-	
-	std::map<std::string, std::pair<std::string, std::string>> scriptClassLoaded;
+
+	std::map<std::string, ScriptData> scriptClassLoaded;
 
 };
 

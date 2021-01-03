@@ -17,12 +17,18 @@
     <ClInclude Include="GameScripts\CollyraLibrary.h">
       <Filter>Gameplay Scripts</Filter>
     </ClInclude>
+    <ClInclude Include="GameScripts\Tank.h">
+      <Filter>Gameplay Scripts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
       <Filter>Inner System</Filter>
     </ClCompile>
     <ClCompile Include="GameScripts\CollyraLibrary.cpp">
+      <Filter>Gameplay Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScripts\Tank.cpp">
       <Filter>Gameplay Scripts</Filter>
     </ClCompile>
   </ItemGroup>

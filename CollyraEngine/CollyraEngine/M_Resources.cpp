@@ -52,8 +52,8 @@ bool M_Resources::Start()
 
 	SearchAllAssetFiles();
 
-	uint toLoad = ImportResourceFromAssets("Assets/Models/Street environment_V01.FBX");
-	RequestResource(toLoad);
+	//uint toLoad = ImportResourceFromAssets("Assets/Models/Street environment_V01.FBX");
+	//RequestResource(toLoad);
 
 	updateAssetsTimer.Start();
 
@@ -237,13 +237,21 @@ Resource* M_Resources::LoadResource(uint id, const char* libPath)
 	case (R_TYPE::SCENE):
 	{
 		ret = new R_Scene(id);
+		ret->SetLibraryPath(App->physFS->GetExtensionFolderLibraryFromType(resourceType).append(ret->GetName().append(App->physFS->GetInternalExtensionFromType(resourceType))));
 
 		deleteResources = false;
 		App->scene->ResetScene();
+		App->scene->SetSceneResource((R_Scene*)ret);
 		SceneLoader::Load(buffer);
 
 		deleteResources = true;
 		CheckResourcesToUnload();
+		break;
+	}
+	case (R_TYPE::SCRIPT):
+	{
+		ret = new R_Script(id);
+		ScriptLoader::Load((R_Script*)ret, buffer);
 		break;
 	}
 	}
@@ -652,6 +660,47 @@ uint M_Resources::CheckAssetInMeta(std::string metaPath, std::string relativePat
 	return id;
 }
 
+uint M_Resources::LoadDefaultScene()
+{
+	uint ret = 0;
+
+	if (allLibFiles.IsEmpty())
+	{
+		allLibFiles = App->physFS->GetAllFiles(LIBRARY_PATH, nullptr, nullptr);
+	}
+
+	std::string sceneToLoad = "";
+
+	for (int i = 0; i < allLibFiles.children.size(); i++)
+	{
+		if (allLibFiles.children[i].localPath.find("Scenes") != std::string::npos)
+		{
+			if (allLibFiles.children[i].children.size() > 0)
+			{
+				sceneToLoad = App->physFS->FindInPathNode("DefaultScene", allLibFiles.children[i]);
+
+				if (sceneToLoad == "")
+				{
+					sceneToLoad = allLibFiles.children[i].children[0].localPath;
+					break;
+				}
+			}
+			else
+				return ret;
+		}
+	}
+
+	std::string name;
+	App->physFS->SplitFilePath(sceneToLoad.c_str(), nullptr, nullptr, &name);
+
+	size_t itemSeparator = name.find("_coll_");
+	name = name.substr(itemSeparator + 6);
+
+	ret = std::stoi(name);
+
+	return ret;
+}
+
 std::string M_Resources::DuplicateFile(const char* path)
 {
 	std::string normalizedPath = App->physFS->NormalizePath(path);
@@ -686,6 +735,9 @@ std::string M_Resources::GetDefaultResourceName(R_TYPE type) const
 		break;
 	case R_TYPE::MATERIAL:
 		ret = "CollyraMaterial";
+		break;
+	case R_TYPE::SCRIPT:
+		ret = "CollyraScript";
 		break;
 	default:
 		break;

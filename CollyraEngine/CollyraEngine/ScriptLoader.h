@@ -12,7 +12,7 @@ namespace ScriptLoader
 
 	void Import(const char* scriptAssetPath, char** buffer, R_Script* myNewScript);
 	uint Save(R_Script* myNewScript, char** buffer);
-	//bool Load(char* buffer);
+	bool Load(R_Script* myNewScript, char* buffer);
 
 }
 

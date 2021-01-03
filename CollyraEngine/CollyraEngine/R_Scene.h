@@ -12,6 +12,8 @@ public:
 	R_Scene(unsigned int uid);
 	virtual ~R_Scene();
 
+	void SetUid(unsigned int newUid);
+
 public:
 	GameObject* root;
 

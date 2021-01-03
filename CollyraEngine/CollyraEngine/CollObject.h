@@ -20,9 +20,9 @@ public:
 };
 
 
-namespace Debug 
+namespace  Debug 
 {
-	void Log(char* text);
+	__declspec(dllexport) void Log(const char* text);
 
 }
 
