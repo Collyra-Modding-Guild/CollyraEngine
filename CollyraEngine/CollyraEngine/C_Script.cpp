@@ -37,6 +37,12 @@ void C_Script::SetResourceId(uint newId)
 			try
 			{
 				dataObject = (CollObject*)Builder();
+
+				if (dataObject != nullptr)
+				{
+					dataObject->SetMyGameObject(GetGameObject());
+					dataObject->Start();
+				}
 			}
 			catch (...)
 			{
@@ -65,6 +71,11 @@ void C_Script::Update(float dt)
 		if (Builder != nullptr)
 		{	
 			dataObject = (CollObject*)Builder();		
+
+			if (dataObject != nullptr) 
+			{
+				dataObject->SetMyGameObject(GetGameObject());
+			}
 		}
 	}	
 	// ------------------

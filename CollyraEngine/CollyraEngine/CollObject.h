@@ -4,11 +4,20 @@
 #include"SDL/include/SDL.h"
 #include "MathGeoLib/include/MathGeoLib.h"
 
+#include "C_Transform.h"
+
 #define SCRIPTING "Game Scripting System: "
 
 class GameObject;
 class Component;
-enum KEY_STATE;
+
+enum INPUTS
+{
+	INPUT_IDLE = 0,
+	INPUT_DOWN,
+	INPUT_REPEAT,
+	INPUT_UP
+};
 
 class __declspec(dllexport) CollObject
 {
@@ -19,6 +28,12 @@ public:
 	virtual void Start() {}
 
 	virtual void Update() {}
+
+	void		SetMyGameObject(GameObject* gameObject);
+	GameObject* GetMyGameObject() const;
+
+private:
+	GameObject* myGameObject;
 };
 
 
@@ -30,25 +45,25 @@ namespace  Debug
 
 namespace Input 
 {
-	int GetMouseX();
-	int GetMouseY();
-	int GetMouseZ();
+	__declspec(dllexport) int GetMouseX();
+	__declspec(dllexport) int GetMouseY();
+	__declspec(dllexport) int GetMouseZ();
 
-	KEY_STATE GetKey(int id);
-	KEY_STATE GetMouseButton(int id);
+	__declspec(dllexport) int GetKey(int id);
+	__declspec(dllexport) int GetMouseButton(int id);
 }
 
 namespace gameObject 
 {
-	GameObject* CreateGameObject(std::string name = "", GameObject* parent = nullptr);
+	__declspec(dllexport) GameObject* CreateGameObject(std::string name = "", GameObject* parent = nullptr);
 
-	GameObject* GetGameObject(unsigned int id);
-	GameObject* GetGameObject(std::string name);
+	__declspec(dllexport) GameObject* GetGameObject(unsigned int id);
+	__declspec(dllexport) GameObject* GetGameObject(std::string name);
 
-	bool DeleteGameObject(unsigned int id);
-	bool DeleteGameObject(GameObject* gameObject);
+	__declspec(dllexport) bool DeleteGameObject(unsigned int id);
+	__declspec(dllexport) bool DeleteGameObject(GameObject* gameObject);
 
-	void DeleteCamera(Component* component);
+	__declspec(dllexport) void DeleteCamera(Component* component);
 
 }
 

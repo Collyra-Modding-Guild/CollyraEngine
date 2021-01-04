@@ -9,11 +9,27 @@
 #include "Globals.h"
 
 
-CollObject::CollObject()
+CollObject::CollObject() : myGameObject(nullptr)
 {}
 
 CollObject::~CollObject()
 {}
+
+void CollObject::SetMyGameObject(GameObject* gameObject)
+{
+	if (myGameObject == nullptr)
+	{
+		myGameObject = gameObject;
+	}
+	else
+		LOG("You can not change the gameObject from this script.");
+	
+}
+
+GameObject* CollObject::GetMyGameObject() const
+{
+	return myGameObject;
+}
 
 void Debug::Log(const char* text)
 {
@@ -65,12 +81,12 @@ int Input::GetMouseZ()
 	return App->input->GetMouseZ();
 }
 
-KEY_STATE Input::GetKey(int id)
+int Input::GetKey(int id)
 {
 	return App->input->GetKey(id);
 }
 
-KEY_STATE Input::GetMouseButton(int id)
+int Input::GetMouseButton(int id)
 {
 	return App->input->GetMouseButton(id);
 }

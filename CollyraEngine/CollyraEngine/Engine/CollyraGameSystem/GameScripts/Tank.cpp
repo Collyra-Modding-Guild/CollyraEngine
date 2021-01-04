@@ -10,12 +10,32 @@ Tank::~Tank()
 
 void Tank::Start()
 {
+	transform = GetMyGameObject()->GetComponent<C_Transform>();
 }
 
 void Tank::Update()
 {
-	
-	Debug::Log("Alex es MOOOLT gay");
+	PlayerInputs();
+}
 
+void Tank::PlayerInputs()
+{
+
+	if (Input::GetKey(SDL_SCANCODE_W) == INPUT_REPEAT)
+	{
+		Debug::Log("Advance");
+	}
+	if (Input::GetKey(SDL_SCANCODE_A) == INPUT_REPEAT)
+	{
+		Debug::Log("Left");
+	}
+	if (Input::GetKey(SDL_SCANCODE_D) == INPUT_REPEAT)
+	{
+		Debug::Log("Right");
+	}
+	if (Input::GetKey(SDL_SCANCODE_S) == INPUT_REPEAT)
+	{
+		Debug::Log("Backwards");
+	}
 
 }
