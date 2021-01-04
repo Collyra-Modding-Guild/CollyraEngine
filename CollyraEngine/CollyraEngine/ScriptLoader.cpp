@@ -44,7 +44,6 @@ void ScriptLoader::Import(const char* scriptAssetPath, char** buffer, R_Script* 
 		myNewScript->SetScriptHPath(jsonFile.GetString("HPath").c_str());
 		myNewScript->SetScriptHFileModDate(jsonFile.GetNumber("HFileModTime"));
 
-
 		myNewScript->SetScriptCppCode(jsonFile.GetString("CppCode").c_str());
 		myNewScript->SetScriptHCode(jsonFile.GetString("hCode").c_str());
 	}

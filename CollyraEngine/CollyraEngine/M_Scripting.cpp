@@ -39,21 +39,54 @@ bool M_Scripting::Start()
 		CheckScriptStatus(assetsPath.c_str(), libPath.c_str(), sciprtId);
 	}
 
+	fileIterator = scriptFilesLoaded.begin();
+
 	return true;
 }
 
 updateStatus M_Scripting::Update(float dt)
 {
-	//Demo ----------
-	//if (App->physFS->Exists("CollyraGameSystem/GameScripts/CollyraLibrary.cpp") != false)
-	//	if (App->physFS->GetCurrDate("CollyraGameSystem/GameScripts/CollyraLibrary.cpp") != lastModDate)
-	//	{
-			//FreeLibrary(App->gameSystemDll);
-			//App->gameSystemDll = 0;
+	//Hot reloading ----------
+	bool dllCompiled = false;
 
-			//App->CompileDll();
-	//		lastModDate = App->physFS->GetCurrDate("CollyraGameSystem/GameScripts/CollyraLibrary.cpp");
-	//	}
+	if (scriptFilesLoaded.size() > 0)
+		for (int i = 0; i < MAX_FILECHECK_PER_FRAME; i++)
+		{
+			if (fileIterator->second != App->physFS->GetCurrDate(fileIterator->first.c_str()))
+			{
+				//Demo
+				if (dllCompiled == false)
+				{
+					App->CompileDll();
+					dllCompiled = true;
+				}
+
+				fileIterator->second = App->physFS->GetCurrDate(fileIterator->first.c_str());
+
+				//TODO: Update all files mod Date & Hot - Reload
+					// Hot-reload consists of: 
+						//Saving the data in a tempral folder 
+						// Deleting all the previous classes
+						// Re-compiling the code
+						// Perform a check (just as the start)
+						// Re-load the changes:
+							// Check if the class still exists (the resource will be re-created, if exists, all good)
+							// If exists, we create it & we capture the variables that have been created
+							// Then we compare them with the ones we currently have (if there is a match, we substitute)
+
+				//TODO: Save the assetPath in the ScripData map (change the asset, reimport as any other resource)
+				//TODO: Change the import of the scripts (need to generate their .cpp & .h from the Asset)
+				//TODO: Make scene & all assets in general import correctly (???)
+				//TODO: Save reloadable vars & inspector from the script
+				//TODO: Make camera change on play
+				//TODO: Call onDisable, onEnable when go are diabled/enabled & Start when scene starts (scripts)
+			}
+
+			fileIterator++;
+
+			if (fileIterator == scriptFilesLoaded.end())
+				fileIterator = scriptFilesLoaded.begin();
+		}
 
 	return UPDATE_CONTINUE;
 }
@@ -153,7 +186,8 @@ std::string M_Scripting::CreateNewScript(const char* className)
 	//Add it to the Script Project
 
 	//TODO: We failed, we wil get them next time :)
-	//std::string projectCode = "", projectFilters = "";
+	{
+		//std::string projectCode = "", projectFilters = "";
 	//std::ifstream projectFile, filtersFile;
 	//std::stringstream projectFileBuff, filtersFileBuff;
 
@@ -228,6 +262,8 @@ std::string M_Scripting::CreateNewScript(const char* className)
 	//}
 
 	//App->physFS->Save(SCRIPT_PROJECTFILTERS_PATH, projectFilters.data(), projectFilters.size());
+
+	}
 
 
 
@@ -333,7 +369,7 @@ bool M_Scripting::CheckScriptStatus(const char* assetsPath, const char* libPath,
 				App->physFS->Save(buffer.GetScriptCppPath(), cppCode.data(), cppCode.size());
 			}
 		}
-		
+
 		//If a script .cpp & .h don't exist, we create them (for agile projects, we create from assets)
 
 		//Check if class name is the same

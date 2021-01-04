@@ -47,8 +47,8 @@ Application::Application(int argc, char* args[]) : argc(argc), args(args), gameS
 	AddModule(uiManager);
 	AddModule(physFS);
 	AddModule(resources);
-	AddModule(scene);
 	AddModule(scriptInterface);
+	AddModule(scene);
 
 	// Scenes
 	AddModule(camera);
@@ -86,12 +86,6 @@ bool Application::Awake()
 		{
 			ret = moduleList[i]->Start();
 		}
-	}
-
-	if (CompileDll() == false)
-	{
-		MessageBox(0, "Dll coudn't compile on start or was not found!", "Error - Dll was not found", MB_ICONERROR);
-		ret = false;
 	}
 
 	ms_timer.Start();

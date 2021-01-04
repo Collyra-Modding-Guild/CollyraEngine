@@ -13,6 +13,8 @@
 #define PROJECT_H_LABEL "hFiles"
 #define PROJECT_CPP_LABEL "cppFiles"
 #define SCRIPTS_FOLDER "CollyraGameSystem/GameScripts/"
+#define MAX_FILECHECK_PER_FRAME 3
+
 //#define VS_H_TEMPLATE "\t<ClInclude Include=\"GameScripts\\myFile.h\" />"
 //#define VS_CPP_TEMPLATE "\t<ClInclude Include=\"GameScripts\\myFile.cpp\" />"
 //#define VS_HFILTER_TEMPLATE "\t<ClInclude Include=\"GameScripts\\myFile.h\" >\n\t  <Filter>Gameplay Scripts</Filter>\n\t</ClInclude>"
@@ -61,6 +63,9 @@ private:
 	// & if someone changes the class name (when the file is detected to be sabed, we check if the class name still the same)
 
 	std::map<std::string, ScriptData> scriptClassLoaded;
+
+	//Used to iterate the files (save in memory because we want to iterate few objects per frame)
+	std::map<std::string, uint64>::iterator fileIterator;
 
 };
 
