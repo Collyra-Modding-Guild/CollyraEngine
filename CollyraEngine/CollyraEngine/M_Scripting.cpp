@@ -48,10 +48,10 @@ updateStatus M_Scripting::Update(float dt)
 	//if (App->physFS->Exists("CollyraGameSystem/GameScripts/CollyraLibrary.cpp") != false)
 	//	if (App->physFS->GetCurrDate("CollyraGameSystem/GameScripts/CollyraLibrary.cpp") != lastModDate)
 	//	{
-	//		FreeLibrary(App->gameSystemDll);
-	//		App->gameSystemDll = 0;
+			//FreeLibrary(App->gameSystemDll);
+			//App->gameSystemDll = 0;
 
-	//		App->CompileDll();
+			//App->CompileDll();
 	//		lastModDate = App->physFS->GetCurrDate("CollyraGameSystem/GameScripts/CollyraLibrary.cpp");
 	//	}
 
@@ -249,7 +249,6 @@ uint M_Scripting::GetScriptIdByClassName(const char* className)
 		ret = classIterator->second.resourceId;
 	}
 
-
 	return ret;
 }
 
@@ -271,7 +270,7 @@ bool M_Scripting::CheckScriptStatus(const char* assetsPath, const char* libPath,
 			LOG("Detected a file change or deletion in script class %s. Searching for new files. . .", libPath);
 
 			std::vector<std::string> scriptFiles, folders;
-			App->physFS->DiscoverFiles("CollyraGameSystem/GameScripts/", scriptFiles, folders);
+			App->physFS->DiscoverFiles(SCRIPTS_FOLDER, scriptFiles, folders);
 
 			for (int i = 0; i < scriptFiles.size(); i++)
 			{
@@ -281,7 +280,7 @@ bool M_Scripting::CheckScriptStatus(const char* assetsPath, const char* libPath,
 					std::ifstream hFile;
 					std::stringstream headerCodeBuff;
 
-					hFile.open(scriptFiles[i].c_str());
+					hFile.open(std::string(SCRIPTS_FOLDER).append(scriptFiles[i]).c_str());
 
 					headerCodeBuff << hFile.rdbuf();
 
@@ -295,7 +294,7 @@ bool M_Scripting::CheckScriptStatus(const char* assetsPath, const char* libPath,
 					{
 						LOG("Found new files! %s", scriptFiles[i].c_str());
 
-						std::string cppFile = scriptFiles[i];
+						std::string cppFile = std::string(SCRIPTS_FOLDER).append(scriptFiles[i]);
 
 						if (!App->physFS->Exists(cppFile.replace(cppFile.find(".h"), 2, std::string(".cpp")).c_str()))
 						{
@@ -306,7 +305,17 @@ bool M_Scripting::CheckScriptStatus(const char* assetsPath, const char* libPath,
 						}
 
 						buffer.SetScriptCppPath(cppFile.c_str());
-						buffer.SetScriptHPath(scriptFiles[i].c_str());
+						buffer.SetScriptHPath(std::string(SCRIPTS_FOLDER).append(scriptFiles[i]).c_str());
+
+						buffer.SetScriptCppFileModDate(App->physFS->GetCurrDate(buffer.GetScriptCppPath()));
+						buffer.SetScriptHFileModDate(App->physFS->GetCurrDate(buffer.GetScriptHPath()));
+
+						buffer.SetScriptHCode(headerCode.c_str());
+
+						hFile.open(cppFile.c_str());
+						headerCodeBuff << hFile.rdbuf();
+						hFile.close();
+						buffer.SetScriptCppCode(headerCode.c_str());
 
 						needsReWrite = true;
 						break;
@@ -316,10 +325,10 @@ bool M_Scripting::CheckScriptStatus(const char* assetsPath, const char* libPath,
 
 			if (needsReWrite == false)
 			{
-			LOG("Could not find script files, deleting script. . . ");
-			App->physFS->DeleteFileIn(assetsPath);
-			App->resources->CheckAssetInMeta(std::string(assetsPath) + ".meta", assetsPath);
-			return false;
+				LOG("Could not find script files, deleting script. . . ");
+				App->physFS->DeleteFileIn(assetsPath);
+				App->resources->CheckAssetInMeta(std::string(assetsPath) + ".meta", assetsPath);
+				return false;
 			}
 		}
 
@@ -333,7 +342,7 @@ bool M_Scripting::CheckScriptStatus(const char* assetsPath, const char* libPath,
 		hFile.close();
 		headerCode = headerCodeBuff.str();
 
-		std::string createSearch = std::string("Create" + std::string(buffer.GetScriptClassName()));
+		std::string createSearch = std::string("Create" + std::string(buffer.GetScriptClassName()) + "()");
 
 		if (headerCode.find(createSearch) > headerCode.length())
 		{
@@ -343,7 +352,8 @@ bool M_Scripting::CheckScriptStatus(const char* assetsPath, const char* libPath,
 			uint exporterPos = headerCode.find("COLLYRAGAMESYSTEM_EXPORTS");
 			if (exporterPos < headerCode.length())
 			{
-				newname = headerCode.substr(exporterPos + 25, headerCode.find(std::string("Create")));
+				uint endNamePos = headerCode.find(std::string("Create"), exporterPos);
+				newname = headerCode.substr(exporterPos + 26, endNamePos - exporterPos - 28);
 				LOG("Asumming script new name is %s", newname.c_str());
 			}
 			else
@@ -364,6 +374,7 @@ bool M_Scripting::CheckScriptStatus(const char* assetsPath, const char* libPath,
 			size = ScriptLoader::Save(&buffer, &fileBuffer);;
 
 			App->physFS->Save(libPath, fileBuffer, size);
+			App->physFS->Save(assetsPath, fileBuffer, size);
 
 			RELEASE(fileBuffer);
 		}
