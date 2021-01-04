@@ -36,7 +36,6 @@ void ScriptLoader::Import(const char* scriptAssetPath, char** buffer, R_Script* 
 	JsonConfig jsonFile(*buffer);
 	if (jsonFile.IsInitialized())
 	{
-
 		myNewScript->SetScriptClassName(jsonFile.GetString("Class").c_str());
 
 		myNewScript->SetScriptCppPath(jsonFile.GetString("CppPath").c_str());
@@ -48,7 +47,6 @@ void ScriptLoader::Import(const char* scriptAssetPath, char** buffer, R_Script* 
 
 		myNewScript->SetScriptCppCode(jsonFile.GetString("CppCode").c_str());
 		myNewScript->SetScriptHCode(jsonFile.GetString("hCode").c_str());
-
 	}
 }
 

@@ -48,10 +48,10 @@ public:
 
 	uint GetScriptIdByClassName(const char* className);
 
+	bool CheckScriptStatus(const char* assetsPath, const char* libPath, unsigned int sciprtId);
+
 private:
 	//Script files control-----------
-	uint64 lastModDate;
-
 	//Overall scripts that we are using (.cpp & .h)
 	std::map<std::string, uint64> scriptFilesLoaded;
 
