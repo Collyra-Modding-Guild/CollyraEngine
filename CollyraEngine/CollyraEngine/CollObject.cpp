@@ -64,3 +64,13 @@ int Input::GetMouseZ()
 {
 	return App->input->GetMouseZ();
 }
+
+KEY_STATE Input::GetKey(int id)
+{
+	return App->input->GetKey(id);
+}
+
+KEY_STATE Input::GetMouseButton(int id)
+{
+	return App->input->GetMouseButton(id);
+}

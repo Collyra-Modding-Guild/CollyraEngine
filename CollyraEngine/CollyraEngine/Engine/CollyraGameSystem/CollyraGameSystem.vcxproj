@@ -166,11 +166,13 @@
   <ItemGroup Label="hFiles">
     <ClInclude Include="CollyraFramework.h" />
     <ClInclude Include="GameScripts\CollyraLibrary.h" />
+    <ClInclude Include="GameScripts\pep.h" />
     <ClInclude Include="GameScripts\Tank.h" />
   </ItemGroup>
   <ItemGroup Label="cppFiles">
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="GameScripts\CollyraLibrary.cpp" />
+    <ClCompile Include="GameScripts\pep.cpp" />
     <ClCompile Include="GameScripts\Tank.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

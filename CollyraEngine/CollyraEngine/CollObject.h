@@ -1,12 +1,14 @@
 #pragma once
 
 #include <string>
+#include"SDL/include/SDL.h"
 #include "MathGeoLib/include/MathGeoLib.h"
 
 #define SCRIPTING "Game Scripting System: "
 
 class GameObject;
 class Component;
+enum KEY_STATE;
 
 class __declspec(dllexport) CollObject
 {
@@ -31,6 +33,9 @@ namespace Input
 	int GetMouseX();
 	int GetMouseY();
 	int GetMouseZ();
+
+	KEY_STATE GetKey(int id);
+	KEY_STATE GetMouseButton(int id);
 }
 
 namespace gameObject 
