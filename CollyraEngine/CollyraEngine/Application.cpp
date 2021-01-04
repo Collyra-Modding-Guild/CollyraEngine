@@ -151,6 +151,9 @@ void Application::FinishUpdate()
 
 bool Application::CompileDll(bool cleanCompile)
 {
+	bool isFree = FreeLibrary(gameSystemDll);
+	gameSystemDll = 0;
+
 	DeleteFile("_compilation_output.txt");
 
 	char auxString[256];
@@ -207,9 +210,11 @@ bool Application::CompileDll(bool cleanCompile)
 	else
 	{
 		LOG("Compilation Completed! Copying file to engine folder...");
-		std::string tmpDllLocation = std::string(TEMP_DLL_FOLDER).append("\\").append(GAMEPLAY_DLL_NAME);
+		std::string tmpDllLocation = std::string(TEMP_DLL_FOLDER).append(GAMEPLAY_DLL_NAME);
 
 		bool result = CopyFileA(tmpDllLocation.c_str(), GAMEPLAY_DLL_NAME, false);
+		DWORD error = GetLastError();
+		HRESULT errorTranslate = HRESULT_FROM_WIN32(error);
 
 		if (result == false)
 		{

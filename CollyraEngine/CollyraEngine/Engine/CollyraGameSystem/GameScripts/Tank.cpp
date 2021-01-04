@@ -14,4 +14,8 @@ void Tank::Start()
 
 void Tank::Update()
 {
+	
+	Debug::Log("Alex es MOOOLT gay");
+
+
 }

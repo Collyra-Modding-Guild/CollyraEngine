@@ -55,6 +55,20 @@ int C_Script::GetResourceId() const
 
 void C_Script::Update(float dt)
 {
+
+	// -----------------
+	if (script != nullptr) 
+	{
+		std::string buildFunction = std::string("Create" + std::string(script->GetScriptClassName()));
+		void* (*Builder)() = (void* (*)())GetProcAddress(App->gameSystemDll, buildFunction.c_str());
+
+		if (Builder != nullptr)
+		{	
+			dataObject = (CollObject*)Builder();		
+		}
+	}	
+	// ------------------
+
 	if (dataObject != nullptr)
 	{
 		dataObject->Update();
