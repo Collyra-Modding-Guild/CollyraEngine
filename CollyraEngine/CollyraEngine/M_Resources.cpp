@@ -51,6 +51,8 @@ bool M_Resources::Start()
 	defaultTextureId = TextureLoader::LoadDefaultTexture();
 
 	SearchAllAssetFiles();
+	CheckAssetsImport(allAssetFiles);
+	UpdateChangedResources();
 
 	//uint toLoad = ImportResourceFromAssets("Assets/Models/Street environment_V01.FBX");
 	//RequestResource(toLoad);
