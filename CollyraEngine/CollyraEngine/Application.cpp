@@ -14,7 +14,7 @@
 #include <fstream> 
 
 
-Application::Application(int argc, char* args[]) : argc(argc), args(args), gameSystemDll(nullptr)
+Application::Application(int argc, char* args[]) : argc(argc), args(args), gameSystemDll(nullptr), stopExecution(false)
 {
 	window = new M_Window(M_WINDOW, true);
 	input = new M_Input(M_INPUT, true);
@@ -35,7 +35,7 @@ Application::Application(int argc, char* args[]) : argc(argc), args(args), gameS
 	// Modules will Awake() Start() and Update in this order
 	// They will CleanUp() in reverse order
 
-	if (CompileDll() == false)
+	if (CompileDll(true) == false)
 	{
 		MessageBox(0, "Dll coudn't compile on start or was not found!", "Error - Dll was not found", MB_ICONERROR);
 		gameSystemDll = nullptr;
@@ -55,7 +55,6 @@ Application::Application(int argc, char* args[]) : argc(argc), args(args), gameS
 
 	// Renderer last!
 	AddModule(renderer3D);
-
 }
 
 Application::~Application()
@@ -67,7 +66,7 @@ bool Application::Awake()
 {
 	bool ret = true;
 
-	if (gameSystemDll == nullptr)
+	if (gameSystemDll == nullptr || stopExecution == true)
 		return false;
 
 	// Call Awake() in all modules
@@ -149,10 +148,28 @@ void Application::FinishUpdate()
 
 }
 
-bool Application::CompileDll(bool cleanCompile)
+bool Application::CompileDll(bool stopIfFailed)
 {
+	bool ret = true;
+
+	//Free previous library (if any)
 	bool isFree = FreeLibrary(gameSystemDll);
 	gameSystemDll = 0;
+
+	//Find if the vcVarsall Path if okay
+	ret = FileExistsWin(VCVARSALL_PATH);
+
+	if (ret == false)
+	{
+		MessageBox(0, "Failed to compile; VcVarsall path is not correct, please check the readme", "Error - Compilation Failed", MB_ICONERROR);
+
+		if (stopIfFailed == true)
+		{
+			stopExecution = true;
+		}
+
+		return false;
+	}
 
 	DeleteFile("_compilation_output.txt");
 
@@ -168,8 +185,7 @@ bool Application::CompileDll(bool cleanCompile)
 	// Probably not necessary thought
 
 	sprintf_s(auxString, "MSBuild \"%s\" /t:%s /p:Configuration=%s  /p:Platform=%s /p:OutDir=%s >> _compilation_output.txt",
-		GAMEPLAY_PROJECT_PATH, cleanCompile ? CLEAN_COMPILE_ACTIONS : REGULAR_COMPILE_ACTIONS, COMPILE_MODE, COMPILE_PLATFORM,
-		TEMP_DLL_FOLDER);
+		GAMEPLAY_PROJECT_PATH, COMPILE_ACTIONS, COMPILE_MODE, COMPILE_PLATFORM, TEMP_DLL_FOLDER);
 	batch << auxString << std::endl;
 
 	batch.close();
@@ -181,13 +197,13 @@ bool Application::CompileDll(bool cleanCompile)
 	info.cb = sizeof(info);
 	ZeroMemory(&procInfo, sizeof(procInfo));
 
-	DWORD ret = 0;
+	DWORD retWord = 0;
 	if (CreateProcessA("_compile.bat", NULL, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &info, &procInfo))
 	{
 		WaitForSingleObject(procInfo.hProcess, INFINITE);
 		CloseHandle(procInfo.hProcess);
 		CloseHandle(procInfo.hThread);
-		GetExitCodeProcess(procInfo.hProcess, &ret);
+		GetExitCodeProcess(procInfo.hProcess, &retWord);
 	}
 
 	DeleteFile("_compile.bat");
@@ -206,6 +222,8 @@ bool Application::CompileDll(bool cleanCompile)
 		OutputDebugStringA(auxSTDSTring.c_str());
 		OutputDebugStringA("\n");
 		MessageBox(0, "Failed to compile; please check your output window or _compilation_output.txt \n Keeping previous dll", "Error - Compilation Failed", MB_ICONERROR);
+
+		ret = false;
 	}
 	else
 	{
@@ -219,6 +237,7 @@ bool Application::CompileDll(bool cleanCompile)
 		if (result == false)
 		{
 			LOG("Error copying file, check the source path!");
+			ret = false;
 		}
 
 		LOG("Deleting temp folders & files...");
@@ -229,7 +248,13 @@ bool Application::CompileDll(bool cleanCompile)
 
 	gameSystemDll = LoadLibrary(std::string(GAMEPLAY_DLL_NAME).data());
 
-	return gameSystemDll;
+	if (gameSystemDll == NULL)
+		ret = false;
+
+	if (stopIfFailed)
+		stopExecution = !ret;
+
+	return ret;
 }
 
 // Call PreUpdate, Update and PostUpdate on all modules
@@ -256,6 +281,11 @@ updateStatus Application::Update()
 	for (int i = 0; i < numModules && ret == UPDATE_CONTINUE; i++)
 	{
 		ret = moduleList[i]->PostUpdate(engineDT);
+	}
+
+	if (stopExecution == true)
+	{
+		return UPDATE_STOP;
 	}
 
 	FinishUpdate();
@@ -460,4 +490,16 @@ void Application::DeleteAllFilesWin(char* folderPath)
 		} while (FindNextFile(hp, &info));
 		FindClose(hp);
 	}
+}
+
+bool Application::FileExistsWin(const char* file)
+{
+	WIN32_FIND_DATA FindFileData;
+	HANDLE handle = FindFirstFile(file, &FindFileData);
+	int found = handle != INVALID_HANDLE_VALUE;
+	if (found)
+	{
+		FindClose(handle);
+	}
+	return found;
 }

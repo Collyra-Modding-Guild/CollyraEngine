@@ -267,7 +267,7 @@ bool M_Scripting::CheckScriptStatus(const char* assetsPath, const char* libPath,
 		//Check files exist
 		if (!App->physFS->Exists(buffer.GetScriptCppPath()) || !App->physFS->Exists(buffer.GetScriptHPath()))
 		{
-			LOG("Detected a file change or deletion in script class %s. Searching for new files. . .", libPath);
+			LOG("Detected that script with class %s has no code files in the project. Searching for them. . .", libPath);
 
 			std::vector<std::string> scriptFiles, folders;
 			App->physFS->DiscoverFiles(SCRIPTS_FOLDER, scriptFiles, folders);
@@ -325,58 +325,64 @@ bool M_Scripting::CheckScriptStatus(const char* assetsPath, const char* libPath,
 
 			if (needsReWrite == false)
 			{
-				LOG("Could not find script files, deleting script. . . ");
-				App->physFS->DeleteFileIn(assetsPath);
-				App->resources->CheckAssetInMeta(std::string(assetsPath) + ".meta", assetsPath);
-				return false;
+				LOG("Could not find script files, re-creating them from the asset information ");
+				std::string hCode = buffer.GetScriptHCode();
+				App->physFS->Save(buffer.GetScriptHPath(), hCode.data(), hCode.size());
+
+				std::string cppCode = buffer.GetScriptCppCode();
+				App->physFS->Save(buffer.GetScriptCppPath(), cppCode.data(), cppCode.size());
 			}
 		}
+		
+		//If a script .cpp & .h don't exist, we create them (for agile projects, we create from assets)
 
 		//Check if class name is the same
-		std::string headerCode = "";
-		std::ifstream hFile;
-		std::stringstream headerCodeBuff;
-
-		hFile.open(buffer.GetScriptHPath());
-		headerCodeBuff << hFile.rdbuf();
-		hFile.close();
-		headerCode = headerCodeBuff.str();
-
-		std::string createSearch = std::string("Create" + std::string(buffer.GetScriptClassName()) + "()");
-
-		if (headerCode.find(createSearch) > headerCode.length())
 		{
-			LOG("Class Name Changed in %s ", buffer.GetScriptHPath());
-			std::string newname = "";
+			std::string headerCode = "";
+			std::ifstream hFile;
+			std::stringstream headerCodeBuff;
 
-			uint exporterPos = headerCode.find("COLLYRAGAMESYSTEM_EXPORTS");
-			if (exporterPos < headerCode.length())
+			hFile.open(buffer.GetScriptHPath());
+			headerCodeBuff << hFile.rdbuf();
+			hFile.close();
+			headerCode = headerCodeBuff.str();
+
+			std::string createSearch = std::string("Create" + std::string(buffer.GetScriptClassName()) + "()");
+
+			if (headerCode.find(createSearch) > headerCode.length())
 			{
-				uint endNamePos = headerCode.find(std::string("Create"), exporterPos);
-				newname = headerCode.substr(exporterPos + 26, endNamePos - exporterPos - 28);
-				LOG("Asumming script new name is %s", newname.c_str());
+				LOG("Class Name Changed in %s ", buffer.GetScriptHPath());
+				std::string newname = "";
+
+				uint exporterPos = headerCode.find("COLLYRAGAMESYSTEM_EXPORTS");
+				if (exporterPos < headerCode.length())
+				{
+					uint endNamePos = headerCode.find(std::string("Create"), exporterPos);
+					newname = headerCode.substr(exporterPos + 26, endNamePos - exporterPos - 28);
+					LOG("Asumming script new name is %s", newname.c_str());
+				}
+				else
+				{
+					LOG("Could not find exports, deleting script . . .");
+					App->physFS->DeleteFileIn(assetsPath);
+					App->resources->CheckAssetInMeta(std::string(assetsPath) + ".meta", assetsPath);
+					return false;
+				}
+
+				buffer.SetScriptClassName(newname.c_str());
+
+				needsReWrite = true;
 			}
-			else
+
+			if (needsReWrite == true)
 			{
-				LOG("Could not find exports, deleting script . . .");
-				App->physFS->DeleteFileIn(assetsPath);
-				App->resources->CheckAssetInMeta(std::string(assetsPath) + ".meta", assetsPath);
-				return false;
+				size = ScriptLoader::Save(&buffer, &fileBuffer);;
+
+				App->physFS->Save(libPath, fileBuffer, size);
+				App->physFS->Save(assetsPath, fileBuffer, size);
+
+				RELEASE(fileBuffer);
 			}
-
-			buffer.SetScriptClassName(newname.c_str());
-
-			needsReWrite = true;
-		}
-
-		if (needsReWrite == true)
-		{
-			size = ScriptLoader::Save(&buffer, &fileBuffer);;
-
-			App->physFS->Save(libPath, fileBuffer, size);
-			App->physFS->Save(assetsPath, fileBuffer, size);
-
-			RELEASE(fileBuffer);
 		}
 
 	}
@@ -385,7 +391,6 @@ bool M_Scripting::CheckScriptStatus(const char* assetsPath, const char* libPath,
 	scriptFilesLoaded.insert({ buffer.GetScriptHPath(), App->physFS->GetCurrDate(buffer.GetScriptHPath()) });
 
 	scriptClassLoaded.insert({ buffer.GetScriptClassName() , {buffer.GetScriptCppPath(), buffer.GetScriptHPath(), sciprtId} });
-
 
 	return true;
 }
