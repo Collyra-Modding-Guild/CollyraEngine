@@ -8,6 +8,8 @@
 #include <sstream>
 #include <iostream>
 
+
+
 M_Scripting::M_Scripting(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), lastModDate(0)
 {}
 
@@ -207,6 +209,8 @@ std::string M_Scripting::CreateNewScript(const char* className)
 	}
 
 	App->physFS->Save(SCRIPT_PROJECTFILTERS_PATH, projectFilters.data(), projectFilters.size());
+
+
 
 	return "SUCCESS";
 }

@@ -220,6 +220,11 @@ bool M_UIManager::ShowMainMenuBar()
 				ret = false;
 			}
 
+			if (ImGui::MenuItem("Compile Game System", NULL))
+			{
+				App->CompileDll();
+			}
+
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Editor"))

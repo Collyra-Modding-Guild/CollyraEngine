@@ -13,5 +13,4 @@
 
 //Engine Communication--------------
 #include "../../CollObject.h"
-#include "../../M_Scripting.h"
 #include "../../GameObject.h"
