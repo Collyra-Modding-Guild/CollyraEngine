@@ -8,7 +8,10 @@
 #endif
 
 // For exporting functions that will be extern (used by the engine)
-#define COLLYRAGAMESYSTEM_EXPORTS extern "C" COLLYRAGAMESYSTEM_API
+#define COLLYRAGAMESYSTEM_FACTORY extern "C" COLLYRAGAMESYSTEM_API
+
+//Same as above, but used as a flag to identify classConstructors
+#define COLLYRAGAMESYSTEM_EXPORTS COLLYRAGAMESYSTEM_FACTORY
 
 
 //Engine Communication--------------

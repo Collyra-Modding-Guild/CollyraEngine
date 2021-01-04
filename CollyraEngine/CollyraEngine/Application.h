@@ -20,8 +20,7 @@
 #define TEMP_DLL_FOLDER "C:\\temp\\CollyraEngine\\"
 #define COMPILE_MODE "Debug"
 #define GAMEPLAY_PROJECT_PATH "CollyraGameSystem\\CollyraGameSystem.vcxproj"
-#define CLEAN_COMPILE_ACTIONS "Build"
-#define REGULAR_COMPILE_ACTIONS "Rebuild"
+#define COMPILE_ACTIONS "Build"
 #define GAMEPLAY_DLL_NAME "CollyraGameSystem.dll"
 
 
@@ -67,7 +66,8 @@ public:
 private:
 
 	int					argc;
-	char** args;
+	char**				args;
+	bool				stopExecution;
 
 	Timer				ms_timer;
 
@@ -129,7 +129,7 @@ public:
 	void SetTimeMultiplier(float newMultiplier);
 
 
-	bool CompileDll(bool cleanCompile = true);
+	bool CompileDll(bool stopIfFailed = false);
 
 private:
 
@@ -137,6 +137,8 @@ private:
 	void PrepareUpdate();
 	void FinishUpdate();
 	void DeleteAllFilesWin(char* folderPath);
+	bool FileExistsWin(const char* file);
+
 
 };
 
