@@ -67,17 +67,18 @@ updateStatus M_Scripting::Update(float dt)
 {
 	updateStatus ret = UPDATE_CONTINUE;
 
-	//Hot reloading ----------
-	if (onlineHotReload == false)
-		return ret;
-
 	if (scriptFilesLoaded.size() > 0)
 		for (int i = 0; i < MAX_FILECHECK_PER_FRAME; i++)
 		{
 			if (fileIterator->second != App->physFS->GetCurrDate(fileIterator->first.c_str()))
 			{
+				if (onlineHotReload == true)
+				{
+					PerformHotReload();
+				}
+				else
+					RefreshAllScripts();
 
-				PerformHotReload();
 				return ret;
 			}
 

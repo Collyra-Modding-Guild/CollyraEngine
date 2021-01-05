@@ -885,7 +885,7 @@ std::string M_UIManager::DrawDirectoryRecursiveOld(const char* directory, bool r
 		for (int i = 0; i < myPathNode->children.size(); i++)
 		{
 			std::string compare = myPathNode->children[i].path + "/";
-			if (compare == LIBRARY_TEXTURES || compare == LIBRARY_MODELS ||compare == LIBRARY_SCENES)
+			if (compare == LIBRARY_TEXTURES || compare == LIBRARY_MODELS ||compare == LIBRARY_SCENES || compare == LIBRARY_SCRIPTS)
 			{
 				myPathNode->children[i].Clear();
 			}
