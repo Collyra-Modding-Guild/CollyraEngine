@@ -21,9 +21,11 @@ public:
 	std::string GetScriptClass();
 	void		SetScriptClass(const char* newClass);
 
+	void ResourceUpdated(std::map<uint, bool>* ids);
+
 private:
 	uint		scriptId;
-	R_Script*	script;
+	R_Script*	myScript;
 	CollObject* dataObject;
 
 };

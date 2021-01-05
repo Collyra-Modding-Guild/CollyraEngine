@@ -6,6 +6,7 @@
 #include "M_Scene.h"
 #include "M_Resources.h"
 #include "M_FileManager.h"
+#include "M_Scripting.h"
 
 #include "GameObject.h"
 #include "Component.h"
@@ -220,9 +221,9 @@ bool M_UIManager::ShowMainMenuBar()
 				ret = false;
 			}
 
-			if (ImGui::MenuItem("Compile Game System", NULL))
+			if (ImGui::MenuItem("Reload Game System", NULL))
 			{
-				App->CompileDll();
+				App->scriptInterface->PerformHotReload();
 			}
 
 			ImGui::EndMenu();

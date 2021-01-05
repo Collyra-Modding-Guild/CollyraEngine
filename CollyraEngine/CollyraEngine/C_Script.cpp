@@ -8,7 +8,7 @@
 
 #include "R_Script.h"
 
-C_Script::C_Script(bool active) : Component(COMPONENT_TYPE::SCRIPT, active), scriptId(0), script(nullptr), dataObject(nullptr)
+C_Script::C_Script(bool active) : Component(COMPONENT_TYPE::SCRIPT, active), scriptId(0), myScript(nullptr), dataObject(nullptr)
 {}
 
 C_Script::~C_Script()
@@ -27,11 +27,11 @@ void C_Script::SetResourceId(uint newId)
 	}
 
 	scriptId = newId;
-	script = (R_Script*)App->resources->RequestResource(scriptId);
+	myScript = (R_Script*)App->resources->RequestResource(scriptId);
 
-	if (script != nullptr)
+	if (myScript != nullptr)
 	{
-		std::string buildFunction = std::string("Create" + std::string(script->GetScriptClassName()));
+		std::string buildFunction = std::string("Create" + std::string(myScript->GetScriptClassName()));
 		void* (*Builder)() = (void* (*)())GetProcAddress(App->gameSystemDll, buildFunction.c_str());
 
 		if (Builder != nullptr)
@@ -48,7 +48,7 @@ void C_Script::SetResourceId(uint newId)
 			}
 			catch (...)
 			{
-				LOG("SCRIPT SYSTEM ERROR: Could not find a script with name %s", script->GetScriptClassName());
+				LOG("SCRIPT SYSTEM ERROR: Could not find a script with name %s", myScript->GetScriptClassName());
 			}
 		}
 
@@ -63,35 +63,41 @@ int C_Script::GetResourceId() const
 
 void C_Script::Update(float dt)
 {
-
+	std::string buildFunction = std::string("Create" + std::string(myScript->GetScriptClassName()));
 	// -----------------
-	if (script != nullptr) 
+	if (myScript != nullptr)
 	{
-		std::string buildFunction = std::string("Create" + std::string(script->GetScriptClassName()));
 		void* (*Builder)() = (void* (*)())GetProcAddress(App->gameSystemDll, buildFunction.c_str());
 
 		if (Builder != nullptr)
-		{	
-			dataObject = (CollObject*)Builder();		
+		{
+			dataObject = (CollObject*)Builder();
 
-			if (dataObject != nullptr) 
+			if (dataObject != nullptr)
 			{
 				dataObject->SetMyGameObject(GetGameObject());
 			}
 		}
-	}	
+	}
 	// ------------------
 
 	if (dataObject != nullptr)
 	{
-		dataObject->Update();
+		try
+		{
+			dataObject->Update();
+		}
+		catch (...)
+		{
+			LOG("SCRIPT SYSTEM ERROR: Could not find a script with name %s", myScript->GetScriptClassName());
+		}
 	}
 
 }
 
 std::string C_Script::GetScriptClass()
 {
-	return script ? script->GetScriptClassName() : "No Script Loaded";
+	return myScript ? myScript->GetScriptClassName() : "No Script Loaded";
 }
 
 void C_Script::SetScriptClass(const char* newClass)
@@ -102,4 +108,25 @@ void C_Script::SetScriptClass(const char* newClass)
 	{
 		SetResourceId(classId);
 	}
+}
+
+void C_Script::ResourceUpdated(std::map<uint, bool>* ids)
+{
+	if (scriptId == 0)
+		return;
+
+	std::map<uint, bool>::iterator it = ids->find(scriptId);
+
+	if (it != ids->end())
+	{
+		if (it->second == true)
+			SetResourceId(it->first);
+		else
+		{
+			App->resources->UnloadResource(scriptId);
+			myScript = nullptr;
+			scriptId = 0;
+		}
+	}
+
 }

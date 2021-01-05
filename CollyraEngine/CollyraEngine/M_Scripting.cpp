@@ -12,7 +12,7 @@
 #include <iostream>
 
 
-M_Scripting::M_Scripting(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled)
+M_Scripting::M_Scripting(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), onlineHotReload(false)
 {}
 
 M_Scripting::~M_Scripting()
@@ -21,8 +21,18 @@ M_Scripting::~M_Scripting()
 
 bool M_Scripting::Awake()
 {
+	RefreshAllScripts();
+	return true;
+}
+
+bool M_Scripting::RefreshAllScripts()
+{
+	scriptFilesLoaded.clear();
+	scriptClassLoaded.clear();
+
 	//TODO: Get all the files (and their date) & all the clases, and throw them into the maps
 	static std::vector<std::string> filter_ext = { "meta" };
+	bool needResourceRefresh = false;
 	PathNode allScripts = App->physFS->GetAllFiles(ASSETS_SCRIPTS_PATH, &filter_ext, nullptr);
 
 	for (int i = 0; i < allScripts.children.size(); i++)
@@ -36,7 +46,15 @@ bool M_Scripting::Awake()
 		assetsPath = allScripts.children[i].path;
 		assetsPath.replace(assetsPath.find(".meta"), 5, "");
 
-		CheckScriptStatus(assetsPath.c_str(), libPath.c_str(), sciprtId);
+		bool scriptRefresh = CheckScriptStatus(assetsPath.c_str(), libPath.c_str(), sciprtId);
+
+		if (scriptRefresh == true && needResourceRefresh == false)
+			needResourceRefresh = true;
+	}
+
+	if (needResourceRefresh)
+	{
+		App->resources->NotifyHotReload();
 	}
 
 	fileIterator = scriptFilesLoaded.begin();
@@ -46,39 +64,20 @@ bool M_Scripting::Awake()
 
 updateStatus M_Scripting::Update(float dt)
 {
+	updateStatus ret = UPDATE_CONTINUE;
+
 	//Hot reloading ----------
-	bool dllCompiled = false;
+	if (onlineHotReload == false)
+		return ret;
 
 	if (scriptFilesLoaded.size() > 0)
 		for (int i = 0; i < MAX_FILECHECK_PER_FRAME; i++)
 		{
 			if (fileIterator->second != App->physFS->GetCurrDate(fileIterator->first.c_str()))
 			{
-				//Demo
-				if (dllCompiled == false)
-				{
-					App->CompileDll();
-					dllCompiled = true;
-				}
 
-				fileIterator->second = App->physFS->GetCurrDate(fileIterator->first.c_str());
-
-				//TODO: Update all files mod Date & Hot - Reload
-					// Hot-reload consists of: 
-						//Saving the data in a tempral folder 
-						// Deleting all the previous classes
-						// Re-compiling the code
-						// Perform a check (just as the start)
-						// Re-load the changes:
-							// Check if the class still exists (the resource will be re-created, if exists, all good)
-							// If exists, we create it & we capture the variables that have been created
-							// Then we compare them with the ones we currently have (if there is a match, we substitute)
-
-				//TODO: Make scene & all assets in general import correctly (???)
-				//TODO: Save reloadable vars & inspector from the script
-				//TODO: Make camera change on play
-				//TODO: Call onDisable, onEnable when go are diabled/enabled & Start when scene starts (scripts)
-				//TODO: If we detect a change; go though all scripts, then hot-reload
+				PerformHotReload();
+				return ret;
 			}
 
 			fileIterator++;
@@ -87,7 +86,7 @@ updateStatus M_Scripting::Update(float dt)
 				fileIterator = scriptFilesLoaded.begin();
 		}
 
-	return UPDATE_CONTINUE;
+	return ret;
 }
 
 bool M_Scripting::CleanUp()
@@ -287,6 +286,37 @@ uint M_Scripting::GetScriptIdByClassName(const char* className)
 	return ret;
 }
 
+bool M_Scripting::PerformHotReload()
+{
+	//TODO: Update all files mod Date & Hot - Reload
+	// Hot-reload consists of: 
+		//Saving the data in a tempral folder 
+		// Deleting all the previous classes
+		// Re-compiling the code
+		// Perform a check (just as the start) (before or after ?)
+		// Re-load the changes:
+			// Check if the class still exists (the resource will be re-created, if exists, all good)
+			// If exists, we create it & we capture the variables that have been created
+			// Then we compare them with the ones we currently have (if there is a match, we substitute)
+
+	//TODO: Call onDisable, onEnable when go are diabled/enabled & Start when scene starts (scripts); also update only if playing
+	//TODO: Make camera change on play
+	//TODO: Save reloadable vars & inspector from the script
+
+	RefreshAllScripts();
+	return 	App->CompileDll();
+}
+
+bool M_Scripting::GetOnlineHotReload() const
+{
+	return onlineHotReload;
+}
+
+void M_Scripting::SetOnlineHotReload(bool newState)
+{
+	onlineHotReload = newState;
+}
+
 bool M_Scripting::CheckScriptStatus(const char* assetsPath, const char* libPath, unsigned int sciprtId)
 {
 	R_Script buffer(0);
@@ -427,6 +457,6 @@ bool M_Scripting::CheckScriptStatus(const char* assetsPath, const char* libPath,
 
 	scriptClassLoaded.insert({ buffer.GetScriptClassName() , {buffer.GetScriptCppPath(), buffer.GetScriptHPath(), sciprtId, assetsPath} });
 
-	return true;
+	return needsReWrite;
 }
 

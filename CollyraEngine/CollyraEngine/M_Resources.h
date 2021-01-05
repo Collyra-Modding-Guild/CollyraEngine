@@ -69,6 +69,8 @@ public:
 
 	uint LoadDefaultScene();
 
+	void NotifyHotReload();
+
 private:
 	void SearchAllAssetFiles();
 	void CheckAssetsImport(PathNode& pathnode);

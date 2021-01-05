@@ -703,6 +703,14 @@ uint M_Resources::LoadDefaultScene()
 	return ret;
 }
 
+void M_Resources::NotifyHotReload()
+{
+	PathNode scriptFiles = App->physFS->GetAllFiles(ASSETS_SCRIPTS_PATH, nullptr, nullptr);
+
+	CheckAssetsImport(scriptFiles);
+	UpdateChangedResources();
+}
+
 std::string M_Resources::DuplicateFile(const char* path)
 {
 	std::string normalizedPath = App->physFS->NormalizePath(path);

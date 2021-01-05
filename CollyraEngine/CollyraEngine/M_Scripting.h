@@ -54,7 +54,14 @@ public:
 
 	uint GetScriptIdByClassName(const char* className);
 
+	bool PerformHotReload();
+
+	bool GetOnlineHotReload() const;
+	void SetOnlineHotReload(bool newState);
+
+private:
 	bool CheckScriptStatus(const char* assetsPath, const char* libPath, unsigned int sciprtId);
+	bool RefreshAllScripts();
 
 private:
 	//Script files control-----------
@@ -70,6 +77,8 @@ private:
 	//Used to iterate the files (save in memory because we want to iterate few objects per frame)
 	std::map<std::string, uint64>::iterator fileIterator;
 
+	//Indicates if we will check every script file & hot reload instantly
+	bool onlineHotReload;
 };
 
 #endif // __ModuleScriptingInterface_H__
