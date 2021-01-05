@@ -229,6 +229,12 @@ bool M_UIManager::ShowMainMenuBar()
 		}
 		if (ImGui::BeginMenu("Editor"))
 		{
+			if (ImGui::MenuItem("Create New Scene", NULL))
+			{
+				App->scene->SaveScene();
+				App->scene->GenerateNewScene();
+			}
+
 			if (ImGui::MenuItem("Load Scene", NULL))
 			{
 				showLoadScenePop = true;

@@ -19,7 +19,7 @@ M_Scripting::~M_Scripting()
 {}
 
 
-bool M_Scripting::Start()
+bool M_Scripting::Awake()
 {
 	//TODO: Get all the files (and their date) & all the clases, and throw them into the maps
 	static std::vector<std::string> filter_ext = { "meta" };
@@ -74,12 +74,11 @@ updateStatus M_Scripting::Update(float dt)
 							// If exists, we create it & we capture the variables that have been created
 							// Then we compare them with the ones we currently have (if there is a match, we substitute)
 
-				//TODO: Save the assetPath in the ScripData map (change the asset, reimport as any other resource)
-				//TODO: Change the import of the scripts (need to generate their .cpp & .h from the Asset)
 				//TODO: Make scene & all assets in general import correctly (???)
 				//TODO: Save reloadable vars & inspector from the script
 				//TODO: Make camera change on play
 				//TODO: Call onDisable, onEnable when go are diabled/enabled & Start when scene starts (scripts)
+				//TODO: If we detect a change; go though all scripts, then hot-reload
 			}
 
 			fileIterator++;
@@ -174,12 +173,12 @@ std::string M_Scripting::CreateNewScript(const char* className)
 
 
 	// Creating the Script Resource
-	uint scriptId = App->resources->ImportResourceFromAssets(
-		ScriptLoader::Create(className, saveToCpp.c_str(), saveToH.c_str(), cppCode.c_str(), headerCode.c_str()).c_str()
-	);
+	std::string createScript = ScriptLoader::Create(className, saveToCpp.c_str(), saveToH.c_str(), cppCode.c_str(), headerCode.c_str()).c_str();
+
+	uint scriptId = App->resources->ImportResourceFromAssets(createScript.c_str());
 
 	LOG("Created new Script files with name %s", className);
-	scriptClassLoaded.insert({ className , { saveToCpp, saveToH, scriptId} });
+	scriptClassLoaded.insert({ className , { saveToCpp, saveToH, scriptId,createScript.c_str()} });
 
 	LOG("If you wish to use the script, please add it to the project in VS");
 
@@ -426,7 +425,7 @@ bool M_Scripting::CheckScriptStatus(const char* assetsPath, const char* libPath,
 	scriptFilesLoaded.insert({ buffer.GetScriptCppPath(), App->physFS->GetCurrDate(buffer.GetScriptCppPath()) });
 	scriptFilesLoaded.insert({ buffer.GetScriptHPath(), App->physFS->GetCurrDate(buffer.GetScriptHPath()) });
 
-	scriptClassLoaded.insert({ buffer.GetScriptClassName() , {buffer.GetScriptCppPath(), buffer.GetScriptHPath(), sciprtId} });
+	scriptClassLoaded.insert({ buffer.GetScriptClassName() , {buffer.GetScriptCppPath(), buffer.GetScriptHPath(), sciprtId, assetsPath} });
 
 	return true;
 }

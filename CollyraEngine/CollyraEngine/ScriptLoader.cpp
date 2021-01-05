@@ -46,6 +46,19 @@ void ScriptLoader::Import(const char* scriptAssetPath, char** buffer, R_Script* 
 
 		myNewScript->SetScriptCppCode(jsonFile.GetString("CppCode").c_str());
 		myNewScript->SetScriptHCode(jsonFile.GetString("hCode").c_str());
+
+		if(!App->physFS->Exists(myNewScript->GetScriptCppPath()) || App->physFS->GetCurrDate(myNewScript->GetScriptCppPath()) < myNewScript->GetScriptCppFileModDate())
+		{
+			std::string cppCode = myNewScript->GetScriptCppCode();
+			App->physFS->Save(myNewScript->GetScriptCppPath(), cppCode.data(), cppCode.size());
+		}
+
+		if (!App->physFS->Exists(myNewScript->GetScriptHPath()) || App->physFS->GetCurrDate(myNewScript->GetScriptHPath()) < myNewScript->GetScriptHFileModDate())
+		{
+			std::string HCode = myNewScript->GetScriptHCode();
+			App->physFS->Save(myNewScript->GetScriptHPath(), HCode.data(), HCode.size());
+		}
+
 	}
 }
 

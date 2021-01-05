@@ -43,8 +43,8 @@ bool M_Scene::Awake()
 	currentScene->root = new GameObject(DEFAULT_SCENE_NAME);
 	currentScene->root->CreateComponent(COMPONENT_TYPE::TRANSFORM);
 	currentScene->root->SetUid(0);
+	SetSceneName(DEFAULT_SCENE_NAME);
 
-	//Demo Camera-----
 	GameObject* camera = App->scene->CreateGameObject("Camera");
 	camera->CreateComponent(COMPONENT_TYPE::CAMERA);
 
@@ -143,18 +143,18 @@ updateStatus M_Scene::PostUpdate(float dt)
 		{
 			CameraCuling(currNode, App->camera->GetCamera());
 
-			if(App->camera->GetCamera()->IsCulling())
+			if (App->camera->GetCamera()->IsCulling())
 				checkCulling++;
 		}
 
-		if (currNode->GetComponent<C_Mesh>() != nullptr) 
+		if (currNode->GetComponent<C_Mesh>() != nullptr)
 		{
 			if (checkCulling == 0)
 			{
 				currNode->GetComponent<C_Mesh>()->SetActive(true);
 			}
 		}
-		
+
 
 	}
 
@@ -282,6 +282,9 @@ GameObject* M_Scene::CreateGameObject(std::string name, GameObject* parent)
 
 void M_Scene::ResetScene()
 {
+	if (currentScene == nullptr)
+		return;
+
 	App->uiManager->SetFocusedGameObject(-1);
 	focusedGameObject = nullptr;
 
@@ -332,7 +335,6 @@ R_Scene* M_Scene::GetSceneResource() const
 void M_Scene::SetSceneResource(R_Scene* newScene)
 {
 	currentScene->SetUid(newScene->GetUid());
-	currentScene->SetLibraryPath(newScene->GetLibraryPath());
 }
 
 void M_Scene::ResoucesUpdated(std::map<uint, bool>* updatedId)
@@ -434,6 +436,22 @@ void M_Scene::SetResourceToGameObject(uint resourceId, R_TYPE rType, GameObject*
 	default:
 		break;
 	}
+
+}
+
+void M_Scene::GenerateNewScene()
+{
+	if (currentScene != nullptr)
+	{
+		ResetScene();
+		App->resources->UnloadResource(currentScene->GetUid());
+	}
+
+	currentScene->SetUid(GenerateId());
+	SetSceneName(DEFAULT_SCENE_NAME);
+	savedScenePath = currentScene->GetLibraryPath();
+	GameObject* camera = App->scene->CreateGameObject("Camera");
+	camera->CreateComponent(COMPONENT_TYPE::CAMERA);
 
 }
 

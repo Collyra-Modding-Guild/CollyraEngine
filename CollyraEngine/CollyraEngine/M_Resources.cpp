@@ -239,7 +239,6 @@ Resource* M_Resources::LoadResource(uint id, const char* libPath)
 	case (R_TYPE::SCENE):
 	{
 		ret = new R_Scene(id);
-		ret->SetLibraryPath(App->physFS->GetExtensionFolderLibraryFromType(resourceType).append(ret->GetName().append(App->physFS->GetInternalExtensionFromType(resourceType))));
 
 		deleteResources = false;
 		App->scene->ResetScene();
@@ -252,7 +251,7 @@ Resource* M_Resources::LoadResource(uint id, const char* libPath)
 	}
 	case (R_TYPE::SCRIPT):
 	{
-		ret = new R_Script(id);
+		ret = CreateResource(R_TYPE::SCRIPT, name, id);
 		ScriptLoader::Load((R_Script*)ret, buffer);
 		break;
 	}
@@ -438,13 +437,16 @@ void M_Resources::UnloadResource(uint32 toUnloadId)
 	std::map<uint, Resource*>::iterator it = resourceMap.find(toUnloadId);
 	if (it != resourceMap.end())
 	{
-		if (it->second->referenceCount > 0)
-			it->second->referenceCount--;
+		int referenceCount = it->second->referenceCount;
 
-		if (it->second->referenceCount <= 0)
+		if (referenceCount - 1 <= 0)
 		{
+			it->second->referenceCount = 0;
 			DeleteResource(toUnloadId);
 		}
+		else
+			it->second->referenceCount--;
+
 	}
 }
 
@@ -454,17 +456,15 @@ void M_Resources::CheckResourcesToUnload()
 
 	int size = resourceMap.size();
 
-	for (int i = 0; i < size; i++)
+	for (; it != resourceMap.end();)
 	{
 		if (it->second->referenceCount <= 0)
 		{
 			DeleteResource(it->first);
 			it = resourceMap.begin();
-			i = 0;
 			size = resourceMap.size();
 			continue;
 		}
-
 		it++;
 	}
 }

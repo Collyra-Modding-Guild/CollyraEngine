@@ -1,5 +1,5 @@
 {
-    "SceneName": "DefaultScene",
+    "SceneName": "CollyraScene",
     "GameObjects": [
         {
             "UID": 771465601,
@@ -1328,6 +1328,11 @@
                         0.030000071972608566,
                         0.030000057071447372
                     ]
+                },
+                {
+                    "Type": 4,
+                    "Active": true,
+                    "ScriptID": 502384198
                 }
             ]
         },

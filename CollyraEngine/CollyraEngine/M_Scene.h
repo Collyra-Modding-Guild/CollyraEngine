@@ -69,6 +69,8 @@ public:
 	void ResoucesUpdated(std::map<uint, bool>* updatedId);
 	void SetResourceToGameObject(uint resourceId, R_TYPE rType, GameObject* setTo = nullptr);
 
+	void GenerateNewScene();
+
 private:
 	void CheckSiblingsName(GameObject* parent, std::string& myName);
 	void DrawGameObject(GameObject* gameObject, bool* drawState);

@@ -12,7 +12,9 @@ C_Script::C_Script(bool active) : Component(COMPONENT_TYPE::SCRIPT, active), scr
 {}
 
 C_Script::~C_Script()
-{ }
+{
+	App->resources->UnloadResource(scriptId);
+}
 
 void C_Script::SetResourceId(uint newId)
 {

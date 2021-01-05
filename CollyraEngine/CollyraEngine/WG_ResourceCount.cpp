@@ -19,6 +19,7 @@ updateStatus WG_ResourceCount::Update()
 	DrawResourceType(R_TYPE::MESH);
 	DrawResourceType(R_TYPE::SCENE);
 	DrawResourceType(R_TYPE::MATERIAL);
+	DrawResourceType(R_TYPE::SCRIPT);
 
 	ImGui::End();
 
@@ -33,7 +34,7 @@ void WG_ResourceCount::DrawResourceType(R_TYPE type)
 	std::vector<const Resource*> resources;
 
 	static const char* titles[] = {
-		 "Models","Scenes", "Mesh","Textures","Material" };
+		 "Models","Scenes", "Mesh","Textures","Material", "Script" };
 
 	if (ImGui::TreeNodeEx(titles[(int)type], 0))
 	{

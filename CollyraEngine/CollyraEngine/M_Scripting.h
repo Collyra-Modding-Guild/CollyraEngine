@@ -24,15 +24,18 @@ typedef unsigned __int64 uint64;
 
 struct ScriptData
 {
-	ScriptData(std::string cppFile, std::string hFile, uint resourceId) {
+	ScriptData(std::string cppFile, std::string hFile, uint resourceId, const char* assetPath)
+	{
 		this->cppFile = cppFile;
 		this->hFile = hFile;
 		this->resourceId = resourceId;
+		this->assetPath = assetPath;
 	}
 
 	std::string cppFile;
 	std::string hFile;
 	uint resourceId;
+	const char* assetPath;
 };
 
 class __declspec(dllexport) M_Scripting : public Module
@@ -41,7 +44,7 @@ public:
 	M_Scripting(MODULE_TYPE type, bool startEnabled = true);
 	~M_Scripting();
 
-	bool Start();
+	bool Awake() override;
 	updateStatus Update(float dt);
 	bool CleanUp();
 
