@@ -34,8 +34,29 @@ int C_Script::GetResourceId() const
 	return scriptId;
 }
 
+void C_Script::Start()
+{
+	if (App->gameClock->IsPlaying() == false)
+		return;
+
+	if (dataObject != nullptr)
+	{
+		try
+		{
+			dataObject->Start();
+		}
+		catch (...)
+		{
+			LOG("SCRIPT SYSTEM ERROR: Could not find a script with name %s", myScript->GetScriptClassName());
+		}
+	}
+}
+
 void C_Script::Update(float dt)
 {
+	if (App->gameClock->IsPlaying() == false)
+		return;
+
 	//std::string buildFunction = std::string("Create" + std::string(myScript->GetScriptClassName()));
 	//// -----------------
 	//if (myScript != nullptr)
@@ -66,6 +87,42 @@ void C_Script::Update(float dt)
 		}
 	}
 
+}
+
+void C_Script::OnEnable()
+{
+	if (App->gameClock->IsPlaying() == false)
+		return;
+
+	if (dataObject != nullptr)
+	{
+		try
+		{
+			dataObject->OnEnable();
+		}
+		catch (...)
+		{
+			LOG("SCRIPT SYSTEM ERROR: Could not find a script with name %s", myScript->GetScriptClassName());
+		}
+	}
+}
+
+void C_Script::OnDisable()
+{
+	if (App->gameClock->IsPlaying() == false)
+		return;
+
+	if (dataObject != nullptr)
+	{
+		try
+		{
+			dataObject->OnDisable();
+		}
+		catch (...)
+		{
+			LOG("SCRIPT SYSTEM ERROR: Could not find a script with name %s", myScript->GetScriptClassName());
+		}
+	}
 }
 
 std::string C_Script::GetScriptClass()

@@ -303,6 +303,7 @@ bool M_Scripting::PerformHotReload()
 	//TODO: Call onDisable, onEnable when go are diabled/enabled & Start when scene starts (scripts); also update only if playing
 	//TODO: Make camera change on play
 	//TODO: Save reloadable vars & inspector from the script
+	//TODO: Check in the script CreateTemplate () for dummies
 
 	//We can only refresh if we are sure that the dll has compiled succesfully, but still need to previous dll to delete & store
 	bool ret = App->CompileDll(false, false);
@@ -439,12 +440,17 @@ bool M_Scripting::CheckScriptStatus(const char* assetsPath, const char* libPath,
 				if (exporterPos < headerCode.length())
 				{
 					uint endNamePos = headerCode.find(std::string("Create"), exporterPos);
-					newname = headerCode.substr(exporterPos + 26, endNamePos - exporterPos - 28);
+					uint functioncall = headerCode.find(std::string("()"), exporterPos);
+					newname = headerCode.substr(endNamePos + 6, functioncall - endNamePos - 6);
+
+					newname.erase(std::remove(newname.begin(), newname.end(), '\t'), newname.end());
+					newname.erase(std::remove(newname.begin(), newname.end(), ' '), newname.end());
+
 					LOG("Asumming script new name is %s", newname.c_str());
 				}
 				else
 				{
-					LOG("Could not find exports, deleting script . . .");
+					LOG("Could not find new class, deleting script in assets . . .");
 					App->physFS->DeleteFileIn(assetsPath);
 					App->resources->CheckAssetInMeta(std::string(assetsPath) + ".meta", assetsPath);
 					return false;

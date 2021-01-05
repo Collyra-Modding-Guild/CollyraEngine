@@ -180,7 +180,7 @@ updateStatus M_Scene::Draw(bool* drawState)
 		currNode = stack.top();
 		stack.pop();
 
-		if (currNode != nullptr && currNode->active)
+		if (currNode != nullptr && currNode->IsActive())
 		{
 			DrawGameObject(currNode, drawState);
 		}
@@ -228,7 +228,7 @@ updateStatus M_Scene::PreDraw(bool* drawState)
 			currNode = stack.top();
 			stack.pop();
 
-			if (currNode != nullptr && currNode->active)
+			if (currNode != nullptr && currNode->IsActive())
 			{
 				C_Mesh* mesh = currNode->GetComponent<C_Mesh>();
 				C_Transform* transform = currNode->GetComponent<C_Transform>();
@@ -783,6 +783,36 @@ void M_Scene::DeleteCamera(Component* component)
 	}
 }
 
+void M_Scene::StartGameObjects()
+{
+	std::stack<GameObject*> stack;
+	GameObject* currNode = nullptr;
+	GameObject* toDelete = nullptr;
+
+	if (currentScene->root == nullptr)
+	{
+		LOG("Root node did not exist!");
+		return;
+	}
+
+	stack.push(currentScene->root);
+
+	while (!stack.empty())
+	{
+		currNode = stack.top();
+		stack.pop();
+
+		currNode->Start();
+
+		int childNum = currNode->children.size();
+		for (int i = 0; i < childNum; i++)
+		{
+			stack.push(currNode->children[i]);
+		}
+	}
+
+}
+
 void M_Scene::OnClickFocusGameObject(const LineSegment& mouseRay)
 {
 	std::stack<GameObject*> stack;
@@ -884,6 +914,8 @@ void M_Scene::Play()
 	playedScene = this->GetSceneResource()->GetUid();
 
 	App->gameClock->Start();
+	StartGameObjects();
+
 }
 
 void M_Scene::Stop()

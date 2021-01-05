@@ -12,8 +12,8 @@ public:
 	virtual void Start();
 	virtual void Update(float dt);
 
-	virtual void Enable();
-	virtual void Disable();
+	virtual void OnEnable();
+	virtual void OnDisable();
 
 	bool IsActive() const;
 	void SetActive(bool newState);

@@ -45,6 +45,7 @@ public:
 	void		DeleteCamera(Component* component);
 	template<typename T>
 	std::vector<T*> GetAllComponents();
+	void		StartGameObjects();
 
 	void		OnClickFocusGameObject(const LineSegment& mouseRay);
 

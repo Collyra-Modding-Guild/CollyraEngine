@@ -32,6 +32,11 @@ public:
 	void Update(float dt);
 	void PostUpdate(float dt);
 
+	void Enable();
+	void Disable();
+	void SetActive(bool newState);
+	bool IsActive() const;
+
 	Component* CreateComponent(COMPONENT_TYPE type);
 
 	//If succesfull to Add return the component, else return nullptr
@@ -54,8 +59,6 @@ public:
 	std::string GetName() const;
 	void SetName(std::string newName);
 
-	void SetActive(bool newState);
-
 	void SetParent(GameObject* newParent);
 	GameObject* GetParent() const;
 
@@ -71,13 +74,13 @@ public:
 private:
 
 	void BoundingBoxUpdate();
-
+	void OnEnable();
+	void OnDiable();
 
 public:
 	std::vector<Component*> components;
 	std::vector<GameObject*> children;
 
-	bool active;
 
 private:
 	std::string name;
@@ -88,6 +91,7 @@ private:
 	OBB	obb;
 
 	bool selected;
+	bool active;
 
 };
 

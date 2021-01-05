@@ -16,7 +16,11 @@ public:
 	void SetResourceId(uint newId);
 	int GetResourceId() const;
 
+	void Start() override;
 	void Update(float dt) override;
+
+	void OnEnable() override;
+	void OnDisable() override;
 
 	std::string GetScriptClass();
 	void		SetScriptClass(const char* newClass);

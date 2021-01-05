@@ -29,6 +29,10 @@ public:
 
 	virtual void Update() {}
 
+	virtual void OnEnable() {}
+
+	virtual void OnDisable() {}
+
 	void		SetMyGameObject(GameObject* gameObject);
 	GameObject* GetMyGameObject() const;
 
