@@ -23,6 +23,9 @@ public:
 
 	void ResourceUpdated(std::map<uint, bool>* ids);
 
+	void DeleteObjectData();
+	void GenerateObjectData();
+
 private:
 	uint		scriptId;
 	R_Script*	myScript;

@@ -3,6 +3,7 @@
 #include "M_FileManager.h"
 #include "M_Resources.h"
 #include "ScriptLoader.h"
+#include "M_Scene.h"
 
 #include "R_Script.h"
 #include "Globals.h"
@@ -290,11 +291,11 @@ bool M_Scripting::PerformHotReload()
 {
 	//TODO: Update all files mod Date & Hot - Reload
 	// Hot-reload consists of: 
-		//Saving the data in a tempral folder 
-		// Deleting all the previous classes
-		// Re-compiling the code
-		// Perform a check (just as the start) (before or after ?)
-		// Re-load the changes:
+		//Saving the data in a tempral folder  -> PRE
+		// Deleting all the previous classes -> PRE
+		// Re-compiling the code -> App.CompileDll()
+		// Perform a check (just as the start) (before or after ?) !!!!!!!!!!!!!!!!!!!! -> RefreshScripts()
+		// Re-load the changes: -> POST
 			// Check if the class still exists (the resource will be re-created, if exists, all good)
 			// If exists, we create it & we capture the variables that have been created
 			// Then we compare them with the ones we currently have (if there is a match, we substitute)
@@ -303,8 +304,23 @@ bool M_Scripting::PerformHotReload()
 	//TODO: Make camera change on play
 	//TODO: Save reloadable vars & inspector from the script
 
-	RefreshAllScripts();
-	return 	App->CompileDll();
+	//We can only refresh if we are sure that the dll has compiled succesfully, but still need to previous dll to delete & store
+	bool ret = App->CompileDll(false, false);
+
+	if (ret == true)
+	{
+		RefreshAllScripts();
+		App->scene->PrerHotReload();
+
+		bool copyOk = App->CopyNewDll();
+		if (copyOk == true)
+		{
+			App->scene->PostrHotReload();
+		}
+
+	}
+
+	return ret;
 }
 
 bool M_Scripting::GetOnlineHotReload() const

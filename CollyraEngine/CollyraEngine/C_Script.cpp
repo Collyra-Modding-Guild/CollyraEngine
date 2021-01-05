@@ -20,39 +20,12 @@ void C_Script::SetResourceId(uint newId)
 {
 	App->resources->UnloadResource(scriptId);
 
-	if (dataObject != nullptr)
-	{
-		RELEASE(dataObject);
-		dataObject = nullptr;
-	}
+	DeleteObjectData();
 
 	scriptId = newId;
 	myScript = (R_Script*)App->resources->RequestResource(scriptId);
 
-	if (myScript != nullptr)
-	{
-		std::string buildFunction = std::string("Create" + std::string(myScript->GetScriptClassName()));
-		void* (*Builder)() = (void* (*)())GetProcAddress(App->gameSystemDll, buildFunction.c_str());
-
-		if (Builder != nullptr)
-		{
-			try
-			{
-				dataObject = (CollObject*)Builder();
-
-				if (dataObject != nullptr)
-				{
-					dataObject->SetMyGameObject(GetGameObject());
-					dataObject->Start();
-				}
-			}
-			catch (...)
-			{
-				LOG("SCRIPT SYSTEM ERROR: Could not find a script with name %s", myScript->GetScriptClassName());
-			}
-		}
-
-	}
+	GenerateObjectData();
 
 }
 
@@ -63,23 +36,23 @@ int C_Script::GetResourceId() const
 
 void C_Script::Update(float dt)
 {
-	std::string buildFunction = std::string("Create" + std::string(myScript->GetScriptClassName()));
-	// -----------------
-	if (myScript != nullptr)
-	{
-		void* (*Builder)() = (void* (*)())GetProcAddress(App->gameSystemDll, buildFunction.c_str());
+	//std::string buildFunction = std::string("Create" + std::string(myScript->GetScriptClassName()));
+	//// -----------------
+	//if (myScript != nullptr)
+	//{
+	//	void* (*Builder)() = (void* (*)())GetProcAddress(App->gameSystemDll, buildFunction.c_str());
 
-		if (Builder != nullptr)
-		{
-			dataObject = (CollObject*)Builder();
+	//	if (Builder != nullptr)
+	//	{
+	//		dataObject = (CollObject*)Builder();
 
-			if (dataObject != nullptr)
-			{
-				dataObject->SetMyGameObject(GetGameObject());
-			}
-		}
-	}
-	// ------------------
+	//		if (dataObject != nullptr)
+	//		{
+	//			dataObject->SetMyGameObject(GetGameObject());
+	//		}
+	//	}
+	//}
+	//// ------------------
 
 	if (dataObject != nullptr)
 	{
@@ -129,4 +102,41 @@ void C_Script::ResourceUpdated(std::map<uint, bool>* ids)
 		}
 	}
 
+}
+
+void C_Script::DeleteObjectData()
+{
+	if (dataObject != nullptr)
+	{
+		dataObject->Update();
+		delete dataObject;
+		dataObject = nullptr;
+	}
+}
+
+void C_Script::GenerateObjectData()
+{
+	if (myScript != nullptr)
+	{
+		std::string buildFunction = std::string("Create" + std::string(myScript->GetScriptClassName()));
+		void* (*Builder)() = (void* (*)())GetProcAddress(App->gameSystemDll, buildFunction.c_str());
+
+		if (Builder != nullptr)
+		{
+			try
+			{
+				dataObject = (CollObject*)Builder();
+
+				if (dataObject != nullptr)
+				{
+					dataObject->SetMyGameObject(GetGameObject());
+					dataObject->Start();
+				}
+			}
+			catch (...)
+			{
+				LOG("SCRIPT SYSTEM ERROR: Could not find a script with name %s", myScript->GetScriptClassName());
+			}
+		}
+	}
 }
