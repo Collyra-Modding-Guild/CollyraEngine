@@ -48,6 +48,8 @@ public:
 	void            SetFocusedGameObject(int id);
 	int				GetFocusedGameObjectId() const;
 	void			OnWindowResize() const;
+	void			HelpMarker(const char* desc);
+
 
 	float2			GetSceneWindowSize() const;
 	float2			GetSceneWindowPosition() const;

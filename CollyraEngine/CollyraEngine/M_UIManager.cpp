@@ -614,6 +614,19 @@ void M_UIManager::OnWindowResize() const
 	}
 }
 
+void M_UIManager::HelpMarker(const char* desc)
+{
+	ImGui::TextDisabled("(?)");
+	if (ImGui::IsItemHovered())
+	{
+		ImGui::BeginTooltip();
+		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+		ImGui::TextUnformatted(desc);
+		ImGui::PopTextWrapPos();
+		ImGui::EndTooltip();
+	}
+}
+
 float2 M_UIManager::GetSceneWindowSize() const
 {
 	float w = 0.f, h = 0.f;

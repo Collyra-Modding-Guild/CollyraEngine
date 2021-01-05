@@ -5,6 +5,7 @@
 #include "M_Input.h"
 #include "M_Camera3D.h"
 #include "M_Scripting.h"
+#include "M_UIManager.h"
 
 #include "C_Camera.h"
 
@@ -97,6 +98,8 @@ updateStatus WG_Config::Update()
 		{
 			scripting->SetOnlineHotReload(hotReloading);
 		}
+		ImGui::SameLine(); App->uiManager->HelpMarker("Tell the engine to automatically check and refresh the gameplay system if it notices any change in any file. \n You can manually hot reload by pressing App -> Hot Reload in the Main Menu Bar.");
+
 
 	}
 
