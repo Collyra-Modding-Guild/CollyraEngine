@@ -2,41 +2,6 @@
     "SceneName": "CollyraScene",
     "GameObjects": [
         {
-            "UID": 771465601,
-            "Name": "Camera",
-            "Active": true,
-            "ParentUID": 0,
-            "Components": [
-                {
-                    "Type": 0,
-                    "Active": true,
-                    "Translation": [
-                        0,
-                        0,
-                        0
-                    ],
-                    "Rotation": [
-                        0,
-                        0,
-                        0,
-                        1
-                    ],
-                    "Scale": [
-                        1,
-                        1,
-                        1
-                    ]
-                },
-                {
-                    "Type": 3,
-                    "Active": true,
-                    "HorizontalFov": 90,
-                    "Near Plane": 0.10000000149011612,
-                    "Far Plane": 150
-                }
-            ]
-        },
-        {
             "UID": 621663532,
             "Name": "Street environment_V01",
             "Active": true,
@@ -761,7 +726,7 @@
                 },
                 {
                     "Type": 1,
-                    "Active": false,
+                    "Active": true,
                     "MeshID": 275078535
                 },
                 {
@@ -1179,7 +1144,7 @@
                 },
                 {
                     "Type": 1,
-                    "Active": false,
+                    "Active": true,
                     "MeshID": 262669937
                 },
                 {
@@ -1217,7 +1182,7 @@
                 },
                 {
                     "Type": 1,
-                    "Active": false,
+                    "Active": true,
                     "MeshID": 170065070
                 },
                 {
@@ -1313,9 +1278,9 @@
                     "Type": 0,
                     "Active": true,
                     "Translation": [
+                        1,
                         0,
-                        0.19829589128494263,
-                        16.951824188232422
+                        0
                     ],
                     "Rotation": [
                         -0.7071068286895752,
@@ -1675,6 +1640,41 @@
                     "Type": 2,
                     "Active": true,
                     "MaterialID": 744931809
+                }
+            ]
+        },
+        {
+            "UID": 771465601,
+            "Name": "Camera",
+            "Active": true,
+            "ParentUID": 2069449241,
+            "Components": [
+                {
+                    "Type": 0,
+                    "Active": true,
+                    "Translation": [
+                        -33.333271026611328,
+                        463.4622802734375,
+                        212.24150085449219
+                    ],
+                    "Rotation": [
+                        0.7071068286895752,
+                        9.4921778770462595e-12,
+                        -9.5899260754706006e-12,
+                        0.70710670948028564
+                    ],
+                    "Scale": [
+                        33.333271026611328,
+                        33.333267211914063,
+                        33.333244323730469
+                    ]
+                },
+                {
+                    "Type": 3,
+                    "Active": true,
+                    "HorizontalFov": 90,
+                    "Near Plane": 0.10000000149011612,
+                    "Far Plane": 150
                 }
             ]
         }

@@ -3,6 +3,8 @@
 #include "../CollyraFramework.h"
 #include "../../../CollObject.h"
 
+#define DEGTORAD  0.0174533
+
 class COLLYRAGAMESYSTEM_API Tank : public CollObject {
 
 public:
@@ -17,7 +19,11 @@ public:
 
 private:
 
-	C_Transform* transform;
+	C_Transform*	transform;
+	Quat			rotation;
+	float3			position;
+
+	float			velocity;
 
 };
 
