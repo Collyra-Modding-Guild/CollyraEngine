@@ -24,16 +24,18 @@ void Tank::Update()
 
 void Tank::PlayerInputs()
 {
-
-	// Forward: l'eix X local pero traduit al global, no. sssssss. no si clar, cla cla cla. 
 	float3 forward(0.0f, 0.0f, 0.0f);
 	rotation = transform->GetRotation();
 	
-	rotation.x *= DEGTORAD;
+	/*rotation.x *= DEGTORAD;
 	rotation.y *= DEGTORAD;
+	rotation.z *= DEGTORAD;*/
 
-	forward = { cosf(rotation.x) * cosf(rotation.y), cosf(rotation.x) * sinf(rotation.y), sinf(rotation.x) };
+	forward = { 2 * (rotation.x * rotation.z + rotation.w * rotation.y),
+			2 * (rotation.y * rotation.z - rotation.w * rotation.x),
+			1 - 2 * (rotation.x * rotation.x + rotation.y * rotation.y) };
 
+	DEBUG_LOG("X: %f, Y: %f, Z: %f", forward.x, forward.y, forward.z);
 
 	if (Input::GetKey(SDL_SCANCODE_W) == INPUT_REPEAT)
 	{

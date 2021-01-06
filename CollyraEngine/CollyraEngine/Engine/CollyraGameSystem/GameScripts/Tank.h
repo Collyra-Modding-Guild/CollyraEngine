@@ -3,8 +3,6 @@
 #include "../CollyraFramework.h"
 #include "../../../CollObject.h"
 
-#define DEGTORAD  0.0174533
-
 class COLLYRAGAMESYSTEM_API Tank : public CollObject {
 
 public:

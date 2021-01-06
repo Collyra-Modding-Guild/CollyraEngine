@@ -31,11 +31,6 @@ GameObject* CollObject::GetMyGameObject() const
 	return myGameObject;
 }
 
-void Debug::Log(const char* text)
-{
-	LOG(std::string(SCRIPTING).append(text).c_str());
-}
-
 GameObject* gameObject::CreateGameObject(std::string name, GameObject* parent)
 {
 	return App->scene->CreateGameObject(name, parent);

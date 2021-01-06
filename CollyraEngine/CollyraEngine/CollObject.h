@@ -4,9 +4,12 @@
 #include"SDL/include/SDL.h"
 #include "MathGeoLib/include/MathGeoLib.h"
 
+#include "Globals.h"
 #include "C_Transform.h"
 
 #define SCRIPTING "Game Scripting System: "
+
+#define DEBUG_LOG(format, ...) log(__FILE__, __LINE__, format, __VA_ARGS__);
 
 class GameObject;
 class Component;
@@ -39,13 +42,6 @@ public:
 private:
 	GameObject* myGameObject;
 };
-
-
-namespace  Debug 
-{
-	__declspec(dllexport) void Log(const char* text);
-
-}
 
 namespace Input 
 {

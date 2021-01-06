@@ -318,7 +318,7 @@
                 },
                 {
                     "Type": 1,
-                    "Active": true,
+                    "Active": false,
                     "MeshID": 931181146
                 },
                 {
@@ -503,7 +503,7 @@
                 },
                 {
                     "Type": 1,
-                    "Active": true,
+                    "Active": false,
                     "MeshID": 931181146
                 },
                 {
@@ -574,7 +574,7 @@
                 },
                 {
                     "Type": 1,
-                    "Active": true,
+                    "Active": false,
                     "MeshID": 931181146
                 },
                 {
@@ -612,7 +612,7 @@
                 },
                 {
                     "Type": 1,
-                    "Active": true,
+                    "Active": false,
                     "MeshID": 1696096844
                 },
                 {
@@ -726,7 +726,7 @@
                 },
                 {
                     "Type": 1,
-                    "Active": true,
+                    "Active": false,
                     "MeshID": 275078535
                 },
                 {
@@ -764,7 +764,7 @@
                 },
                 {
                     "Type": 1,
-                    "Active": true,
+                    "Active": false,
                     "MeshID": 170065070
                 },
                 {
@@ -840,7 +840,7 @@
                 },
                 {
                     "Type": 1,
-                    "Active": true,
+                    "Active": false,
                     "MeshID": 170065070
                 },
                 {
@@ -878,7 +878,7 @@
                 },
                 {
                     "Type": 1,
-                    "Active": true,
+                    "Active": false,
                     "MeshID": 170065070
                 },
                 {
@@ -1030,7 +1030,7 @@
                 },
                 {
                     "Type": 1,
-                    "Active": true,
+                    "Active": false,
                     "MeshID": 170065070
                 },
                 {
@@ -1106,7 +1106,7 @@
                 },
                 {
                     "Type": 1,
-                    "Active": true,
+                    "Active": false,
                     "MeshID": 635942216
                 },
                 {
@@ -1144,7 +1144,7 @@
                 },
                 {
                     "Type": 1,
-                    "Active": true,
+                    "Active": false,
                     "MeshID": 262669937
                 },
                 {
@@ -1182,7 +1182,7 @@
                 },
                 {
                     "Type": 1,
-                    "Active": true,
+                    "Active": false,
                     "MeshID": 170065070
                 },
                 {
@@ -1220,7 +1220,7 @@
                 },
                 {
                     "Type": 1,
-                    "Active": true,
+                    "Active": false,
                     "MeshID": 170065070
                 },
                 {
@@ -1283,10 +1283,10 @@
                         0
                     ],
                     "Rotation": [
-                        -0.7071068286895752,
-                        -9.4921752749610455e-12,
-                        9.5899252081088626e-12,
-                        0.7071068286895752
+                        4.0513549230958134e-24,
+                        -2.1827845086974662e-11,
+                        -1.856055592422759e-13,
+                        1.0000035762786865
                     ],
                     "Scale": [
                         0.030000055208802223,
