@@ -529,7 +529,7 @@ template<> bool FORCE_INLINE Equal(const long double &a, const long double &b) {
 #endif
 
 /** Compares the two values for equality, allowing the given amount of absolute error. */
-bool EqualAbs(float a, float b, float epsilon = 1e-4f);
+__declspec(dllexport) bool EqualAbs(float a, float b, float epsilon = 1e-4f);
 
 /// Computes the relative error of the two variables.
 float RelativeError(float a, float b);

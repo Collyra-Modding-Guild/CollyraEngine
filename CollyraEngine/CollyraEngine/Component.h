@@ -2,8 +2,9 @@
 
 #include "GameObject.h"
 
-class Component
+class __declspec(dllexport) Component
 {
+
 public:
 
 	Component(COMPONENT_TYPE type,  bool active = true);

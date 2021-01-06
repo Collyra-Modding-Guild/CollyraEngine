@@ -50,8 +50,8 @@ const MathLogChannel MathLogErrorNoCallstack = MathLogError|65536;
 const MathLogChannel MathLogWarningNoCallstack = MathLogWarning|65536;
 }
 
-void PrintToConsoleVariadic(MathLogChannel channel, const char *format, ...);
-void PrintToConsole(MathLogChannel channel, const char *str);
+__declspec(dllexport) void PrintToConsoleVariadic(MathLogChannel channel, const char *format, ...);
+__declspec(dllexport) void PrintToConsole(MathLogChannel channel, const char *str);
 
 #define STRINGIZE_HELPER(x) #x
 #define STRINGIZE(x) STRINGIZE_HELPER(x)

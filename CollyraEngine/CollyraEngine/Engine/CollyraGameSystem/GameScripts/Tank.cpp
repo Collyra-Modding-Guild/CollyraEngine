@@ -20,10 +20,10 @@ void Tank::Update()
 
 void Tank::PlayerInputs()
 {
-
 	if (Input::GetKey(SDL_SCANCODE_W) == INPUT_REPEAT)
 	{
 		Debug::Log("Advance");
+		//transform->SetLocalTransformation({ 1.0f, 0.0f, 0.0f }, transform->GetRotation(), transform->GetScale());
 	}
 	if (Input::GetKey(SDL_SCANCODE_A) == INPUT_REPEAT)
 	{

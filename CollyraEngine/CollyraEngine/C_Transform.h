@@ -3,7 +3,7 @@
 #include "Component.h"
 #include "MathGeoLib/include/MathGeoLib.h"
 
-class C_Transform : public Component
+class __declspec(dllexport) C_Transform : public Component
 {
 public:
 

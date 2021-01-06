@@ -32,11 +32,11 @@ void C_Transform::SetLocalTransformation(float4x4 transform)
 	hasUpdated = true;
 }
 
-void C_Transform::SetLocalTransformation(float3 pos, Quat rot, float3 scl)
+void C_Transform::SetLocalTransformation(float3 pos, Quat rot, float3 scale)
 {
 	this->position = pos;
 	this->rotation = rot;
-	this->scale = scl;
+	this->scale = scale;
 	localTransform = float4x4::FromTRS(position, rotation, scale);
 	hasUpdated = true;
 	GenerateEulerFromRot();
