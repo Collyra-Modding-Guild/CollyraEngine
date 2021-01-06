@@ -15,10 +15,10 @@ void Component::Start()
 void Component::Update(float dt)
 {}
 
-void Component::Enable()
+void Component::OnEnable()
 {}
 
-void Component::Disable()
+void Component::OnDisable()
 {}
 
 bool Component::IsActive() const

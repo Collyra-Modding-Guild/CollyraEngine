@@ -131,8 +131,7 @@ void WG_Assets::LoadNewResource(std::string& toLoad)
 
 void WG_Assets::DeleteAsset(std::string& toDelete)
 {
-	App->physFS->DeleteFileIn(toDelete.c_str());
-	App->resources->CheckAssetInMeta((toDelete + ".meta"), toDelete);
+	App->resources->DeleteAsset(toDelete.c_str());
 }
 
 

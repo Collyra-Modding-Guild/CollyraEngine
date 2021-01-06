@@ -34,6 +34,9 @@ public:
 	void		OnDestroyedId(uint destroyedGameObject);
 	bool		DeleteGameObject(int key);
 
+	void		Enable();
+	void		Disable();
+
 private:
 	void		DrawHeaderGameObject();
 	void		DrawTransformComponent(ImGuiTreeNodeFlags_ flag);

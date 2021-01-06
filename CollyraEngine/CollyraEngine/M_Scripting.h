@@ -54,7 +54,14 @@ public:
 
 	uint GetScriptIdByClassName(const char* className);
 
+	bool PerformHotReload();
+
+	bool GetOnlineHotReload() const;
+	void SetOnlineHotReload(bool newState);
+
+private:
 	bool CheckScriptStatus(const char* assetsPath, const char* libPath, unsigned int sciprtId);
+	bool RefreshAllScripts();
 
 private:
 	//Script files control-----------
@@ -64,12 +71,13 @@ private:
 	//The Classes that we have loaded (key) & as value its related .cpp & .h (in that order)
 	//Is is to control if someone changes the name of a file (we have the class associated) 
 	// & if someone changes the class name (when the file is detected to be sabed, we check if the class name still the same)
-
 	std::map<std::string, ScriptData> scriptClassLoaded;
 
 	//Used to iterate the files (save in memory because we want to iterate few objects per frame)
 	std::map<std::string, uint64>::iterator fileIterator;
 
+	//Indicates if we will check every script file & hot reload instantly
+	bool onlineHotReload;
 };
 
 #endif // __ModuleScriptingInterface_H__

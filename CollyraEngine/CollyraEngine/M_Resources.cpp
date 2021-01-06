@@ -450,6 +450,40 @@ void M_Resources::UnloadResource(uint32 toUnloadId)
 	}
 }
 
+void M_Resources::DeleteAsset(const char* assetName)
+{
+	int id = ImportResourceFromAssets(assetName);
+
+	if (id > 0)
+	{
+		Resource* loadedResource = RequestResource(id);
+
+		if (loadedResource != nullptr)
+		{
+			switch (loadedResource->GetType())
+			{
+			case R_TYPE::SCRIPT:
+			{
+				R_Script* currScript = (R_Script*)loadedResource;
+
+				App->physFS->DeleteFileIn(currScript->GetScriptCppPath());
+				App->physFS->DeleteFileIn(currScript->GetScriptHPath());
+			}
+			break;
+			default:
+				break;
+			}
+
+			App->resources->UnloadResource(id);
+		}
+
+	}
+
+	App->physFS->DeleteFileIn(assetName);
+	CheckAssetInMeta(std::string(assetName).append(".meta"), assetName);
+
+}
+
 void M_Resources::CheckResourcesToUnload()
 {
 	std::map<uint, Resource*>::const_iterator it = resourceMap.begin();
@@ -701,6 +735,14 @@ uint M_Resources::LoadDefaultScene()
 	ret = std::stoi(name);
 
 	return ret;
+}
+
+void M_Resources::NotifyHotReload()
+{
+	PathNode scriptFiles = App->physFS->GetAllFiles(ASSETS_SCRIPTS_PATH, nullptr, nullptr);
+
+	CheckAssetsImport(scriptFiles);
+	UpdateChangedResources();
 }
 
 std::string M_Resources::DuplicateFile(const char* path)

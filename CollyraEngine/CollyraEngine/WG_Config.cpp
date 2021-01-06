@@ -4,6 +4,8 @@
 #include "M_Renderer3D.h"
 #include "M_Input.h"
 #include "M_Camera3D.h"
+#include "M_Scripting.h"
+#include "M_UIManager.h"
 
 #include "C_Camera.h"
 
@@ -22,7 +24,7 @@
 #include "Devil/include/il.h"
 
 WG_Config::WG_Config(bool isActive) : WindowGroup(WG_CONFIG, isActive),
-fpsLog(FRAMERATE_LOG_SIZE), msLog(FRAMERATE_LOG_SIZE), newInput(false), drawFlags{true, false, false, false, true, true, false, false},
+fpsLog(FRAMERATE_LOG_SIZE), msLog(FRAMERATE_LOG_SIZE), newInput(false), drawFlags{ true, false, false, false, true, true, false, false },
 buffWinW(0), buffWinH(0)
 {}
 
@@ -81,6 +83,23 @@ updateStatus WG_Config::Update()
 
 		sprintf_s(string, SHORT_STR, "Miliseconds %0.1f: ", msLog[msLog.size() - 1]);
 		ImGui::PlotHistogram("##miliseconds", &msLog[0], 100, 0, string, 0.0f, 40.0f, ImVec2(310, 100));
+
+	}
+
+	if (ImGui::CollapsingHeader("Gameplay System"))
+	{
+		M_Scripting* scripting = (M_Scripting*)App->GetModulePointer(M_SCRIPTINTERFACE);
+
+		if (scripting == nullptr)
+			return UPDATE_STOP;
+
+		bool hotReloading = scripting->GetOnlineHotReload();
+		if (ImGui::Checkbox("Online Hot-Reloading", &hotReloading))
+		{
+			scripting->SetOnlineHotReload(hotReloading);
+		}
+		ImGui::SameLine(); App->uiManager->HelpMarker("Tell the engine to automatically check and refresh the gameplay system if it notices any change in any file. \n You can manually hot reload by pressing App -> Hot Reload in the Main Menu Bar.");
+
 
 	}
 
@@ -195,7 +214,7 @@ updateStatus WG_Config::Update()
 		ImGui::Text("OpenGL Version:");
 		ImGui::SameLine();
 		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%d.%d", major, minor);
-		
+
 		ImGui::Text("DevIL Version:");
 		ImGui::SameLine();
 		ImGui::TextColored({ 255 , 255 , 0 , 100 }, "%d", IL_VERSION);
@@ -427,7 +446,7 @@ updateStatus WG_Config::Update()
 			App->camera->GetCamera()->SetFarPlane(currentFarPlane);
 			App->renderer3D->RefreshCamera();
 		}
-		
+
 	}
 
 	ImGui::End();

@@ -50,6 +50,11 @@ void Timer::Tick(bool step)
 	pause = !step;
 }
 
+bool Timer::IsPlaying() const
+{
+	return (running && !pause);
+}
+
 
 // ---------------------------------------------
 void Timer::Pause()

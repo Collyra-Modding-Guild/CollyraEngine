@@ -688,7 +688,11 @@ void WG_Inspector::HandlePopUp()
 
 void WG_Inspector::DrawHeaderGameObject()
 {
-	ImGui::Checkbox("|", &focusedGameObject->active);
+	bool isGOActive = focusedGameObject->IsActive();
+	if (ImGui::Checkbox("|", &isGOActive))
+	{
+		focusedGameObject->SetActive(isGOActive);
+	}
 	ImGui::SameLine();
 
 	char inspectorName[30];
@@ -703,7 +707,7 @@ void WG_Inspector::DrawHeaderGameObject()
 
 	bool staticGameObject = false;
 	if (ImGui::Checkbox("Static", &staticGameObject))
-		LOG("Static gameObject not Implemented");
+		LOG("Static gameObject not Implemented yet :)");
 
 	ImGui::Spacing();
 

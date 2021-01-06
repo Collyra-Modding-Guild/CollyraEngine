@@ -129,7 +129,8 @@ public:
 	void SetTimeMultiplier(float newMultiplier);
 
 
-	bool CompileDll(bool stopIfFailed = false);
+	bool CompileDll(bool stopIfFailed = false, bool copyResult = true);
+	bool CopyNewDll();
 
 private:
 

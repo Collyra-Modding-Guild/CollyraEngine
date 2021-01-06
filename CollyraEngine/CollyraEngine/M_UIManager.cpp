@@ -6,6 +6,7 @@
 #include "M_Scene.h"
 #include "M_Resources.h"
 #include "M_FileManager.h"
+#include "M_Scripting.h"
 
 #include "GameObject.h"
 #include "Component.h"
@@ -220,9 +221,9 @@ bool M_UIManager::ShowMainMenuBar()
 				ret = false;
 			}
 
-			if (ImGui::MenuItem("Compile Game System", NULL))
+			if (ImGui::MenuItem("Reload Game System", NULL))
 			{
-				App->CompileDll();
+				App->scriptInterface->PerformHotReload();
 			}
 
 			ImGui::EndMenu();
@@ -613,6 +614,19 @@ void M_UIManager::OnWindowResize() const
 	}
 }
 
+void M_UIManager::HelpMarker(const char* desc)
+{
+	ImGui::TextDisabled("(?)");
+	if (ImGui::IsItemHovered())
+	{
+		ImGui::BeginTooltip();
+		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+		ImGui::TextUnformatted(desc);
+		ImGui::PopTextWrapPos();
+		ImGui::EndTooltip();
+	}
+}
+
 float2 M_UIManager::GetSceneWindowSize() const
 {
 	float w = 0.f, h = 0.f;
@@ -871,7 +885,7 @@ std::string M_UIManager::DrawDirectoryRecursiveOld(const char* directory, bool r
 		for (int i = 0; i < myPathNode->children.size(); i++)
 		{
 			std::string compare = myPathNode->children[i].path + "/";
-			if (compare == LIBRARY_TEXTURES || compare == LIBRARY_MODELS ||compare == LIBRARY_SCENES)
+			if (compare == LIBRARY_TEXTURES || compare == LIBRARY_MODELS ||compare == LIBRARY_SCENES || compare == LIBRARY_SCRIPTS)
 			{
 				myPathNode->children[i].Clear();
 			}

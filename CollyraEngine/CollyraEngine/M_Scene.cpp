@@ -9,6 +9,7 @@
 #include "C_Transform.h"
 #include "C_Material.h"
 #include "C_Camera.h"
+#include "C_Script.h"
 
 #include "Application.h"
 #include "M_Camera3D.h"
@@ -179,7 +180,7 @@ updateStatus M_Scene::Draw(bool* drawState)
 		currNode = stack.top();
 		stack.pop();
 
-		if (currNode != nullptr && currNode->active)
+		if (currNode != nullptr && currNode->IsActive())
 		{
 			DrawGameObject(currNode, drawState);
 		}
@@ -227,7 +228,7 @@ updateStatus M_Scene::PreDraw(bool* drawState)
 			currNode = stack.top();
 			stack.pop();
 
-			if (currNode != nullptr && currNode->active)
+			if (currNode != nullptr && currNode->IsActive())
 			{
 				C_Mesh* mesh = currNode->GetComponent<C_Mesh>();
 				C_Transform* transform = currNode->GetComponent<C_Transform>();
@@ -455,6 +456,26 @@ void M_Scene::GenerateNewScene()
 
 }
 
+void M_Scene::PrerHotReload()
+{
+	allScriptComponents = GetAllComponents<C_Script>();
+
+	for (int i = 0; i < allScriptComponents.size(); i++)
+	{
+		//TODO: We should save the variables here, save them in the component
+		allScriptComponents[i]->DeleteObjectData();
+	}
+}
+
+void M_Scene::PostrHotReload()
+{
+	for (int i = 0; i < allScriptComponents.size(); i++)
+	{
+		allScriptComponents[i]->GenerateObjectData();
+		//TODO: We should load our variables here, stored in the component
+	}
+}
+
 void M_Scene::CheckSiblingsName(GameObject* parent, std::string& myName)
 {
 	uint siblingSameName = 0;
@@ -601,6 +622,30 @@ GameObject* M_Scene::GetGameObject(unsigned int id)
 	return nullptr;
 }
 
+template<typename T>
+std::vector<T*> M_Scene::GetAllComponents()
+{
+	std::vector<GameObject*> allGameObjects = GetAllGameobjects();
+
+	std::vector<T*> ret;
+
+	for (int i = 0; i < allGameObjects.size(); i++)
+	{
+		const std::vector<Component*>* currentComponents =  allGameObjects[i]->GetAllComponents();
+
+		for (int y = 0; y < currentComponents->size(); y++)
+		{
+			Component* currComponent = currentComponents->at(y);
+			T* c = dynamic_cast<T*>(currComponent);
+			if (c != nullptr)
+				ret.push_back(c);
+		}
+	}
+
+	return ret;
+}
+
+
 GameObject* M_Scene::GetGameObject(std::string name)
 {
 	std::stack<GameObject*> stack;
@@ -632,6 +677,37 @@ GameObject* M_Scene::GetGameObject(std::string name)
 	}
 
 	return nullptr;
+}
+
+std::vector<GameObject*> M_Scene::GetAllGameobjects()
+{
+	std::vector<GameObject*> allGO;
+	std::stack<GameObject*> stack;
+	GameObject* currNode = nullptr;
+
+	if (currentScene->root == nullptr)
+	{
+		LOG("Root node did not exist!");
+		return allGO;
+	}
+
+	stack.push(currentScene->root);
+
+	while (!stack.empty())
+	{
+		currNode = stack.top();
+		stack.pop();
+
+		allGO.push_back(currNode);
+
+		int childNum = currNode->children.size();
+		for (int i = 0; i < childNum; i++)
+		{
+			stack.push(currNode->children[i]);
+		}
+	}
+
+	return allGO;
 }
 
 
@@ -705,6 +781,36 @@ void M_Scene::DeleteCamera(Component* component)
 			cameras.erase(cameras.begin() + i);
 		}
 	}
+}
+
+void M_Scene::StartGameObjects()
+{
+	std::stack<GameObject*> stack;
+	GameObject* currNode = nullptr;
+	GameObject* toDelete = nullptr;
+
+	if (currentScene->root == nullptr)
+	{
+		LOG("Root node did not exist!");
+		return;
+	}
+
+	stack.push(currentScene->root);
+
+	while (!stack.empty())
+	{
+		currNode = stack.top();
+		stack.pop();
+
+		currNode->Start();
+
+		int childNum = currNode->children.size();
+		for (int i = 0; i < childNum; i++)
+		{
+			stack.push(currNode->children[i]);
+		}
+	}
+
 }
 
 void M_Scene::OnClickFocusGameObject(const LineSegment& mouseRay)
@@ -808,6 +914,8 @@ void M_Scene::Play()
 	playedScene = this->GetSceneResource()->GetUid();
 
 	App->gameClock->Start();
+	StartGameObjects();
+
 }
 
 void M_Scene::Stop()

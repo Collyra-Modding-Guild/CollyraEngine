@@ -142,13 +142,9 @@ void Application::FinishUpdate()
 
 }
 
-bool Application::CompileDll(bool stopIfFailed)
+bool Application::CompileDll(bool stopIfFailed, bool copyResult)
 {
 	bool ret = true;
-
-	//Free previous library (if any)
-	bool isFree = FreeLibrary(gameSystemDll);
-	gameSystemDll = 0;
 
 	//Find if the vcVarsall Path if okay
 	ret = FileExistsWin(VCVARSALL_PATH);
@@ -166,6 +162,8 @@ bool Application::CompileDll(bool stopIfFailed)
 	}
 
 	DeleteFile("_compilation_output.txt");
+	DeleteAllFilesWin(TEMP_DLL_FOLDER);
+	RemoveDirectory(TEMP_DLL_FOLDER);
 
 	char auxString[256];
 	std::ofstream batch;
@@ -221,26 +219,12 @@ bool Application::CompileDll(bool stopIfFailed)
 	}
 	else
 	{
-		LOG("Compilation Completed! Copying file to engine folder...");
-		std::string tmpDllLocation = std::string(TEMP_DLL_FOLDER).append(GAMEPLAY_DLL_NAME);
-
-		bool result = CopyFileA(tmpDllLocation.c_str(), GAMEPLAY_DLL_NAME, false);
-		DWORD error = GetLastError();
-		HRESULT errorTranslate = HRESULT_FROM_WIN32(error);
-
-		if (result == false)
+		if (copyResult == true)
 		{
-			LOG("Error copying file, check the source path!");
-			ret = false;
+			CopyNewDll();
 		}
 
-		LOG("Deleting temp folders & files...");
-		DeleteAllFilesWin(TEMP_DLL_FOLDER);
-		RemoveDirectory(TEMP_DLL_FOLDER);
-		DeleteFile("_compilation_output.txt");
 	}
-
-	gameSystemDll = LoadLibrary(std::string(GAMEPLAY_DLL_NAME).data());
 
 	if (gameSystemDll == NULL)
 		ret = false;
@@ -249,6 +233,38 @@ bool Application::CompileDll(bool stopIfFailed)
 		stopExecution = !ret;
 
 	return ret;
+}
+
+bool Application::CopyNewDll()
+{
+	bool ret = true;
+
+	//Free previous library (if any)
+	bool isFree = FreeLibrary(gameSystemDll);
+	gameSystemDll = 0;
+
+	LOG("Compilation Completed! Copying file to engine folder...");
+	std::string tmpDllLocation = std::string(TEMP_DLL_FOLDER).append(GAMEPLAY_DLL_NAME);
+
+	bool result = CopyFileA(tmpDllLocation.c_str(), GAMEPLAY_DLL_NAME, false);
+	DWORD error = GetLastError();
+	HRESULT errorTranslate = HRESULT_FROM_WIN32(error);
+
+	if (result == false)
+	{
+		LOG("Error copying file, check the source path!");
+		ret = false;
+	}
+
+	gameSystemDll = LoadLibrary(std::string(GAMEPLAY_DLL_NAME).data());
+
+	LOG("Deleting temp folders & files...");
+	DeleteAllFilesWin(TEMP_DLL_FOLDER);
+	RemoveDirectory(TEMP_DLL_FOLDER);
+	DeleteFile("_compilation_output.txt");
+
+	return ret;
+
 }
 
 // Call PreUpdate, Update and PostUpdate on all modules

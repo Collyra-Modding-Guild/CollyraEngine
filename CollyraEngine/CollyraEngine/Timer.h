@@ -20,6 +20,8 @@ public:
 	void Pause();
 	void Resume();
 	void Tick(bool step);
+
+	bool IsPlaying() const;
 	
 	Uint32 Read();
 	float ReadSec() const;

@@ -48,7 +48,7 @@ void GameObject::Start()
 
 void GameObject::Update(float dt)
 {
-	if (!active)
+	if (!active || App->gameClock->IsPlaying() == false)
 		return;
 
 	for (uint i = 0; i < components.size(); i++)
@@ -82,6 +82,28 @@ void GameObject::PostUpdate(float dt)
 
 	if (camera != nullptr)
 		camera->UpdateFrustum(transform->GetGlobalTransform());
+}
+
+void GameObject::OnEnable()
+{
+	if (!active)
+		return;
+
+	for (uint i = 0; i < components.size(); i++)
+	{
+		components[i]->OnEnable();
+	}
+}
+
+void GameObject::OnDiable()
+{
+	if (!active)
+		return;
+
+	for (uint i = 0; i < components.size(); i++)
+	{
+		components[i]->OnDisable();
+	}
 }
 
 Component* GameObject::CreateComponent(COMPONENT_TYPE type)
@@ -179,8 +201,17 @@ void GameObject::SetName(std::string newName)
 
 void GameObject::SetActive(bool newState)
 {
-	if (newState != active)
-		active = !active;
+	if (newState == true)
+	{
+		Enable();
+	}
+	else
+		Disable();
+}
+
+bool GameObject::IsActive() const
+{
+	return active;
 }
 
 void GameObject::SetParent(GameObject* newParent)
@@ -265,6 +296,29 @@ void GameObject::ResourcesUpdated(std::map<unsigned int, bool>* resourcesUpdated
 	for (uint i = 0; i < components.size(); i++)
 	{
 		components[i]->ResourceUpdated(resourcesUpdated);
+	}
+}
+
+void GameObject::Enable()
+{
+	if (active == true)
+		return;
+	else
+	{
+		active = true;
+		OnEnable();
+	}
+
+}
+
+void GameObject::Disable()
+{
+	if (active == false)
+		return;
+	else
+	{
+		active = false;
+		OnEnable();
 	}
 }
 

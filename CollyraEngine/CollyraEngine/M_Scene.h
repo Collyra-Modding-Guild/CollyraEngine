@@ -16,6 +16,7 @@
 class GameObject;
 class Component;
 class C_Camera;
+class C_Script;
 class R_Scene;
 enum class R_TYPE;
 
@@ -38,9 +39,13 @@ public:
 	GameObject* CreateGameObject(std::string name = "", GameObject* parent = nullptr);
 	GameObject* GetGameObject(unsigned int id);
 	GameObject* GetGameObject(std::string name);
+	std::vector<GameObject*> GetAllGameobjects();
 	bool		DeleteGameObject(unsigned int id);
 	bool		DeleteGameObject(GameObject* gameObject);
 	void		DeleteCamera(Component* component);
+	template<typename T>
+	std::vector<T*> GetAllComponents();
+	void		StartGameObjects();
 
 	void		OnClickFocusGameObject(const LineSegment& mouseRay);
 
@@ -71,6 +76,10 @@ public:
 
 	void GenerateNewScene();
 
+	//Gameplay System
+	void PrerHotReload();
+	void PostrHotReload();
+
 private:
 	void CheckSiblingsName(GameObject* parent, std::string& myName);
 	void DrawGameObject(GameObject* gameObject, bool* drawState);
@@ -88,6 +97,7 @@ private:
 	uint playedScene;
 	std::string savedScenePath;
 
+	std::vector<C_Script*> allScriptComponents;
 };
 
 #endif // __ModuleResources_H__

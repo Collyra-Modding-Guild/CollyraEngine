@@ -54,6 +54,7 @@ public:
 	bool DeleteResource(uint32 idToDestroy);
 	void UnloadResource(Resource* toUnload);
 	void UnloadResource(uint32 toUnloadId);
+	void DeleteAsset(const char* assetName);
 
 	//Helpers
 	R_TYPE GetResourceTypeFromExtension(const char* rPath);
@@ -68,6 +69,8 @@ public:
 	uint CheckAssetInMeta (std::string metaPath, std::string relativePath);
 
 	uint LoadDefaultScene();
+
+	void NotifyHotReload();
 
 private:
 	void SearchAllAssetFiles();

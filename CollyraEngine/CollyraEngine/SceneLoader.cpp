@@ -54,7 +54,7 @@ void SceneLoader::Private::SaveGameObject(const GameObject* gameObject, JsonConf
 {
 	saveTo.AddNumber("UID", gameObject->GetUid());
 	saveTo.AddString("Name", gameObject->GetName().c_str());
-	saveTo.AddBool("Active", gameObject->active);
+	saveTo.AddBool("Active", gameObject->IsActive());
 
 	saveTo.AddNumber("ParentUID", gameObject->GetParent()->GetUid());
 
