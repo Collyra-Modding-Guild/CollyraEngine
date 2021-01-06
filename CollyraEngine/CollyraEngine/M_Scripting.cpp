@@ -11,6 +11,7 @@
 #include <fstream> 
 #include <sstream>
 #include <iostream>
+#include <xmemory>
 
 
 M_Scripting::M_Scripting(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), onlineHotReload(false)
@@ -444,8 +445,8 @@ bool M_Scripting::CheckScriptStatus(const char* assetsPath, const char* libPath,
 					uint functioncall = headerCode.find(std::string("()"), exporterPos);
 					newname = headerCode.substr(endNamePos + 6, functioncall - endNamePos - 6);
 
-					newname.erase(std::remove(newname.begin(), newname.end(), '\t'), newname.end());
-					newname.erase(std::remove(newname.begin(), newname.end(), ' '), newname.end());
+					newname = App->physFS->RemoveCharFromString(newname, '\t');
+					newname = App->physFS->RemoveCharFromString(newname, ' ');
 
 					LOG("Asumming script new name is %s", newname.c_str());
 				}

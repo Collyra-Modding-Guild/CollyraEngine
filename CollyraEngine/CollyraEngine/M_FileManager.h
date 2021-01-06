@@ -65,9 +65,11 @@ public:
 	//Path Manipulations Utils--------------
 	std::string NormalizePath(const char* path) const;
 	std::string LowerCaseString(const char* path) const;
+	std::string RemoveCharFromString(std::string phrase, char param);
 	//Gets a path to a file in the project folder & a relative path from that file & returns the combination relative to the project
 	void SplitFilePath(const char* full_path, std::string* projectPath, std::string* path, std::string* file = nullptr, std::string* extension = nullptr) const;
 	std::string GetProjectPathFromInternalRelative(std::string& projectPath, std::string& pathInternalRelative) const;
+
 
 	// Open for Read/Write
 	unsigned int Load(const char* path, const char* file, char** buffer) const;
@@ -97,6 +99,8 @@ public:
 	std::string		GetInternalExtensionFromType(R_TYPE type);
 	std::string		GetExtensionFolderLibraryFromType(R_TYPE type);
 	bool			IsMeta(std::string& path);
+
+
 
 private:
 	int CheckPath(const char*);

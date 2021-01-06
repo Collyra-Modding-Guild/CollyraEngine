@@ -43,6 +43,8 @@ bool M_FileManager::Awake()
 	else
 		LOG("Failed loading Asset Manager");
 
+
+
 	return true;
 }
 
@@ -384,6 +386,20 @@ bool M_FileManager::IsMeta(std::string& path)
 		return true;
 
 	return false;
+}
+
+std::string M_FileManager::RemoveCharFromString(std::string phrase, char param)
+{
+	std::string newPhrase;
+
+	for (int i = 0; i < phrase.size(); ++i)
+	{
+		if (phrase[i] != param)
+			newPhrase += phrase[i];
+	}
+
+	return newPhrase;
+
 }
 
 void M_FileManager::GetRealDir(const char* path, std::string& output) const
