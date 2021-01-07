@@ -10,8 +10,7 @@ WG_TextEditor::WG_TextEditor(bool isActive) : WindowGroup(WG_TEXT_EDITOR, isActi
 }
 
 WG_TextEditor::~WG_TextEditor()
-{
-}
+{}
 
 updateStatus WG_TextEditor::Update()
 {
@@ -19,7 +18,6 @@ updateStatus WG_TextEditor::Update()
 
 	std::map<std::string, uint64>* allScriptFiles = App->scriptInterface->GetFileMap();
 
-	std::map<std::string, uint64>::iterator currFileIterator = allScriptFiles->end();
 	std::map<std::string, uint64>::iterator fileIterator = allScriptFiles->begin();
 
 	ImGui::Text("Current File: ");
@@ -39,11 +37,6 @@ updateStatus WG_TextEditor::Update()
 			{
 				SetFile(fileIterator->first.c_str(), fileIterator->second);
 			}
-
-			if (!currFileName.empty() && currFile == fileIterator->first)
-			{
-				currFileIterator = fileIterator;
-			}
 			fileIterator++;
 		}
 
@@ -51,17 +44,22 @@ updateStatus WG_TextEditor::Update()
 	}
 
 	//Check for delete & modify
-	if (!App->physFS->Exists(currFile.c_str()))
+	if (currFile != "")
 	{
-		currFile.clear();
-		currFileName.clear();
-	}
-	else if (currFileIterator != allScriptFiles->end())
-	{
-		if (fileModTime < currFileIterator->second && textEditor.IsTextChanged() == false)
-			SetFile(currFileIterator->first.c_str(), currFileIterator->second);
-	}
+		if (!App->physFS->Exists(currFile.c_str()))
+		{
+			currFile.clear();
+			currFileName.clear();
+		}
+		else
+		{
+			std::map<std::string, uint64>::iterator currFileIterator = allScriptFiles->find(currFile.c_str());
 
+			if (currFileIterator != allScriptFiles->end())
+				if (fileModTime < currFileIterator->second && textEditor.IsTextChanged() == false)
+					SetFile(currFileIterator->first.c_str(), currFileIterator->second);
+		}
+	}
 
 	ImGui::SameLine();
 
@@ -71,6 +69,7 @@ updateStatus WG_TextEditor::Update()
 		{
 			std::string saveText = textEditor.GetText();
 			App->physFS->Save(currFile.c_str(), saveText.data(), saveText.size());
+			fileModTime = App->physFS->GetCurrDate(currFile.c_str());
 		}
 		else
 			LOG("No File Opened! Can't save!");
@@ -87,12 +86,10 @@ updateStatus WG_TextEditor::Update()
 }
 
 void WG_TextEditor::Cleanup()
-{
-}
+{}
 
 void WG_TextEditor::SetFile(const char* newFile, uint64 modTime)
 {
-
 	char* buffer = nullptr;
 
 	uint size = App->physFS->Load(newFile, &buffer);
@@ -100,7 +97,9 @@ void WG_TextEditor::SetFile(const char* newFile, uint64 modTime)
 	if (size > 0)
 	{
 		currFile = newFile;
-		textEditor.SetText(std::string(buffer));
+		std::string codeToLoad = buffer;
+		codeToLoad = codeToLoad.substr(0, codeToLoad.find_last_of("}") + 1);
+		textEditor.SetText(codeToLoad);
 
 		std::string name = "", extension = "";
 		App->physFS->SplitFilePath(newFile, nullptr, nullptr, &name, &extension);
