@@ -24,8 +24,8 @@ public:
 	void Move(const float3& Movement, bool changeReference = true);
 	void FocusGameObject(GameObject* focused, float multiplier = 1.0f);
 
-	float* GetViewMatrix();
-	float* GetProjectionMatrix();
+	float4x4 GetViewMatrix();
+	float4x4 GetProjectionMatrix();
 	float3 GetCameraPosition();
 	void SetAspectRatio(float newAspect);
 

@@ -3,9 +3,12 @@
 #include "M_Scene.h"
 #include "Timer.h"
 
+#include "GameObject.h"
+#include "C_Camera.h"
+
 #include <string>
 
-WG_Playbar::WG_Playbar(bool isActive) : WindowGroup(WG_PLAYBAR, isActive)
+WG_Playbar::WG_Playbar(bool isActive) : WindowGroup(WG_PLAYBAR, isActive), playCam(nullptr), playCamGameObjId(0)
 {}
 
 WG_Playbar::~WG_Playbar()
@@ -13,7 +16,6 @@ WG_Playbar::~WG_Playbar()
 
 updateStatus WG_Playbar::Update()
 {
-
 	ImGuiIO& io = ImGui::GetIO();
 
 	ImGui::Begin("Play Bar", &active);
@@ -45,13 +47,77 @@ updateStatus WG_Playbar::Update()
 
 	ShowTimeMultiplier();
 
+	ImGui::SameLine();
+
+	if (playCamGameObjId != 0 && playCam == nullptr)
+	{
+		RefreshPlayCam();
+	}
+
+	ImGui::SetNextItemWidth(110.0f);
+	if (ImGui::BeginCombo("##currentCam", playCam ? playCam->GetGameObject()->GetName().c_str() : "")) // Check TAGS list and selected Tag
+	{
+		for (int n = 0; n < App->scene->cameras.size(); n++)
+		{
+			if (ImGui::Selectable(App->scene->cameras[n]->GetGameObject()->GetName().c_str(), true))
+			{
+				playCam = App->scene->cameras[n];
+				playCamGameObjId = playCam->GetGameObject()->GetUid();
+			}
+
+		}
+		ImGui::EndCombo();
+	}
+
 	ImGui::End();
 
 	return UPDATE_CONTINUE;
 }
 
 void WG_Playbar::Cleanup()
-{}
+{
+	playCam = nullptr;
+}
+
+
+void WG_Playbar::OnDestroyedId(unsigned int id)
+{
+	if (playCam != nullptr)
+	{
+		if (playCamGameObjId == id)
+		{
+			playCam = nullptr;
+		}
+	}
+
+}
+
+C_Camera* WG_Playbar::GetPlayCam()
+{
+	return playCam;
+}
+
+void WG_Playbar::RefreshPlayCam()
+{
+	GameObject* myGo = App->scene->GetGameObject(playCamGameObjId);
+
+	if (myGo != nullptr)
+	{
+		C_Camera* newCam = myGo->GetComponent<C_Camera>();
+
+		if (newCam != nullptr)
+		{
+			playCam = newCam;
+			playCamGameObjId = myGo->GetUid();
+			return;
+		}
+
+	}
+
+	playCam = nullptr;
+	playCamGameObjId = 0;
+
+}
 
 void WG_Playbar::ShowTimeMultiplier()
 {

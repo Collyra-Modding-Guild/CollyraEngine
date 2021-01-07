@@ -30,6 +30,11 @@ void C_Transform::SetLocalTransformation(float4x4 transform)
 	localTransform = transform;
 	GenerateEulerFromRot();
 	hasUpdated = true;
+
+	forward = { 2 * (rotation.x * rotation.z + rotation.w * rotation.y),
+	2 * (rotation.y * rotation.z - rotation.w * rotation.x),
+	1 - 2 * (rotation.x * rotation.x + rotation.y * rotation.y) };
+
 }
 
 void C_Transform::SetLocalTransformation(float3 pos, Quat rot, float3 scale)
@@ -40,6 +45,10 @@ void C_Transform::SetLocalTransformation(float3 pos, Quat rot, float3 scale)
 	localTransform = float4x4::FromTRS(position, rotation, scale);
 	hasUpdated = true;
 	GenerateEulerFromRot();
+
+	forward = { 2 * (rotation.x * rotation.z + rotation.w * rotation.y),
+		2 * (rotation.y * rotation.z - rotation.w * rotation.x),
+		1 - 2 * (rotation.x * rotation.x + rotation.y * rotation.y) };
 }
 
 //Transposed because OpenGL <=> MathGeoLib communication
@@ -100,6 +109,11 @@ float3 C_Transform::GetScale() const
 float3 C_Transform::GetGlobalScale() const
 {
 	return globalTransform.GetScale();
+}
+
+float3 C_Transform::GetForward() const
+{
+	return forward;
 }
 
 void C_Transform::GenerateEulerFromRot()

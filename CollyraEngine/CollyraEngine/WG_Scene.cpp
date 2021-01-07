@@ -182,8 +182,8 @@ void WG_Scene::HandleGuizmo()
 		float4x4 transformMat = transformSelected->GetTGlobalTransform();
 		float4x4 parentGlobalMat = selected->GetParent()->GetComponent<C_Transform>()->GetGlobalTransform();
 
-		viewMatrix.Set(App->camera->GetViewMatrix());
-		projectionMatrix.Set(App->camera->GetProjectionMatrix());
+		viewMatrix.Set(App->renderer3D->GetCurrentViewMatrix().ptr());
+		projectionMatrix.Set(App->renderer3D->GetCurrentProjectionMatrix().ptr());
 		
 		ImGuizmo::SetDrawlist();
 

@@ -6,16 +6,19 @@
 #include "M_Window.h"
 #include "M_Resources.h"
 #include "M_UIManager.h"
+#include "M_Scene.h"
 
 #include "WG_Scene.h"
 
 #include "Primitive.h"
 #include "TextureLoader.h"
+#include "C_Camera.h"
 
 #include "OpenGL.h"
+#include "MathGeoLib/include/MathGeoLib.h"
 
 M_Renderer3D::M_Renderer3D(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled),
-renderer(nullptr), frameBuffer(-1), textureBuffer(-1), depthBuffer(-1), vSync(false)
+renderer(nullptr), frameBuffer(-1), textureBuffer(-1), depthBuffer(-1), vSync(false), playCam(nullptr)
 {}
 
 // Destructor
@@ -143,10 +146,9 @@ void M_Renderer3D::GenerateFrameBuffers(int width, int height)
 	glGenTextures(1, &textureBuffer);
 	glBindTexture(GL_TEXTURE_2D, textureBuffer);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
 
@@ -173,9 +175,10 @@ updateStatus M_Renderer3D::PreUpdate(float dt)
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	glMatrixMode(GL_MODELVIEW);
 
 	M_Camera3D* cameraModule = (M_Camera3D*)App->GetModulePointer(M_CAMERA3D);
 	if (cameraModule == nullptr)
@@ -183,9 +186,28 @@ updateStatus M_Renderer3D::PreUpdate(float dt)
 		return UPDATE_STOP;
 	}
 
-	glLoadMatrixf(cameraModule->GetViewMatrix());
-	float3 Position = cameraModule->GetCameraPosition();
-	lights[0].SetPos(Position.x, Position.y, Position.z);
+	float3 position;
+	if ( playCam != nullptr)
+	{
+		glLoadMatrixf(playCam->GetProjectionMatrix().ptr());
+		position = playCam->GetCamPosition();
+
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glLoadMatrixf(playCam->GetViewMatrix().ptr());
+	}
+	else
+	{
+		glLoadMatrixf(cameraModule->GetProjectionMatrix().ptr());
+		position = cameraModule->GetCameraPosition();
+
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glLoadMatrixf(cameraModule->GetViewMatrix().ptr());
+	}
+
+
+	lights[0].SetPos(position.x, position.y, position.z);
 
 	for (uint i = 0; i < MAX_LIGHTS; ++i)
 		lights[i].Render();
@@ -237,15 +259,15 @@ bool M_Renderer3D::CleanUp()
 	return true;
 }
 
-void M_Renderer3D::RefreshCamera()
+void M_Renderer3D::RefreshCamera(C_Camera* currentCam)
 {
 	float w, h;
 	App->uiManager->sceneWindow->GetWindowSize(w, h);
-	UpdateCamera(w, h);
+	UpdateCamera(w, h, currentCam);
 }
 
 //Called when a window is alterated
-void M_Renderer3D::UpdateCamera(float width, float height)
+void M_Renderer3D::UpdateCamera(float width, float height, C_Camera* currentCam)
 {
 	if (width == 0 || height == 0)
 		return;
@@ -253,12 +275,25 @@ void M_Renderer3D::UpdateCamera(float width, float height)
 	//Calculate OpenGl projection matrix -----------------
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	App->camera->SetAspectRatio(width / height);
-	glLoadMatrixf((GLfloat*)App->camera->GetProjectionMatrix());
-	glViewport(0, 0, width, height);
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(App->camera->GetViewMatrix());
+	if (playCam != nullptr && App->gameClock->IsPlaying() == true)
+	{
+		playCam->SetAspectRatio(width / height);
+		glLoadMatrixf(playCam->GetProjectionMatrix().ptr());
+		glViewport(0, 0, width, height);
+
+		glMatrixMode(GL_MODELVIEW);
+		glLoadMatrixf(playCam->GetViewMatrix().ptr());
+	}
+	else
+	{
+		App->camera->SetAspectRatio(width / height);
+		glLoadMatrixf(App->camera->GetProjectionMatrix().ptr());
+		glViewport(0, 0, width, height);
+
+		glMatrixMode(GL_MODELVIEW);
+		glLoadMatrixf(App->camera->GetViewMatrix().ptr());
+	}
 
 	GenerateFrameBuffers(width, height);
 }
@@ -313,4 +348,47 @@ bool M_Renderer3D::GetVSync()
 void M_Renderer3D::SetVSync(bool newState)
 {
 	vSync = newState;
+}
+
+C_Camera* M_Renderer3D::GetCurrentPlayCam() const
+{
+	return playCam;
+}
+
+void M_Renderer3D::SetPlayCam(C_Camera* myCam)
+{
+	playCam = myCam;
+
+	if (myCam != nullptr)
+	{
+		RefreshCamera(myCam);
+	}
+	else if (App->gameClock->IsPlaying() == true)
+	{
+		App->scene->Stop();
+	}
+}
+
+float4x4 M_Renderer3D::GetCurrentViewMatrix()
+{
+	if (playCam != nullptr && App->gameClock->IsPlaying() == true)
+	{
+		return playCam->GetViewMatrix();
+	}
+	else
+	{
+		return App->camera->GetViewMatrix();
+	}
+}
+
+float4x4 M_Renderer3D::GetCurrentProjectionMatrix()
+{
+	if (playCam != nullptr && App->gameClock->IsPlaying() == true)
+	{
+		return playCam->GetProjectionMatrix();
+	}
+	else
+	{
+		return App->camera->GetProjectionMatrix();
+	}
 }

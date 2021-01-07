@@ -32,6 +32,12 @@ public:
 	bool IsCulling() const;
 	void SetCulling(bool newCulling);
 
+	void SetAspectRatio(float aspectRatio);
+	float4x4 GetProjectionMatrix();
+	float4x4 GetViewMatrix();
+	float3 GetCamPosition();
+
+
 public:
 
 	Frustum frustum;

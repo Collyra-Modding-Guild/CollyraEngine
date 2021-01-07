@@ -29,6 +29,8 @@ public:
 	float3		GetScale() const;
 	float3		GetGlobalScale() const;
 
+	float3		GetForward() const;
+
 	bool hasUpdated;
 
 private:
@@ -44,5 +46,7 @@ private:
 	float3 scale;
 
 	float3 rotationEuler;
+
+	float3 forward;
 
 };

@@ -14,6 +14,7 @@
 #include "Application.h"
 #include "M_Camera3D.h"
 #include "M_UIManager.h"
+#include "M_Renderer3D.h"
 #include "SceneLoader.h"
 #include "M_FileManager.h"
 #include "M_Resources.h"
@@ -910,19 +911,26 @@ void M_Scene::CameraCuling(GameObject* current, C_Camera* myCam)
 
 void M_Scene::Play()
 {
-	SaveScene();
-	playedScene = this->GetSceneResource()->GetUid();
+	if (App->uiManager->GetPlayCam() != nullptr)
+	{
+		App->gameClock->Start();
+		App->renderer3D->SetPlayCam(App->uiManager->GetPlayCam());
+		SaveScene();
+		playedScene = this->GetSceneResource()->GetUid();
 
-	App->gameClock->Start();
-	StartGameObjects();
+		StartGameObjects();
+	}
+	else
+		LOG("A cam needs to be selected to start the scene!");
 
 }
 
 void M_Scene::Stop()
 {
-	App->resources->LoadResource(playedScene);
-
 	App->gameClock->Stop();
+	App->resources->LoadResource(playedScene);
+	App->renderer3D->SetPlayCam(nullptr);
+	App->uiManager->RefreshPlayCam();
 }
 
 void M_Scene::Pause()

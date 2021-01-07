@@ -4,6 +4,8 @@
 #include "WindowGroup.h"
 #include "Imgui/imgui.h"
 
+class C_Camera;
+
 class WG_Playbar : public WindowGroup
 {
 public:
@@ -15,8 +17,18 @@ public:
 
 	virtual void Cleanup();
 
+	void OnDestroyedId(unsigned int id);
+
+	C_Camera*	 GetPlayCam();
+	void		RefreshPlayCam();
+
 private:
 	void ShowTimeMultiplier();
+
+private:
+
+	C_Camera* playCam;
+	unsigned int playCamGameObjId;
 
 };
 

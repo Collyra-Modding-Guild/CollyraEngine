@@ -24,16 +24,12 @@ void Tank::Update()
 
 void Tank::PlayerInputs()
 {
-	float3 forward(0.0f, 0.0f, 0.0f);
+	float3 forward = transform->GetForward();
 	rotation = transform->GetRotation();
 	
 	/*rotation.x *= DEGTORAD;
 	rotation.y *= DEGTORAD;
 	rotation.z *= DEGTORAD;*/
-
-	forward = { 2 * (rotation.x * rotation.z + rotation.w * rotation.y),
-			2 * (rotation.y * rotation.z - rotation.w * rotation.x),
-			1 - 2 * (rotation.x * rotation.x + rotation.y * rotation.y) };
 
 	DEBUG_LOG("X: %f, Y: %f, Z: %f", forward.x, forward.y, forward.z);
 
@@ -57,9 +53,6 @@ void Tank::PlayerInputs()
 		//rotation.y -= 1;
 	}
 
-
-
 	transform->SetLocalTransformation(transform->GetPosition() + forward * velocity, transform->GetRotation(), transform->GetScale());
-
 
 }

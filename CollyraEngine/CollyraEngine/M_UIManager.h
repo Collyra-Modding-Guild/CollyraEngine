@@ -19,6 +19,8 @@ class WG_Playbar;
 class WG_ResourceCount;
 class WG_Assets;
 
+class C_Camera;
+
 struct PathNode;
 
 class M_UIManager : public Module
@@ -47,6 +49,8 @@ public:
 	void			GameObjectDestroyed(uint id);
 	void            SetFocusedGameObject(int id);
 	int				GetFocusedGameObjectId() const;
+	C_Camera*		GetPlayCam();
+	void			RefreshPlayCam();
 	void			OnWindowResize() const;
 	void			HelpMarker(const char* desc);
 

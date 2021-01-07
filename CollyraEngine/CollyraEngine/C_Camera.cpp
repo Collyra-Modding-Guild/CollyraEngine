@@ -10,8 +10,8 @@ farPlane(FAR_PLANE), culling(true)
 	frustum.SetUp(float3::unitY);
 
 	frustum.SetViewPlaneDistances(NEAR_PLANE, FAR_PLANE);
+	frustum.SetPerspective(1, 1);
 	frustum.SetHorizontalFovAndAspectRatio(DEGTORAD * horizontalFOV, 16.f / 9.f);
-
 }
 
 C_Camera::~C_Camera()
@@ -73,6 +73,39 @@ void C_Camera::SetCulling(bool newCulling)
 	{
 		culling = !culling;
 	}
+}
+
+void C_Camera::SetAspectRatio(float aspectRatio)
+{
+	float horizontalFov = this->frustum.HorizontalFov();
+	this->frustum.SetHorizontalFovAndAspectRatio(horizontalFov, aspectRatio);
+}
+
+float4x4 C_Camera::GetProjectionMatrix()
+{
+	float4x4 m;
+
+	m = this->frustum.ProjectionMatrix();
+
+	m.Transpose();
+
+	return m;
+}
+
+float4x4 C_Camera::GetViewMatrix()
+{
+	float4x4 m;
+
+	m = this->frustum.ViewMatrix();
+
+	m.Transpose();
+
+	return m;
+}
+
+float3 C_Camera::GetCamPosition()
+{
+	return this->frustum.Pos();
 }
 
 

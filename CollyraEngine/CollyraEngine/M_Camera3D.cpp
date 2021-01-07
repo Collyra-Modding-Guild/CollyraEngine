@@ -309,26 +309,26 @@ void M_Camera3D::FocusGameObject(GameObject* focused, float multiplier)
 }
 
 // -----------------------------------------------------------------
-float* M_Camera3D::GetViewMatrix()
+float4x4 M_Camera3D::GetViewMatrix()
 {
-	static float4x4 m;
+	float4x4 m;
 
 	m = sceneCamera->frustum.ViewMatrix();
 
 	m.Transpose();
 
-	return (float*)&m;
+	return m;
 }
 
-float* M_Camera3D::GetProjectionMatrix()
+float4x4 M_Camera3D::GetProjectionMatrix()
 {
-	static float4x4 m;
+	float4x4 m;
 
 	m = sceneCamera->frustum.ProjectionMatrix();
 
 	m.Transpose();
 
-	return (float*)&m;
+	return m;
 }
 
 // -----------------------------------------------------------------

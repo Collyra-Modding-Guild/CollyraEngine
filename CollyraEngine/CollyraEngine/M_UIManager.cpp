@@ -13,6 +13,7 @@
 #include "C_Material.h"
 #include "C_Mesh.h"
 #include "C_Transform.h"
+#include "C_Camera.h"
 
 #include "Primitive.h"
 #include "R_Scene.h"
@@ -529,6 +530,13 @@ void M_UIManager::GameObjectDestroyed(uint id)
 		WG_Hierarchy* hierarchy = (WG_Hierarchy*)hierarchyWindow;
 		hierarchy->OnDestroyedId(id);
 	}
+
+	if (playWindow != nullptr)
+	{
+		WG_Playbar* playBarWindow = (WG_Playbar*)playWindow;
+		playBarWindow->OnDestroyedId(id);
+	}
+
 }
 
 
@@ -605,6 +613,28 @@ int M_UIManager::GetFocusedGameObjectId() const
 	return -1;
 }
 
+C_Camera* M_UIManager::GetPlayCam()
+{
+	C_Camera* playCam = nullptr;
+
+	if (playWindow != nullptr)
+	{
+		WG_Playbar* playBarWindow = (WG_Playbar*)playWindow;
+		playCam = playBarWindow->GetPlayCam();
+	}
+
+	return playCam;
+}
+
+void M_UIManager::RefreshPlayCam()
+{
+	if (playWindow != nullptr)
+	{
+		WG_Playbar* playBarWindow = (WG_Playbar*)playWindow;
+		playBarWindow->RefreshPlayCam();
+	}
+
+}
 void M_UIManager::OnWindowResize() const
 {
 	if (configWindow != nullptr)
@@ -885,7 +915,7 @@ std::string M_UIManager::DrawDirectoryRecursiveOld(const char* directory, bool r
 		for (int i = 0; i < myPathNode->children.size(); i++)
 		{
 			std::string compare = myPathNode->children[i].path + "/";
-			if (compare == LIBRARY_TEXTURES || compare == LIBRARY_MODELS ||compare == LIBRARY_SCENES || compare == LIBRARY_SCRIPTS)
+			if (compare == LIBRARY_TEXTURES || compare == LIBRARY_MODELS || compare == LIBRARY_SCENES || compare == LIBRARY_SCRIPTS)
 			{
 				myPathNode->children[i].Clear();
 			}
