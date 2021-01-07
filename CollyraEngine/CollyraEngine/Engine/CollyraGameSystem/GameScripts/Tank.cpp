@@ -12,7 +12,7 @@ void Tank::Start()
 {
 	transform = GetMyGameObject()->GetComponent<C_Transform>();
 
-	myTurret = gameObject::GetGameObject("TankTurret");
+	myTurret = gameObject::GetGameObjectByName("TankTurret");
 	//turretTransform = myTurret->GetComponent<C_Transform>();
 }
 

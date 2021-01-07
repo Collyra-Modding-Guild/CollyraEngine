@@ -216,6 +216,7 @@
     <ClInclude Include="WG_Playbar.h" />
     <ClInclude Include="WG_ResourceCount.h" />
     <ClInclude Include="WG_Scene.h" />
+    <ClInclude Include="WG_TextEditor.h" />
     <ClInclude Include="WindowGroup.h" />
   </ItemGroup>
   <ItemGroup>
@@ -313,6 +314,7 @@
     <ClCompile Include="WG_Playbar.cpp" />
     <ClCompile Include="WG_ResourceCount.cpp" />
     <ClCompile Include="WG_Scene.cpp" />
+    <ClCompile Include="WG_TextEditor.cpp" />
     <ClCompile Include="WindowGroup.cpp" />
   </ItemGroup>
   <ItemGroup>
