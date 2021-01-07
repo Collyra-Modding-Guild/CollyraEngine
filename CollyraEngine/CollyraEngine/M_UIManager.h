@@ -18,6 +18,7 @@ class WG_About;
 class WG_Playbar;
 class WG_ResourceCount;
 class WG_Assets;
+class WG_TextEditor;
 
 class C_Camera;
 
@@ -94,6 +95,7 @@ public:
 	WG_Playbar*		playWindow;
 	WG_ResourceCount* resourceCount;
 	WG_Assets*		assetsWindow;
+	WG_TextEditor*	textEditorWindow;
 
 
 private:

@@ -276,6 +276,11 @@ std::map<std::string, ScriptData>* M_Scripting::GetClassesMap()
 	return &scriptClassLoaded;
 }
 
+std::map<std::string, uint64>* M_Scripting::GetFileMap()
+{
+	return &scriptFilesLoaded;
+}
+
 uint M_Scripting::GetScriptIdByClassName(const char* className)
 {
 	uint ret = 0;

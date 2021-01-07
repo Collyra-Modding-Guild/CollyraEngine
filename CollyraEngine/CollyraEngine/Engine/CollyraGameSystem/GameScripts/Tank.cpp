@@ -27,7 +27,7 @@ void Tank::PlayerInputs()
 
 	if (Input::GetKey(SDL_SCANCODE_W) == INPUT_REPEAT)
 	{
-		velocity = 0.1f;
+		velocity = 0.3f;
 	}
 	else if (Input::GetKey(SDL_SCANCODE_S) == INPUT_REPEAT)
 	{
