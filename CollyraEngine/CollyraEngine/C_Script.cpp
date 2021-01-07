@@ -187,7 +187,6 @@ void C_Script::GenerateObjectData()
 				if (dataObject != nullptr)
 				{
 					dataObject->SetMyGameObject(GetGameObject());
-					dataObject->Start();
 				}
 			}
 			catch (...)

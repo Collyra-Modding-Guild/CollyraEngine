@@ -14,14 +14,16 @@ public:
 	void Update() override;
 
 	void PlayerInputs();
+	Quat Rotation(float3 initialRotation, float3 rotation);
 
 private:
 
 	C_Transform*	transform;
-	Quat			rotation;
-	float3			position;
+	C_Transform*	turretTransform;
 
 	float			velocity;
+
+	GameObject*		myTurret;
 
 };
 
