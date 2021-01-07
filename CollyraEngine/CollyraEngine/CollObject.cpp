@@ -31,7 +31,7 @@ GameObject* CollObject::GetMyGameObject() const
 	return myGameObject;
 }
 
-GameObject* gameObject::CreateGameObject(std::string name, GameObject* parent)
+GameObject* gameObject::CreateGameObject(const char*  name, GameObject* parent)
 {
 	return App->scene->CreateGameObject(name, parent);
 }
@@ -41,7 +41,7 @@ GameObject* gameObject::GetGameObject(unsigned int id)
 	return App->scene->GetGameObject(id);
 }
 
-GameObject* gameObject::GetGameObject(std::string name)
+GameObject* gameObject::GetGameObjectByName(const char* name)
 {
 	return App->scene->GetGameObject(name);
 }

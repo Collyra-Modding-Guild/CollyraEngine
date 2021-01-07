@@ -58,7 +58,7 @@ namespace gameObject
 	__declspec(dllexport) GameObject* CreateGameObject(std::string name = "", GameObject* parent = nullptr);
 
 	__declspec(dllexport) GameObject* GetGameObject(unsigned int id);
-	__declspec(dllexport) GameObject* GetGameObject(std::string name);
+	__declspec(dllexport) GameObject* GetGameObjectByName(const char* name);
 
 	__declspec(dllexport) bool DeleteGameObject(unsigned int id);
 	__declspec(dllexport) bool DeleteGameObject(GameObject* gameObject);
