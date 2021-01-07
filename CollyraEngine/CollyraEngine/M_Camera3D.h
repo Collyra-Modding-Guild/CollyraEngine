@@ -59,6 +59,5 @@ private:
 	M_Input*	inputModule;
 	float4		ViewMatrix, ViewMatrixInverse;
 	C_Camera*	sceneCamera;
-
 	
 };

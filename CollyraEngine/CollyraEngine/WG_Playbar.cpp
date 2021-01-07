@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "M_Scene.h"
 #include "Timer.h"
+#include "M_Renderer3D.h"
 
 #include "GameObject.h"
 #include "C_Camera.h"
@@ -59,10 +60,16 @@ updateStatus WG_Playbar::Update()
 	{
 		for (int n = 0; n < App->scene->cameras.size(); n++)
 		{
-			if (ImGui::Selectable(App->scene->cameras[n]->GetGameObject()->GetName().c_str(), true))
+			if (ImGui::Selectable(std::string(App->scene->cameras[n]->GetGameObject()->GetName()).append("_").append(std::to_string(n)).c_str(), true))
 			{
 				playCam = App->scene->cameras[n];
 				playCamGameObjId = playCam->GetGameObject()->GetUid();
+
+				if (App->gameClock->IsPlaying() == true)
+				{
+					App->renderer3D->SetPlayCam(playCam);
+				}
+
 			}
 
 		}

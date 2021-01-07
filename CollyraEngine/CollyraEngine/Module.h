@@ -94,6 +94,9 @@ public:
 	virtual updateStatus Draw(bool* drawState) { return UPDATE_CONTINUE; }
 	virtual updateStatus PreDraw(bool* drawState) { return UPDATE_CONTINUE; }
 
+	virtual updateStatus StartPlayMode() { return UPDATE_CONTINUE; }
+	virtual updateStatus StopPlayMode() { return UPDATE_CONTINUE; }
+
 	MODULE_TYPE GetType() { return type; }
 
 public:

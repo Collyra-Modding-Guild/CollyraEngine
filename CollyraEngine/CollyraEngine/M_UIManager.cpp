@@ -165,6 +165,30 @@ updateStatus M_UIManager::Update(float dt)
 	return ret;
 }
 
+updateStatus M_UIManager::StartPlayMode()
+{
+	if (configWindow != nullptr)
+	{
+		WG_Config* config = (WG_Config*)configWindow;
+		config->SavePrePlayConfig();
+	}
+
+	return UPDATE_CONTINUE;
+}
+
+updateStatus M_UIManager::StopPlayMode()
+{
+	if (configWindow != nullptr)
+	{
+		WG_Config* config = (WG_Config*)configWindow;
+		config->LoadPostPlayConfig();
+	}
+
+	RefreshPlayCam();
+
+	return UPDATE_CONTINUE;
+}
+
 // Called before quitting
 bool M_UIManager::CleanUp()
 {

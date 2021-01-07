@@ -35,6 +35,8 @@ public:
 
 	updateStatus PreUpdate(float dt);
 	updateStatus Update(float dt);
+	updateStatus StartPlayMode() override;
+	updateStatus StopPlayMode() override;
 
 	bool CleanUp();
 

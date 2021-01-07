@@ -112,6 +112,9 @@ public:
 	updateStatus Update();
 	bool CleanUp();
 	bool Reset();
+	
+	updateStatus StartPlayMode();
+	updateStatus EndPlayMode();
 
 	updateStatus Draw2D();
 	updateStatus Draw(bool* drawFlags);
@@ -128,9 +131,9 @@ public:
 	float GetTimeMultiplier() const;
 	void SetTimeMultiplier(float newMultiplier);
 
-
 	bool CompileDll(bool stopIfFailed = false, bool copyResult = true);
 	bool CopyNewDll();
+
 
 private:
 
