@@ -8,13 +8,15 @@
 #include "PerfTimer.h"
 #include "Timer.h"
 
+#include <string>
+
 #define COLLYRA_VERSION_MAJOR 3
 #define COLLYRA_VERSION_MINOR 0
 
 // Dll Paths------------ 
 //Warning: The "\\" instead of the "/" or "\" is necessary, otherwise Windows doesn't recognize the paths
 // TODO: This need to be in a config file *gasps* I know
-#define VCVARSALL_PATH "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Auxiliary\\Build\\vcvars32.bat"
+#define VCVARSALLCONFIG_PATH "/Config/config.collConfig"
 #define COMPILE_PLATFORM "Win32"
 #define COMPILE_TARGET "x86"
 #define TEMP_DLL_FOLDER "C:\\temp\\CollyraEngine\\"
@@ -102,6 +104,8 @@ private:
 	bool windowTitleControl = false; //Changes the title of the window
 	bool pause = false; //Bool that controls the pause of the game
 
+	std::string vcVarshall_Path;
+
 
 public:
 
@@ -142,6 +146,8 @@ private:
 	void FinishUpdate();
 	void DeleteAllFilesWin(char* folderPath);
 	bool FileExistsWin(const char* file);
+
+	std::string LoadVsVarshallPath();
 
 
 };

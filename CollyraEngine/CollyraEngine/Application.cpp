@@ -11,10 +11,12 @@
 #include "M_Scene.h"
 #include "M_Scripting.h"
 
+#include "JsonConfig.h"
+
 #include <fstream> 
 
 
-Application::Application(int argc, char* args[]) : argc(argc), args(args), gameSystemDll(nullptr), stopExecution(false)
+Application::Application(int argc, char* args[]) : argc(argc), args(args), gameSystemDll(nullptr), stopExecution(false), vcVarshall_Path("")
 {
 	window = new M_Window(M_WINDOW, true);
 	input = new M_Input(M_INPUT, true);
@@ -35,12 +37,6 @@ Application::Application(int argc, char* args[]) : argc(argc), args(args), gameS
 	// Modules will Awake() Start() and Update in this order
 	// They will CleanUp() in reverse order
 
-	if (CompileDll(true) == false)
-	{
-		MessageBox(0, "Dll coudn't compile on start or was not found!", "Error - Dll was not found", MB_ICONERROR);
-		gameSystemDll = nullptr;
-	}
-
 	// Main Modules
 	AddModule(window);
 	AddModule(input);
@@ -55,6 +51,28 @@ Application::Application(int argc, char* args[]) : argc(argc), args(args), gameS
 
 	// Renderer last!
 	AddModule(renderer3D);
+
+	//Dll Compile
+	vcVarshall_Path = LoadVsVarshallPath();
+
+	if (vcVarshall_Path != "")
+	{
+		if (CompileDll(true) == false)
+		{
+			MessageBox(0, "Dll coudn't compile on start or was not found!", "Error - Dll was not found", MB_ICONERROR);
+			gameSystemDll = nullptr;
+		}
+	}
+	else
+	{
+
+		MessageBox(0, "Dll coudn't compile on start: vsVarshall Path Incorrect! Check Config!", "Error - Dll was not found", MB_ICONERROR);
+		gameSystemDll = nullptr;
+
+	}
+
+
+
 }
 
 Application::~Application()
@@ -147,7 +165,7 @@ bool Application::CompileDll(bool stopIfFailed, bool copyResult)
 	bool ret = true;
 
 	//Find if the vcVarsall Path if okay
-	ret = FileExistsWin(VCVARSALL_PATH);
+	ret = FileExistsWin(vcVarshall_Path.c_str());
 
 	if (ret == false)
 	{
@@ -169,7 +187,7 @@ bool Application::CompileDll(bool stopIfFailed, bool copyResult)
 	std::ofstream batch;
 	batch.open("_compile.bat");
 
-	sprintf_s(auxString, "call \"%s\" %s", VCVARSALL_PATH, COMPILE_TARGET);
+	sprintf_s(auxString, "call \"%s\" %s", vcVarshall_Path.c_str(), COMPILE_TARGET);
 
 	batch << auxString << std::endl;
 
@@ -540,4 +558,22 @@ bool Application::FileExistsWin(const char* file)
 		FindClose(handle);
 	}
 	return found;
+}
+
+std::string Application::LoadVsVarshallPath()
+{
+	char* buffer = nullptr;
+	uint size = physFS->Load(VCVARSALLCONFIG_PATH, &buffer);
+	std::string ret = "";
+
+	if (size > 0)
+	{
+		JsonConfig jsonFile(buffer);
+		if (jsonFile.IsInitialized())
+		{
+			ret = jsonFile.GetString("VsVarshallPath").c_str();
+		}
+	}
+
+	return ret;
 }

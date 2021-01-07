@@ -437,6 +437,9 @@
     <ClInclude Include="WG_TextEditor.h">
       <Filter>Sources\WindowGroup</Filter>
     </ClInclude>
+    <ClInclude Include="ImGuiTextEditor\TextEditor.h">
+      <Filter>Sources\Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="log.cpp">
@@ -724,6 +727,9 @@
     </ClCompile>
     <ClCompile Include="WG_TextEditor.cpp">
       <Filter>Sources\WindowGroup</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiTextEditor\TextEditor.cpp">
+      <Filter>Sources\Tools</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

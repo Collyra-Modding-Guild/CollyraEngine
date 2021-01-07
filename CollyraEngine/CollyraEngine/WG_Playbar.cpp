@@ -55,6 +55,8 @@ updateStatus WG_Playbar::Update()
 		RefreshPlayCam();
 	}
 
+	ImGui::Text("Play Camera: ");
+	ImGui::SameLine();
 	ImGui::SetNextItemWidth(110.0f);
 	if (ImGui::BeginCombo("##currentCam", playCam ? playCam->GetGameObject()->GetName().c_str() : "")) // Check TAGS list and selected Tag
 	{

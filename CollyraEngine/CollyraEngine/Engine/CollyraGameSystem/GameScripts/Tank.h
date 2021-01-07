@@ -31,5 +31,3 @@ COLLYRAGAMESYSTEM_EXPORTS Tank* CreateTank() {
 	Tank* newTank = new Tank();
 	return newTank;
 }
-
-

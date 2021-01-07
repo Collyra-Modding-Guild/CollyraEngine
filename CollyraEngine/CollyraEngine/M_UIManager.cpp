@@ -33,6 +33,7 @@
 #include "WG_Playbar.h"
 #include "WG_ResourceCount.h"
 #include "WG_Assets.h"
+#include "WG_TextEditor.h"
 
 //OpenGL
 #include "OpenGL.h"
@@ -45,7 +46,8 @@
 
 M_UIManager::M_UIManager(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), showDemoWindow(false), showConfigMenu(false),
 configWindow(nullptr), consoleWindow(nullptr), sceneWindow(nullptr), hierarchyWindow(nullptr), inspectorWindow(nullptr),
-playWindow(nullptr), aboutWindow(nullptr), resourceCount(nullptr), assetsWindow(nullptr), lastSavedId(0), showLoadScenePop(false)
+playWindow(nullptr), aboutWindow(nullptr), resourceCount(nullptr), assetsWindow(nullptr), lastSavedId(0), showLoadScenePop(false),
+textEditorWindow(nullptr)
 {}
 
 // Destructor
@@ -65,6 +67,7 @@ bool M_UIManager::Awake()
 	windowGroups.push_back(playWindow = new WG_Playbar(true));
 	windowGroups.push_back(resourceCount = new WG_ResourceCount(true));
 	windowGroups.push_back(assetsWindow = new WG_Assets(true));
+	windowGroups.push_back(textEditorWindow = new WG_TextEditor(true));
 
 	return true;
 }

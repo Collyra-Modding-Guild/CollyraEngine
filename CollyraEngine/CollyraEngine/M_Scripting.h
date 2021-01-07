@@ -51,6 +51,7 @@ public:
 	std::string CreateNewScript(const char* className);
 
 	std::map<std::string, ScriptData>* GetClassesMap();
+	std::map<std::string, uint64>* GetFileMap();
 
 	uint GetScriptIdByClassName(const char* className);
 
