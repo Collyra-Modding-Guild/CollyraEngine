@@ -165,7 +165,6 @@ void C_Script::DeleteObjectData()
 {
 	if (dataObject != nullptr)
 	{
-		dataObject->Update();
 		delete dataObject;
 		dataObject = nullptr;
 	}
@@ -187,6 +186,11 @@ void C_Script::GenerateObjectData()
 				if (dataObject != nullptr)
 				{
 					dataObject->SetMyGameObject(GetGameObject());
+				}
+
+				if (App->gameClock->IsPlaying() == true)
+				{
+					dataObject->Start();
 				}
 			}
 			catch (...)
