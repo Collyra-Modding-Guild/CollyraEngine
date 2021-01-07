@@ -5,6 +5,9 @@
 
 #include "M_Scene.h"
 #include "M_Input.h"
+#include "M_Window.h"
+#include "M_UIManager.h"
+#include "M_Camera3D.h"
 
 #include "Globals.h"
 
@@ -84,4 +87,19 @@ int Input::GetKey(int id)
 int Input::GetMouseButton(int id)
 {
 	return App->input->GetMouseButton(id);
+}
+
+int Screen::GetHeight()
+{
+	return App->uiManager->GetSceneWindowSize().y;
+}
+
+int Screen::GetWidth()
+{
+	return App->uiManager->GetSceneWindowSize().x;
+}
+
+LineSegment Screen::GetMouseWorldPosition(float2 mousePosition)
+{
+	return App->camera->GetMouseWorldPosition(mousePosition);
 }

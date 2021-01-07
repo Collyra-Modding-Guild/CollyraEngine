@@ -30,7 +30,8 @@ public:
 	void SetAspectRatio(float newAspect);
 
 	void ShootRay(float2 mousePosition);
-
+	LineSegment GetMouseWorldPosition(float2 mousePosition);
+	
 	C_Camera* GetCamera() const;
 	bool GetSceneCameraCuling() const;
 	void SetCameraSceneCulling(bool newCullingState);

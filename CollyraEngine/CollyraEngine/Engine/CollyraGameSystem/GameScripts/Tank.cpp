@@ -13,7 +13,7 @@ void Tank::Start()
 	transform = GetMyGameObject()->GetComponent<C_Transform>();
 
 	myTurret = gameObject::GetGameObjectByName("TankTurret");
-	//turretTransform = myTurret->GetComponent<C_Transform>();
+	turretTransform = myTurret->GetComponent<C_Transform>();
 }
 
 void Tank::Update()
@@ -54,25 +54,89 @@ void Tank::PlayerInputs()
 									  transform->GetScale());						 // Tank Scale
 
 
-/*	float3 turRotation = turretTransform->GetRotationEuler();
+	float3 turRotation = turretTransform->GetRotationEuler();
 	float3 turInitialRot = rotation;
 
+	/*LineSegment ray = Screen::GetMouseWorldPosition({ (float)Input::GetMouseX() , (float)Input::GetMouseY() });
+	vec lookAt = ray.b - ray.a;
+	
+	float angle = lookAt.Dot(turretTransform->GetForward());*/
 
 
-	if (Input::GetKey(SDL_SCANCODE_LEFT) == INPUT_REPEAT)
+	if (rotation.x == 0 && rotation.y > 0)
 	{
-		turRotation.y += 1;
+		turRotation.y = (-(Input::GetMouseX() * 180 / Screen::GetWidth()) + 90) + (rotation.y);
+
+		if (Input::GetMouseY() > (Screen::GetHeight() / 2))
+		{
+			turRotation.x = -180;
+			turRotation.z = -180;
+			turRotation.y -= rotation.y * 2;
+		}
+		else
+		{
+			turRotation.x = 0;
+			turRotation.z = 0;
+		}
 	}
-	else if (Input::GetKey(SDL_SCANCODE_RIGHT) == INPUT_REPEAT)
+
+	else if (rotation.x == 0 && rotation.y < 0)
 	{
-		turRotation.y -= 1;
+		turRotation.y = ((Input::GetMouseX() * 180 / Screen::GetWidth())) - (rotation.y);
+
+		if (Input::GetMouseY() > (Screen::GetHeight() / 2))
+		{
+			turRotation.y -= (-90 - rotation.y * 2);
+			turRotation.x = 0;
+			turRotation.z = 0;
+		}
+		else
+		{
+			turRotation.y -= 270;
+			turRotation.x = -180;
+			turRotation.z = -180;
+		}
 	}
 
+	else if ((rotation.x == -180 || rotation.x == 180) && rotation.y > 0)
+	{
+		turRotation.y = (-(Input::GetMouseX() * 180 / Screen::GetWidth())) - (rotation.y);
 
+		if (Input::GetMouseY() > (Screen::GetHeight() / 2))
+		{
+			turRotation.y -= (90 - rotation.y * 2);
+			turRotation.x = -180;
+			turRotation.z = -180;
+		}
+		else
+		{
+			turRotation.y -= 90;
+			turRotation.x = 0;
+			turRotation.z = 0;
+		}
+	}
 
-	turretTransform->SetLocalTransformation(turretTransform->GetPosition(), // Turret Position
-		Rotation(turInitialRot, turRotation),								// Turret Rotation
-		turretTransform->GetScale());				*/						// Turret Scale
+	else if ((rotation.x == -180 || rotation.x == 180) && rotation.y < 0)
+	{
+		turRotation.y = (-(Input::GetMouseX() * 180 / Screen::GetWidth()));
+
+		if (Input::GetMouseY() > (Screen::GetHeight() / 2))
+		{
+			turRotation.x = -180;
+			turRotation.z = -180;
+			turRotation.y += rotation.y - 90;
+		}
+		else
+		{
+			turRotation.x = 0;
+			turRotation.z = 0;
+			turRotation.y -= rotation.y + 90;
+		}
+	}
+
+	turretTransform->SetLocalTransformation(turretTransform->GetPosition(),					// Turret Position
+		Rotation(turInitialRot, turRotation),	// Turret Rotation
+		turretTransform->GetScale());														// Turret Scale
 }
 
 

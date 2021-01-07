@@ -368,6 +368,26 @@ void M_Camera3D::ShootRay(float2 mousePosition)
 	}
 }
 
+// -----------------------------------------------------------------
+LineSegment M_Camera3D::GetMouseWorldPosition(float2 mousePosition)
+{
+
+	float2 normalized;
+	normalized.x = (mousePosition.x - App->uiManager->GetSceneWindowPosition().x)
+		/ (App->uiManager->GetSceneWindowSize().x * 0.5) - 1.0f;
+
+	normalized.y = (mousePosition.y - App->uiManager->GetSceneWindowPosition().y)
+		/ (App->uiManager->GetSceneWindowSize().y * 0.5) - 1.0f;
+
+	// Check if the mouse is inside scene window.
+	if (Abs(normalized.x) < 1.0f && Abs(normalized.y) < 1.0f)
+	{
+		ray = sceneCamera->frustum.UnProjectLineSegment(normalized.x, -normalized.y);
+	}
+
+	return ray;
+}
+
 C_Camera* M_Camera3D::GetCamera() const
 {
 	return sceneCamera;

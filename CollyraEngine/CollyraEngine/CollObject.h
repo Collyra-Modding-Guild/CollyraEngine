@@ -67,3 +67,10 @@ namespace gameObject
 
 }
 
+namespace Screen 
+{
+	__declspec(dllexport) int GetHeight();
+	__declspec(dllexport) int GetWidth();
+	__declspec(dllexport) LineSegment GetMouseWorldPosition(float2 mousePosition);
+}
+
