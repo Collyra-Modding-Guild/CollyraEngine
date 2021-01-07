@@ -27,6 +27,9 @@ public:
 
 	void OnWindowResize();
 
+	void SavePrePlayConfig();
+	void LoadPostPlayConfig();
+
 private:
 	std::vector<float>	fpsLog;
 	std::vector<float>	msLog;
@@ -35,6 +38,9 @@ private:
 	bool				newInput;
 
 	bool				drawFlags[MAX_FLAGS];
+
+
+	bool				drawFlagsPlayBuff[MAX_FLAGS];
 
 	int					buffWinH;
 	int					buffWinW;

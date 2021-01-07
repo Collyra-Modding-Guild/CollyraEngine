@@ -133,27 +133,26 @@ updateStatus M_Scene::PostUpdate(float dt)
 
 		for (int i = 0; i < cameras.size(); i++)
 		{
-			CameraCuling(currNode, cameras[i]);
-
 			C_Camera* currentCam = cameras[i];
 
-			if (currentCam->IsCulling())
+			if (CameraCuling(currNode, cameras[i]))
 				checkCulling++;
-
 		}
 		if (App->camera->GetCamera())
 		{
-			CameraCuling(currNode, App->camera->GetCamera());
-
-			if (App->camera->GetCamera()->IsCulling())
+			if (CameraCuling(currNode, App->camera->GetCamera()))
 				checkCulling++;
 		}
 
 		if (currNode->GetComponent<C_Mesh>() != nullptr)
 		{
-			if (checkCulling == 0)
+			if (checkCulling > 0)
 			{
 				currNode->GetComponent<C_Mesh>()->SetActive(true);
+			}
+			else
+			{
+				currNode->GetComponent<C_Mesh>()->SetActive(false);
 			}
 		}
 
@@ -896,16 +895,15 @@ void M_Scene::OnClickFocusGameObject(const LineSegment& mouseRay)
 	App->uiManager->SetFocusedGameObject(-1);
 }
 
-void M_Scene::CameraCuling(GameObject* current, C_Camera* myCam)
+bool M_Scene::CameraCuling(GameObject* current, C_Camera* myCam)
 {
 	if (current->GetComponent<C_Mesh>() != nullptr && myCam->IsCulling() && myCam->frustum.ContainsAABBVertices(current->GetGameObjectAABB()))
 	{
-		current->GetComponent<C_Mesh>()->SetActive(true);
-
+		return true;
 	}
 	else if (current->GetComponent<C_Mesh>() != nullptr && myCam->IsCulling())
 	{
-		current->GetComponent<C_Mesh>()->SetActive(false);
+		return false;
 	}
 }
 
@@ -914,23 +912,35 @@ void M_Scene::Play()
 	if (App->uiManager->GetPlayCam() != nullptr)
 	{
 		App->gameClock->Start();
+		App->StartPlayMode();
 		App->renderer3D->SetPlayCam(App->uiManager->GetPlayCam());
-		SaveScene();
-		playedScene = this->GetSceneResource()->GetUid();
-
-		StartGameObjects();
 	}
 	else
 		LOG("A cam needs to be selected to start the scene!");
 
 }
 
+updateStatus M_Scene::StartPlayMode()
+{
+	SaveScene();
+	playedScene = this->GetSceneResource()->GetUid();
+
+	StartGameObjects();
+	return UPDATE_CONTINUE;
+}
+
 void M_Scene::Stop()
 {
 	App->gameClock->Stop();
 	App->resources->LoadResource(playedScene);
+	App->EndPlayMode();
+}
+
+updateStatus M_Scene::StopPlayMode()
+{
 	App->renderer3D->SetPlayCam(nullptr);
-	App->uiManager->RefreshPlayCam();
+
+	return UPDATE_CONTINUE;
 }
 
 void M_Scene::Pause()

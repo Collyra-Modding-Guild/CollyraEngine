@@ -267,6 +267,34 @@ bool Application::CopyNewDll()
 
 }
 
+updateStatus Application::StartPlayMode()
+{
+	updateStatus ret = UPDATE_CONTINUE;
+
+	int numModules = moduleList.size();
+
+	for (int i = 0; i < numModules && ret == UPDATE_CONTINUE; i++)
+	{
+		ret = moduleList[i]->StartPlayMode();
+	}
+
+	return ret;
+}
+
+updateStatus Application::EndPlayMode()
+{
+	updateStatus ret = UPDATE_CONTINUE;
+	//PreUpdate
+	int numModules = moduleList.size();
+
+	for (int i = 0; i < numModules && ret == UPDATE_CONTINUE; i++)
+	{
+		ret = moduleList[i]->StopPlayMode();
+	}
+
+	return ret;
+}
+
 // Call PreUpdate, Update and PostUpdate on all modules
 updateStatus Application::Update()
 {

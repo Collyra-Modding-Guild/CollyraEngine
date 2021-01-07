@@ -25,7 +25,7 @@
 
 WG_Config::WG_Config(bool isActive) : WindowGroup(WG_CONFIG, isActive),
 fpsLog(FRAMERATE_LOG_SIZE), msLog(FRAMERATE_LOG_SIZE), newInput(false), drawFlags{ true, false, false, false, true, true, false, false },
-buffWinW(0), buffWinH(0)
+drawFlagsPlayBuff{ true, false, false, false, true, true, false, false }, buffWinW(0), buffWinH(0)
 {}
 
 WG_Config::~WG_Config()
@@ -500,4 +500,32 @@ void WG_Config::OnWindowResize()
 {
 	buffWinW = App->window->screenWidth;
 	buffWinH = App->window->screenHeight;
+}
+
+void WG_Config::SavePrePlayConfig()
+{
+
+	for (int i = 0; i < MAX_FLAGS; i++)
+	{
+		drawFlagsPlayBuff[i] = drawFlags[i];
+	}
+
+	if (drawFlags[BOUNDING_BOX] == true)
+	{
+		drawFlags[BOUNDING_BOX] = false;
+	}
+
+	if (drawFlags[FRUSTUM] == true)
+	{
+		drawFlags[FRUSTUM] = false;
+	}
+
+}
+
+void WG_Config::LoadPostPlayConfig()
+{
+	for (int i = 0; i < MAX_FLAGS; i++)
+	{
+		drawFlags[i] = drawFlagsPlayBuff[i];
+	}
 }

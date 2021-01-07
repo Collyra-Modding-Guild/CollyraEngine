@@ -49,11 +49,13 @@ public:
 
 	void		OnClickFocusGameObject(const LineSegment& mouseRay);
 
-	void		CameraCuling(GameObject* current, C_Camera* myCam);
+	bool		CameraCuling(GameObject* current, C_Camera* myCam);
 
 	// Game State ------
 	void Play();
+	updateStatus StartPlayMode() override;
 	void Stop();
+	updateStatus StopPlayMode() override;
 	void Pause();
 	void Resume();
 	void Tick();

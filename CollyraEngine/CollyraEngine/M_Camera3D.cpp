@@ -61,11 +61,14 @@ updateStatus M_Camera3D::Update(float dt)
 		return UPDATE_STOP;
 	}
 
-	CameraMovement(dt);
-
-	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
+	if (App->gameClock->IsPlaying() == false)
 	{
-		FocusGameObject(App->scene->focusedGameObject);
+		CameraMovement(dt);
+
+		if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
+		{
+			FocusGameObject(App->scene->focusedGameObject);
+		}
 	}
 
 	if (inputModule->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
