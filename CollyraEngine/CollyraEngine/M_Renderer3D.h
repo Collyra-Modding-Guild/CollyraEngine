@@ -41,6 +41,8 @@ public:
 	C_Camera* GetCurrentPlayCam() const;
 	void SetPlayCam(C_Camera* myCam);
 
+	void CameraDied(C_Camera* deadCam);
+
 	float4x4 GetCurrentViewMatrix();
 	float4x4 GetCurrentProjectionMatrix();
 

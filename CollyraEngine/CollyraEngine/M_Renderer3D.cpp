@@ -187,7 +187,7 @@ updateStatus M_Renderer3D::PreUpdate(float dt)
 	}
 
 	float3 position;
-	if ( playCam != nullptr)
+	if (playCam != nullptr)
 	{
 		glLoadMatrixf(playCam->GetProjectionMatrix().ptr());
 		position = playCam->GetCamPosition();
@@ -366,6 +366,20 @@ void M_Renderer3D::SetPlayCam(C_Camera* myCam)
 	else if (App->gameClock->IsPlaying() == true)
 	{
 		App->scene->Stop();
+	}
+}
+
+void M_Renderer3D::CameraDied(C_Camera* deadCam)
+{
+	if (playCam != nullptr)
+	{
+		if (deadCam == playCam)
+			if (App->gameClock->IsPlaying() == true)
+			{
+				playCam = nullptr;
+				App->scene->Stop();
+			}
+
 	}
 }
 

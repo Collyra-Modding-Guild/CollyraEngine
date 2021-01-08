@@ -42,6 +42,7 @@ public:
 	std::vector<GameObject*> GetAllGameobjects();
 	bool		DeleteGameObject(unsigned int id);
 	bool		DeleteGameObject(GameObject* gameObject);
+	bool		NotifyGameObjectDeath(GameObject* gameObject);
 	void		DeleteCamera(Component* component);
 	template<typename T>
 	std::vector<T*> GetAllComponents();
