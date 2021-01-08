@@ -14,11 +14,16 @@ WG_TextEditor::~WG_TextEditor()
 
 updateStatus WG_TextEditor::Update()
 {
-	ImGui::Begin("TextPanelEditor");
+	ImGui::Begin("Text Editor");
 
 	std::map<std::string, uint64>* allScriptFiles = App->scriptInterface->GetFileMap();
 
 	std::map<std::string, uint64>::iterator fileIterator = allScriptFiles->begin();
+
+	if (ImGui::Button("Open Visual Studio Project"))
+	{
+		ShellExecuteA(NULL, "open", GAMEPLAY_PROJECT_PATH, NULL, NULL, SW_SHOWNORMAL);
+	}
 
 	ImGui::Text("Current File: ");
 	ImGui::SameLine();

@@ -1,11 +1,13 @@
 #pragma once
 
 #include <string>
-#include"SDL/include/SDL.h"
 #include "MathGeoLib/include/MathGeoLib.h"
 
 #include "Globals.h"
 #include "C_Transform.h"
+#include "C_Mesh.h"
+#include "C_Script.h"
+#include "Timer.h"
 
 #define SCRIPTING "Game Scripting System: "
 

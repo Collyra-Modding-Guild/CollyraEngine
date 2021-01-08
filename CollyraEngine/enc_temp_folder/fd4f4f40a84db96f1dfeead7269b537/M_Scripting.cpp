@@ -182,7 +182,7 @@ std::string M_Scripting::CreateNewScript(const char* className)
 	LOG("Created new Script files with name %s", className);
 	scriptClassLoaded.insert({ className , { saveToCpp, saveToH, scriptId,createScript.c_str()} });
 
-	LOG("WARNING: If you wish to use the script, please add it to the project in VS");
+	LOG("If you wish to use the script, please add it to the project in VS");
 
 	//Add it to the Script Project
 

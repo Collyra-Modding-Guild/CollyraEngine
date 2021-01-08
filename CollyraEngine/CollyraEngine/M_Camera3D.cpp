@@ -4,6 +4,7 @@
 #include "M_Input.h"
 #include "M_Scene.h"
 #include "M_UIManager.h"
+#include "M_Renderer3D.h"
 
 #include "GameObject.h"
 #include "C_Transform.h"
@@ -73,7 +74,7 @@ updateStatus M_Camera3D::Update(float dt)
 
 	if (inputModule->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
 	{
-		ShootRay({ App->uiManager->GetImGuiMousePosition().x, App->uiManager->GetImGuiMousePosition().y });
+		ShootRay({ App->uiManager->GetImGuiMousePosition().x, App->uiManager->GetImGuiMousePosition().y }, App->renderer3D->GetCurrentPlayCam());
 	}
 
 
@@ -347,8 +348,10 @@ void M_Camera3D::SetAspectRatio(float newAspect)
 }
 
 // -----------------------------------------------------------------
-void M_Camera3D::ShootRay(float2 mousePosition)
+void M_Camera3D::ShootRay(float2 mousePosition, C_Camera* from)
 {
+	if (from == nullptr)
+		from = sceneCamera;
 
 	float2 normalized;
 	normalized.x = (mousePosition.x - App->uiManager->GetSceneWindowPosition().x)
@@ -361,7 +364,7 @@ void M_Camera3D::ShootRay(float2 mousePosition)
 	// Check if the mouse is inside scene window.
 	if (Abs(normalized.x) < 1.0f && Abs(normalized.y) < 1.0f)
 	{
-		ray = sceneCamera->frustum.UnProjectLineSegment(normalized.x, -normalized.y);
+		ray = from->frustum.UnProjectLineSegment(normalized.x, -normalized.y);
 
 		if (!App->uiManager->sceneWindow->usingGizmo)
 			App->scene->OnClickFocusGameObject(ray);
@@ -369,8 +372,10 @@ void M_Camera3D::ShootRay(float2 mousePosition)
 }
 
 // -----------------------------------------------------------------
-LineSegment M_Camera3D::GetMouseWorldPosition(float2 mousePosition)
+LineSegment M_Camera3D::GetMouseWorldPosition(float2 mousePosition, C_Camera* myCam)
 {
+	if (myCam == nullptr)
+		myCam = sceneCamera;
 
 	float2 normalized;
 	normalized.x = (mousePosition.x - App->uiManager->GetSceneWindowPosition().x)
@@ -382,7 +387,7 @@ LineSegment M_Camera3D::GetMouseWorldPosition(float2 mousePosition)
 	// Check if the mouse is inside scene window.
 	if (Abs(normalized.x) < 1.0f && Abs(normalized.y) < 1.0f)
 	{
-		ray = sceneCamera->frustum.UnProjectLineSegment(normalized.x, -normalized.y);
+		ray = myCam->frustum.UnProjectLineSegment(normalized.x, -normalized.y);
 	}
 
 	return ray;

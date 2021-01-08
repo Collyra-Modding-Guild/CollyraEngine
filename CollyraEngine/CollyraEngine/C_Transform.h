@@ -24,6 +24,7 @@ public:
 	float4x4	GetGlobalTransform() const;
 	float4x4	GetTGlobalTransform() const;
 	float3		GetPosition() const;
+	float3		GetGlobalPos() const;
 	Quat		GetRotation() const;
 	float3		GetRotationEuler() const;
 	float3		GetScale() const;
@@ -44,6 +45,8 @@ private:
 	float3 position;
 	Quat rotation;
 	float3 scale;
+
+	float3 globlPos;
 
 	float3 rotationEuler;
 

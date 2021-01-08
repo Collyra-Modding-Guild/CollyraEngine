@@ -1,6 +1,7 @@
-#include "Tank.h"
+﻿#include "Tank.h"
+#include "Bullet.h"
 
-Tank::Tank() : CollObject(), velocity(0.0f), myTurret(nullptr)
+Tank::Tank() : CollObject(), velocity(0.0f), myTurret(nullptr), bulletToShoot(nullptr), transform(nullptr), turretTransform(nullptr)
 {
 }
 
@@ -14,6 +15,16 @@ void Tank::Start()
 
 	myTurret = gameObject::GetGameObjectByName("TankTurret");
 	turretTransform = myTurret->GetComponent<C_Transform>();
+
+	bulletToShoot = gameObject::CreateGameObject("Bullet");
+	C_Mesh* cMesh = (C_Mesh*)bulletToShoot->CreateComponent(COMPONENT_TYPE::MESH);
+	cMesh->SetResourceIdFromName("cube");
+
+	C_Script* bullScript = (C_Script*)bulletToShoot->CreateComponent(COMPONENT_TYPE::SCRIPT);
+	bullScript->SetScriptClass("Bullet");
+
+	bulletToShoot->SetActive(false);
+
 }
 
 void Tank::Update()
@@ -36,12 +47,12 @@ void Tank::PlayerInputs()
 	else
 		velocity = 0;
 
-	
+
 	float3 rotation = transform->GetRotationEuler();
 	float3 initialRot = rotation;
 
 	if (Input::GetKey(SDL_SCANCODE_A) == INPUT_REPEAT)
-	{	
+	{
 		rotation.y += 1;
 	}
 	else if (Input::GetKey(SDL_SCANCODE_D) == INPUT_REPEAT)
@@ -49,94 +60,90 @@ void Tank::PlayerInputs()
 		rotation.y -= 1;
 	}
 
-	transform->SetLocalTransformation(transform->GetPosition() + forward * velocity, // Tank Position
-									  Rotation(initialRot, rotation),				 // Tank Rotation
-									  transform->GetScale());						 // Tank Scale
 
+	transform->SetLocalTransformation(transform->GetPosition() + forward * velocity, // Tank Position
+		Rotation(initialRot, rotation),				 // Tank Rotation
+		transform->GetScale());						 // Tank Scale
+
+
+	//Turret Rotation-------------------------------------
 
 	float3 turRotation = turretTransform->GetRotationEuler();
-	float3 turInitialRot = rotation;
+	float3 turInitialRot = turRotation;
 
-	/*LineSegment ray = Screen::GetMouseWorldPosition({ (float)Input::GetMouseX() , (float)Input::GetMouseY() });
-	vec lookAt = ray.b - ray.a;
-	
-	float angle = lookAt.Dot(turretTransform->GetForward());*/
+	LineSegment ray = Screen::GetMouseWorldPosition({ (float)Input::GetMouseX() , (float)Input::GetMouseY() });
+
+	float3 lookAt = { ray.b.x - turretTransform->GetPosition().x ,0,  ray.b.z - turretTransform->GetPosition().z };
+	lookAt.Normalize();
+
+	float3 turrForward = { turretTransform->GetForward().x,0, turretTransform->GetForward().z };
+	turrForward.Normalize();
+
+	float angle = acos(turrForward.Dot(lookAt));
+
+	Quat qRotPlus({ 0,1,0 }, angle);
+	Quat qRotMinus({ 0,1,0 }, -angle);
+
+	angle *= RADTODEG;
+	DEBUG_LOG("Angle: %f", angle);
 
 
-	if (rotation.x == 0 && rotation.y > 0)
+	if (angle > 1)
 	{
-		turRotation.y = (-(Input::GetMouseX() * 180 / Screen::GetWidth()) + 90) + (rotation.y);
+		Quat qResultRot = turretTransform->GetRotation();
 
-		if (Input::GetMouseY() > (Screen::GetHeight() / 2))
+		turretTransform->SetLocalTransformation(turretTransform->GetPosition(),					// Turret Position
+			qResultRot * qRotPlus,																// Turret Rotation
+			turretTransform->GetScale());														// Turret Scale
+
+		turrForward = { turretTransform->GetForward().x,0, turretTransform->GetForward().z };
+		turrForward.Normalize();
+
+		angle = acos(turrForward.Dot(lookAt));
+
+		angle *= RADTODEG;
+		DEBUG_LOG("Angle2: %f", angle);
+
+		if (angle > 0.5 || (angle < 0.5 && angle > 0))
 		{
-			turRotation.x = -180;
-			turRotation.z = -180;
-			turRotation.y -= rotation.y * 2;
+			turretTransform->SetLocalTransformation(turretTransform->GetPosition(),
+				qResultRot * qRotMinus,
+				turretTransform->GetScale());
 		}
-		else
-		{
-			turRotation.x = 0;
-			turRotation.z = 0;
-		}
+
 	}
 
-	else if (rotation.x == 0 && rotation.y < 0)
-	{
-		turRotation.y = ((Input::GetMouseX() * 180 / Screen::GetWidth())) - (rotation.y);
 
-		if (Input::GetMouseY() > (Screen::GetHeight() / 2))
+	if (Input::GetMouseButton(SDL_BUTTON_LEFT) == INPUT_DOWN)
+	{
+		if (bulletToShoot != nullptr)
 		{
-			turRotation.y -= (-90 - rotation.y * 2);
-			turRotation.x = 0;
-			turRotation.z = 0;
+			GameObject* newBullet = bulletToShoot->Clone();
+			newBullet->SetActive(true);
+			C_Transform* bulletTrans = newBullet->GetComponent<C_Transform>();
+
+			float3 startPos = transform->GetPosition();
+			startPos.y += 5;
+
+			bulletTrans->SetLocalTransformation(startPos, bulletTrans->GetRotation(), bulletTrans->GetScale());
+
+			C_Script* bulletScript = newBullet->GetComponent<C_Script>();
+
+			if (bulletScript != nullptr)
+			{
+				CollObject* data = bulletScript->GetObjectData();
+
+				if (data != nullptr)
+				{
+					Bullet* myBullet = (Bullet*)data;
+
+					myBullet->SetDir(turretTransform->GetForward());
+				}
+			}
 		}
-		else
-		{
-			turRotation.y -= 270;
-			turRotation.x = -180;
-			turRotation.z = -180;
-		}
+
 	}
 
-	else if ((rotation.x == -180 || rotation.x == 180) && rotation.y > 0)
-	{
-		turRotation.y = (-(Input::GetMouseX() * 180 / Screen::GetWidth())) - (rotation.y);
-
-		if (Input::GetMouseY() > (Screen::GetHeight() / 2))
-		{
-			turRotation.y -= (90 - rotation.y * 2);
-			turRotation.x = -180;
-			turRotation.z = -180;
-		}
-		else
-		{
-			turRotation.y -= 90;
-			turRotation.x = 0;
-			turRotation.z = 0;
-		}
-	}
-
-	else if ((rotation.x == -180 || rotation.x == 180) && rotation.y < 0)
-	{
-		turRotation.y = (-(Input::GetMouseX() * 180 / Screen::GetWidth()));
-
-		if (Input::GetMouseY() > (Screen::GetHeight() / 2))
-		{
-			turRotation.x = -180;
-			turRotation.z = -180;
-			turRotation.y += rotation.y - 90;
-		}
-		else
-		{
-			turRotation.x = 0;
-			turRotation.z = 0;
-			turRotation.y -= rotation.y + 90;
-		}
-	}
-
-	turretTransform->SetLocalTransformation(turretTransform->GetPosition(),					// Turret Position
-		Rotation(turInitialRot, turRotation),	// Turret Rotation
-		turretTransform->GetScale());														// Turret Scale
 }
 
 

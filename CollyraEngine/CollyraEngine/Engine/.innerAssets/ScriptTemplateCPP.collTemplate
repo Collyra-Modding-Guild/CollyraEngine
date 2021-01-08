@@ -15,3 +15,9 @@ void CollyraTemplate::Start()
 void CollyraTemplate::Update()
 {
 }
+
+COLLYRAGAMESYSTEM_EXPORTS CollyraTemplate* CreateCollyraTemplate()
+ {
+	CollyraTemplate* newCollyraTemplate = new CollyraTemplate();
+	return newCollyraTemplate;
+}

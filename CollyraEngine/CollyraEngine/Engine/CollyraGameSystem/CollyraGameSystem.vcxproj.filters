@@ -20,6 +20,9 @@
     <ClInclude Include="GameScripts\Tank.h">
       <Filter>Gameplay Scripts</Filter>
     </ClInclude>
+    <ClInclude Include="GameScripts\Bullet.h">
+      <Filter>Inner System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -29,6 +32,9 @@
       <Filter>Gameplay Scripts</Filter>
     </ClCompile>
     <ClCompile Include="GameScripts\Tank.cpp">
+      <Filter>Gameplay Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScripts\Bullet.cpp">
       <Filter>Gameplay Scripts</Filter>
     </ClCompile>
   </ItemGroup>

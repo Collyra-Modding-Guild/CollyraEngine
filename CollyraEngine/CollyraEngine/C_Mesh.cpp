@@ -314,6 +314,16 @@ void C_Mesh::SetResourceId(uint newId)
 	rMesh = (R_Mesh*)App->resources->RequestResource(rMeshId);
 }
 
+void C_Mesh::SetResourceIdFromName(const char* name)
+{
+	uint ret = App->resources->GetAssetFromName(name, R_TYPE::MESH);
+
+	if (ret > 0)
+	{
+		SetResourceId(ret);
+	}
+}
+
 int C_Mesh::GetResourceId()
 {
 	return rMeshId;

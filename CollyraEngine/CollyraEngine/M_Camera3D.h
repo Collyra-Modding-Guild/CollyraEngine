@@ -29,8 +29,8 @@ public:
 	float3 GetCameraPosition();
 	void SetAspectRatio(float newAspect);
 
-	void ShootRay(float2 mousePosition);
-	LineSegment GetMouseWorldPosition(float2 mousePosition);
+	void ShootRay(float2 mousePosition, C_Camera* from = nullptr);
+	LineSegment GetMouseWorldPosition(float2 mousePosition, C_Camera* myCam = nullptr);
 	
 	C_Camera* GetCamera() const;
 	bool GetSceneCameraCuling() const;

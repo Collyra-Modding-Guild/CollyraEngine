@@ -156,6 +156,10 @@ updateStatus M_Scene::PostUpdate(float dt)
 			}
 		}
 
+		if (currNode->SchedueledToDelte() == true)
+		{
+			DeleteGameObject(currNode);
+		}
 
 	}
 
@@ -193,6 +197,9 @@ updateStatus M_Scene::Draw(bool* drawState)
 			stack.push(currNode->children[i]);
 		}
 	}
+
+	return UPDATE_CONTINUE;
+
 }
 
 updateStatus M_Scene::PreDraw(bool* drawState)
@@ -905,6 +912,8 @@ bool M_Scene::CameraCuling(GameObject* current, C_Camera* myCam)
 	{
 		return false;
 	}
+
+	return false;
 }
 
 void M_Scene::Play()

@@ -8,7 +8,7 @@
 
 class R_Mesh;
 
-class C_Mesh : public Component
+class __declspec(dllexport) C_Mesh : public Component
 {
 public:
 	C_Mesh(bool active = true);
@@ -49,6 +49,7 @@ public:
 	void SetDrawingNormFaces(bool newState);
 
 	void SetResourceId(uint newId);
+	void SetResourceIdFromName(const char* name);
 	int GetResourceId();
 
 	std::string GetName() const;

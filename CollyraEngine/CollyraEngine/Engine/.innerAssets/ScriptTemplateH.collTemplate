@@ -15,9 +15,6 @@ public:
 
 };
 
-COLLYRAGAMESYSTEM_EXPORTS CollyraTemplate* CreateCollyraTemplate() {
-	CollyraTemplate* newCollyraTemplate = new CollyraTemplate();
-	return newCollyraTemplate;
-}
+COLLYRAGAMESYSTEM_EXPORTS CollyraTemplate* CreateCollyraTemplate();
 
 

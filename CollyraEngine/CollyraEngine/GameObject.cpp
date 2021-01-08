@@ -12,7 +12,7 @@
 #include "C_Script.h"
 
 GameObject::GameObject(std::string name) : parent(nullptr), uid(0), name(name), active(true),
-selected(false)
+selected(false), readyToDelete(false)
 {}
 
 GameObject::~GameObject()
@@ -212,6 +212,88 @@ void GameObject::SetActive(bool newState)
 bool GameObject::IsActive() const
 {
 	return active;
+}
+
+GameObject* GameObject::Clone()
+{
+	GameObject* ret = App->scene->CreateGameObject(this->name, this->parent);
+
+	ret->uid = App->scene->GenerateId();
+	ret->aabb = this->aabb;
+	ret->obb = this->obb;
+	ret->selected = this->selected;
+	ret->active = this->active;
+	ret->readyToDelete = this->readyToDelete;
+
+	for (int i = 0; i < this->components.size(); i++)
+	{
+		switch (components[i]->GetType())
+		{
+		case COMPONENT_TYPE::TRANSFORM:
+		{
+			C_Transform* newTransform = ret->GetComponent<C_Transform>();
+			C_Transform* oldTransform = this->GetComponent<C_Transform>();
+
+			newTransform->SetLocalTransformation(oldTransform->GetLocalTransform());
+		}
+			break;
+		case COMPONENT_TYPE::MESH:
+		{
+			C_Mesh* newMeshComp = (C_Mesh*)ret->CreateComponent(COMPONENT_TYPE::MESH);
+			C_Mesh* oldMesh = (C_Mesh*)components[i];
+
+			newMeshComp->SetResourceId(oldMesh->GetResourceId());
+		}
+			break;
+		case COMPONENT_TYPE::MATERIAL:
+		{
+			C_Material* newMaterialComp = (C_Material*)ret->CreateComponent(COMPONENT_TYPE::MATERIAL);
+			C_Material* oldMatComp = (C_Material*)components[i];
+
+			newMaterialComp->SetResourceId(oldMatComp->GetResourceId());
+		}
+			break;
+		case COMPONENT_TYPE::CAMERA:
+		{
+			C_Camera* newCamComp = (C_Camera*)ret->CreateComponent(COMPONENT_TYPE::CAMERA);
+			C_Camera* oldCamComp = (C_Camera*)components[i];
+
+
+			newCamComp->SetHorizontalFov(oldCamComp->GetHorizontalFov());
+			newCamComp->SetNearPlane(oldCamComp->GetNearPlane());
+			newCamComp->SetFarPlane(oldCamComp->GetFarPlane());
+		}
+			break;
+		case COMPONENT_TYPE::SCRIPT:
+		{
+			C_Script* newScriptComp = (C_Script*)ret->CreateComponent(COMPONENT_TYPE::SCRIPT);
+			C_Script* oldScriptComp = (C_Script*)components[i];
+
+			newScriptComp->SetResourceId(oldScriptComp->GetResourceId());
+		}
+			break;
+		default:
+			break;
+		}
+	}
+	
+	for (int i = 0; i < this->children.size(); i++)
+	{
+		ret->AddChildren(this->children[i]->Clone());
+	}
+
+	return ret;
+}
+
+void GameObject::Delete()
+{
+	active = false;
+	readyToDelete = true;
+}
+
+bool GameObject::SchedueledToDelte() const
+{
+	return readyToDelete;
 }
 
 void GameObject::SetParent(GameObject* newParent)

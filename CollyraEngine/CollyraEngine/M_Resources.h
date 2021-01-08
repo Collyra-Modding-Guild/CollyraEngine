@@ -72,6 +72,8 @@ public:
 
 	void NotifyHotReload();
 
+	uint GetAssetFromName(const char* name, R_TYPE assetType);
+
 private:
 	void SearchAllAssetFiles();
 	void CheckAssetsImport(PathNode& pathnode);

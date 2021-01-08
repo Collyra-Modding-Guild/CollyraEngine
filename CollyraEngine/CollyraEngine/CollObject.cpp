@@ -8,6 +8,7 @@
 #include "M_Window.h"
 #include "M_UIManager.h"
 #include "M_Camera3D.h"
+#include "M_Renderer3D.h"
 
 #include "Globals.h"
 
@@ -66,12 +67,12 @@ void gameObject::DeleteCamera(Component* component)
 
 int Input::GetMouseX()
 {
-	return App->input->GetMouseX();
+	return	App->uiManager->GetImGuiMousePosition().x;
 }
 
 int Input::GetMouseY()
 {
-	return App->input->GetMouseY();
+	return	App->uiManager->GetImGuiMousePosition().y;
 }
 
 int Input::GetMouseZ()
@@ -101,5 +102,5 @@ int Screen::GetWidth()
 
 LineSegment Screen::GetMouseWorldPosition(float2 mousePosition)
 {
-	return App->camera->GetMouseWorldPosition(mousePosition);
+	return App->camera->GetMouseWorldPosition(mousePosition, App->renderer3D->GetCurrentPlayCam());
 }

@@ -54,8 +54,11 @@ bool M_Resources::Start()
 	CheckAssetsImport(allAssetFiles);
 	UpdateChangedResources();
 
-	//uint toLoad = ImportResourceFromAssets("Assets/Models/Street environment_V01.FBX");
-	//RequestResource(toLoad);
+	//Make sure all innerAssets are imported
+	App->resources->ImportResourceFromAssets(".innerAssets/cube.FBX");
+	App->resources->ImportResourceFromAssets(".innerAssets/Sphere.FBX");
+	App->resources->ImportResourceFromAssets(".innerAssets/Cylinder.FBX");
+	App->resources->ImportResourceFromAssets(".innerAssets/Pyramid.FBX");
 
 	updateAssetsTimer.Start();
 
@@ -745,6 +748,29 @@ void M_Resources::NotifyHotReload()
 	UpdateChangedResources();
 }
 
+uint M_Resources::GetAssetFromName(const char* name, R_TYPE assetType)
+{
+	uint ret = 0;
+	this->GetAllLibraryFiles();
+
+	std::string libPath = App->physFS->FindInPathNode(name, allLibFiles);
+
+	if (libPath != "")
+	{
+		std::string name;
+		App->physFS->SplitFilePath(libPath.c_str(), nullptr, nullptr, &name);
+
+		size_t itemSeparator = name.find("_coll_");
+		name = name.substr(itemSeparator + 6);
+
+		uint id = std::stoi(name);
+
+		ret = id;
+	}
+
+	return ret;
+}
+
 std::string M_Resources::DuplicateFile(const char* path)
 {
 	std::string normalizedPath = App->physFS->NormalizePath(path);
@@ -823,6 +849,7 @@ uint32 M_Resources::ImportResource(std::string path, uint32 forceid)
 	else
 	{
 		LOG("Could not import %s! Extension unknown or file not found", path.c_str());
+		return 0;
 	}
 }
 

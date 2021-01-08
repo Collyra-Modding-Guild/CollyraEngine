@@ -21,7 +21,7 @@ enum class COMPONENT_TYPE
 
 class Component;
 
-class GameObject
+class __declspec(dllexport) GameObject
 {
 public:
 
@@ -36,6 +36,11 @@ public:
 	void Disable();
 	void SetActive(bool newState);
 	bool IsActive() const;
+
+	GameObject* Clone();
+
+	void Delete();
+	bool SchedueledToDelte() const;
 
 	Component* CreateComponent(COMPONENT_TYPE type);
 
@@ -92,6 +97,7 @@ private:
 
 	bool selected;
 	bool active;
+	bool readyToDelete;
 
 };
 

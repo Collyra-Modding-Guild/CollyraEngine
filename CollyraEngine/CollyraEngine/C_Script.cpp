@@ -26,7 +26,7 @@ void C_Script::SetResourceId(uint newId)
 	myScript = (R_Script*)App->resources->RequestResource(scriptId);
 
 	GenerateObjectData();
-
+	
 }
 
 int C_Script::GetResourceId() const
@@ -188,7 +188,7 @@ void C_Script::GenerateObjectData()
 					dataObject->SetMyGameObject(GetGameObject());
 				}
 
-				if (App->gameClock->IsPlaying() == true)
+				if (App->gameClock->running == true)
 				{
 					dataObject->Start();
 				}
@@ -199,4 +199,9 @@ void C_Script::GenerateObjectData()
 			}
 		}
 	}
+}
+
+CollObject* C_Script::GetObjectData() const
+{
+	return dataObject;
 }

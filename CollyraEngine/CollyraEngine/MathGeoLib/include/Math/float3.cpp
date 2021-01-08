@@ -1113,12 +1113,12 @@ std::ostream &operator <<(std::ostream &out, const float3 &rhs)
 }
 #endif
 
-const float3 float3::zero = float3(0, 0, 0);
-const float3 float3::one = float3(1, 1, 1);
-const float3 float3::unitX = float3(1, 0, 0);
-const float3 float3::unitY = float3(0, 1, 0);
-const float3 float3::unitZ = float3(0, 0, 1);
-const float3 float3::nan = float3(FLOAT_NAN, FLOAT_NAN, FLOAT_NAN);
-const float3 float3::inf = float3(FLOAT_INF, FLOAT_INF, FLOAT_INF);
+__declspec(dllexport) const float3 float3::zero = float3(0, 0, 0);
+__declspec(dllexport) const float3 float3::one = float3(1, 1, 1);
+__declspec(dllexport) const float3 float3::unitX = float3(1, 0, 0);
+__declspec(dllexport) const float3 float3::unitY = float3(0, 1, 0);
+__declspec(dllexport) const float3 float3::unitZ = float3(0, 0, 1);
+__declspec(dllexport) const float3 float3::nan = float3(FLOAT_NAN, FLOAT_NAN, FLOAT_NAN);
+__declspec(dllexport)const float3 float3::inf = float3(FLOAT_INF, FLOAT_INF, FLOAT_INF);
 
 MATH_END_NAMESPACE

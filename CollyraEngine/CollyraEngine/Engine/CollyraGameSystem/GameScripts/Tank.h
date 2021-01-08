@@ -25,6 +25,8 @@ private:
 
 	GameObject*		myTurret;
 
+	GameObject*		bulletToShoot;
+
 };
 
 COLLYRAGAMESYSTEM_EXPORTS Tank* CreateTank() {

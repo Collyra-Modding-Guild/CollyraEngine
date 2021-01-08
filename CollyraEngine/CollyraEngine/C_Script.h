@@ -6,7 +6,7 @@
 class R_Script;
 class CollObject;
 
-class C_Script : public Component
+class __declspec(dllexport) C_Script : public Component
 {
 public:
 
@@ -29,6 +29,7 @@ public:
 
 	void DeleteObjectData();
 	void GenerateObjectData();
+	CollObject* GetObjectData() const;
 
 private:
 	uint		scriptId;

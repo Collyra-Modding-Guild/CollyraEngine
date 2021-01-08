@@ -207,6 +207,8 @@ bool Application::CompileDll(bool stopIfFailed, bool copyResult)
 	info.cb = sizeof(info);
 	ZeroMemory(&procInfo, sizeof(procInfo));
 
+	LOG("Compiling Dll... This could take a while...");
+
 	DWORD retWord = 0;
 	if (CreateProcessA("_compile.bat", NULL, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &info, &procInfo))
 	{
