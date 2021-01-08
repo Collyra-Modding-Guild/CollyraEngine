@@ -14,7 +14,7 @@
 
 
 <h2 align="center" id="Controls">Controls</h2>
-<h2 align="center">General</h2>
+<h3 align="center">General</h3>
 <ul>
   <li> Left click to interactuate will all the buttons, input boxes, drag inputs, etc.</li>
   <li> Drag & Drop of Assets (supported fbx for models; dds, jpg and png for textures) from anywhere on the disk and shows them into the Assets window.</li>
@@ -22,7 +22,7 @@
   <li> Gizmos Modes (once a Game Object focused): keyboard key W (Translate), E (Rotate) & R (Scale).</li>
 </ul>
 
-<h2 align="center">Camera</h2>
+<h3 align="center">Camera</h3>
 <ul>
   <li> Right Click + WASD to move for a fps-like movement</li>
   <li> Middle mouse click + Mouse movement to pan in the plane of the Camera</li>
@@ -32,14 +32,14 @@
   <li>All the inputs that involve a mouse click, must be in the scene window, otherwise they won't work.</li>
 </ul>
 
-<h2 align="center">Hierarchy</h2>
+<h3 align="center">Hierarchy</h3>
 <ul>
   <li> SUPR will delete the focus element & all its childs</li>
   <li> Left click on the arrow to fold/unfold the node's structure.</li>
   <li> Left click + Drag to re-parent an object.</li>
 </ul>
 
-<h2 align="center">File Explorer</h2>
+<h3 align="center">File Explorer</h3>
 <ul>
   <li> Double click or drag into the scene window to load them.</li>
   <li> Middle click to delete an object..</li>
