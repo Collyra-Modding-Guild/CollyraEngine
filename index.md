@@ -4,6 +4,8 @@
 
 <p align="justify">Collyra Engine is an open source student Game Engine made for the Game Engines class of the Citm's Bachelor's degree in Video Game Design and Development, made by Junior Students.</p>
 
+<p><br /><br /></p>
+
 <h2 align="center" >Features</h2>
 <ul>
   <li> GameObject & Component Structure</li>
@@ -24,6 +26,11 @@
 
 <h3 align="center">In-Engine or VS Script Edition</h3>
 <p align="justify">You can modify your scripts in real-time using the built text editor, VS or your preferred code editing tool.</p>
+
+<img src="http://i.stack.imgur.com/SBv4T.gif" alt="this slowpoke moves"  width=250/>
+
+
+<p><br /><br /></p>
 
 <h2 align="center" id="Controls">Controls</h2>
 <h3 align="center">General</h3>
