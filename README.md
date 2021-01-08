@@ -96,6 +96,7 @@ All the inputs that involve a mouse click, must be in the scene window, otherwis
 - The Gameplay System assumes that you have VS installed & the Desktop Development with C/C++ extension, if you don't have this, please install them for the engine to execute succesfully.
 - WARNING: The engine uses MSBuild to compile the Gameplay System & needs you absolute path to VsVarshall.bat to execute, if your path is in a different folder than the one that comes by default, please go to Config/config.collConfig & change the path so it fits your own.
 - This applies also for the temprary folder.
+- Once you add a file in Visual Studio (only in release), compile pressing Ctrl+B to notify the visual studio that you added a file to the compilation.
 
 ## License:
 MIT License
