@@ -70,12 +70,14 @@ updateStatus M_Camera3D::Update(float dt)
 		{
 			FocusGameObject(App->scene->focusedGameObject);
 		}
+
+		if (inputModule->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
+		{
+			ShootRay({ App->uiManager->GetImGuiMousePosition().x, App->uiManager->GetImGuiMousePosition().y }, App->renderer3D->GetCurrentPlayCam());
+		}
 	}
 
-	if (inputModule->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
-	{
-		ShootRay({ App->uiManager->GetImGuiMousePosition().x, App->uiManager->GetImGuiMousePosition().y }, App->renderer3D->GetCurrentPlayCam());
-	}
+
 
 
 	return UPDATE_CONTINUE;

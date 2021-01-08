@@ -16,7 +16,7 @@
 #include <fstream> 
 
 
-Application::Application(int argc, char* args[]) : argc(argc), args(args), gameSystemDll(nullptr), stopExecution(false), vcVarshall_Path("")
+Application::Application(int argc, char* args[]) : argc(argc), args(args), gameSystemDll(nullptr), stopExecution(false), vcVarshall_Path(""), tempFolderPath("")
 {
 	window = new M_Window(M_WINDOW, true);
 	input = new M_Input(M_INPUT, true);
@@ -53,9 +53,9 @@ Application::Application(int argc, char* args[]) : argc(argc), args(args), gameS
 	AddModule(renderer3D);
 
 	//Dll Compile
-	vcVarshall_Path = LoadVsVarshallPath();
+	bool configLoaded = LoadConfig();
 
-	if (vcVarshall_Path != "")
+	if (vcVarshall_Path != "" && tempFolderPath != "")
 	{
 		if (CompileDll(true) == false)
 		{
@@ -180,8 +180,8 @@ bool Application::CompileDll(bool stopIfFailed, bool copyResult)
 	}
 
 	DeleteFile("_compilation_output.txt");
-	DeleteAllFilesWin(TEMP_DLL_FOLDER);
-	RemoveDirectory(TEMP_DLL_FOLDER);
+	DeleteAllFilesWin(tempFolderPath.c_str());
+	RemoveDirectory(tempFolderPath.c_str());
 
 	char auxString[256];
 	std::ofstream batch;
@@ -195,7 +195,7 @@ bool Application::CompileDll(bool stopIfFailed, bool copyResult)
 	// Probably not necessary thought
 
 	sprintf_s(auxString, "MSBuild \"%s\" /t:%s /p:Configuration=%s  /p:Platform=%s /p:OutDir=%s >> _compilation_output.txt",
-		GAMEPLAY_PROJECT_PATH, COMPILE_ACTIONS, COMPILE_MODE, COMPILE_PLATFORM, TEMP_DLL_FOLDER);
+		GAMEPLAY_PROJECT_PATH, COMPILE_ACTIONS, COMPILE_MODE, COMPILE_PLATFORM, tempFolderPath.c_str());
 	batch << auxString << std::endl;
 
 	batch.close();
@@ -264,7 +264,7 @@ bool Application::CopyNewDll()
 	gameSystemDll = 0;
 
 	LOG("Compilation Completed! Copying file to engine folder...");
-	std::string tmpDllLocation = std::string(TEMP_DLL_FOLDER).append(GAMEPLAY_DLL_NAME);
+	std::string tmpDllLocation = std::string(tempFolderPath).append(GAMEPLAY_DLL_NAME);
 
 	bool result = CopyFileA(tmpDllLocation.c_str(), GAMEPLAY_DLL_NAME, false);
 	DWORD error = GetLastError();
@@ -279,8 +279,8 @@ bool Application::CopyNewDll()
 	gameSystemDll = LoadLibrary(std::string(GAMEPLAY_DLL_NAME).data());
 
 	LOG("Deleting temp folders & files...");
-	DeleteAllFilesWin(TEMP_DLL_FOLDER);
-	RemoveDirectory(TEMP_DLL_FOLDER);
+	DeleteAllFilesWin(tempFolderPath.c_str());
+	RemoveDirectory(tempFolderPath.c_str());
 	DeleteFile("_compilation_output.txt");
 
 	return ret;
@@ -531,7 +531,7 @@ void Application::AddModule(Module* mod)
 	moduleList.push_back(mod);
 }
 
-void Application::DeleteAllFilesWin(char* folderPath)
+void Application::DeleteAllFilesWin(const char* folderPath)
 {
 	char fileFound[256];
 	WIN32_FIND_DATA info;
@@ -562,19 +562,22 @@ bool Application::FileExistsWin(const char* file)
 	return found;
 }
 
-std::string Application::LoadVsVarshallPath()
+bool Application::LoadConfig()
 {
 	char* buffer = nullptr;
 	uint size = physFS->Load(VCVARSALLCONFIG_PATH, &buffer);
-	std::string ret = "";
+	bool ret = false;
 
 	if (size > 0)
 	{
 		JsonConfig jsonFile(buffer);
 		if (jsonFile.IsInitialized())
 		{
-			ret = jsonFile.GetString("VsVarshallPath").c_str();
+			vcVarshall_Path = jsonFile.GetString("VsVarshallPath").c_str();
+			tempFolderPath = jsonFile.GetString("TempFolder").c_str();
+			ret = true;
 		}
+
 	}
 
 	return ret;

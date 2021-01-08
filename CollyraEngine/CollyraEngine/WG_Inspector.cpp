@@ -212,21 +212,21 @@ void WG_Inspector::DrawTransformComponent(ImGuiTreeNodeFlags_ flag)
 		ImGui::Text("X");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		transformUpdate = ImGui::DragFloat("##scaX", &selectedScale.x);
+		transformUpdate = ImGui::DragFloat("##scaX", &selectedScale.x, 1.0, 0.001, FLT_MAX);
 		anyTransformPerformed ? transformUpdate : anyTransformPerformed = transformUpdate;
 
 		ImGui::SameLine();
 		ImGui::Text("Y");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		transformUpdate = ImGui::DragFloat("##scaY", &selectedScale.y);
+		transformUpdate = ImGui::DragFloat("##scaY", &selectedScale.y, 1.0, 0.001, FLT_MAX);
 		anyTransformPerformed ? transformUpdate : anyTransformPerformed = transformUpdate;
 
 		ImGui::SameLine();
 		ImGui::Text("Z");
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(50.0f);
-		transformUpdate = ImGui::DragFloat("##scaZ", &selectedScale.z);
+		transformUpdate = ImGui::DragFloat("##scaZ", &selectedScale.z, 1.0, 0.001, FLT_MAX);
 		anyTransformPerformed ? transformUpdate : anyTransformPerformed = transformUpdate;
 
 		if (anyTransformPerformed)
@@ -524,7 +524,7 @@ bool WG_Inspector::DrawScriptComponent(ImGuiTreeNodeFlags_ flag, C_Script* scrip
 	ImGui::SameLine();
 
 	bool deleteScriptComponent = true;
-	if (ImGui::CollapsingHeader("Script", &deleteScriptComponent, flag))
+	if (ImGui::CollapsingHeader(std::string("Script").append("_" + std::to_string(index)).c_str(), &deleteScriptComponent, flag))
 	{
 
 		ImGui::Text("	Current Script");

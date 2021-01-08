@@ -19,7 +19,6 @@
 #define VCVARSALLCONFIG_PATH "/Config/config.collConfig"
 #define COMPILE_PLATFORM "Win32"
 #define COMPILE_TARGET "x86"
-#define TEMP_DLL_FOLDER "C:\\temp\\CollyraEngine\\"
 #define COMPILE_MODE "Debug"
 #define GAMEPLAY_PROJECT_PATH "CollyraGameSystem\\CollyraGameSystem.vcxproj"
 #define COMPILE_ACTIONS "Build"
@@ -105,6 +104,7 @@ private:
 	bool pause = false; //Bool that controls the pause of the game
 
 	std::string vcVarshall_Path;
+	std::string tempFolderPath;
 
 
 public:
@@ -144,10 +144,10 @@ private:
 	void AddModule(Module* mod);
 	void PrepareUpdate();
 	void FinishUpdate();
-	void DeleteAllFilesWin(char* folderPath);
+	void DeleteAllFilesWin(const char* folderPath);
 	bool FileExistsWin(const char* file);
 
-	std::string LoadVsVarshallPath();
+	bool LoadConfig();
 
 
 };
