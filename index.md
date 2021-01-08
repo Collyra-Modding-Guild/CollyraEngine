@@ -13,10 +13,10 @@
 
 <h2 align="center" >Features</h2>
 <ul>
-  <li GameObject & Component Structure</li>
-  <li Custom Library importers & scene management</li>
-  <li Real-time rendering w/ scene manipulation</li>
-   <li Scripting System based on C++</li>
+  <li> GameObject & Component Structure</li>
+  <li> Custom Library importers & scene management</li>
+  <li> Real-time rendering w/ scene manipulation</li>
+   <li> Scripting System based on C++</li>
 </ul>
 
 
