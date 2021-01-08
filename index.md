@@ -21,7 +21,7 @@
 <h3 align="center">Real Time Hot-reloading</h3>
 <p align="justify">You are able to refresh the scripting content without stop compiling the engine. This allows for faster iterations! If you want to know more about how it works, check the readme included in the Release.</p>
 
-<img src="https://raw.githubusercontent.com/Collyra-Modding-Guild/CollyraEngine/gh-pages/hotReloading.gif" alt="this slowpoke moves"  width=250/>
+<img src="https://raw.githubusercontent.com/Collyra-Modding-Guild/CollyraEngine/gh-pages/hotReloading.gif" alt="this slowpoke moves" />
 
 <h3 align="center">Creation of new scripts</h3>
 <p align="justify">Collyra Engine gives you to create new scripts using in-engine tools! To know more about its usage of these tools check the readme.</p>
@@ -29,7 +29,7 @@
 <h3 align="center">In-Engine or VS Script Edition</h3>
 <p align="justify">You can modify your scripts in real-time using the built text editor, VS or your preferred code editing tool.</p>
 
-<img src="https://raw.githubusercontent.com/Collyra-Modding-Guild/CollyraEngine/gh-pages/textEditor.gif" alt="this slowpoke moves"  width=250/>
+<img src="https://raw.githubusercontent.com/Collyra-Modding-Guild/CollyraEngine/gh-pages/textEditor.gif" alt="this slowpoke moves" />
 
 
 <p><br /><br /></p>
