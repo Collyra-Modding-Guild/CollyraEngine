@@ -1,11 +1,57 @@
 
 <h1 align="center" id="collyra-engine">Collyra Engine</h1>
 
-<p>Welcome to the webpage of <a href="https://github.com/AaronGCProg/SamuraiShodown-XMatStudio">Collyra Engine</a></p>
+<p>Welcome to the webpage of <a href="https://github.com/Collyra-Modding-Guild/CollyraEngine/tree/master">Collyra Engine</a></p>
 
 <p align="justify">Collyra Engine is an open source student Game Engine made for the Game Engines class of the Citm's Bachelor's degree in Video Game Design and Development, made by Junior Students.</p>
 
-<p><br /><br /></p>
+<h1 align="center" id="collyra-engine">Collyra Engine</h1>
+
+<p>Welcome to the webpage of <a href="https://github.com/Collyra-Modding-Guild/CollyraEngine/tree/master">Collyra Engine</a></p>
+
+<p align="justify">Collyra Engine is an open source student Game Engine made for the Game Engines class of the Citm's Bachelor's degree in Video Game Design and Development, made by Junior Students.</p>
+
+<h2 align="center" >Features</h2>
+<ul>
+  <li GameObject & Component Structure</li>
+  <li Custom Library importers & scene management</li>
+  <li Real-time rendering w/ scene manipulation</li>
+   <li Scripting System based on C++</li>
+</ul>
+
+
+<h2 align="center" id="Controls">Controls</h2>
+<h2 align="center">General</h2>
+<ul>
+  <li> Left click to interactuate will all the buttons, input boxes, drag inputs, etc.</li>
+  <li> Drag & Drop of Assets (supported fbx for models; dds, jpg and png for textures) from anywhere on the disk and shows them into the Assets window.</li>
+  <li> Drag & Drop of Imported Files (our double click) to load them into the scene window and middle click to delete an imported file.</li>
+  <li> Gizmos Modes (once a Game Object focused): keyboard key W (Translate), E (Rotate) & R (Scale).</li>
+</ul>
+
+<h2 align="center">Camera</h2>
+<ul>
+  <li> Right Click + WASD to move for a fps-like movement</li>
+  <li> Middle mouse click + Mouse movement to pan in the plane of the Camera</li>
+  <li> Mouse wheel should zoom in and out, if an object is focused it doesn't change the rotation pivot</li>
+  <li> F focus the camera to the selected GameObject, once it's selected Alt+Left Click to rotate arround it; any other movement that it's not that one or zoom will "break" the focus.</li>
+  <li> Holding SHIFT duplicates movement speed for every movement (except zoom)</li>
+  <li>All the inputs that involve a mouse click, must be in the scene window, otherwise they won't work.</li>
+</ul>
+
+<h2 align="center">Hierarchy</h2>
+<ul>
+  <li> SUPR will delete the focus element & all its childs</li>
+  <li> Left click on the arrow to fold/unfold the node's structure.</li>
+  <li> Left click + Drag to re-parent an object.</li>
+</ul>
+
+<h2 align="center">File Explorer</h2>
+<ul>
+  <li> Double click or drag into the scene window to load them.</li>
+  <li> Middle click to delete an object..</li>
+</ul>
+
 
 <details> 
   <summary> ENGINE LICENSE </summary>
@@ -43,7 +89,7 @@ SOFTWARE.</p>
 
 <center>
 
-<font size="6"><a href="">Download our Engine Release</a></font>
+<font size="https://github.com/Collyra-Modding-Guild/CollyraEngine/releases/download/v0.4/Collyra.Engine.0.4.zip"><a href="">Download our Engine Release</a></font>
 
 </center>
 
