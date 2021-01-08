@@ -84,6 +84,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.</p>
 </details>
 
+<p><br /><br /></p>
+
 <h2 align="center" id="collyra-engine-trailer">Collyra Engine Trailer</h2>
 
 <iframe width="510" height="412" src="https://www.youtube.com/embed/vb5-IjvY0jY" frameborder="0" allowfullscreen="">
@@ -94,7 +96,7 @@ SOFTWARE.</p>
 
 <center>
 
-<font size="https://github.com/Collyra-Modding-Guild/CollyraEngine/releases/download/v0.4/Collyra.Engine.0.4.zip"><a href="">Download our Engine Release</a></font>
+<h1 size="https://github.com/Collyra-Modding-Guild/CollyraEngine/releases/download/v0.4/Collyra.Engine.0.4.zip"><a href="">Download our Engine Release</a></h1>
 
 </center>
 
