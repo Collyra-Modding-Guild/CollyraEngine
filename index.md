@@ -1,5 +1,5 @@
 
-<h1 align="center" id="collyra-engine">Collyra Engine</h2>
+<h1 align="center" id="collyra-engine">Collyra Engine</h1>
 
 <p>Welcome to the webpage of <a href="https://github.com/AaronGCProg/SamuraiShodown-XMatStudio">Collyra Engine</a></p>
 
