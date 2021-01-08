@@ -1,10 +1,3 @@
-
-<h1 align="center" id="collyra-engine">Collyra Engine</h1>
-
-<p>Welcome to the webpage of <a href="https://github.com/Collyra-Modding-Guild/CollyraEngine/tree/master">Collyra Engine</a></p>
-
-<p align="justify">Collyra Engine is an open source student Game Engine made for the Game Engines class of the Citm's Bachelor's degree in Video Game Design and Development, made by Junior Students.</p>
-
 <h1 align="center" id="collyra-engine">Collyra Engine</h1>
 
 <p>Welcome to the webpage of <a href="https://github.com/Collyra-Modding-Guild/CollyraEngine/tree/master">Collyra Engine</a></p>
