@@ -38,11 +38,11 @@ void Tank::PlayerInputs()
 
 	if (Input::GetKey(SDL_SCANCODE_W) == INPUT_REPEAT)
 	{
-		velocity = 0.1f;
+		velocity = 10.0f;
 	}
 	else if (Input::GetKey(SDL_SCANCODE_S) == INPUT_REPEAT)
 	{
-		velocity = -0.1f;
+		velocity = -10.0f;
 	}
 	else
 		velocity = 0;
@@ -60,8 +60,10 @@ void Tank::PlayerInputs()
 		rotation.y -= 1;
 	}
 
+	DEBUG_LOG("%f", Time::GetDeltaTime());
 
-	transform->SetLocalTransformation(transform->GetPosition() + forward * velocity, // Tank Position
+
+	transform->SetLocalTransformation(transform->GetPosition() + forward * velocity * Time::GetDeltaTime(), // Tank Position
 		Rotation(initialRot, rotation),				 // Tank Rotation
 		transform->GetScale());						 // Tank Scale
 

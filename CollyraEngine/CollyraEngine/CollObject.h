@@ -76,3 +76,8 @@ namespace Screen
 	__declspec(dllexport) LineSegment GetMouseWorldPosition(float2 mousePosition);
 }
 
+namespace Time
+{
+	__declspec(dllexport) float GetDeltaTime();
+}
+

@@ -12,12 +12,12 @@ void Bullet::Start()
 {
 	destroyTimer.Start();
 	myTransform = GetMyGameObject()->GetComponent<C_Transform>();
-	speed = 2;
+	speed = 50;
 }
 
 void Bullet::Update()
 {
-	myTransform->SetLocalTransformation(myTransform->GetPosition() + dir.Mul(speed),
+	myTransform->SetLocalTransformation(myTransform->GetPosition() + dir.Mul(speed) * Time::GetDeltaTime(),
 		myTransform->GetRotation(),
 		myTransform->GetScale());
 

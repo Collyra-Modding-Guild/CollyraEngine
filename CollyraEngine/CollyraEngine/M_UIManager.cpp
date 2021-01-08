@@ -249,7 +249,7 @@ bool M_UIManager::ShowMainMenuBar()
 				ret = false;
 			}
 
-			if (ImGui::MenuItem("Reload Game System", "Ctrl-B"))
+			if (ImGui::MenuItem("Reload Game System", NULL))
 			{
 				App->scriptInterface->PerformHotReload();
 			}

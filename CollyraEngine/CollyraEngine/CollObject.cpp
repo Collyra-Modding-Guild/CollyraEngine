@@ -104,3 +104,8 @@ LineSegment Screen::GetMouseWorldPosition(float2 mousePosition)
 {
 	return App->camera->GetMouseWorldPosition(mousePosition, App->renderer3D->GetCurrentPlayCam());
 }
+
+float Time::GetDeltaTime()
+{
+	return App->GetGameDeltaTime();
+}

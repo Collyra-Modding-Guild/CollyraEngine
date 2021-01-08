@@ -23,7 +23,7 @@ M_Camera3D::M_Camera3D(MODULE_TYPE type, bool startEnabled) : Module(type, start
 	orbitalReference = float3(0.0f, 0.0f, -15.0f);
 
 	sceneCamera = new C_Camera();
-	sceneCamera->SetCulling(false);
+	sceneCamera->SetCulling(true);
 }
 
 M_Camera3D::~M_Camera3D()
