@@ -12,6 +12,18 @@
    <li> Scripting System based on C++</li>
 </ul>
 
+<h2 align="center" >Gameplay System</h2>
+<h3 align="center">Based on C++</h3>
+<p align="justify">Collyra Engine integrates a class-based Scripting System that allows you to moddify gameplay in real time!</p>
+
+<h3 align="center">Real Time Hot-reloading</h3>
+<p align="justify">You are able to refresh the scripting content without stop compiling the engine. This allows for faster iterations! If you want to know more about how it works, check the readme included in the Release.</p>
+
+<h3 align="center">Creation of new scripts</h3>
+<p align="justify">Collyra Engine gives you to create new scripts using in-engine tools! To know more about its usage of these tools check the readme.</p>
+
+<h3 align="center">In-Engine or VS Script Edition</h3>
+<p align="justify">You can modify your scripts in real-time using the built text editor, VS or your preferred code editing tool.</p>
 
 <h2 align="center" id="Controls">Controls</h2>
 <h3 align="center">General</h3>
