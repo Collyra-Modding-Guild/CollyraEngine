@@ -1,37 +1,47 @@
-## Welcome to GitHub Pages
 
-You can use the [editor on GitHub](https://github.com/Collyra-Modding-Guild/CollyraEngine/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+<p>Welcome to the webpage of <a href="https://github.com/AaronGCProg/SamuraiShodown-XMatStudio">Collyra Engine</a></p>
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+<p align="justify">Collyra Engine is an open source student Game Engine made for the Game Engines class of the Citm's Bachelor's degree in Video Game Design and Development, made by Junior Students.</p>
 
-### Markdown
+<p><br /><br /></p>
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+<h2 align="center" id="samurai-shodown-x-mat-studio">Collyra Engine</h2>
 
-```markdown
-Syntax highlighted code block
+<iframe width="510" height="412" src="https://www.youtube.com/embed/P8MXNEiODTw" frameborder="0" allowfullscreen="">
+</iframe>
+<p>You can also enjoy the trailer by  <a href="https://drive.google.com/file/d/1mFSbRy9OxuS2HH5P3BAMak9hAOLAuKGy/view?usp=sharing">clicking here.</a></p>
 
-# Header 1
-## Header 2
-### Header 3
+<p><br /><br /></p>
 
-- Bulleted
-- List
+<center>
 
-1. Numbered
-2. List
+<font size="6"><a href="">Download our Engine Release</a></font>
 
-**Bold** and _Italic_ and `Code` text
+</center>
 
-[Link](url) and ![Image](src)
-```
+<p><br /><br /></p>
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+<center>
+  
+<h2 align="center" id="team-members">Team Members</h2>
 
-### Jekyll Themes
+<table style="width:100%">
+  <tr>
+    <th>Member</th>
+    <th>Role</th> 
+    <th>Portrait</th>
+  </tr>
+  <tr>
+    <td> <a href="https://github.com/AaronGCProg">Aarón Guerrero</a></td>
+    <td>Code</td> 
+    <td><img src="https://raw.githubusercontent.com/AaronGCProg/SamuraiShodown-XMatStudio/master/docs/aaronPortrait.png" alt="Aaron" class="inline" /></td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/AlexMelenchon">Àlex Melenchón</a></td>
+    <td>Code</td> 
+    <td><img src="https://raw.githubusercontent.com/AaronGCProg/SamuraiShodown-XMatStudio/master/docs/alexPortrait.png" alt="Alex" class="inline" /></td>
+  </tr>
+</table>
+</center>
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/Collyra-Modding-Guild/CollyraEngine/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+<p><br /><br /></p>
