@@ -35,6 +35,16 @@ It shows all the resources that are ready to load. You can double click or drag 
 
 ### Play Bar
 Finally, in the play bar you will see the buttons that manage the game state time. Play will save the current scene and enter into the game state, Stop will recover the scene before the game state, Pause will stop the game into the game state, Resume will run if the game was paused, and Advance will do just 1 loop to test and debug with precision. Time multiplier will accelerate or desaccelerate the game state time with debug purposes.
+There is also a selection for the Play Camera: this needs to be selected & will affect which camera is used when play is pressed.
+
+### Gameplay System
+In the inspector, as you add a component (for the time being, only Script Components can be added), you will be able to select the scripts loaded into the scene or to create a new one.
+If you choose to create a new one, a pop-up will show up indicating that you pass it a number for it to become the name of the C++ class you will generate; then, and this is a KEY STEP is to go to your VS project & include the files manually from there, we apologize for the inconvenience, we are working in the issue.
+Once the script is added, it will execute once the function Start() & will continously call Update() each frame if the scene is currently playing; if you want to know more about which function can you actually call, please check the CollObject parent class associated with each object.
+You can assume that you can do any modifications to the .cpp & .h file that will be generated, just make sure that the function CreateX (being X the name of your class is untouched, unless you want to change the name).
+Furthermore, as you can see, this Gameplay system is based on C++ & supports Hot-Reloading; and there are two ways you can perform it:
+- In the Main Menu Bar, inside the App item, there is a button you can press to Hot-Reload
+- The Engine will also automatically refresh if it detects any change to the .h or .cpp documents that are currently loadded in to the engine; but this option is disabled by default, if you wish to enable it, check the configuration window, under the Gameplay Systems menu.
 
 
 ## Controls
@@ -72,12 +82,17 @@ All the inputs that involve a mouse click, must be in the scene window, otherwis
 - Supports hot reloaded of textures, also reimports if you modify a file, delete it by accident or drag a new asset in runtime.
 
 ### Additional Comments
+#### A2
 - The Resource counting window only shows you the resources that are currently loaded in the scene.
 - The Assets window could take a couple of seconds to refresh.
 - You can not delete loaded resources in the Asset window because they will be reimported again, if you desire to delete a resources, please delete the Assets associated to it.
 - Currently, if you delete an imported FBX, it will delete only the "model". It will leave as is the meshes, textures & materials imported from that model.
-
 - WARNING: Time multiplier affects Scene Camera movement, but it's just for you to see it is well implemented. It will only work at Game State in a future. You can test also Play and Stop moving objects in Game State, and pressing Stop to recover its original position.
+
+#### A3
+- The Gameplay System assumes that you have VS installed & the Desktop Development with C/C++ extension, if you don't have this, please install them for the engine to execute succesfully.
+- WARNING: The engine uses MSBuild to compile the Gameplay System & needs you absolute path to VsVarshall.bat to execute, if your path is in a different folder than the one that comes by default, please go to Config/config.collConfig & change the path so it fits your own.
+- This applies also for the temprary folder.
 
 ## License:
 MIT License
