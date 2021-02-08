@@ -265,6 +265,12 @@ updateStatus M_Scene::PreDraw(bool* drawState)
 bool M_Scene::CleanUp()
 {
 	//RELEASE(currentScene->root);
+	currentScene = nullptr;
+	focusedGameObject = nullptr;
+
+	cameras.clear();
+	allScriptComponents.clear();
+
 	return true;
 }
 

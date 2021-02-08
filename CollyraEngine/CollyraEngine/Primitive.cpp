@@ -1,10 +1,9 @@
 #include "Globals.h"
 #include "Primitive.h"
-
 #include "OpenGL.h"
 
 // ------------------------------------------------------------
-Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point), verticesID(0), indicesID(0), indicesSize(-1)
+Primitive::Primitive() : transform(float4x4::identity), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point), verticesID(0), indicesID(0), indicesSize(-1)
 {}
 
 Primitive::~Primitive()
@@ -13,7 +12,7 @@ Primitive::~Primitive()
 	glDeleteBuffers(1, &indicesID);
 }
 
-Primitive::Primitive(GLfloat vertices[], uint indices[]) : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point), verticesID(0), indicesID(0), indicesSize(-1)
+Primitive::Primitive(GLfloat vertices[], uint indices[]) : transform(float4x4::identity), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point), verticesID(0), indicesID(0), indicesSize(-1)
 {
 	GenerateVertexBuffers(vertices, indices);
 }
@@ -28,7 +27,7 @@ PrimitiveTypes Primitive::GetType() const
 void Primitive::Render(bool globalDebugMode) const
 {
 	glPushMatrix();
-	glMultMatrixf(transform.M);
+	glMultMatrixf((float*)&transform);
 
 	if (axis == true)
 	{
@@ -95,19 +94,19 @@ void Primitive::InnerRender() const
 // ------------------------------------------------------------
 void Primitive::SetPos(float x, float y, float z)
 {
-	transform.translate(x, y, z);
+	transform.SetTranslatePart(x, y, z);
 }
 
 // ------------------------------------------------------------
-void Primitive::SetRotation(float angle, const vec3& u)
+void Primitive::SetRotation(float angle, const float3& u)
 {
-	transform.rotate(angle, u);
+	transform.SetRotatePart(u, angle);
 }
 
 // ------------------------------------------------------------
 void Primitive::Scale(float x, float y, float z)
 {
-	transform.scale(x, y, z);
+	transform.Scale(x, y, z);
 }
 
 // CUBE ============================================

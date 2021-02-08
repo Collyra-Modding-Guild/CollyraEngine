@@ -96,6 +96,8 @@ bool M_Resources::CleanUp()
 	MeshLoader::CleanUp();
 	TextureLoader::CleanUp();
 
+	resourceMap.clear();
+
 	return true;
 }
 
