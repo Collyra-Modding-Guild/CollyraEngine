@@ -1,5 +1,7 @@
 #include "C_Camera.h"
+#include "M_Scene.h"
 #include "GameObject.h"
+#include "Application.h"
 
 C_Camera::C_Camera(bool active) : Component(COMPONENT_TYPE::CAMERA, active), verticalFOV(0.0f), horizontalFOV(90.0f), nearPlane(NEAR_PLANE),
 farPlane(FAR_PLANE), culling(true)
@@ -15,7 +17,9 @@ farPlane(FAR_PLANE), culling(true)
 }
 
 C_Camera::~C_Camera()
-{ }
+{
+	App->scene->DeleteCamera(this);
+}
 
 void C_Camera::UpdateFrustum(const float4x4& globalPosition)
 {
