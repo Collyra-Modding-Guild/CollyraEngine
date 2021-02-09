@@ -36,7 +36,7 @@ int C_Script::GetResourceId() const
 
 void C_Script::Start()
 {
-	if (App->gameClock->IsPlaying() == false)
+	if (App->gameClock->GameRunning() == false)
 		return;
 
 	if (dataObject != nullptr)
@@ -54,7 +54,7 @@ void C_Script::Start()
 
 void C_Script::Update(float dt)
 {
-	if (App->gameClock->IsPlaying() == false)
+	if (App->gameClock->GameRunning() == false)
 		return;
 
 	//std::string buildFunction = std::string("Create" + std::string(myScript->GetScriptClassName()));
@@ -91,7 +91,7 @@ void C_Script::Update(float dt)
 
 void C_Script::OnEnable()
 {
-	if (App->gameClock->IsPlaying() == false)
+	if (App->gameClock->GameRunning() == false)
 		return;
 
 	if (dataObject != nullptr)
@@ -109,7 +109,7 @@ void C_Script::OnEnable()
 
 void C_Script::OnDisable()
 {
-	if (App->gameClock->IsPlaying() == false)
+	if (App->gameClock->GameRunning() == false)
 		return;
 
 	if (dataObject != nullptr)

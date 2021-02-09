@@ -249,7 +249,7 @@ void M_Renderer3D::UpdateCamera(float width, float height, C_Camera* currentCam)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	if (playCam != nullptr && App->gameClock->IsPlaying() == true)
+	if (playCam != nullptr && App->gameClock->GameRunning() == true)
 	{
 		playCam->SetAspectRatio(width / height);
 		glLoadMatrixf(playCam->GetProjectionMatrix().ptr());
@@ -366,7 +366,7 @@ void M_Renderer3D::SetPlayCam(C_Camera* myCam)
 	{
 		RefreshCamera(myCam);
 	}
-	else if (App->gameClock->IsPlaying() == true)
+	else if (App->gameClock->GameRunning() == true)
 	{
 		App->scene->Stop();
 	}
@@ -377,7 +377,7 @@ void M_Renderer3D::CameraDied(C_Camera* deadCam)
 	if (playCam != nullptr)
 	{
 		if (deadCam == playCam)
-			if (App->gameClock->IsPlaying() == true)
+			if (App->gameClock->GameRunning() == true)
 			{
 				playCam = nullptr;
 				App->scene->Stop();
@@ -388,7 +388,7 @@ void M_Renderer3D::CameraDied(C_Camera* deadCam)
 
 float4x4 M_Renderer3D::GetCurrentViewMatrix()
 {
-	if (playCam != nullptr && App->gameClock->IsPlaying() == true)
+	if (playCam != nullptr && App->gameClock->GameRunning() == true)
 	{
 		return playCam->GetViewMatrix();
 	}
@@ -400,7 +400,7 @@ float4x4 M_Renderer3D::GetCurrentViewMatrix()
 
 float4x4 M_Renderer3D::GetCurrentProjectionMatrix()
 {
-	if (playCam != nullptr && App->gameClock->IsPlaying() == true)
+	if (playCam != nullptr && App->gameClock->GameRunning() == true)
 	{
 		return playCam->GetProjectionMatrix();
 	}

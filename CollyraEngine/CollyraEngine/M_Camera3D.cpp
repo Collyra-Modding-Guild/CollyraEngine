@@ -62,7 +62,7 @@ updateStatus M_Camera3D::Update(float dt)
 		return UPDATE_STOP;
 	}
 
-	if (App->gameClock->IsPlaying() == false)
+	if (App->gameClock->GameRunning() == false)
 	{
 		CameraMovement(dt);
 

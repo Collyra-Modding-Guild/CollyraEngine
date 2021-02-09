@@ -21,7 +21,7 @@ public:
 	void Resume();
 	void Tick(bool step);
 
-	bool IsPlaying() const;
+	bool GameRunning() const;
 	
 	Uint32 Read();
 	float ReadSec() const;

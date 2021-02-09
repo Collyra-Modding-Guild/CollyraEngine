@@ -51,7 +51,7 @@ void GameObject::Start()
 
 void GameObject::Update(float dt)
 {
-	if (!active || App->gameClock->IsPlaying() == false)
+	if (!active || App->gameClock->GameRunning() == false)
 		return;
 
 	for (uint i = 0; i < components.size(); i++)
