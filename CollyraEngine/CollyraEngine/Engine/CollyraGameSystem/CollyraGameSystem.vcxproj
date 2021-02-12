@@ -94,8 +94,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderOutputFile />
     </ClCompile>
     <Link>
@@ -168,12 +167,14 @@
     <ClInclude Include="GameScripts\Bullet.h" />
     <ClInclude Include="GameScripts\CollyraLibrary.h" />
     <ClInclude Include="GameScripts\Tank.h" />
+    <ClInclude Include="GameScripts\Test.h" />
   </ItemGroup>
   <ItemGroup Label="cppFiles">
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="GameScripts\Bullet.cpp" />
     <ClCompile Include="GameScripts\CollyraLibrary.cpp" />
     <ClCompile Include="GameScripts\Tank.cpp" />
+    <ClCompile Include="GameScripts\Test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

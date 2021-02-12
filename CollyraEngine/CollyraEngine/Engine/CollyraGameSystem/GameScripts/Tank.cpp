@@ -36,7 +36,7 @@ void Tank::PlayerInputs()
 {
 	float3 forward = transform->GetForward();
 
-	if (Input::GetKey(SDL_SCANCODE_W) == INPUT_REPEAT)
+	if (Input::GetKey(SDL_SCANCODE_O) == INPUT_REPEAT)
 	{
 		velocity = 10.0f;
 	}

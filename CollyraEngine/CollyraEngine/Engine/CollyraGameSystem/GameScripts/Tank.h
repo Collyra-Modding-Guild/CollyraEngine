@@ -3,7 +3,8 @@
 #include "../CollyraFramework.h"
 #include "../../../CollObject.h"
 
-class COLLYRAGAMESYSTEM_API Tank : public CollObject {
+class COLLYRAGAMESYSTEM_API Tank : public CollObject 
+{
 
 public:
 
