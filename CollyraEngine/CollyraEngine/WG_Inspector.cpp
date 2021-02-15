@@ -564,9 +564,7 @@ bool WG_Inspector::DrawScriptComponent(ImGuiTreeNodeFlags_ flag, C_Script* scrip
 		switch (script->serializedVariables[i].type)
 		{
 		case SERIALIZABLE_TYPE::NO_TYPE:
-		{
-
-		}
+		{}
 			break;
 		case SERIALIZABLE_TYPE::BOOL:
 		{

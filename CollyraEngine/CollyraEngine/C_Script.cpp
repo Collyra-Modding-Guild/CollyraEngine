@@ -319,6 +319,14 @@ bool C_Script::AddSerializeVariable(std::string name, std::string type, void* pt
 	{
 		myType = SERIALIZABLE_TYPE::BOOL;
 	}
+	else if (type == "int")
+	{
+		myType = SERIALIZABLE_TYPE::INT;
+	}
+	else if (type == "float")
+	{
+		myType = SERIALIZABLE_TYPE::FLOAT;
+	}
 	else
 	{
 		myType = SERIALIZABLE_TYPE::NO_TYPE;

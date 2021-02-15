@@ -2,7 +2,7 @@
 #include "Bullet.h"
 
 Tank::Tank() : CollObject(), velocity(0.0f), myTurret(nullptr), bulletToShoot(nullptr), transform(nullptr), turretTransform(nullptr),
-canMove(true)
+canMove(true), spdMult(1.0f)
 {
 }
 
@@ -25,8 +25,6 @@ void Tank::Start()
 	bullScript->SetScriptClass("Bullet");
 
 	bulletToShoot->SetActive(false);
-
-
 }
 
 void Tank::Update()
@@ -38,7 +36,7 @@ void Tank::PlayerInputs()
 {
 	float3 forward = transform->GetForward();
 
-	if (Input::GetKey(SDL_SCANCODE_W) == INPUT_REPEAT)
+	if (Input::GetKey(SDL_SCANCODE_W) == INPUT_REPEAT && canMove)
 	{
 		velocity = 10.0f;
 	}
@@ -65,7 +63,7 @@ void Tank::PlayerInputs()
 	//DEBUG_LOG("%f", Time::GetDeltaTime());
 
 
-	transform->SetLocalTransformation(transform->GetPosition() + forward * velocity * Time::GetDeltaTime(), // Tank Position
+	transform->SetLocalTransformation(transform->GetPosition() + forward * velocity * spdMult * Time::GetDeltaTime(), // Tank Position
 		Rotation(initialRot, rotation),				 // Tank Rotation
 		transform->GetScale());						 // Tank Scale
 
@@ -148,8 +146,6 @@ void Tank::PlayerInputs()
 
 	}
 
-	DEBUG_LOG("Counter %i", counter);
-	counter++;
 }
 
 
