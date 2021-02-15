@@ -570,7 +570,8 @@ bool WG_Inspector::DrawScriptComponent(ImGuiTreeNodeFlags_ flag, C_Script* scrip
 			break;
 		case SERIALIZABLE_TYPE::BOOL:
 		{
-
+			if (ImGui::Checkbox("bool", (bool*)&script->serializedVariables[i].ptr))
+			{ }
 		}
 			break;
 		default:

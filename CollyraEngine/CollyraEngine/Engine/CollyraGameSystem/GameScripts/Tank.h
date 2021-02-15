@@ -21,13 +21,13 @@ private:
 
 	REFLECTABLE
 	(
-		(float)velocity,
+		(float) velocity,
 		(int) counter
 	);
 
 	SERIALIZABLE
 	(
-		(bool)canMove
+		(bool) canMove
 	);
 
 	C_Transform*	transform;
