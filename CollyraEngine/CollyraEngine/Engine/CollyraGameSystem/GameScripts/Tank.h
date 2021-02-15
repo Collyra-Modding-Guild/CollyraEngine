@@ -19,16 +19,18 @@ public:
 
 private:
 
+	SERIALIZABLE
+	(
+		(bool) canMove
+	);
+
 	REFLECTABLE
 	(
 		(float) velocity,
 		(int) counter
 	);
 
-	SERIALIZABLE
-	(
-		(bool) canMove
-	);
+
 
 	C_Transform*	transform;
 	C_Transform*	turretTransform;

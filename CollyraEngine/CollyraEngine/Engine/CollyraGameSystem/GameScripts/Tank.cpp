@@ -1,7 +1,8 @@
 ﻿#include "Tank.h"
 #include "Bullet.h"
 
-Tank::Tank() : CollObject(), velocity(0.0f), myTurret(nullptr), bulletToShoot(nullptr), transform(nullptr), turretTransform(nullptr)
+Tank::Tank() : CollObject(), velocity(0.0f), myTurret(nullptr), bulletToShoot(nullptr), transform(nullptr), turretTransform(nullptr),
+canMove(true)
 {
 }
 
@@ -37,7 +38,7 @@ void Tank::PlayerInputs()
 {
 	float3 forward = transform->GetForward();
 
-	if (Input::GetKey(SDL_SCANCODE_O) == INPUT_REPEAT)
+	if (Input::GetKey(SDL_SCANCODE_W) == INPUT_REPEAT)
 	{
 		velocity = 10.0f;
 	}
