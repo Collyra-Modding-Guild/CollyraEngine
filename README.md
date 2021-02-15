@@ -49,6 +49,8 @@ Furthermore, as you can see, this Gameplay system is based on C++ & supports Hot
 - In the Main Menu Bar, inside the App item, there is a button you can press to Hot-Reload
 - The Engine will also automatically refresh if it detects any change to the .h or .cpp documents that are currently loadded in to the engine; but this option is disabled by default, if you wish to enable it, check the configuration window, under the Gameplay Systems menu.
 
+While scripting, you will see two C++ Macros with the names SERIALIZABLE & REFLECTABLE, every variable located there will, in the first case, be able to be manipulated from the inspector (only bools, ints & floats are avaliable for now) &, in the second case, be able to retain its value if a hot-reload is performed.
+The nomenclature to declare these is a little tricky, but we encourage you to create a new scripts (or you check the Tank.h example) to see how it works.
 
 ## Controls
 ### General 
@@ -97,6 +99,8 @@ All the inputs that involve a mouse click, must be in the scene window, otherwis
 - WARNING: The engine uses MSBuild to compile the Gameplay System & needs you absolute path to VsVarshall.bat to execute, if your path is in a different folder than the one that comes by default, please go to Config/config.collConfig & change the path so it fits your own.
 - This applies also for the temprary folder.
 - Once you add a file in Visual Studio (only in release), compile pressing Ctrl+B to notify the visual studio that you added a file to the compilation.
+- In the SERIALIZABLE & REFLECTABLE fields, sometimes VS can pop an error during the coding process or the variables can become unavaliable for VS to identify. This is not an issue, the variables are there & the compilation process is correct, you just have to make sure you space the declaration type of the variables & the name itself:
+  (int)myint -> INCORRECT; (int) myInt -> CORRECT
 
 ## License:
 MIT License
