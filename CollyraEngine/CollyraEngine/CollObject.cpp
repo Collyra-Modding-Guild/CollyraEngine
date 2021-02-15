@@ -9,6 +9,7 @@
 #include "M_UIManager.h"
 #include "M_Camera3D.h"
 #include "M_Renderer3D.h"
+#include "M_Scripting.h"
 
 #include "Globals.h"
 
@@ -108,4 +109,10 @@ LineSegment Screen::GetMouseWorldPosition(float2 mousePosition)
 float Time::GetDeltaTime()
 {
 	return App->GetGameDeltaTime();
+}
+
+
+void Internal::LoadReflectVariable(std::string& varName, std::string& varType, void* varPtr, int size)
+{
+	App->scriptInterface->LoadReflectableVariable(varName, varType, varPtr, size);
 }

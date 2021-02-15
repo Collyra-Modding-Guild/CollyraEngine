@@ -19,18 +19,22 @@ public:
 
 private:
 
+	REFLECTABLE
+	(
+		(float)velocity,
+		(int) counter
+	);
+
 	C_Transform*	transform;
 	C_Transform*	turretTransform;
-
-	float			velocity;
-
 	GameObject*		myTurret;
-
 	GameObject*		bulletToShoot;
+
 
 };
 
 COLLYRAGAMESYSTEM_EXPORTS Tank* CreateTank() {
 	Tank* newTank = new Tank();
+	ReflectVars(*newTank);
 	return newTank;
 }

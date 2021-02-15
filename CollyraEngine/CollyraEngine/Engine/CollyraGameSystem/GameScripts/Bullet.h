@@ -17,10 +17,16 @@ public:
 	void SetDir(float3 newDirection);
 
 public:
+
+	REFLECTABLE
+	(
+		(float)speed,
+		(float3)dir
+	);
+
+
 	Timer destroyTimer;
 	C_Transform* myTransform;
-	float speed;
-	float3 dir;
 
 };
 

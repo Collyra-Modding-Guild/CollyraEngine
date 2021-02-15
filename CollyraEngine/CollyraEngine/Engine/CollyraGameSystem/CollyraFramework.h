@@ -18,6 +18,7 @@
 #include "../../CollObject.h"
 #include "../../GameObject.h"
 #include <math.h>
+#include <string>
 
 //Reflection Handle --------------
 #include <boost/mpl/for_each.hpp>
@@ -157,7 +158,7 @@ static const int fields_in = BOOST_PP_VARIADIC_SIZE(__VA_ARGS__); \
 friend struct serializer; \
 template<int N, class SelfI> \
 struct fieldI_data {}; \
-BOOST_PP_SEQ_FOR_EACH_I(SERIALIZE_EACH, dataI, BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__))
+BOOST_PP_SEQ_FOR_EACH_I(SERIALIZE_EACH, dataI, BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__))\
 
 struct field_visitor
 {
@@ -189,4 +190,23 @@ void visitI_each(C& c, Visitor v)
 {
 	typedef boost::mpl::range_c<int, 0, serializer::fields<C>::n> range;
 	boost::mpl::for_each<range>(boost::bind<void>(fieldI_visitor(), boost::ref(c), v, _1));
+}
+
+struct ReflectVariables
+{
+	template<class FieldData>
+	void operator()(FieldData f)
+	{
+		std::string type = typeid(f.get()).name();
+		std::string name = f.name();
+
+		Internal::LoadReflectVariable(name, type, f.getPtr(), sizeof(f.get()));
+	}
+};
+
+
+template<class T>
+void ReflectVars(T& x)
+{
+	visit_each(x, ReflectVariables());
 }

@@ -14,6 +14,7 @@ C_Script::C_Script(bool active) : Component(COMPONENT_TYPE::SCRIPT, active), scr
 C_Script::~C_Script()
 {
 	App->resources->UnloadResource(scriptId);
+	DeleteObjectData();
 }
 
 void C_Script::SetResourceId(uint newId)
@@ -26,7 +27,7 @@ void C_Script::SetResourceId(uint newId)
 	myScript = (R_Script*)App->resources->RequestResource(scriptId);
 
 	GenerateObjectData();
-	
+
 }
 
 int C_Script::GetResourceId() const
@@ -56,24 +57,6 @@ void C_Script::Update(float dt)
 {
 	if (App->gameClock->GameRunning() == false)
 		return;
-
-	//std::string buildFunction = std::string("Create" + std::string(myScript->GetScriptClassName()));
-	//// -----------------
-	//if (myScript != nullptr)
-	//{
-	//	void* (*Builder)() = (void* (*)())GetProcAddress(App->gameSystemDll, buildFunction.c_str());
-
-	//	if (Builder != nullptr)
-	//	{
-	//		dataObject = (CollObject*)Builder();
-
-	//		if (dataObject != nullptr)
-	//		{
-	//			dataObject->SetMyGameObject(GetGameObject());
-	//		}
-	//	}
-	//}
-	//// ------------------
 
 	if (dataObject != nullptr)
 	{
@@ -161,13 +144,73 @@ void C_Script::ResourceUpdated(std::map<uint, bool>* ids)
 
 }
 
-void C_Script::DeleteObjectData()
+void C_Script::DeleteObjectData(bool deleteReflectableVars)
 {
 	if (dataObject != nullptr)
 	{
 		delete dataObject;
 		dataObject = nullptr;
 	}
+
+	if (deleteReflectableVars)
+	{
+		reflectableVariables.clear();
+		for (int i = 0; i < prevreflectableVariables.size(); i++)
+		{
+			RELEASE(prevreflectableVariables[i].ptr);
+		}
+		prevreflectableVariables.clear();
+	}
+
+
+}
+
+void C_Script::SaveReflectableVariables()
+{
+	for (int i = 0; i < prevreflectableVariables.size(); i++)
+	{
+		RELEASE(prevreflectableVariables[i].ptr);
+	}
+	prevreflectableVariables.clear();
+
+
+	for (int i = 0; i < reflectableVariables.size(); i++)
+	{
+		char* varToCopy = (char*)reflectableVariables[i].ptr;
+
+		int size = reflectableVariables[i].varSize;
+		char* copyVar = new char[size];
+		memcpy(copyVar, varToCopy, size);
+
+		int test = *varToCopy;
+
+		prevreflectableVariables.push_back({ reflectableVariables[i].name, reflectableVariables[i].type, copyVar, size });
+	}
+}
+
+void C_Script::LoadReflectableVariables()
+{
+	for (int i = 0; i < reflectableVariables.size(); i++)
+	{
+		for (int y = 0; y < prevreflectableVariables.size(); y++)
+		{
+			if (prevreflectableVariables[y].varSize == reflectableVariables[i].varSize &&
+				prevreflectableVariables[y].name == reflectableVariables[i].name
+				&& prevreflectableVariables[y].type == reflectableVariables[i].type)
+			{
+				memcpy(reflectableVariables[i].ptr, prevreflectableVariables[y].ptr, prevreflectableVariables[y].varSize);
+				break;
+			}
+
+		}
+	}
+
+	for (int i = 0; i < prevreflectableVariables.size(); i++)
+	{
+		RELEASE(prevreflectableVariables[i].ptr);
+	}
+	prevreflectableVariables.clear();
+	reflectableVariables.clear();
 }
 
 void C_Script::GenerateObjectData()
@@ -181,6 +224,7 @@ void C_Script::GenerateObjectData()
 		{
 			try
 			{
+				App->scriptInterface->currentScriptLoading = this;
 				dataObject = (CollObject*)Builder();
 
 				if (dataObject != nullptr)
@@ -204,4 +248,16 @@ void C_Script::GenerateObjectData()
 CollObject* C_Script::GetObjectData() const
 {
 	return dataObject;
+}
+
+bool C_Script::AddReflectVariable(std::string name, std::string type, void* ptr, int size)
+{
+	bool ret = false;
+
+	if (!type.empty() && ptr != nullptr)
+	{
+		reflectableVariables.push_back({ name,type,ptr, size });
+	}
+
+	return ret;
 }

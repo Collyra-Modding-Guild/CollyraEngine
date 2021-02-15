@@ -25,6 +25,7 @@ void Tank::Start()
 
 	bulletToShoot->SetActive(false);
 
+
 }
 
 void Tank::Update()
@@ -60,7 +61,7 @@ void Tank::PlayerInputs()
 		rotation.y -= 1;
 	}
 
-	DEBUG_LOG("%f", Time::GetDeltaTime());
+	//DEBUG_LOG("%f", Time::GetDeltaTime());
 
 
 	transform->SetLocalTransformation(transform->GetPosition() + forward * velocity * Time::GetDeltaTime(), // Tank Position
@@ -87,7 +88,7 @@ void Tank::PlayerInputs()
 	Quat qRotMinus({ 0,1,0 }, -angle);
 
 	angle *= RADTODEG;
-	DEBUG_LOG("Angle: %f", angle);
+	//DEBUG_LOG("Angle: %f", angle);
 
 
 	if (angle > 1)
@@ -104,7 +105,7 @@ void Tank::PlayerInputs()
 		angle = acos(turrForward.Dot(lookAt));
 
 		angle *= RADTODEG;
-		DEBUG_LOG("Angle2: %f", angle);
+		//DEBUG_LOG("Angle2: %f", angle);
 
 		if (angle > 0.5 || (angle < 0.5 && angle > 0))
 		{
@@ -146,6 +147,8 @@ void Tank::PlayerInputs()
 
 	}
 
+	DEBUG_LOG("Counter %i", counter);
+	counter++;
 }
 
 

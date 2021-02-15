@@ -19,5 +19,6 @@ void CollyraTemplate::Update()
 COLLYRAGAMESYSTEM_EXPORTS CollyraTemplate* CreateCollyraTemplate()
  {
 	CollyraTemplate* newCollyraTemplate = new CollyraTemplate();
+	ReflectVars(*newCollyraTemplate);
 	return newCollyraTemplate;
 }

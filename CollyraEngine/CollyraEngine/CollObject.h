@@ -81,3 +81,8 @@ namespace Time
 	__declspec(dllexport) float GetDeltaTime();
 }
 
+
+namespace Internal
+{
+	__declspec(dllexport) void LoadReflectVariable(std::string& varName, std::string& varType, void* varPtr, int size);
+}

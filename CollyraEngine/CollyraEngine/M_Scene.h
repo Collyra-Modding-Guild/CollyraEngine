@@ -80,7 +80,7 @@ public:
 	void GenerateNewScene();
 
 	//Gameplay System
-	void PrerHotReload();
+	void PreHotReload();
 	void PostrHotReload();
 
 private:

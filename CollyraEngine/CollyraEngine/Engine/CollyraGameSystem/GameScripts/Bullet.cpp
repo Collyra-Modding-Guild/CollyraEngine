@@ -35,5 +35,6 @@ void Bullet::SetDir(float3 newDirection)
 COLLYRAGAMESYSTEM_EXPORTS Bullet* CreateBullet()
 {
 	Bullet* newBullet = new Bullet();
+	ReflectVars(*newBullet);
 	return newBullet;
 }
