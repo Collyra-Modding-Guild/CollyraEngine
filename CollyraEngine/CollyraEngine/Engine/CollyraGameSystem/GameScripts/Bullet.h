@@ -20,8 +20,8 @@ public:
 
 	REFLECTABLE
 	(
-		(float)speed,
-		(float3)dir
+		(float) speed,
+		(float3) dir
 	);
 
 

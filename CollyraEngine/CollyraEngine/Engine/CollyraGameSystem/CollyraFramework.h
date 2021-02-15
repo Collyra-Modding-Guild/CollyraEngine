@@ -124,11 +124,11 @@ PAIR(x); \
 template<class SelfI> \
 struct fieldI_data<i, SelfI> \
 { \
-    Self & self; \
-    Self * selfPtr; \
-    field_data(Self & self) : self(self), selfPtr(&self) {} \
+    SelfI & self; \
+    SelfI * selfPtr; \
+    fieldI_data(SelfI & self) : self(self), selfPtr(&self) {} \
     \
-    typename make_const<Self, TYPEOF(x)>::type & get() \
+    typename make_const<SelfI, TYPEOF(x)>::type & get() \
     { \
         return self.STRIP(x); \
     }\
@@ -140,7 +140,7 @@ struct fieldI_data<i, SelfI> \
     {\
         return BOOST_PP_STRINGIZE(STRIP(x)); \
     } \
-    typename make_const<Self, TYPEOF(x)>::type *  getPtr() \
+    typename make_const<SelfI, TYPEOF(x)>::type *  getPtr() \
     { \
         return &selfPtr->STRIP(x); \
     }\
@@ -220,7 +220,7 @@ struct SerializeVariables
 		std::string type = typeid(f.get()).name();
 		std::string name = f.name();
 
-		Internal::LoadReflectVariable(name, type, f.getPtr(), sizeof(f.get()));
+		Internal::LoadSerializeVariable(name, type, f.getPtr(), sizeof(f.get()));
 	}
 };
 
