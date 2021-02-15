@@ -358,7 +358,7 @@ void M_Scripting::LoadSerializeVariable(std::string varName, std::string varType
 {
 	if (this->currentScriptLoading != nullptr)
 	{
-		currentScriptLoading->AddReflectVariable(varName, varType, varPtr, size);
+		currentScriptLoading->AddSerializeVariable(varName, varType, varPtr, size);
 	}
 }
 

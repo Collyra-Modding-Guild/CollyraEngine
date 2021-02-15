@@ -213,6 +213,53 @@ void C_Script::LoadReflectableVariables()
 	reflectableVariables.clear();
 }
 
+void C_Script::SaveSerilizableVariables()
+{
+	for (int i = 0; i < prevSerializedVariables.size(); i++)
+	{
+		RELEASE(prevSerializedVariables[i].ptr);
+	}
+	prevSerializedVariables.clear();
+
+
+	for (int i = 0; i < serializedVariables.size(); i++)
+	{
+		char* varToCopy = (char*)serializedVariables[i].ptr;
+
+		int size = serializedVariables[i].varSize;
+		char* copyVar = new char[size];
+		memcpy(copyVar, varToCopy, size);
+
+		prevSerializedVariables.push_back({ serializedVariables[i].name, serializedVariables[i].type, copyVar, size });
+	}
+
+}
+
+void C_Script::LoadSerilizableVariables()
+{
+	for (int i = 0; i < serializedVariables.size(); i++)
+	{
+		for (int y = 0; y < prevSerializedVariables.size(); y++)
+		{
+			if (prevSerializedVariables[y].varSize == serializedVariables[i].varSize &&
+				prevSerializedVariables[y].name == serializedVariables[i].name
+				&& prevSerializedVariables[y].type == serializedVariables[i].type)
+			{
+				memcpy(serializedVariables[i].ptr, prevSerializedVariables[y].ptr, prevSerializedVariables[y].varSize);
+				break;
+			}
+
+		}
+	}
+
+	for (int i = 0; i < prevSerializedVariables.size(); i++)
+	{
+		RELEASE(prevSerializedVariables[i].ptr);
+	}
+	prevSerializedVariables.clear();
+	serializedVariables.clear();
+}
+
 void C_Script::GenerateObjectData()
 {
 	if (myScript != nullptr)
@@ -280,7 +327,7 @@ bool C_Script::AddSerializeVariable(std::string name, std::string type, void* pt
 
 	if (!type.empty() && ptr != nullptr)
 	{
-		serializedVariables.push_back({ name,myType,ptr, size });
+		serializedVariables.push_back({ name, myType, ptr, size });
 	}
 
 	return ret;

@@ -479,6 +479,7 @@ void M_Scene::PreHotReload()
 	for (int i = 0; i < allScriptComponents.size(); i++)
 	{
 		allScriptComponents[i]->SaveReflectableVariables();
+		allScriptComponents[i]->SaveSerilizableVariables();
 		allScriptComponents[i]->DeleteObjectData(false);
 	}
 }
@@ -489,6 +490,7 @@ void M_Scene::PostrHotReload()
 	{
 		allScriptComponents[i]->GenerateObjectData();
 		allScriptComponents[i]->LoadReflectableVariables();
+		allScriptComponents[i]->LoadSerilizableVariables();
 	}
 }
 

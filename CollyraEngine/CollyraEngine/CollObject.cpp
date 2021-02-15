@@ -119,5 +119,5 @@ void Internal::LoadReflectVariable(std::string& varName, std::string& varType, v
 
 void Internal::LoadSerializeVariable(std::string& varName, std::string& varType, void* varPtr, int size)
 {
-	App->scriptInterface->LoadReflectableVariable(varName, varType, varPtr, size);
+	App->scriptInterface->LoadSerializeVariable(varName, varType, varPtr, size);
 }

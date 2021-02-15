@@ -78,7 +78,11 @@ public:
 	void SaveReflectableVariables();
 	void LoadReflectableVariables();
 
+	void SaveSerilizableVariables();
+	void LoadSerilizableVariables();
+
 public:
+	std::vector<SerializableScriptData> prevSerializedVariables;
 	std::vector<SerializableScriptData> serializedVariables;
 
 private:
