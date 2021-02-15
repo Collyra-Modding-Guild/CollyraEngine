@@ -570,16 +570,22 @@ bool WG_Inspector::DrawScriptComponent(ImGuiTreeNodeFlags_ flag, C_Script* scrip
 			break;
 		case SERIALIZABLE_TYPE::BOOL:
 		{
+			ImGui::Spacing();
+			ImGui::Spacing();
 			if (ImGui::Checkbox(script->serializedVariables[i].name.c_str(), (bool*)script->serializedVariables[i].ptr));
 		}
 			break;
 		case SERIALIZABLE_TYPE::INT:
 		{
+			ImGui::Spacing();
+			ImGui::Spacing();
 			if (ImGui::DragInt(script->serializedVariables[i].name.c_str(), (int*)script->serializedVariables[i].ptr));
 		}
 			break;
 		case SERIALIZABLE_TYPE::FLOAT:
 		{	
+			ImGui::Spacing();
+			ImGui::Spacing();
 			if (ImGui::DragFloat(script->serializedVariables[i].name.c_str(), (float*)script->serializedVariables[i].ptr));
 		}
 			break;
