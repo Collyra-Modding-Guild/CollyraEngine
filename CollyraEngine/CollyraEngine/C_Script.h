@@ -22,6 +22,32 @@ struct __declspec(dllexport) ReflectableScriptData {
 	int varSize;
 };
 
+enum class SERIALIZABLE_TYPE
+{
+	NO_TYPE = -1,
+
+	BOOL
+
+};
+
+
+struct __declspec(dllexport) SerializableScriptData {
+
+	SerializableScriptData(const std::string name, const SERIALIZABLE_TYPE type, void* ptr, int varSize)
+	{
+		this->name = name;
+		this->type = type;
+		this->ptr = ptr;
+		this->varSize = varSize;
+	}
+
+	std::string name;
+	SERIALIZABLE_TYPE type;
+	void* ptr = nullptr;
+	int varSize;
+};
+
+
 class __declspec(dllexport) C_Script : public Component
 {
 public:
@@ -48,15 +74,19 @@ public:
 	CollObject* GetObjectData() const;
 
 	bool AddReflectVariable(std::string name, std::string type, void* ptr, int size);
+	bool AddSerializeVariable(std::string name, std::string type, void* ptr, int size);
 	void SaveReflectableVariables();
 	void LoadReflectableVariables();
+
+public:
+	std::vector<SerializableScriptData> serializedVariables;
 
 private:
 	uint		scriptId;
 	R_Script*	myScript;
 	CollObject* dataObject;
 
-	std::vector<ReflectableScriptData> prevreflectableVariables;
+	std::vector<ReflectableScriptData> prevReflectableVariables;
 	std::vector<ReflectableScriptData> reflectableVariables;
 
 

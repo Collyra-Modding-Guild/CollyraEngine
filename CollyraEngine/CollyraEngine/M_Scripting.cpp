@@ -354,6 +354,14 @@ void M_Scripting::LoadReflectableVariable(std::string varName, std::string varTy
 	}
 }
 
+void M_Scripting::LoadSerializeVariable(std::string varName, std::string varType, void* varPtr, int size)
+{
+	if (this->currentScriptLoading != nullptr)
+	{
+		currentScriptLoading->AddReflectVariable(varName, varType, varPtr, size);
+	}
+}
+
 bool M_Scripting::CheckScriptStatus(const char* assetsPath, const char* libPath, unsigned int sciprtId)
 {
 	R_Script buffer(0);

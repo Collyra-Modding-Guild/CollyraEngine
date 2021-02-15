@@ -478,7 +478,6 @@ void M_Scene::PreHotReload()
 
 	for (int i = 0; i < allScriptComponents.size(); i++)
 	{
-		//TODO: We should save the variables here, save them in the component
 		allScriptComponents[i]->SaveReflectableVariables();
 		allScriptComponents[i]->DeleteObjectData(false);
 	}
@@ -490,7 +489,6 @@ void M_Scene::PostrHotReload()
 	{
 		allScriptComponents[i]->GenerateObjectData();
 		allScriptComponents[i]->LoadReflectableVariables();
-		//TODO: We should load our variables here, stored in the component
 	}
 }
 

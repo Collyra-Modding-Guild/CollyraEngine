@@ -62,6 +62,7 @@ public:
 	void SetOnlineHotReload(bool newState);
 
 	void LoadReflectableVariable(std::string varName, std::string varType, void* varPtr, int size);
+	void LoadSerializeVariable(std::string varName, std::string varType, void* varPtr, int size);
 
 private:
 	bool CheckScriptStatus(const char* assetsPath, const char* libPath, unsigned int sciprtId);

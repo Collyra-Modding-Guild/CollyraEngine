@@ -25,6 +25,11 @@ private:
 		(int) counter
 	);
 
+	SERIALIZABLE
+	(
+		(bool)canMove
+	);
+
 	C_Transform*	transform;
 	C_Transform*	turretTransform;
 	GameObject*		myTurret;
@@ -36,5 +41,6 @@ private:
 COLLYRAGAMESYSTEM_EXPORTS Tank* CreateTank() {
 	Tank* newTank = new Tank();
 	ReflectVars(*newTank);
+	SerializeVars(*newTank);
 	return newTank;
 }

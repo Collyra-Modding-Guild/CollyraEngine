@@ -152,14 +152,16 @@ void C_Script::DeleteObjectData(bool deleteReflectableVars)
 		dataObject = nullptr;
 	}
 
+	serializedVariables.clear();
+
 	if (deleteReflectableVars)
 	{
 		reflectableVariables.clear();
-		for (int i = 0; i < prevreflectableVariables.size(); i++)
+		for (int i = 0; i < prevReflectableVariables.size(); i++)
 		{
-			RELEASE(prevreflectableVariables[i].ptr);
+			RELEASE(prevReflectableVariables[i].ptr);
 		}
-		prevreflectableVariables.clear();
+		prevReflectableVariables.clear();
 	}
 
 
@@ -167,11 +169,11 @@ void C_Script::DeleteObjectData(bool deleteReflectableVars)
 
 void C_Script::SaveReflectableVariables()
 {
-	for (int i = 0; i < prevreflectableVariables.size(); i++)
+	for (int i = 0; i < prevReflectableVariables.size(); i++)
 	{
-		RELEASE(prevreflectableVariables[i].ptr);
+		RELEASE(prevReflectableVariables[i].ptr);
 	}
-	prevreflectableVariables.clear();
+	prevReflectableVariables.clear();
 
 
 	for (int i = 0; i < reflectableVariables.size(); i++)
@@ -182,9 +184,7 @@ void C_Script::SaveReflectableVariables()
 		char* copyVar = new char[size];
 		memcpy(copyVar, varToCopy, size);
 
-		int test = *varToCopy;
-
-		prevreflectableVariables.push_back({ reflectableVariables[i].name, reflectableVariables[i].type, copyVar, size });
+		prevReflectableVariables.push_back({ reflectableVariables[i].name, reflectableVariables[i].type, copyVar, size });
 	}
 }
 
@@ -192,24 +192,24 @@ void C_Script::LoadReflectableVariables()
 {
 	for (int i = 0; i < reflectableVariables.size(); i++)
 	{
-		for (int y = 0; y < prevreflectableVariables.size(); y++)
+		for (int y = 0; y < prevReflectableVariables.size(); y++)
 		{
-			if (prevreflectableVariables[y].varSize == reflectableVariables[i].varSize &&
-				prevreflectableVariables[y].name == reflectableVariables[i].name
-				&& prevreflectableVariables[y].type == reflectableVariables[i].type)
+			if (prevReflectableVariables[y].varSize == reflectableVariables[i].varSize &&
+				prevReflectableVariables[y].name == reflectableVariables[i].name
+				&& prevReflectableVariables[y].type == reflectableVariables[i].type)
 			{
-				memcpy(reflectableVariables[i].ptr, prevreflectableVariables[y].ptr, prevreflectableVariables[y].varSize);
+				memcpy(reflectableVariables[i].ptr, prevReflectableVariables[y].ptr, prevReflectableVariables[y].varSize);
 				break;
 			}
 
 		}
 	}
 
-	for (int i = 0; i < prevreflectableVariables.size(); i++)
+	for (int i = 0; i < prevReflectableVariables.size(); i++)
 	{
-		RELEASE(prevreflectableVariables[i].ptr);
+		RELEASE(prevReflectableVariables[i].ptr);
 	}
-	prevreflectableVariables.clear();
+	prevReflectableVariables.clear();
 	reflectableVariables.clear();
 }
 
@@ -257,6 +257,30 @@ bool C_Script::AddReflectVariable(std::string name, std::string type, void* ptr,
 	if (!type.empty() && ptr != nullptr)
 	{
 		reflectableVariables.push_back({ name,type,ptr, size });
+	}
+
+	return ret;
+}
+
+bool C_Script::AddSerializeVariable(std::string name, std::string type, void* ptr, int size)
+{
+	bool ret = false;
+
+	SERIALIZABLE_TYPE myType;
+
+	if (type == "bool")
+	{
+		myType = SERIALIZABLE_TYPE::BOOL;
+	}
+	else
+	{
+		myType = SERIALIZABLE_TYPE::NO_TYPE;
+	}
+
+
+	if (!type.empty() && ptr != nullptr)
+	{
+		serializedVariables.push_back({ name,myType,ptr, size });
 	}
 
 	return ret;

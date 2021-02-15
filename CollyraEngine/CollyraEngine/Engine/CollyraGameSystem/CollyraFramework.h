@@ -210,3 +210,24 @@ void ReflectVars(T& x)
 {
 	visit_each(x, ReflectVariables());
 }
+
+
+struct SerializeVariables
+{
+	template<class FieldIData>
+	void operator()(FieldIData f)
+	{
+		std::string type = typeid(f.get()).name();
+		std::string name = f.name();
+
+		Internal::LoadReflectVariable(name, type, f.getPtr(), sizeof(f.get()));
+	}
+};
+
+
+
+template<class T>
+void SerializeVars(T& x)
+{
+	visitI_each(x, SerializeVariables());
+}
