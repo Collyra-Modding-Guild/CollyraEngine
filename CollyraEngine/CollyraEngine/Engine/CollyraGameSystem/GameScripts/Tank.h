@@ -21,13 +21,13 @@ private:
 
 	SERIALIZABLE
 	(
-		(bool) canMove
+		(bool) canMove,
+		(float) spdMult
 	);
 
 	REFLECTABLE
 	(
-		(float) velocity,
-		(int) counter
+		(float) velocity
 	);
 
 
