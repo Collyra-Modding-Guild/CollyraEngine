@@ -25,11 +25,9 @@ struct __declspec(dllexport) ReflectableScriptData {
 enum class SERIALIZABLE_TYPE
 {
 	NO_TYPE = -1,
-
 	BOOL,
 	INT,
-	FLOAT,
-	STRING
+	FLOAT
 
 };
 
