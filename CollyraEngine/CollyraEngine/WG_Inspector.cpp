@@ -570,7 +570,17 @@ bool WG_Inspector::DrawScriptComponent(ImGuiTreeNodeFlags_ flag, C_Script* scrip
 			break;
 		case SERIALIZABLE_TYPE::BOOL:
 		{
-			if (ImGui::Checkbox("bool", (bool*)script->serializedVariables[i].ptr));
+			if (ImGui::Checkbox(script->serializedVariables[i].name.c_str(), (bool*)script->serializedVariables[i].ptr));
+		}
+			break;
+		case SERIALIZABLE_TYPE::INT:
+		{
+			if (ImGui::DragInt(script->serializedVariables[i].name.c_str(), (int*)script->serializedVariables[i].ptr));
+		}
+			break;
+		case SERIALIZABLE_TYPE::FLOAT:
+		{	
+			if (ImGui::DragFloat(script->serializedVariables[i].name.c_str(), (float*)script->serializedVariables[i].ptr));
 		}
 			break;
 		default:
