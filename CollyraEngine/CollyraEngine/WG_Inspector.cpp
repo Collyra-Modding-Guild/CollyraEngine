@@ -526,7 +526,6 @@ bool WG_Inspector::DrawScriptComponent(ImGuiTreeNodeFlags_ flag, C_Script* scrip
 	bool deleteScriptComponent = true;
 	if (ImGui::CollapsingHeader(std::string("Script").append("_" + std::to_string(index)).c_str(), &deleteScriptComponent, flag))
 	{
-
 		ImGui::Text("	Current Script");
 		ImGui::SameLine();
 
@@ -558,6 +557,43 @@ bool WG_Inspector::DrawScriptComponent(ImGuiTreeNodeFlags_ flag, C_Script* scrip
 		}
 
 	}
+
+
+	for (int i = 0; i < script->serializedVariables.size(); i++)
+	{
+		switch (script->serializedVariables[i].type)
+		{
+		case SERIALIZABLE_TYPE::NO_TYPE:
+		{}
+			break;
+		case SERIALIZABLE_TYPE::BOOL:
+		{
+			ImGui::Spacing();
+			ImGui::Spacing();
+			if (ImGui::Checkbox(script->serializedVariables[i].name.c_str(), (bool*)script->serializedVariables[i].ptr));
+		}
+			break;
+		case SERIALIZABLE_TYPE::INT:
+		{
+			ImGui::Spacing();
+			ImGui::Spacing();
+			if (ImGui::DragInt(script->serializedVariables[i].name.c_str(), (int*)script->serializedVariables[i].ptr));
+		}
+			break;
+		case SERIALIZABLE_TYPE::FLOAT:
+		{	
+			ImGui::Spacing();
+			ImGui::Spacing();
+			if (ImGui::DragFloat(script->serializedVariables[i].name.c_str(), (float*)script->serializedVariables[i].ptr));
+		}
+			break;
+		default:
+			break;
+		}
+
+
+	}
+
 
 	ImGui::Spacing();
 	ImGui::Separator();

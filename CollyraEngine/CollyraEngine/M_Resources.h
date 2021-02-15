@@ -12,6 +12,10 @@
 
 #include "MathGeoLib/include/Algorithm/Random/LCG.h"
 
+#define CHECK 4
+#define IMPORT 4.5
+#define CHANGE 5
+
 class Mesh;
 class Resource;
 enum class R_TYPE;

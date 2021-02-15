@@ -10,6 +10,7 @@
 #include "C_Mesh.h"
 #include "C_Camera.h"
 #include "C_Script.h"
+#include "M_UIManager.h"
 
 GameObject::GameObject(std::string name) : parent(nullptr), uid(0), name(name), active(true),
 selected(false), readyToDelete(false)
@@ -17,6 +18,8 @@ selected(false), readyToDelete(false)
 
 GameObject::~GameObject()
 {
+	App->uiManager->GameObjectDestroyed(this->GetUid());
+
 	for (int i = 0; i < children.size(); i++)
 	{
 		RELEASE(children[i]);
@@ -48,7 +51,7 @@ void GameObject::Start()
 
 void GameObject::Update(float dt)
 {
-	if (!active || App->gameClock->IsPlaying() == false)
+	if (!active || App->gameClock->GameRunning() == false)
 		return;
 
 	for (uint i = 0; i < components.size(); i++)

@@ -9,6 +9,9 @@
 #include <map>
 #include "p2Defs.h"
 
+#define GAMEPLAY_SOLUTION_PATH "CollyraGameSystem\\CollyraGameSystem.sln"
+
+
 class WG_TextEditor : public WindowGroup
 {
 public:

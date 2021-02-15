@@ -213,6 +213,9 @@ bool M_UIManager::CleanUp()
 	hierarchyWindow = nullptr;
 	aboutWindow = nullptr;
 	playWindow = nullptr;
+	resourceCount = nullptr;
+	assetsWindow = nullptr;
+	textEditorWindow = nullptr;
 
 	return true;
 }

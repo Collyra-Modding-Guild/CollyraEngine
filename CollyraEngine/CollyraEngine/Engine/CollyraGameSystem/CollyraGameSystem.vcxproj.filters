@@ -23,6 +23,9 @@
     <ClInclude Include="GameScripts\Bullet.h">
       <Filter>Inner System</Filter>
     </ClInclude>
+    <ClInclude Include="GameScripts\Test.h">
+      <Filter>Gameplay Scripts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -35,6 +38,9 @@
       <Filter>Gameplay Scripts</Filter>
     </ClCompile>
     <ClCompile Include="GameScripts\Bullet.cpp">
+      <Filter>Gameplay Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScripts\Test.cpp">
       <Filter>Gameplay Scripts</Filter>
     </ClCompile>
   </ItemGroup>

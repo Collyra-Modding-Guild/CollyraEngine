@@ -1,6 +1,5 @@
 #pragma once
 #include "Module.h"
-#include "glmath.h"
 #include "Light.h"
 #include "MathGeoLib/include/MathGeoLibFwd.h"
 
@@ -41,6 +40,8 @@ public:
 	C_Camera* GetCurrentPlayCam() const;
 	void SetPlayCam(C_Camera* myCam);
 
+	void CameraDied(C_Camera* deadCam);
+
 	float4x4 GetCurrentViewMatrix();
 	float4x4 GetCurrentProjectionMatrix();
 
@@ -49,10 +50,10 @@ public:
 	Light			lights[MAX_LIGHTS];
 	SDL_GLContext	context;
 
-	mat3x3			NormalMatrix;
-	mat4x4			ModelMatrix;
-	mat4x4			ViewMatrix;
-	mat4x4			ProjectionMatrix;
+	float3x3			NormalMatrix;
+	float4x4			ModelMatrix;
+	float4x4			ViewMatrix;
+	float4x4			ProjectionMatrix;
 
 	SDL_Renderer*	renderer;
 

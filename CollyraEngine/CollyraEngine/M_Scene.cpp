@@ -123,6 +123,12 @@ updateStatus M_Scene::PostUpdate(float dt)
 		else
 			continue;
 
+		if (currNode->SchedueledToDelte() == true)
+		{
+			DeleteGameObject(currNode);
+			break;
+		}
+
 		int childNum = currNode->children.size();
 		for (int i = 0; i < childNum; i++)
 		{
@@ -156,10 +162,7 @@ updateStatus M_Scene::PostUpdate(float dt)
 			}
 		}
 
-		if (currNode->SchedueledToDelte() == true)
-		{
-			DeleteGameObject(currNode);
-		}
+
 
 	}
 
@@ -262,6 +265,12 @@ updateStatus M_Scene::PreDraw(bool* drawState)
 bool M_Scene::CleanUp()
 {
 	//RELEASE(currentScene->root);
+	currentScene = nullptr;
+	focusedGameObject = nullptr;
+
+	cameras.clear();
+	allScriptComponents.clear();
+
 	return true;
 }
 
@@ -296,9 +305,8 @@ void M_Scene::ResetScene()
 	App->uiManager->SetFocusedGameObject(-1);
 	focusedGameObject = nullptr;
 
-	for (uint i = 0; i < currentScene->root->children.size(); i++)
+	for (int i = 0; i < currentScene->root->children.size(); i++)
 	{
-		App->uiManager->GameObjectDestroyed(currentScene->root->children[i]->GetUid());
 		RELEASE(currentScene->root->children[i]);
 	}
 
@@ -333,6 +341,7 @@ void M_Scene::SetSceneName(const char* newName)
 	currentScene->root->SetName(newName);
 	currentScene->SetName(newName);
 	currentScene->SetLibraryPath(App->physFS->GetExtensionFolderLibraryFromType(R_TYPE::SCENE).append(currentScene->GetName().append(App->physFS->GetInternalExtensionFromType(R_TYPE::SCENE))));
+	savedScenePath = currentScene->GetLibraryPath();
 }
 
 R_Scene* M_Scene::GetSceneResource() const
@@ -463,14 +472,15 @@ void M_Scene::GenerateNewScene()
 
 }
 
-void M_Scene::PrerHotReload()
+void M_Scene::PreHotReload()
 {
 	allScriptComponents = GetAllComponents<C_Script>();
 
 	for (int i = 0; i < allScriptComponents.size(); i++)
 	{
-		//TODO: We should save the variables here, save them in the component
-		allScriptComponents[i]->DeleteObjectData();
+		allScriptComponents[i]->SaveReflectableVariables();
+		allScriptComponents[i]->SaveSerilizableVariables();
+		allScriptComponents[i]->DeleteObjectData(false);
 	}
 }
 
@@ -479,7 +489,8 @@ void M_Scene::PostrHotReload()
 	for (int i = 0; i < allScriptComponents.size(); i++)
 	{
 		allScriptComponents[i]->GenerateObjectData();
-		//TODO: We should load our variables here, stored in the component
+		allScriptComponents[i]->LoadReflectableVariables();
+		allScriptComponents[i]->LoadSerilizableVariables();
 	}
 }
 
@@ -764,6 +775,15 @@ bool M_Scene::DeleteGameObject(GameObject* gameObject)
 	if (gameObject == nullptr)
 		return false;
 
+	NotifyGameObjectDeath(gameObject);
+
+	RELEASE(gameObject);
+
+	return true;
+}
+
+bool M_Scene::NotifyGameObjectDeath(GameObject* gameObject)
+{
 	if (focusedGameObject == gameObject)
 		focusedGameObject = nullptr;
 
@@ -774,8 +794,6 @@ bool M_Scene::DeleteGameObject(GameObject* gameObject)
 	if (gameObject->GetParent() != nullptr)
 		gameObject->GetParent()->NotifyChildDeath(gameObject);
 
-	RELEASE(gameObject);
-
 	return true;
 }
 
@@ -785,6 +803,7 @@ void M_Scene::DeleteCamera(Component* component)
 	{
 		if (cameras[i] == component)
 		{
+			App->renderer3D->CameraDied(cameras[i]);
 			cameras.erase(cameras.begin() + i);
 		}
 	}

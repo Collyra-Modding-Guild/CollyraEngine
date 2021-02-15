@@ -21,6 +21,7 @@
 //#define VS_CPPFILTER_TEMPLATE "\t<ClInclude Include=\"GameScripts\\myFile.cpp\" >\n\t  <Filter>Gameplay Scripts</Filter>\n\t</ClInclude>"
 
 typedef unsigned __int64 uint64;
+class C_Script;
 
 struct ScriptData
 {
@@ -60,9 +61,15 @@ public:
 	bool GetOnlineHotReload() const;
 	void SetOnlineHotReload(bool newState);
 
+	void LoadReflectableVariable(std::string varName, std::string varType, void* varPtr, int size);
+	void LoadSerializeVariable(std::string varName, std::string varType, void* varPtr, int size);
+
 private:
 	bool CheckScriptStatus(const char* assetsPath, const char* libPath, unsigned int sciprtId);
 	bool RefreshAllScripts();
+
+public:
+	C_Script* currentScriptLoading;
 
 private:
 	//Script files control-----------

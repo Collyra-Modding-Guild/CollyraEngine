@@ -95,6 +95,10 @@ bool M_Window::CleanUp()
 {
 	LOG("Destroying SDL window and quitting all SDL systems");
 
+	winTitle = nullptr;
+	orgTitle = nullptr;
+	screen_surface = nullptr;
+
 	//Destroy window
 	if(window != NULL)
 	{

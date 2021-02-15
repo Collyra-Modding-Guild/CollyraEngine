@@ -67,7 +67,7 @@ updateStatus WG_Playbar::Update()
 				playCam = App->scene->cameras[n];
 				playCamGameObjId = playCam->GetGameObject()->GetUid();
 
-				if (App->gameClock->IsPlaying() == true)
+				if (App->gameClock->GameRunning() == true)
 				{
 					App->renderer3D->SetPlayCam(playCam);
 				}

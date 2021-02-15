@@ -50,7 +50,7 @@ void Timer::Tick(bool step)
 	pause = !step;
 }
 
-bool Timer::IsPlaying() const
+bool Timer::GameRunning() const
 {
 	return (running && !pause);
 }

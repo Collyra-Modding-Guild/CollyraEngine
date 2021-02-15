@@ -181,5 +181,7 @@ bool M_Input::CleanUp()
 {
 	LOG("Quitting SDL input event subsystem");
 	SDL_QuitSubSystem(SDL_INIT_EVENTS);
+
+	keyboard = nullptr;
 	return true;
 }

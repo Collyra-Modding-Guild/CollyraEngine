@@ -1,7 +1,6 @@
 #pragma once
 #include "Color.h"
 #include <vector>
-#include "glmath.h"
 #include "MathGeoLib/include/MathGeoLib.h"
 
 enum PrimitiveTypes
@@ -29,7 +28,7 @@ public:
 	virtual void	Render(bool globalDebugMode = false) const;
 	virtual void	InnerRender() const;
 	void			SetPos(float x, float y, float z);
-	void			SetRotation(float angle, const vec3 &u);
+	void			SetRotation(float angle, const float3 &u);
 	void			Scale(float x, float y, float z);
 
 	void			GenerateVertexBuffers(GLfloat* vertices, uint* indices);
@@ -39,7 +38,7 @@ public:
 public:
 	
 	Color color;
-	mat4x4 transform;
+	float4x4 transform;
 	bool axis,wire;
 
 	uint verticesID, indicesID;
@@ -59,7 +58,7 @@ public :
 	void			GenerateCubeIndices();
 
 public:
-	vec3 size;
+	float3 size;
 
 	std::vector<float3> vertices;
 	std::vector<float3> normals;
@@ -149,7 +148,7 @@ public:
 
 
 public:
-	vec3 size;           // # of bytes to hop to the next vertex (should be 32 bytes)
+	float3 size;           // # of bytes to hop to the next vertex (should be 32 bytes)
 
 	std::vector<float3> vertices;
 	std::vector<float3> normals;
@@ -167,6 +166,6 @@ public:
 	CPlane(float x, float y, float z, float d);
 	void InnerRender() const;
 public:
-	vec3 normal;
+	float3 normal;
 	float constant;
 };

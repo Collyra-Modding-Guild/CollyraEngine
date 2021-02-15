@@ -138,36 +138,6 @@ bool M_Renderer3D::Awake()
 	return ret;
 }
 
-void M_Renderer3D::GenerateFrameBuffers(int width, int height)
-{
-	glGenFramebuffers(1, &frameBuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-
-	glGenTextures(1, &textureBuffer);
-	glBindTexture(GL_TEXTURE_2D, textureBuffer);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
-
-	//Generate the depth buffer-------------
-	glGenRenderbuffers(1, &depthBuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
-
-	glBindRenderbuffer(GL_RENDERBUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-uint M_Renderer3D::GetTextureBuffer()
-{
-	return textureBuffer;
-}
-
 // PreUpdate: clear buffer
 updateStatus M_Renderer3D::PreUpdate(float dt)
 {
@@ -187,7 +157,7 @@ updateStatus M_Renderer3D::PreUpdate(float dt)
 	}
 
 	float3 position;
-	if ( playCam != nullptr)
+	if (playCam != nullptr)
 	{
 		glLoadMatrixf(playCam->GetProjectionMatrix().ptr());
 		position = playCam->GetCamPosition();
@@ -256,6 +226,9 @@ bool M_Renderer3D::CleanUp()
 
 	SDL_GL_DeleteContext(context);
 
+	playCam = nullptr;
+	renderer = nullptr;
+
 	return true;
 }
 
@@ -276,7 +249,7 @@ void M_Renderer3D::UpdateCamera(float width, float height, C_Camera* currentCam)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	if (playCam != nullptr && App->gameClock->IsPlaying() == true)
+	if (playCam != nullptr && App->gameClock->GameRunning() == true)
 	{
 		playCam->SetAspectRatio(width / height);
 		glLoadMatrixf(playCam->GetProjectionMatrix().ptr());
@@ -296,6 +269,36 @@ void M_Renderer3D::UpdateCamera(float width, float height, C_Camera* currentCam)
 	}
 
 	GenerateFrameBuffers(width, height);
+}
+
+void M_Renderer3D::GenerateFrameBuffers(int width, int height)
+{
+	glGenFramebuffers(1, &frameBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+
+	glGenTextures(1, &textureBuffer);
+	glBindTexture(GL_TEXTURE_2D, textureBuffer);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
+
+	//Generate the depth buffer-------------
+	glGenRenderbuffers(1, &depthBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+uint M_Renderer3D::GetTextureBuffer()
+{
+	return textureBuffer;
 }
 
 void M_Renderer3D::BeginDrawMode()
@@ -363,15 +366,29 @@ void M_Renderer3D::SetPlayCam(C_Camera* myCam)
 	{
 		RefreshCamera(myCam);
 	}
-	else if (App->gameClock->IsPlaying() == true)
+	else if (App->gameClock->GameRunning() == true)
 	{
 		App->scene->Stop();
 	}
 }
 
+void M_Renderer3D::CameraDied(C_Camera* deadCam)
+{
+	if (playCam != nullptr)
+	{
+		if (deadCam == playCam)
+			if (App->gameClock->GameRunning() == true)
+			{
+				playCam = nullptr;
+				App->scene->Stop();
+			}
+
+	}
+}
+
 float4x4 M_Renderer3D::GetCurrentViewMatrix()
 {
-	if (playCam != nullptr && App->gameClock->IsPlaying() == true)
+	if (playCam != nullptr && App->gameClock->GameRunning() == true)
 	{
 		return playCam->GetViewMatrix();
 	}
@@ -383,7 +400,7 @@ float4x4 M_Renderer3D::GetCurrentViewMatrix()
 
 float4x4 M_Renderer3D::GetCurrentProjectionMatrix()
 {
-	if (playCam != nullptr && App->gameClock->IsPlaying() == true)
+	if (playCam != nullptr && App->gameClock->GameRunning() == true)
 	{
 		return playCam->GetProjectionMatrix();
 	}

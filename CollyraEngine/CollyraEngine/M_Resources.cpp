@@ -67,19 +67,19 @@ bool M_Resources::Start()
 
 updateStatus M_Resources::Update(float dt)
 {
-	if (updateAssetsTimer.ReadSec() > 4 && assetsRead == ASSETS_CHECK::TO_CHECK)
+	if (updateAssetsTimer.ReadSec() > CHECK && assetsRead == ASSETS_CHECK::TO_CHECK)
 	{
 		SearchAllAssetFiles();
 		assetsRead = ASSETS_CHECK::TO_IMPORT;
 	}
 
-	if (updateAssetsTimer.ReadSec() > 4.5 && assetsRead == ASSETS_CHECK::TO_IMPORT)
+	if (updateAssetsTimer.ReadSec() > IMPORT && assetsRead == ASSETS_CHECK::TO_IMPORT)
 	{
 		CheckAssetsImport(allAssetFiles);
 		assetsRead = ASSETS_CHECK::TO_CHANGE;
 	}
 
-	if (updateAssetsTimer.ReadSec() > 5 && assetsRead == ASSETS_CHECK::TO_CHANGE)
+	if (updateAssetsTimer.ReadSec() > CHANGE && assetsRead == ASSETS_CHECK::TO_CHANGE)
 	{
 		UpdateChangedResources();
 
@@ -95,6 +95,8 @@ bool M_Resources::CleanUp()
 	//Loaders CleanUp----------------------------
 	MeshLoader::CleanUp();
 	TextureLoader::CleanUp();
+
+	resourceMap.clear();
 
 	return true;
 }

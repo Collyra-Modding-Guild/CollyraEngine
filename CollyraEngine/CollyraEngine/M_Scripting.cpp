@@ -4,6 +4,7 @@
 #include "M_Resources.h"
 #include "ScriptLoader.h"
 #include "M_Scene.h"
+#include "C_Script.h"
 
 #include "R_Script.h"
 #include "Globals.h"
@@ -14,7 +15,7 @@
 #include <xmemory>
 
 
-M_Scripting::M_Scripting(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), onlineHotReload(false)
+M_Scripting::M_Scripting(MODULE_TYPE type, bool startEnabled) : Module(type, startEnabled), onlineHotReload(false), currentScriptLoading(nullptr)
 {}
 
 M_Scripting::~M_Scripting()
@@ -320,7 +321,7 @@ bool M_Scripting::PerformHotReload()
 	if (ret == true)
 	{
 		RefreshAllScripts();
-		App->scene->PrerHotReload();
+		App->scene->PreHotReload();
 
 		bool copyOk = App->CopyNewDll();
 		if (copyOk == true)
@@ -343,6 +344,22 @@ bool M_Scripting::GetOnlineHotReload() const
 void M_Scripting::SetOnlineHotReload(bool newState)
 {
 	onlineHotReload = newState;
+}
+
+void M_Scripting::LoadReflectableVariable(std::string varName, std::string varType, void* varPtr, int size)
+{
+	if (this->currentScriptLoading != nullptr)
+	{
+		currentScriptLoading->AddReflectVariable(varName, varType, varPtr, size);
+	}
+}
+
+void M_Scripting::LoadSerializeVariable(std::string varName, std::string varType, void* varPtr, int size)
+{
+	if (this->currentScriptLoading != nullptr)
+	{
+		currentScriptLoading->AddSerializeVariable(varName, varType, varPtr, size);
+	}
 }
 
 bool M_Scripting::CheckScriptStatus(const char* assetsPath, const char* libPath, unsigned int sciprtId)

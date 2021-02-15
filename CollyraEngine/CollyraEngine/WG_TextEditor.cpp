@@ -22,7 +22,7 @@ updateStatus WG_TextEditor::Update()
 
 	if (ImGui::Button("Open Visual Studio Project"))
 	{
-		ShellExecuteA(NULL, "open", GAMEPLAY_PROJECT_PATH, NULL, NULL, SW_SHOWNORMAL);
+		ShellExecuteA(NULL, "open", GAMEPLAY_SOLUTION_PATH, NULL, NULL, SW_SHOWNORMAL);
 	}
 
 	ImGui::Text("Current File: ");
